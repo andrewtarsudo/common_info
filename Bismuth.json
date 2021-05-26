@@ -1,0 +1,111 @@
+{
+  "product": {
+    "name": {
+      "description": "Название",
+      "type": "string",
+      "required": true
+    },
+    "purpose": {
+      "description": "Назначение",
+      "type": "string",
+      "required": true
+    },
+    "deliveries": {
+      "description": "Поставки",
+      "number": {
+        "type": "string",
+        "pattern": "^([0-9]{3}.[0-9]{3})$"
+      },
+      "customer": {
+        "description": "Получатель",
+        "type": "string"
+      }
+    },
+    "year": {
+      "description": "Год выпуска",
+      "type": "YYYY",
+      "pattern": "^(20[0-2][0-9])$"
+    },
+    "isSeries": {
+      "description": "Серийное ли изделие?",
+      "type": "boolean"
+    },
+    "groupName": {
+      "description": "Название серии",
+      "type": "string",
+      "required": true
+    },
+    "numModification": {
+      "description": "Номер модификации/версии",
+      "type": "int",
+      "minimum": 0
+    },
+    "link": {
+      "description": "Ссылка на документ",
+      "type": "string",
+      "required": true
+    },
+    "hardware": {
+      "description": "Комплектация",
+      "interfaces": {
+        "items": {
+          "interfaceName": {
+            "type": "string",
+            "required": true
+          },
+          "interfaceNum": {
+            "type": "int",
+            "minimum": 1,
+            "required": true
+          }
+        }
+      },
+    },
+    "software": {
+      "description": "Программное обеспечение",
+      "operatingSystem": {
+        "items": {
+          "nameOS": {
+            "type": "string",
+            "reqiured": true
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^([0-9]{1,}.[0-9]{1,})$"
+          }
+        }
+      },
+      "softNeeded": {
+        "items": {
+          "nameSoftware": {
+            "type": "string",
+            "required": true
+          },
+          "versionSoftware": {
+            "type": "string",
+            "pattern": "^([0-9]{1,}.[0-9]{1,})$"
+          },
+          "mandatory": {
+            "type": "boolean",
+            "reqiured": true
+          }
+        }
+      },
+      "recovery": {
+        "type": "boolean"
+
+      }
+    },
+
+    "if": {
+      "isSeries": {
+        "const": false
+      }
+    },
+    "then": {
+      "groupName": {
+        "const": null
+      }
+    }
+  }
+}
