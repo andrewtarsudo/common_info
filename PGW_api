@@ -1,0 +1,38 @@
+curl "http://localhost:9000<api_path>" // Порт для oam api задается в common.conf
+
+
+Possible api_path:
+/add_to_trace?imsi=<imsi>                // активирует запись трафика абонента в дамп
+/add_to_trace?ip=<subscriber_ip>
+/master_uptime                           // выводи время запуска приложения PGW, если приложение в состоянии master
+/drop_connection?imsi=<imsi>             // вызывает удаление одного контекста данного абонента
+/drop_connection?ip=<subscriber_ip>
+/flush_dump                              // запись дампа из оперативной памяти на диск
+/get_trace_list                          // вывести imsi/subscriber_ip, чей трафик записывается в дамп
+/ping?ip=<ip>                            // одиночный пинг ip
+/ping?ip=<ip>&size=<packet_size>         // одиночный пинг ip с заданой длиной пакета
+/reload_core                             // перезагрузка конфига core.conf
+/reload_ifaces                           // перезагрузка ifaces из net.conf
+/reload_net                              // перезагрузка конфига net.conf
+/reload_trace                            // перезагрузка конфига trace.conf
+/remove_from_trace?imsi=<imsi>           // деактивирует запись трафика абонента в дамп
+/remove_from_trace?ip=<ip>   
+/start_write_all_traffic                 // вкл запись всех пакетов в дамп
+/stop_write_all_traffic                  // выкл запись всех пакетов в дамп
+/stop                                    // остановка приложения
+/switch_role?master                      // изменить роль узла на master
+/switch_role?slave                       // изменить роль узла на slave
+/recovery_counter                        // выводит текущее значение recover_counter
+
+
+// вывод статистики по различным подсистемам:
+/net_stat
+/radius_client_stat
+/diameter_client_stat
+/bfd_client_stat
+/oam_stat
+/gtpc_client_stat
+/core_stat
+/dhcp_client_stat
+/cntr   //вывод всей статистики
+
