@@ -42,7 +42,7 @@
       },
       "year": {
         "description": "Год выпуска",
-        "type": "YYYY",
+        "type": "integer",
         "pattern": "^(20[0-2][0-9])$"
       },
       "isSeries": {
