@@ -76,4 +76,4 @@ weight : 3
 |Delta|Значение с которым сравнивается (scp.CallAttemptTime + appllyChargingReport.Duration) - (callInformationReport.callAttemptElapsedTime + callInformationReport.callConnectedElapsedTime), значение задается в секундах, но в действительности сравнение идет в 100-мс интервалах.|int s|3|O|R||
 |CdPN|Маска номера отправителя.|regex||M|R||
 |CgPN|Маска номера получателя.|regex||M|R||
-|BadReleaseCause|Код ошибки, который будет отправляться на BRT, если разница значений ACR и CIR по модулю превысит Delta.|int|999|O|R||
+|BadReleaseCause|Код ошибки, который будет отправляться на BRT, если абсолютная разница значений ACR и CIR превысит Delta.|int|999|O|R||
