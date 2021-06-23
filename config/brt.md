@@ -10,7 +10,7 @@ weight : 3
 * [Server](#server)
 * [Timers](#timers)
 
-Секции, читаемые приложением. Ключ перезагрузки **brt.cfg**:
+Секции, читаемые приложением. Ключ для reload - **brt.cfg**:
 * [General](#general)
 * [CDR](#cdr)
 * [SMS_MSC](#sms_msc)
