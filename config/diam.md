@@ -16,7 +16,7 @@ weight : 3
 * **[SMS_MSC](#smsmsc)**;
 * **[MSISDN_WhiteList](#msisdnwhitelist)**;
 * **[Route](#route)**;
-* **[NumberConvertation](numberconvertation)**;
+* **[NumberConvertation](#numberconvertation)**;
 * **[Scenarios](#scenarios)**;
 * **[AVP_Values](#avpvalues)**;
 * **[ATI](#ati)**;
