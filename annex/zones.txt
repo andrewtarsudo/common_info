@@ -1,0 +1,7 @@
+зоны
+
+192.168.126.186 Protei_IPSMGW, Protei_SRF, Protei_SCL, Protei_SMPP_BS, Protei_STP, Protei_SCL_GIS, Protei_SMSC, Protei_SMSC_2
+192.168.126.3 GMSC, GLR-API, MI_API, ITG, RDS, RG, SC_Lite, SRF, SS7FW, STP, SB
+149.255.118.70 PCSCF, ICSCF, SCSCF, MKD, SBC, SSW4, TAS
+192.168.110.189 Protei_SB, Protei_EIR
+92.168.126.153 Protei_CAPL, Protei_SigtranTester, Protei_STP, Protei_CAPL_extSCP

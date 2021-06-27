@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+<h1>Bash Commands</h1>
+<h2>
+  <code>man &lt;command&gt;</code>
+</h2>
+<p>manual, вывести мануал на экран</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# man mkdir<br/>
+MKDIR(1)                         User Commands                        MKDIR(1)<br/>
+<br/>
+NAME<br/>
+mkdir - make directories<br/>
+<br/>
+SYNOPSIS<br/>
+mkdir [OPTION]... DIRECTORY...<br/>
+<br/>
+DESCRIPTION<br/>
+Create the DIRECTORY(ies), if they do not already exist.<br/>
+<br/>
+Mandatory  arguments  to  long  options are mandatory for short options too.<br/>
+<br/>
+-m, --mode=MODE<br/>
+set file mode (as in chmod), not a=rwx - umask<br/>
+<br/>
+-p, --parents<br/>
+no error if existing, make parent directories as needed<br/>
+<br/>
+-v, --verbose<br/>
+print a message for each created directory<br/>
+<br/>
+Manual page mkdir(1) line 1 (press h for help or q to quit)<br/>
+    </pre>
+  </code>
+</details>
+
+<h2>
+  <code>pwd</code>
+</h2>
+<p>print working directory, вывод полного пути до текущей директории</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+      zbash# pwd
+      /Users/user
+  </pre>
+</code>
+</details>
+<h2>
+  <code>ls</code>
+</h2>
+<p>list the content, отобразить содержимое директории</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# ls
+.localized  Shared    user
+  </pre>
+  </code>
+</details>
+<h2>
+  <code>ls -a</code>
+</h2>
+<p>
+list all files, отобразить все содержимое директории, включая скрытые файлы
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# ls -a
+.    ..    .localized  Shared    user
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>ls -l</code>
+</h2>
+<p>
+list files in detail, отобразить подробную информацию о содержимом директории
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# ls -l
+total 0
+-rw-r--r--   1 root           wheel     0 Jan  1  2020 .localized
+drwxrwxrwt   9 root           wheel   288 Jan  1  2020 Shared
+drwxr-xr-x+ 42 AndrewTarasov  staff  1344 May  2 21:44 user
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>cd &lt;path&gt;</code>
+</h2>
+<p>change directory, перейти в другую директорию</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# cd Applications/Mattermost.app
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>cd ..</code>
+</h2>
+<p>change directory to the parent one, перейти в директорию на уровень выше, в родительскую</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# cd ../Applications
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>cd /</code>
+</h2>
+<p>change the directory to the root, перейти в корневую директорию</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# cd /
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>cd ~</code>
+</h2>
+<p>change the directory to the home, перейти в директорию, которая задана как домашняя</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# cd ~
+    </pre>
+  </code>
+</details>
+<h2>
+  Примечание.
+</h2>
+<p>
+  Допускается комбинировать "..", "~", "/" и названия директорий.
+</p>
+<h2>
+  <code>mkdir &lt;dirName&gt;</code>
+</h2>
+<p>make a directory, создать директорию</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# mkdir NewFolder
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>mkdir -p &lt;dirName&gt;</code>
+</h2>
+<p>
+  make a directory of that path, создать директорию по этому пути, создавая не существующие директории
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# mkdir -p ./NewFolder2/NewFolder
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>mv &lt;file&gt; &lt;newPlace&gt;</code>
+</h2>
+<p>move the file, переместить файл</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# mv NewFolder ./Chemistry
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>mv &lt;file&gt; &lt;newName&gt;</code>
+</h2>
+<p>
+  rename the file, переименовать файл
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# mv NewFolder newName
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>cp &lt;file&gt; &lt;path&gt;</code>
+</h2>
+<p>copy the file, копировать файл</p>
+<details>
+  <summary>Пример</summary>
+    <code>
+      <pre>
+zbash# cp NewFolder Chemistry
+      </pre>
+    </code>
+</details>
+<h2>
+  <code>rm &lt;file&gt;</code>
+</h2>
+<p>
+  remove the item, удалить элемент
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# rm text_file.txt
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>rm -i &lt;file&gt;</code>
+</h2>
+<p>remove with the Information table, удалить элемент с подтверждением</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# rm -i text_file.txt
+remove text_file.txt? y
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>rmdir &lt;emptyDir&gt;</code>
+</h2>
+<p>remove the empty directory, удалить пустую директорию</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# rmdir NewFolder2
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>rm -rf &lt;dirName&gt;</code>
+</h2>
+<p>
+  remove any directory using the command recursively and forcing, удалить директорию, применяя команду принудительно и рекурсивно к файлам внутри папки
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# rm -rf NewFolder
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>apt-get &lt;command&gt;</code>
+</h2>
+<p>Application Package Tool, программа для работы с пакетами приложений</p>
+<h2>
+  <code>apt-get install &lt;package&gt;</code>
+</h2>
+<p>
+  install the application, установить пакет
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# apt-get install wget
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>apt-get search &lt;package&gt;</code>
+</h2>
+<p>search the application, найти пакет</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# apt-get search wget
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>!!</code>
+</h2>
+<p>repeat the last command, повторить последнюю команду</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# cd ..
+zbash# !!
+cd ..
+    </pre>
+  </code>
+</details>
+<h2>Примечание.</h2>
+<p>Допускается комбинировать с другими командами.</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# cd ..
+zbash# !!/Users
+cd ../Users
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>ps</code>
+</h2>
+<p>show current user processes, показать все процессы пользователя</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# ps
+PID  TTY        TIME    CMD
+2468 ttys000    0:00.22 -zsh
+8390 ttys000    0:00.15 /Library/Developer/CommandLineTools/usr/bin/git -C /us
+8391 ttys000    0:14.15 /Library/Developer/CommandLineTools/usr/libexec/git-co
+8452 ttys000    0:28.52 /Library/Developer/CommandLineTools/usr/libexec/git-co
+8407 ttys001    0:00.14 -zsh
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>
+    <pre>
+kill -&lt;code&gt;&lt;PID&gt; / kill -15 &lt;PID&gt;
+    </pre>
+  </code>
+</h2>
+<p>
+  kill the process with TERM, убить процесс с помощью принудительного завершения задачи
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# kill 8525
+zbash# kill -15 8526 8527
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>kill -9 &lt;PID&gt;</code>
+</h2>
+<p>kill the process with SIGKILL, убить процесс сигналом SIGKILL, который имеет наивысший приоритет</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# kill -9 8528
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>sudo &lt;command&gt;</code>
+</h2>
+<p>
+  become a super user for one command, запустить команду от имени суперпользователя, вводится пароль учетной записи, под которой зашли в систему
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# sudo su
+Password:
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>su</code>
+</h2>
+<p>
+switch to the superuser, войти в систему как суперпользователь, вводится пароль от учетной записи суперпользователя
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# su
+Password:
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>exit</code>
+</h2>
+<p>leave any shell, выйти из любой оболочки</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# ssh support@192.168.99.101
+[support@99.101] exit
+zbash#
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>clear</code>
+</h2>
+<p>move the terminal to the top, переместить строку терминала на самый верх</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# clear
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>&lt;command&gt; -h / &lt;command&gt; --help</code>
+</h2>
+<p>help information for the command, вывести справочную информацию</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# man --help
+man, version 1.6g
+
+usage: man [-adfhktwW] [section] [-M path] [-P pager] [-S list]
+[-m system] [-p string] name ...
+
+a : find all matching entries
+c : do not use cat file
+d : print gobs of debugging information
+D : as for -d, but also display the pages
+f : same as whatis(1)
+h : print this help message
+k : same as apropos(1)
+K : search for a string in all pages
+t : use troff to format pages for printing
+w : print location of man page(s) that would be displayed
+(if no name given: print directories that would be searched)
+W : as for -w, but display filenames only
+
+C file   : use `file' as configuration file
+M path   : set search path for manual pages to `path'
+P pager  : use program `pager' to display pages
+S list   : colon separated section list
+m system : search for alternate system's man pages
+p string : string tells which preprocessors to run
+e - [n]eqn(1)   p - pic(1)    t - tbl(1)
+g - grap(1)     r - refer(1)  v - vgrind(1)
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>cat &lt;file&gt;</code>
+</h2>
+<p>concatenate the list of files, вывести содержимое нескольких файлов на одном экране</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# cat TextFile.txt TextFile2.txt
+Text 1 Line 1
+Text 1 Line N
+Text 2 Line 1
+Text 2 Line M
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>less &lt;textfile&gt;</code>
+</h2>
+<p>show text file, отобразить содержимое текстового файла</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# less TextFile.txt
+Text 1 Line 1
+Text 1 Line N
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>nano</code>
+</h2>
+<p>minimalistic command-line text editor, минималистичный GUI-текстовый редактор в командной строке</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# nano
+GNU nano 2.0.6                New Buffer
+
+^G Get Help  ^O WriteOut  ^R Read File ^Y Prev Page ^K Cut Text  ^C Cur Pos
+^X Exit      ^J Justify   ^W Where Is  ^V Next Page ^U UnCut Text^T To Spell
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>top</code>
+</h2>
+<p>the information about the processes, вывод информации о текущих процессах и состоянии системы</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+Processes: 264 total, 7 running, 4 stuck, 253 sleeping, 1883 threads   22:24:02
+Load Avg: 2.93, 3.28, 3.74  CPU usage: 57.7% user, 10.27% sys, 32.64% idle
+SharedLibs: 199M resident, 51M data, 14M linkedit.
+MemRegions: 317181 total, 4194M resident, 35M private, 364M shared.
+PhysMem: 8042M used (2667M wired), 149M unused.
+VM: 1425G vsize, 2305M framework vsize, 537950136(4960) swapins, 542685115(16345
+Networks: packets: 105734371/137G in, 29520336/3566M out.
+Disks: 126839932/2682G read, 42074223/2487G written.
+
+PID    COMMAND      %CPU  TIME     #TH   #WQ  #PORTS  MEM    PURG  CMPRS  PGRP
+1513   Atom Helper  209.9 05:27:26 23/4  1    192     3249M- 0B    236M-  1468
+0      kernel_task  17.0  31:26:32 176/4 0    0       612M-  0B    0B     0
+135    WindowServer 11.8  125 hrs  13    6    2913-   349M+  152K- 115M-  135
+2461   Terminal     9.2   01:47.76 9     3    502-    34M-   868K+ 17M-   2461
+10076  top          7.9   00:01.38 1/1   0    26      7528K  0B    0B     10076
+9761   gamecontroll 1.3   00:09.88 5/2   4/1  67      1460K+ 0B    532K   9761
+2408   plugin-conta 0.8   06:08:46 30    1    3399    787M   0B    741M-  2391
+1468   Atom         0.8   06:24:02 34    2    416     116M+  0B    59M    1468
+1472   ControlCente 0.7   09:33.92 5     2    560+    39M-   0B    28M-   1472
+1588   firefox      0.5   87:15:06 93    5    131476+ 1795M+ 0B    1586M- 1588
+74     powerd       0.5   10:27.91 4     3    127+    2540K+ 0B    992K-  74
+2391   Ghostery     0.3   51:55:36 86    5    754+    1027M+ 0B    853M-  2391
+2404   plugin-conta 0.3   04:12:24 33    1    1324    377M   0B    362M   2391
+2400   plugin-conta 0.3   05:08:39 30    1    2189    999M   0B    937M-  2391
+61     UserEventAge 0.3   11:24.74 6     3    701+    2972K+ 0B    1596K- 61
+522    corespotligh 0.3   00:39.11 7     5    131+    6404K+ 0B    5500K- 522
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>sh &lt;pathScript&gt;</code>
+</h2>
+<p>execute the shell script, выполнить скрипт оболочки</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# sh /usr/local/Homebrew/Library/Homebrew/brew.sh
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>locate &lt;file&gt;</code>
+</h2>
+<p>
+  cached list of searching files, fast and outdated, поиск файла по сохраненной базе файлов, быстро, но не отображает последние изменения
+</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# locate temp
+/Users/user/Desktop/temp
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>locate -i &lt;file&gt;</code>
+</h2>
+<p>cached list of searching files, fast and outdated and ignore the case, поиск файла по сохраненной базе файлов без учета регистра, быстро, но не отображает последние изменения</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# locate -i temp
+/Users/user/Desktop/temp
+/Users/user/Desktop/Template_guide.dotm
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>find &lt;path&gt; -name "&lt;fileName&gt;"</code>
+</h2>
+<p>finds actual files, slow and up-to-date, поиск по текущему набору файлов, медленно, но учитывает все изменения</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# find /Users/user/Desktop -name "temp*"
+/Users/user/Desktop/temp
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>find &lt;path&gt; -iname "&lt;fileName&gt;"</code>
+</h2>
+<p>finds actual files, slow and up-to-date and ignore case, поиск по текущему набору файлов без учета регистра, медленно, но учитывает все изменения</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+zbash# find /Users/user/Desktop -iname "temp*"
+/Users/user/Desktop/temp
+/Users/user/Desktop/Template_guide.dotm
+/Users/user/Desktop/Work/Templates
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>wget &lt;URL&gt;</code>
+</h2>
+<p>download the file, загрузить файл</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+wget http://example.com/example.png
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>wget -r &lt;URL&gt;</code>
+</h2>
+<p>download the file recursively, загрузить файл рекурсивно</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+wget -r http://example.com/example/
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>grep '&lt;pattern&gt;' &lt;file&gt;</code>
+</h2>
+<p>search Globally for regular expressions and patterns, глобальный поиск по содержимому с помощью регулярных выражений и масок</p>
+<details>
+  <summary>Пример</summary>
+  <code>
+    <pre>
+grep 'Line \*' /Users/user/Desktop/TextFile.txt
+    </pre>
+  </code>
+</details>
+<h2>
+  <code>grep -i `&lt;pattern&gt;` &lt;file&gt; / grep --ignore-case `&lt;pattern&gt;` &lt;file&gt;</code>
+</h2>
+<p>поиск без учета регистра, по умолчанию регистрозависимый<p/>
+<h2>
+  <code>grep -H '&lt;pattern&gt;' &lt;file&gt;</code>
+</h2>
+<p>выводить название файла вместе с найденными строками</p>
+<h2>
+  <code>grep -h '&lt;pattern&gt;' &lt;file&gt; / grep --no-filename '&lt;pattern&gt;' &lt;file&gt;</code>
+</h2>
+<p>не выводить названия файлов, где найдены подходящие строки</p>
+<h2>
+  <code>grep -a '&lt;pattern&gt;' &lt;file&gt; / grep --text '&lt;pattern&gt;' &lt;file&gt;</code>
+</h2>
+<p>рассматривать все файлы как ASCII, в том числе и бинарные</p>
+<h2>
+  <code>grep -n '&lt;pattern&gt;' &lt;file&gt; / grep --line-number '&lt;pattern&gt;' &lt;file&gt;</code>
+</h2>
+<p>указать номер строки, где встречается искомое выражение, для каждого файла, начиная с 1, строки каждого файла нумеруются отдельно<p/>
+<h2>
+  <code>grep --null '&lt;pattern&gt;' &lt;file&gt;</code>
+</h2>
+<p>напечатать \0 после названия файла</p>
+<h2>
+  <code>grep -R '&lt;pattern&gt;' &lt;file&gt; / grep -r '&lt;pattern&gt;' &lt;file&gt; / grep --recursive '&lt;pattern&gt;' &lt;file&gt;</code>
+</h2>
+<p>искать рекурсивно по всем поддиректориям</p>
+<h2>
+  <code>grep -v '&lt;pattern&gt;' &lt;file&gt; / grep --invert-match '&lt;pattern&gt;' &lt;file&gt;</code>
+</h2>
+<p>вывести строки, в которых отсутствует указанное выражение</p>
+</html>
