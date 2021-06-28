@@ -9,7 +9,7 @@ CDR для расширенной записи запросов USSD.
 
 ### Формат CDR
 
-1. Datetime - Дата и время формирования записи.
+1. DateTime - Дата и время формирования записи.
 2. SessionID - Идентификатор сессии.
 3. SrcAddr - Номер MSISDN отправителя, извлеченный из MAP_OpenInfo.OriginationReference.
 4. DstAddr - Номер MSISDN получателя, извлеченный из MAP_OpenInfo.DestinationReference.
