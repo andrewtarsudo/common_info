@@ -40,5 +40,6 @@ weight : 3
 #### Конфигурационные файлы Protei SC_Lite
 * gsm.cfg;
 * license.cfg;
+* msisdn_groups.txt
 * trace.cfg;
 * ussd_routing.cfg.
