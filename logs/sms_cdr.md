@@ -57,7 +57,7 @@ CDR для записи входящих сообщений по MAP.
 46. MessageLength - Длина сообщения. Только если в gsm.cfg [CDR] WriteMessageText = 1.
 47. DataCoding - Режим кодирования DCS сообщения SMS. Только если в gsm.cfg [CDR] WriteMessageText = 1.
 48. [HttpStatus](#httpstatus) - Текущий статус запроса по HTTP.
-49. HttpErrorCode - Код ошибки HTTP.
+49. [HttpErrorCode](#httperrorcode) - Код ошибки HTTP.
 
 ### <a name="eventtype">EventType</a>
 Возможные значения:
@@ -67,7 +67,7 @@ CDR для записи входящих сообщений по MAP.
 * Diameter;
 * Diameter-SC;
 * Diameter_MT;
-* Diameter-SC_MT HomeRerouting.
+* Diameter-SC_MT (Home Rerouting).
 
 ### <a name="appcode">AppCode</a>
 Возможные значения:
@@ -117,3 +117,19 @@ CDR для записи входящих сообщений по MAP.
 * 7 - HTTP_ERROR_BUT_SEND_SMS;
 * 8 - HTTP_SUBSCRIBER_INACTIVE;
 * 9 - HTTP_SPECIFIC_ERROR_BUT_SEND_SMS.
+
+### <a name="httperrorcode">HttpErrorCode</a>
+Возможные значения:
+* 0 - e_http_success;
+* 1 - e_http_disconnect_ind;
+* 2 - e_http_connect_rejected;
+* 3 - e_http_connect_fail_ind;
+* 4 - e_http_response_timer;
+* 5 - e_http_unexpected_prim;
+* 6 - e_http_overloaded;
+* 7 - e_http_message_parse;
+* 8 - e_http_message_unexpected;
+* 9 - e_http_no_ca;
+* 10 - e_http_invalid_ca;
+* 11 - e_http_ssl_fail;
+* 12 - e_http_reload_in_progress;
