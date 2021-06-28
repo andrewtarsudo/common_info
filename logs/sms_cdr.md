@@ -9,7 +9,7 @@ CDR для записи входящих сообщений по MAP.
 
 ### Формат CDR
 
-1. DateTime - дата и время записи
+1. DateTime - Дата и время формирования записи.
 2. [EventType](#eventtype) - Вид транзакции.
 3. SessionID - Идентификатор сессии.
 4. BRT_ConnectionID - Идентификатор соединения с BRT.
@@ -37,7 +37,7 @@ CDR для записи входящих сообщений по MAP.
 26. New TON Called Number - Новый тип номера получателя.
 27. New NPI Called Number - Новый индикатор плана нумерации получателя.
 28. New Called Number - Новый номер CdPN получателя.
-29. DirectionID - идентификатор направления SMPP
+29. DirectionID - Идентификатор направления SMPP.
 30. IsMO_Forward - Флаг разрешения пересылать MO_SMS.
 31. NewGT - GT места пересылки MAP_MO_SMS_Forward.
 32. ZTE_MessageID - Идентификатор сообщения ZTE.
