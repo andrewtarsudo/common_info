@@ -27,7 +27,7 @@ CDR для записи входящих сообщений по MAP.
 16. MAP Cause - Код ошибки MAP.
 17. SMPP Status - Код статуса SMPP.
 18. SMPP Internal Error - Код внутренней ошибки SMPP.
-19. BRT/DIAMETER Cause - Код ошибки BRT/Diameter.
+19. BRT/Diameter Cause - Код ошибки BRT/Diameter.
 20. IsCharge - Флаг тарификации по протоколу Diameter.
 21. ErrorCode - Код ошибки.
 22. StartTime - Время отправки сообщения.
