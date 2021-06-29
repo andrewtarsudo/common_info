@@ -3,6 +3,7 @@
 |Сокращение|Расшифровка|Описание|
 |:---------|:----------|:-------|
 |ASP|Application Service Provider|поставщик услуг доступа к приложениям|
+|ALPN|Application-Layer Protocol Negotiation|согласование протокола прикладного уровня — дополнение протокола TLS|
 |BRT|Billing Real-Time|биллинг в режиме реального времени|
 |CDMA|Code Division Multiple Access|многостанционный доступ с кодовым разделением каналов|
 |CdPN|Called Party Number|номер вызываемого абонента|
@@ -41,6 +42,7 @@
 |SMPP|Short Messages Peer-to-Peer|одноранговая сеть передачи сообщений|
 |SMS|Short Message Service|служба коротких сообщений|
 |SMSC|SMS Center|SMS-центр|
+|SNI|Server Name Indication|индикация имени сервера — дополнение протокола TLS|
 |SS|Supplementary Services|дополнительные услуги|
 |STP|Signal Transfer Point|магистральный шлюз для маршрутизации трафика|
 |TCAP|Transaction Capabilities Application Part|прикладная подсистема возможностей транзакции|
@@ -70,5 +72,6 @@
 |PSSR|Process-Unstructured-SS-Request|MAP|запрос информации о доступных дополнительных услугах|
 |SRI|SendRoutingInfo|MAP|запрос информации для маршрутизации входящего вызова|
 |SRI-SM|SendRoutingInfo_ForShortMessage|MAP|запрос информации для SMSC|
+|SRI–FSM|SendRoutingInfo_ForwardShortMessage|MAP|запрос на передачу сообщения|
 |USSN|Unstructured-SS-Notification|MAP|сообщение с уведомлением для USSD-обмена|
 |USSR|Unstructured-SS-Request|MAP|сообщение с запросом для USSD-обмена|
