@@ -100,7 +100,7 @@ weight : 3
 |SendATI|Флаг разрешения отправки запроса MAP‒ATI.|bool||O|R||
 |RemoteGT|Адрес SCCP CdPA.|string||O|R||
 |**<a name="other">[Other]**||
-|SendZeroedIMSI|Флаг отправки IMSI, состоящего из нулей, на узел OCS.<br>1 - отправка нулевого IMSI на узел OCS;<br>0 - отбой.|int|1|O|R||
+|SendZeroedIMSI|Флаг отправки IMSI, состоящего из нулей, на узел OCS.|bool|1|O|R||
   
 **Примечание.** Содержимое MAP‒ATSI_Resp:
 * GT, отсутствующий в [Route] - тарификация не ведется, сообщение регистрируется;
