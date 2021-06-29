@@ -132,7 +132,7 @@ weight : 3
 |ActiveLocationRequest|Флаг применения запросов ActiveLocationRequest для LOC-сервисов не из списка типичных пользователей.<br>**Примечание.** Используется всегда: LOC4, LOC5, LOC6, LOC8, OJO.|bool|0|O|R||
 |GT_HLR_ForATI|Адрес назначения MAP‒ATI для LOC11.|string|1|O|R||
 |SetEllipsoidArc|Флаг активации поля MAP_SupportedGADShapes со значением EllipsoidArc при кодировании MAP‒PSL для LOC5.|bool|0|O|R||
-|AddSubscriberStateToPsiFor|Перечень разрешенных адресов для заполнения поля e_subscriberState сообщения MAP_RequestedInfo при кодировании MAP-PSL для LOC5.|list, int|0|O|R||
+|AddSubscriberStateToPsiFor|Флаг заполнения поля e_subscriberState сообщения MAP_RequestedInfo при кодировании сообщения MAP–PSI для заданных в конфигурации LOC*.|bool|0|O|R||
 |SendPsiOnErrorFor|Перечень разрешенных адресов для отправления MAP‒PSI при получении TCAP_RETURN_ERROR для MAP‒FSM.|list, string|""|O|R||
 |SubscriberStateWhiteListForSRI_GT|Перечень разрешенных адресов для запросов MAP‒SRI‒SM_Resp.<br>**Примечание.** При провале проверки MAP-FSM не отправляются.|list, string|""|O|R||
 |SendPSL_ForMSC|Перечень разрешенных адресов для MAP‒ATI_Resp сервиса LOC 9.<br>**Примечание.** При успешной проверке MAP‒FSM не отправляются.|list, string|""|O|R||
