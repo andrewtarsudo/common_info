@@ -39,6 +39,7 @@
 |BBSM|Building Broadband Service Manager|
 |BCSM|Basic Call State Model, базовая модель состояния вызова CAMEL|
 |BER–TLV|Basic encoding rules — tag, length, value|
+|BFCP|Binary Floor Control Protocol, протокол управления на двоичном уровне — протокол для обмена презентациями во время видеоконференций|
 |BGCF|Breakout Gateway Control Function, узел управления шлюзами|
 |BGP|Border Gateway Protocol, протокол граничного шлюза|
 |BLF|Busy Lamp Field, панель индикации состояния абонентов|
