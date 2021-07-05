@@ -6,9 +6,11 @@
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |ABC–номер|Телефонный код, присвоенный по не географическому признаку|
+|ACE|Application Control Engine|
 |ACK|Acknowledge|
 |ACN|Application Context Name, имя контекста приложения|
 |ACQ|All Call Query, запрос по всем вызовам|
+|ACS|Access Control Server|
 |ADC|Automatic Device Configuration, автоматическая настройка устройств|
 |ADSP|Analogue-Digital Signal Processing, аналого-цифровая обработка сигналов|
 |AES|Advanced Encrypting Scheme — общепринятый стандарт шифрования|
@@ -31,8 +33,10 @@
 |ATA|Advanced Technology Attachment, параллельный интерфейс подключения накопителей|
 |ATE|Automatic Test Equipment, автоматическая система контроля|
 |AVP|Attribute–Value Pair, пара "атрибут–значение"|
+|AVS|Application Virtual Switch|
 |B2BUA|Back–to–Back User Agent, пользовательский агент Back–to–back|
 |BAOC|Barring of All Outgoing Calls, запрет исходящих вызовов|
+|BBSM|Building Broadband Service Manager|
 |BCSM|Basic Call State Model, базовая модель состояния вызова CAMEL|
 |BER–TLV|Basic encoding rules — tag, length, value|
 |BGCF|Breakout Gateway Control Function, узел управления шлюзами|
@@ -58,6 +62,7 @@
 |CC|Cryptographic Checksum, криптографическая хэш–суммы|
 |CCT|Cryptographic Checksum Template, шаблон криптографической хэш–суммы|
 |CDIV|Call Diversion, переключение связи|
+|CDM|Continuous Diagnostics and Mitigation|
 |CDMA|Code Division Multiple Access, многостанционный доступ с кодовым разделением каналов|
 |CdPA|Called Party Address, адрес вызываемого абонента|
 |CdPN|Called Party Number, номер вызываемого абонента|
@@ -92,6 +97,7 @@
 |CSFB|Circuit Switch Fallback, переключение на коммутируемую сеть — технология, обеспечивающая возможность входящих и исходящих вызовов в сети LTE с использованием мобильных сетей с коммутацией каналов|
 |CSI|CAMEL Subscription Information, информация о подписках для протоколов CAMEL|
 |CSRN|CS domain Routing Number, номер маршрутизации в домене CS|
+|CSU|Channel Service Unit|
 |CSV|Comma Separated Value, формат данных с разделением значений запятыми|
 |C–TPDU|Command–TPDU|
 |DAD|Destination Address, адрес назначения|
@@ -116,7 +122,9 @@
 |DSS|Direct Station Selection, прямой выбор терминала|
 |DSS1|Digital Subscriber Signaling, цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами|
 |DST|Digital Signature Template, шаблон цифровой подписи|
+|DSU|Data Service Unit|
 |DTMF|Dual–Tone Multi–Frequency, двухтональный многочастотный набор|
+|DWDM|Dense Wavelength Division Multiplexing|
 |ECB|Electronic Code Book, электронная кодовая книга — один из режимов шифрования|
 |ECI|Embedded Common Interface, встроенный CI–модуль — интерфейс подключения модулей для взаимодействия с закодированными каналами|
 |EDE/EDE3|Encrypt–Decrypt–Encrypt, шифрование–дешифрование–шифрование — один из вариантов применения криптографического алгоритма DES/Triple–DES|
@@ -175,6 +183,7 @@
 |ICCID|Integrated Circuit Card Identification, идентификатор смарт–карты|
 |ICI|Incoming Call Information, информация о входящем вызове|
 |ICS|IP Multimedia Centralized Services, централизованные службы сети IMS|
+|ICS|Incident Control System|
 |I–CSCF|Interrogating CSCF, узел взаимодействия с внешними сетями IMS|
 |ID|Identifier, идентификатор|
 |InitialDP|Initial Detection Point, начальное место обнаружения|
@@ -201,6 +210,7 @@
 |ISS|Intercom Station Selection, система выбора станции внутренней связи|
 |ISUP|ISDN User Part, пользовательская часть ISDN|
 |ITG|Internet Telephony Gateway, шлюз интернет–телефонии|
+|ITP|IP transfer point|
 |ITU|International Telecommunications Union, Международный союз электросвязи|
 |IVR|Interactive Voice Response, интерактивное голосовое меню|
 |IWMSC|Interworking MSC, межсетевой MSC|
@@ -264,6 +274,7 @@
 |MTU|Maximum Transmission Unit, максимальный размер пакета|
 |MVNO|Mobile Virtual Network Operator, виртуальный оператор мобильной связи|
 |MWD|Messages–Waiting–Data, информация о сообщениях в режиме ожидания — список центров, у которых есть сообщения, ожидающие доставки абоненту|
+|MXE|Media Experience Engine|
 |NA|Network Appearance, локальная ссылка на сигнальный шлюз и сервер приложений|
 |NAI|Nature of Address Indicator, индикатор типа адреса|
 |NAPTR|Name Authority Pointer, один из видов записи ресурса на DNS|
@@ -271,11 +282,13 @@
 |NAS|Network Attached Storage, сетевое хранилище данных|
 |NAS|Network Access Server, сервер сетевого доступа|
 |NAT|Network Address Translation, преобразование сетевых адресов|
+|NCE|Network Capacity Expension|
 |NEF|Network Exposure Function, функция обеспечения взаимодействия с внешними приложениями|
 |NFV|Network Function Virtualization, виртуализация сетевых функций|
 |NGN|Next Generation Networks, сети нового поколения — мультисервисные сети связи|
 |NI|Network Identifier, идентификатор сети|
 |NIC|Network Interface Controller, сетевой контроллер|
+|NMS|Network Management System|
 |NP|Numbering Plan, план нумерации|
 |NPI|Numbering Plan Indicator, индикатор плана нумерации|
 |NSAPI|Network Service Access Point Identifier, идентификатор точки доступа к сетевых службам|
@@ -359,6 +372,7 @@
 |RN|Routing Number, маршрутный номер|
 |RNC|Radio Network Controller, контроллер радиосети|
 |RPC|Remote Procedure Call, удаленный вызов процедур|
+|RPS|Reductant Power System|
 |RTCP|Real–Time Transport Control Protocol, протокол, управляющий передачей данных в режиме реального времени. Работает совместно с RTP|
 |RTD|Round Trip Delay, задержка на подтверждение приема|
 |RTO|Recovery Time Objective, допустимое время восстановления|
@@ -502,8 +516,10 @@
 |VOC|Voice, голосовые сообщения|
 |VoIP|Voice over Internet Protocol, технология передачи голосовых сообщений в IP-сетях|
 |VoLTE|Voice over LTE, голосовой вызов на базе протокола LTE|
+|WAE|WAN Automation Engine|
 |WAP|Wireless Application Protocol, протокол для приложений беспроводной связи|
 |WB|Welcome Back, система оповещения вновь зарегистрированных гостевых абонентов|
+|WISM|Wireless Services Module, модуль, предоставляющий беспроводные услуги|
 |WIX|Wireless Information Exchange, беспроводной обмен информацией|
 |WLAN|Wireless Local Area Network, беспроводная локальная сеть|
 |WML|Wireless Markup Language|
