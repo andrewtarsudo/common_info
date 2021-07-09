@@ -44,6 +44,7 @@
 |BGP|Border Gateway Protocol, протокол граничного шлюза|
 |BLF|Busy Lamp Field, панель индикации состояния абонентов|
 |BRAS|Broadband Remote Access Server, широкополосный сервер удаленного доступа|
+|BRI|Basic Rate Interface, интерфейс базового доступа|
 |BRT|Billing Real–Time, биллинг в режиме реального времени|
 |BSC|Base Station Controller, контроллер базовых станций|
 |BV|Bon Voyage, система оповещения роумеров при пересечении границы партнерской сети связи|
