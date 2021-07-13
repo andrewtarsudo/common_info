@@ -176,6 +176,8 @@
 |HDD|Hard Disk Drive, накопитель на жестких дисках|
 |HDLC|High–Level Data Link Control, высокоуровневый протокол управления каналом связи|
 |HLR|Home Location Register, регистр местоположения абонентов собственной сети|
+|HMDT|Signaling Message Handling: Message Distribution|обработка сигнальных сообщений: распределение сообщений|
+|HMRT|Signaling Message Handling: Message Routing|обработка сигнальных сообщений: маршрутизация сообщений|
 |HSS|Home Subscriber Server, база данных абонентов собственной сети LTE|
 |I/O|Input/Output, ввод/вывод|
 |IAM|Initial Address Message, начальное адресное сообщение|
@@ -405,6 +407,7 @@
 |SGSN|Serving GPRS Support Node, узел обслуживания абонентов GPRS|
 |SGW|Serving Gateway, обслуживающий шлюз|
 |SHARC|Super Harvard Architecture Single–Chip Computer, одночиповый компьютер Super Harvard Architecture|
+|SI|Service Indicator|индикатор услуги|
 |SI|Socket Interface, сокет–интерфейс|
 |SIC|Service Information Code, код сервисной информации|
 |SIGTRAN|Signaling Transport, передача сигнальных сообщений телефонных сигнализаций по IP–сети|
@@ -413,6 +416,7 @@
 |SL|Service Logic, обслуживающая логика|
 |SLC|Signaling Link Code, код сигнального соединения|
 |SLF|Subscriber Location Function, функция определения местоположения абонента|
+|SLS|Signaling Link Set|набор сигнальных линий| 
 |SM|Secure Message, сообщение с повышенными параметрами безопасности|
 |SMF|Session Management Function, функция управления сессиями|
 |SMPP|Short Messages Peer–to–Peer Protocol, протокол передачи сообщений одноранговой сети|
@@ -531,6 +535,15 @@
 |ПЛИС|Программируемая логическая интегральная схема|
 |УКИО|Унифицированная карточка информационного обмена|
 |ЦАЛ|Центральная аналоговая линия|
+|FCS|Frame Check Sequence|контрольное поле|
+|LI|Length Indicator|индикатор длины|
+|FIB|Forward Indicator Bit|указательный бит вперед|
+|BIB|Backward Indicator Bit|указательный бит назад|
+|FSN|Forward Sequence Number|номер последовательности вперед|
+|BSN|Backward Sequence Number|номер последовательности назад|
+|FISU|Fill In Signaling Unit|кадр однонаправленной передачи сигнальных сообщений от получателя о наличии ошибок|
+|MSU|Message Signaling Unit|кадр передачи сигнальных сообщений|
+|LSSU|Link Status Signal Unit|кадр передачи статусов сигнальных сообщений|
 
 ## Таблица { SEQ "Таблица" * ARABIC * MERGEFORMAT } ##
 
