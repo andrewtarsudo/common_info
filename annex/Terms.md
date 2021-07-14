@@ -49,6 +49,7 @@
 |BSC|Base Station Controller, контроллер базовых станций|
 |BV|Bon Voyage, система оповещения роумеров при пересечении границы партнерской сети связи|
 |BWT|Block Waiting Time|
+|CA|Component Address, компонентный адрес|
 |CAMEL|Customized Applications for Mobile Networks Enhanced Logic — набор стандартов, реализующих интеллектуальные услуги связи в сетях GSM|
 |CAP|CAMEL Application Part, прикладная часть протокола CAMEL|
 |C–APDU|Command–APDU|
@@ -239,6 +240,7 @@
 |LOS|Loss of Signal, сигнал потери линейного сигнала E1|
 |LSB|Least Significant Bit, младший бит|
 |LTE|Long–Term Evolution, стандарт беспроводной высокоскоростной передачи связи для мобильных сетей|
+|M2PA|MTP-2 User Peer-to-Peer Adaptation Part, протокол адаптации пользовательского Peer-to-Peer уровня MTP–2 стандарта SIGTRAN|
 |M3UA|MTP–3 User Adaptation Part, протокол адаптации пользовательского уровня MTP–3 стандарта SIGTRAN|
 |MAC|Media Access Control, уникальный идентификатор оборудования или сетевого интерфейса в сети Ethernet|
 |MAC|Message Authentication Code|
@@ -400,14 +402,14 @@
 |SCWS|Smart Card Web Server|
 |SDP|Session Description Protocol, протокол описания сессии|
 |SEID|Security Environment Identifier|
-|SEP|Signaling End Point, оконечный сигнальный узел сети|
+|SEP|Signaling Endpoint, оконечный сигнальный узел сети|
 |SFP|Small Form–Factor Pluggable, стандарт модульных компактных приёмопередатчиков в телекоммуникациях|
 |SFTP|SSH File Transfer Protocol, прикладной протокол работы с файлами поверх надежного и безопасного соединения|
 |SG|Signalling Gateway, сигнальный шлюз|
 |SGSN|Serving GPRS Support Node, узел обслуживания абонентов GPRS|
 |SGW|Serving Gateway, обслуживающий шлюз|
 |SHARC|Super Harvard Architecture Single–Chip Computer, одночиповый компьютер Super Harvard Architecture|
-|SI|Service Indicator|индикатор услуги|
+|SI|Service Indicator, индикатор услуги|
 |SI|Socket Interface, сокет–интерфейс|
 |SIC|Service Information Code, код сервисной информации|
 |SIGTRAN|Signaling Transport, передача сигнальных сообщений телефонных сигнализаций по IP–сети|
@@ -416,7 +418,7 @@
 |SL|Service Logic, обслуживающая логика|
 |SLC|Signaling Link Code, код сигнального соединения|
 |SLF|Subscriber Location Function, функция определения местоположения абонента|
-|SLS|Signaling Link Set|набор сигнальных линий| 
+|SLS|Signaling Link Set, набор сигнальных линий| 
 |SM|Secure Message, сообщение с повышенными параметрами безопасности|
 |SMF|Session Management Function, функция управления сессиями|
 |SMPP|Short Messages Peer–to–Peer Protocol, протокол передачи сообщений одноранговой сети|
@@ -535,15 +537,17 @@
 |ПЛИС|Программируемая логическая интегральная схема|
 |УКИО|Унифицированная карточка информационного обмена|
 |ЦАЛ|Центральная аналоговая линия|
-|FCS|Frame Check Sequence|контрольное поле|
-|LI|Length Indicator|индикатор длины|
-|FIB|Forward Indicator Bit|указательный бит вперед|
-|BIB|Backward Indicator Bit|указательный бит назад|
-|FSN|Forward Sequence Number|номер последовательности вперед|
-|BSN|Backward Sequence Number|номер последовательности назад|
-|FISU|Fill In Signaling Unit|кадр однонаправленной передачи сигнальных сообщений от получателя о наличии ошибок|
-|MSU|Message Signaling Unit|кадр передачи сигнальных сообщений|
-|LSSU|Link Status Signal Unit|кадр передачи статусов сигнальных сообщений|
+|FCS|Frame Check Sequence, контрольное поле|
+|LI|Length Indicator, индикатор длины|
+|FIB|Forward Indicator Bit, указательный бит вперед|
+|BIB|Backward Indicator Bit, указательный бит назад|
+|FSN|Forward Sequence Number, номер последовательности вперед|
+|BSN|Backward Sequence Number, номер последовательности назад|
+|FISU|Fill In Signaling Unit, кадр однонаправленной передачи сигнальных сообщений от получателя о наличии ошибок|
+|MSU|Message Signaling Unit, кадр передачи сигнальных сообщений|
+|LSSU|Link Status Signal Unit, кадр передачи статусов сигнальных сообщений|
+|HSL|High-Speed Link, высокоскоростное соединение|
+
 
 ## Таблица { SEQ "Таблица" * ARABIC * MERGEFORMAT } ##
 
