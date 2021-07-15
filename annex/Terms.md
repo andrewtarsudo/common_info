@@ -23,14 +23,14 @@
 |APDU|Application Protocol Data Unit, блок данных прикладного протокола|
 |APN|Access Point Name, имя точки доступа|
 |APRI|Address Presentation Restriction Indicator, индикатор запрета отображения адреса|
-|AS|Application Service, служба приложений|
 |AS|Application Server, узел дополнительного управления вызовом или логический объект SIGTRAN, обрабатывающий сигнализацию|
+|AS|Application Service, служба приложений|
 |ASCII|American Standard Code for Information Interchange, американский стандартный код обмена информацией|
 |ASN|Abstract Syntax Notation, абстрактная синтаксическая нотация|
-|ASP|Application Service Provider, поставщик услуг доступа к приложениям|
 |ASP|Application Server Process, отдельный экземпляр AS SIGTRAN|
-|ATA|Analog Telephony Adapter, аналоговый телефонный адаптер|
+|ASP|Application Service Provider, поставщик услуг доступа к приложениям|
 |ATA|Advanced Technology Attachment, параллельный интерфейс подключения накопителей|
+|ATA|Analog Telephony Adapter, аналоговый телефонный адаптер|
 |ATE|Automatic Test Equipment, автоматическая система контроля|
 |AVP|Attribute–Value Pair, пара "атрибут–значение"|
 |AVS|Application Virtual Switch|
@@ -42,11 +42,13 @@
 |BFCP|Binary Floor Control Protocol, протокол управления на двоичном уровне — протокол для обмена презентациями во время видеоконференций|
 |BGCF|Breakout Gateway Control Function, узел управления шлюзами|
 |BGP|Border Gateway Protocol, протокол граничного шлюза|
+|BIB|Backward Indicator Bit, указательный бит назад|
 |BLF|Busy Lamp Field, панель индикации состояния абонентов|
 |BRAS|Broadband Remote Access Server, широкополосный сервер удаленного доступа|
 |BRI|Basic Rate Interface, интерфейс базового доступа|
 |BRT|Billing Real–Time, биллинг в режиме реального времени|
 |BSC|Base Station Controller, контроллер базовых станций|
+|BSN|Backward Sequence Number, номер последовательности назад|
 |BV|Bon Voyage, система оповещения роумеров при пересечении границы партнерской сети связи|
 |BWT|Block Waiting Time|
 |CA|Component Address, компонентный адрес|
@@ -57,8 +59,8 @@
 |captcha|Completely Automated Public Turing test to tell Computers and Humans Apart, тест для различения человека и компьютера|
 |CAS|Channel Associated Signaling, сигнализация по выделенному каналу|
 |CAT|Card Application Toolkit|
-|CBC|Cipher Block Chaining, сцепление шифрованных блоков — один из режимов шифрования|
 |CBC|Cell Broadcast Center, центр вещания по сотам|
+|CBC|Cipher Block Chaining, сцепление шифрованных блоков — один из режимов шифрования|
 |CBE|Cell Broadcast Entity, узел вещания по сотам|
 |CBS|Cell Broadcast Service, услуга трансляции по сотам|
 |CBSP|Cell Broadcast Service Protocol, протокол трансляции по сотам — протокол взаимодействия CBC и RNC|
@@ -91,10 +93,10 @@
 |CPT|Cellular Paging, сотовая пейджинговая связь|
 |CPU|Central Processing Unit, центральный процессор|
 |CRS|Call Recording System, система записи вызовов|
-|CS|Circuit Switch, коммутация каналов|
 |CS|Call Segment, вызов сегмента|
-|CSA|Connection Security Association|
+|CS|Circuit Switch, коммутация каналов|
 |CSA_ID|Connection Security Association Identity|
+|CSA|Connection Security Association|
 |CSAMAC|Connection Security Association Message Authentication Code|
 |CSCF|Call Session Control Function, функция управления сеансом голосового вызова|
 |CSFB|Circuit Switch Fallback, переключение на коммутируемую сеть — технология, обеспечивающая возможность входящих и исходящих вызовов в сети LTE с использованием мобильных сетей с коммутацией каналов|
@@ -102,6 +104,7 @@
 |CSRN|CS domain Routing Number, номер маршрутизации в домене CS|
 |CSU|Channel Service Unit|
 |CSV|Comma Separated Value, формат данных с разделением значений запятыми|
+|CT|Command Type, дальнейшая операция с сообщением|
 |C–TPDU|Command–TPDU|
 |DAD|Destination Address, адрес назначения|
 |DBI|Database Interface, интерфейс базы данных|
@@ -126,6 +129,7 @@
 |DSS1|Digital Subscriber Signaling, цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами|
 |DST|Digital Signature Template, шаблон цифровой подписи|
 |DSU|Data Service Unit|
+|DT|Discharge Time, время прекращения валидности состояния|
 |DTMF|Dual–Tone Multi–Frequency, двухтональный многочастотный набор|
 |DWDM|Dense Wavelength Division Multiplexing|
 |ECB|Electronic Code Book, электронная кодовая книга — один из режимов шифрования|
@@ -145,15 +149,21 @@
 |ENUM|E.164 Number Mapping, протоколы для преобразования номеров E.164 к системе Интернет–адресации|
 |EPC|Evolved Packet Core, улучшенное пакетное ядро|
 |EPS|Evolved Packet System, пакетная система нового поколения|
+|ERMES|European Radio Messaging System, европейская система передачи сообщений на радиочастотах - один из стандартов, ныне не действующий|
 |ES|Encoding Scheme, схема кодирования|
 |ESME|External Short Messaging Entity, внешнее приложение для обмена короткими сообщениями|
 |ETE|End-To-End, сквозной|
 |ETSI|European Telecommunications Standards Institute, Европейский институт телекоммуникационных стандартов|
 |E–UTRAN|Evolved Universal Terrestrial Radio Access Network, улучшенная универсальная сеть наземного радиодоступа стандарта LTE|
 |f|frequency, частота|
+|FCS|Failure Cause, причина неуспешного выполнения|
+|FCS|Frame Check Sequence, контрольное поле|
 |FEC|Forward Error Correction, упреждающая коррекция ошибок — техника помехоустойчивого кодирования / декодирования|
+|FIB|Forward Indicator Bit, указательный бит вперед|
 |FIFO|First in, First out, куча по принципу «первым пришел — первым ушел»|
+|FISU|Fill In Signaling Unit, кадр однонаправленной передачи сигнальных сообщений от получателя о наличии ошибок|
 |FMC|Fixed Mobile Convergence, конвергенция фиксированной и мобильной связи|
+|FSN|Forward Sequence Number, номер последовательности вперед|
 |FTP|File Transfer Protocol, протокол передачи файлов|
 |FTS|Fixed Terminal System, система связи со стационарным терминалом|
 |GERAN|GSM/EDGE Radio Access Network, сеть радиодоступа к GSM/EDGE|
@@ -179,6 +189,7 @@
 |HLR|Home Location Register, регистр местоположения абонентов собственной сети|
 |HMDT|Signaling Message Handling: Message Distribution|обработка сигнальных сообщений: распределение сообщений|
 |HMRT|Signaling Message Handling: Message Routing|обработка сигнальных сообщений: маршрутизация сообщений|
+|HSL|High-Speed Link, высокоскоростное соединение|
 |HSS|Home Subscriber Server, база данных абонентов собственной сети LTE|
 |I/O|Input/Output, ввод/вывод|
 |IAM|Initial Address Message, начальное адресное сообщение|
@@ -187,11 +198,10 @@
 |ICC|Integrated Circuit Card, карта со встроенной микросхемой|
 |ICCID|Integrated Circuit Card Identification, идентификатор смарт–карты|
 |ICI|Incoming Call Information, информация о входящем вызове|
-|ICS|IP Multimedia Centralized Services, централизованные службы сети IMS|
 |ICS|Incident Control System|
+|ICS|IP Multimedia Centralized Services, централизованные службы сети IMS|
 |I–CSCF|Interrogating CSCF, узел взаимодействия с внешними сетями IMS|
 |ID|Identifier, идентификатор|
-|InitialDP|Initial Detection Point, начальное место обнаружения|
 |IEC|International Electrotechnical Commission, Международная электротехническая комиссия|
 |IED|Information Element Data|
 |IEI|Information Element Identifier|
@@ -202,7 +212,9 @@
 |IMRN|IP Multimedia Routing Number, номер маршрутизации в сети IMS|
 |IMS|IP Multimedia Subsystem, мультимедийная подсистема на базе протокола IP|
 |IMSI|International Mobile Subscriber Identifier, международный идентификатор абонента мобильной связи|
+|IN|Intellectual Networks, интеллектуальные сети|
 |INAP|Intelligent Network Application Protocol, прикладной протокол интеллектуальной сети|
+|InitialDP|Initial Detection Point, начальное место обнаружения|
 |INN|Internal Network Number, внутренний сетевой номер|
 |InRoute|Incoming Route, входящий маршрут|
 |INS|Instruction|
@@ -234,11 +246,14 @@
 |KPI|Key Performance Indicators, ключевые показатели эффективности|
 |LAC|Local Area Code, код локальной зоны|
 |LBS|Location Based Services, служба на основе определения местоположения абонента|
+|LI|Length Indicator, индикатор длины|
 |LIFO|Last in, First out, стек по принципу «последним пришел — первым ушел»|
 |LNR|Last Number Redial, услуга повторного набора номера абонента из последнего вызова|
 |LOF|Loss of Frame, сигнал потери цикловой синхронизации|
 |LOS|Loss of Signal, сигнал потери линейного сигнала E1|
+|LP|Loop Prevention, предотвращение создания бесконечных зацикливаний|
 |LSB|Least Significant Bit, младший бит|
+|LSSU|Link Status Signal Unit, кадр передачи статусов сигнальных сообщений|
 |LTE|Long–Term Evolution, стандарт беспроводной высокоскоростной передачи связи для мобильных сетей|
 |M2PA|MTP-2 User Peer-to-Peer Adaptation Part, протокол адаптации пользовательского Peer-to-Peer уровня MTP–2 стандарта SIGTRAN|
 |M3UA|MTP–3 User Adaptation Part, протокол адаптации пользовательского уровня MTP–3 стандарта SIGTRAN|
@@ -257,12 +272,15 @@
 |MID|Message Identifier, идентификатор сообщения|
 |MME|Mobility Management Entity, узел управления мобильностью|
 |MMEI|MME Identifier, иденттификатор MME|
+|MMS|More Messages to Send, флаг наличия сообщений, готовых к отправке|
 |MMS|Multimedia Message Service, служба мультимедийных сообщений|
+|MN|Message Number, номер обрабатываемого сообщения|
 |MNC|Mobile Network Code, код сети мобильной связи|
 |MNP|Mobile Number Portability, переносимость номеров мобильной сети|
 |MO|Mobile Originated, исходящий|
 |MO–SMS|Mobile Originated Short Message, исходящее SMS–сообщение|
 |MPC|Multiple Party Conference, многопользовательская конференция|
+|MR|Message Reference, идентификатор соответствующего сообщения SMS-SUBMIT|
 |MRFC|Media Resource Function Controller, контролер мультимедийных ресурсов|
 |MRFP|Media Resource Function Processor, процессор мультимедийных ресурсов|
 |MS|Mobile Subscriber, абонент мобильной сети|
@@ -274,7 +292,9 @@
 |MSML|Media Sessions Markup Language, язык разметки сессии канала передачи|
 |MSRN|Mobile Station Roaming Number, роуминговый номер мобильной станции|
 |MSU|Message Signal Unit, сигнальная единица сообщения|
+|MSU|Message Signaling Unit, кадр передачи сигнальных сообщений|
 |MT|Mobile Terminated, входящий|
+|MTI|Message Type Indicator, индикатор типа сообщения|
 |MTP|Message Transfer Part, подсистема передачи сообщений|
 |MT–SMS|Mobile Terminated Short Message, входящее SMS–сообщение|
 |MTU|Maximum Transmission Unit, максимальный размер пакета|
@@ -284,9 +304,9 @@
 |NA|Network Appearance, локальная ссылка на сигнальный шлюз и сервер приложений|
 |NAI|Nature of Address Indicator, индикатор типа адреса|
 |NAPTR|Name Authority Pointer, один из видов записи ресурса на DNS|
-|NAS|Non–Access Stratum, слой без доступа — содержит информацию, передаваемую между базовой сетью оператора и пользовательским устройством|
-|NAS|Network Attached Storage, сетевое хранилище данных|
 |NAS|Network Access Server, сервер сетевого доступа|
+|NAS|Network Attached Storage, сетевое хранилище данных|
+|NAS|Non–Access Stratum, слой без доступа — содержит информацию, передаваемую между базовой сетью оператора и пользовательским устройством|
 |NAT|Network Address Translation, преобразование сетевых адресов|
 |NCE|Network Capacity Expension|
 |NEF|Network Exposure Function, функция обеспечения взаимодействия с внешними приложениями|
@@ -300,7 +320,7 @@
 |NSAPI|Network Service Access Point Identifier, идентификатор точки доступа к сетевых службам|
 |NSSF|Network Slice Selection Function, функция выбора сетевого слоя|
 |NTP|Network Time Protocol, сетевой протокол синхронизации времени|
-|OA|Originated Address, адрес отправления|
+|OA|Originating Address, адрес отправления|
 |OAM|Operation, Administration, and Maintenance; эксплуатация, администрирование и техническое обслуживание|
 |OCS|Online Charging System, система учета расходов в реальном времени|
 |O–CSI|Originating–CAMEL Subscription Information, информация о подписках для протоколов CAMEL при исходящих вызовах|
@@ -346,8 +366,8 @@
 |PoR|Proof–of–Receipt, уведомление о получении|
 |PRBT|Private Ring Back Tone, персональный сигнал контроля посылки вызова|
 |PRI|Primary Rate Interface, интерфейс первичного уровня — протокол для задания правил подключения станций ISDN к широкополосным магистралям|
-|PS|Profile Server, профайл–сервер|
 |PS|Packet Switch, коммутация пакетов|
+|PS|Profile Server, профайл–сервер|
 |PSI|Public Service Identity, публичный идентификатор сервиса|
 |PSTN|Public Switched Telephone Network, телефонная сеть общего пользования|
 |PTT|Push–to–Talk, полудуплексный режим приема–передачи|
@@ -356,6 +376,7 @@
 |QoP|Quality of Protection, качество предоставления безопасности|
 |QoS|Quality of Service, качество обслуживания|
 |QSIG|Q–Point Signalling System, сигнальная система рабочих точек — протокол сигнализации PBX между собой|
+|RA|Recipient Address, адрес получателя предыдущего сообщения MAP-MO-SM|
 |RAC|Routing Area Code, код зоны маршрутизации|
 |RADIUS|Remote Authentication in Dial–In User Service, услуга удалённой аутентификации абонента телефонной сети — протокол для реализации аутентификации, авторизации и сбора сведений об использованных ресурсах|
 |RAI|Routing Area Identifier, идентификатор области адресации|
@@ -369,14 +390,16 @@
 |RC|Redundancy Check, проверка избыточности|
 |RC|Repeat Count, количество повторных попыток|
 |RCS|Rich Communication Services, система передачи сообщений и контактных данных в сетях мобильной связи|
+|RD|Reject Duplicates, флаг приема/отбоя сообщений SMS-SUBMIT с одинаковыми MR и DA|
 |RdPN|Redirected Party Number, номер абонента, перенаправленный в последний раз|
 |RFC|Request for Comments — документы, содержащие общепринятые технические спецификации и стандарты|
 |RFU|Reserved for Future Use, зарезервировано для использования в будущем|
 |RgPN|Redirecting Party Number, номер абонента, на котором последний раз сработала переадресация|
-|RI|Routing Indicator, код направления|
 |RI|Repeat Interval, время ожидания между попытками|
+|RI|Routing Indicator, код направления|
 |RN|Routing Number, маршрутный номер|
 |RNC|Radio Network Controller, контроллер радиосети|
+|RP|Reply Path, адрес для отправки ответа|
 |RPC|Remote Procedure Call, удаленный вызов процедур|
 |RPS|Reductant Power System|
 |RTCP|Real–Time Transport Control Protocol, протокол, управляющий передачей данных в режиме реального времени. Работает совместно с RTP|
@@ -430,19 +453,22 @@
 |SMS–PP|Short Message Service – Point to Point|
 |SMS–SC|Short Message Service – Service Center|
 |SMTP|Simple Mail Transfer Protocol, простой протокол передачи почты|
-|SN|Serial Number, серийный номер|
 |SN|Notification System, система оповещения|
+|SN|Serial Number, серийный номер|
 |SNI|Server Name Indication, индикация имени сервера|
 |SNMP|Simple Network Management Protocol, простой протокол управления сетью|
 |SNOW3G|Потоковый алгоритм шифрования 3GPP|
 |SOAP|Simple Object Access Protocol, простой протокол доступа к объектам — протокол обмена структурированными сообщениями в формате XML в компьютерных сетях|
 |SoR|Steering of Roaming, стиринг при нахождении в роуминговой сети|
 |SPC|Signaling Point Code, код сигнального пункта|
-|SPI|System Packet Interface, системный пакетный интерфейс|
 |SPI|Security Parameters Indication, индикация параметров безопасности|
+|SPI|System Packet Interface, системный пакетный интерфейс|
 |SPN|Service Provider Name, название обслуживающего оператора связи|
 |SQL|Structured Query Language, язык структурированных запросов|
 |SRF|Signalling Relay Function, функция ретрансляции сигнальных сообщений|
+|SRI|Status Report Indication, индикация запроса отчета о состоянии|
+|SRQ|Status Report Qualifier, указатель предыдущего сообщения: SMS-SUBMIT или SMS-COMMAND|
+|SRR|Status Report Request, индикация запроса отчета о состоянии|
 |SRV|Service Record, служебная запись — стандарт для DNS, задающий имена хостов и номера портов для некоторых служб|
 |SRVCC|Single Radio Voice Call Continuity, система непрерывной голосовой связи с одним радиомодулем|
 |SS|Supplementary Service, дополнительная услуга|
@@ -454,6 +480,7 @@
 |SSN|Subsystem Number, номер подсистемы|
 |SSP|Service Switching Point, узел коммутации услуг|
 |SSRC|Synchronization Source, источник синхронизации|
+|ST|Status, состояние|
 |STP|Signal Transfer Point, магистральный шлюз для маршрутизации трафика|
 |SWP|Single Wire Protocol|
 |TAC|Tracking Area Code, код зоны отслеживания|
@@ -467,13 +494,12 @@
 |TCP|Transport Control Protocol, протокол управления передачей данных|
 |TCS|Terminal Capability Set, функциональные возможности терминала|
 |T–CSI|Terminating — CAMEL Subscription Information, информация о подписках для протоколов CAMEL при входящих вызовах|
-|IN|Intellectual Networks, интеллектуальные сети|
 |TDM|Time Division Multiplexing, мультиплексирование с разделением по времени|
 |TDP|Trigger Detection Point, триггерная точка обнаружения|
 |TEID|Tunnel Endpoint Identifier, идентификатор конечной точки туннеля|
 |TETRA|Terrestrial Trunked Radio|
-|TID|Transaction Identifier, идентификатор транзакции|
 |TID|Thread ID, идентификатор потока|
+|TID|Transaction Identifier, идентификатор транзакции|
 |TLS|Transport Layer Security — протокол защищенной передачи данных с применением шифрования|
 |TLV|Tag – Length – Value (data structure)|
 |TMT|Traffic Mode Type, режим передачи трафика|
@@ -492,8 +518,8 @@
 |UDHI|User Data Header Indicator, индикатор UDH|
 |UDHL|User Data Header Length, длина UDH|
 |UDP|User Datagram Protocol, протокол передачи датаграмм пользователей|
-|UDR|User Data Request, запрос пользовательских данных абонента|
 |UDR|Unified Data Repository, унифицированная база данных|
+|UDR|User Data Request, запрос пользовательских данных абонента|
 |UDSF|Unstructured Data Storage Function, система хранения неструктурированных данных|
 |UDTS|Universal Data Transfer Service, универсальная система передачи данных|
 |UE|User Equipment, пользовательское оборудование|
@@ -524,6 +550,8 @@
 |VOC|Voice, голосовые сообщения|
 |VoIP|Voice over Internet Protocol, технология передачи голосовых сообщений в IP-сетях|
 |VoLTE|Voice over LTE, голосовой вызов на базе протокола LTE|
+|VP|Validity Period, время прекращения валидности сообщения|
+|VPF|Validity Period Format, флаг наличия Validity Period|
 |WAE|WAN Automation Engine|
 |WAP|Wireless Application Protocol, протокол для приложений беспроводной связи|
 |WB|Welcome Back, система оповещения вновь зарегистрированных гостевых абонентов|
@@ -537,17 +565,6 @@
 |ПЛИС|Программируемая логическая интегральная схема|
 |УКИО|Унифицированная карточка информационного обмена|
 |ЦАЛ|Центральная аналоговая линия|
-|FCS|Frame Check Sequence, контрольное поле|
-|LI|Length Indicator, индикатор длины|
-|FIB|Forward Indicator Bit, указательный бит вперед|
-|BIB|Backward Indicator Bit, указательный бит назад|
-|FSN|Forward Sequence Number, номер последовательности вперед|
-|BSN|Backward Sequence Number, номер последовательности назад|
-|FISU|Fill In Signaling Unit, кадр однонаправленной передачи сигнальных сообщений от получателя о наличии ошибок|
-|MSU|Message Signaling Unit, кадр передачи сигнальных сообщений|
-|LSSU|Link Status Signal Unit, кадр передачи статусов сигнальных сообщений|
-|HSL|High-Speed Link, высокоскоростное соединение|
-
 
 ## Таблица { SEQ "Таблица" * ARABIC * MERGEFORMAT } ##
 
