@@ -10,13 +10,19 @@ weight : 3
 
 Ключ для reload - **reload diameter.cfg**.
 
-Используется во всех версиях.
+Список разделов:
+
+* **[Common](#common)**
+* **[LocalAddress](#localaddress)**
+* **[LocalPeerCapabitities](#localpeercapabitities)**
+* **[Timers](#timers)**
+
 ## Описание параметров
 |Name|Description|Type|Default|O/M|P/R|Version|
 |:---|:----------|:---|:------|:--|:--|:------|
-|**[Common]**||
+|**<a name="common">[Common]</a>**||
 |RequestQueueLimit|Допустимое количество запросов, ожидающих отправку в сокете.|int|0 , без ограничений.|O|R||
-|**[LocalAddress]**|параметры адреса локального host||
+|**<a name="localaddress">[LocalAddress]</a>**|параметры адреса локального host||
 |LocalHost|Адрес локального сетевого интерфейса.|ip||M|P||
 |LocalPort|Локальный IP-порт.|int||M|P||
 |local_interfaces|Адреса ip:port для мультихоуминга.|string||O|P||
@@ -31,8 +37,8 @@ weight : 3
 |RtoInitial|Первоначальное значение RTO.|int ms|3000|O|R||
 |HbInterval|Периодичность отправления heartbeat-сообщения.|int ms|30000|O|R||
 |AssociationMaxRetrans|Максимальное количество переадресаций, при превышении которого хост считается недоступным.|int|10|O|R||
-|**[LocalPeerCapabitities]**|параметры участника Peer–to–Peer сети||
-|Origin-Host|Значение Origin-Host для протокола Diameter. Подробное описание приведено в <a href="https://datatracker.ietf.org/doc/html/rfc6733">RFC 6733</a>. Формат:<br>#Host.epc.mnc#Mnc.mcc#Mcc.3gppnetwork.org.
+|**<a name="localpeercapabitities">[LocalPeerCapabitities]</a>**|параметры участника Peer–to–Peer сети||
+|Origin-Host|Значение Origin-Host для протокола Diameter. Подробное описание приведено в <a href="https://datatracker.ietf.org/doc/html/rfc6733">RFC 6733</a>. Формат:<br>#Host.epc.mnc#Mnc.mcc#Mcc.3gppnetwork.org.|string||M|R||
 |Origin-Realm|Значение Origin-Realm для протокола Diameter. Подробное описание приведено в <a href="https://datatracker.ietf.org/doc/html/rfc6733">RFC 6733</a>.|string||M|R||
 |Vendor-ID|Идентификатор Vendor-ID. Подробное описание приведено в <a href="https://datatracker.ietf.org/doc/html/rfc6733">RFC 6733</a>.|int||M|R||
 |Product-Name|Название системы Product-Name. Подробное описание приведено в <a href="https://datatracker.ietf.org/doc/html/rfc6733">RFC 6733</a>.|string||M|R||
@@ -47,7 +53,7 @@ weight : 3
 |Case-Sensitive|Флаг хранения регистра в строковых значениях AVP.|bool|1|O|R||
 |ReceivingFromAnyHost|Флаг принятия запросов от сторонних хостов.|bool|0|O|R||
 |DRMP|Приоритет.|int<br>0-15||O|R||
-|**[Timers]**||
+|**<a name="timers">[Timers]</a>**||
 |Tx_Timeout|Время ожидания ответа на запрос.|int ms|30000|O|R||
 |Appl_Timeout|Время ожидания установления Diameter-соединения.<br> **Примечание.** Отсчитывается с момента отправления запроса на установление TCP–соединения до получения сообщения Capabilities-Exchange-Answer.|int ms|40000|O|R||
 |Watchdog_Timeout|Время ожидания для отправки сообщений Watchdog, которые контролируют состояние соединения.<br>**Примечание.** Отсчитывается с момента отправки последнего сообщения, не обязательно DeviceWatchdogRequest.|int ms|10000|O|R||
