@@ -9,17 +9,17 @@ weight : 3
 **Внимание!** Крайне не рекомендуется менять параметры в этом файле.
 
 Список разделов:
-* [General](#general);
-* [Dynamic](#dynamic);
-* [SNMP](#snmp);
-* [StandardMib](#standardmib);
-* [AtePath2ObjName](#atepath2objname);
-* [SNMPTrap](#snmptrap);
-* [Filter](#filter);
-* [SpecificTrapCA_Object](#st_ca_object);
-* [SpecificTrapCT_Object](#st_ct_object);
-* [SpecificTrapCA_Var](#st_ca_var);
-* [Logs](#logs).
+* **[General](#general)**
+* **[Dynamic](#dynamic)**
+* **[SNMP](#snmp)**
+* **[StandardMib](#standardmib)**
+* **[AtePath2ObjName](#atepath2objname)**
+* **[SNMPTrap](#snmptrap)**
+* **[Filter](#filter)**
+* **[SpecificTrapCA_Object](#st_ca_object)**
+* **[SpecificTrapCT_Object](#st_ct_object)**
+* **[SpecificTrapCA_Var](#st_ca_var)**
+* **[Logs](#logs)**
 
 ## Описание параметров
 |Name|Description|Type|Default|O/M|P/R|Version|
