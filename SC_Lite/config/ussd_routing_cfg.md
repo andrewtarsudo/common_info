@@ -21,7 +21,7 @@ weight : 3
 |[Groups](#groups)|Соответствие названий групп и списков USSD-кодов.<br>**Примечание.** При значении \* направление считается направлением по умолчанию для группы.|list, object||O|R||
 |[IMSIs](#imsis)|Перечень IMSI и SK, передающихся по указанному направлению.|list, object||O|R||
 |<a name="msisdns">MSISDNs</a>|Перечень номеров MSISDN.|list, string||O|R||
-|<a name="sks">SKs</a>|Перечень префиксов IMSI и SK, передающихся по указанному направлению.<br>**Примечание.** [Формат](#formatsks) перечня зависит от значения параметра UseSimpleSearch(#usesimplesearch).|list, regex||O|R||
+|<a name="sks">SKs</a>|Перечень префиксов IMSI и SK, передающихся по указанному направлению.<br>**Примечание.** [Формат](#formatsks) перечня зависит от значения параметра [UseSimpleSearch](#usesimplesearch).|list, regex||O|R||
 
 Формат задания <a name="groups">[Groups]</a>:
 ```
