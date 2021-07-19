@@ -27,7 +27,7 @@ weight : 3
 |Name|Description|Type|Default|O/M|P/R|Version|
 |:---|:----------|:---|:------|:--|:--|:------|
 |**<a name="general">[General]** ||
-|ApplicationCode|Код приложения.|int||M|R||
+|[ApplicationCode](#applicationcode)|Код приложения.|int||M|R||
 |**<a name="atsi">[ATSI]** ||
 |SendATSI|Флаг отправки сообщения MAP‒ATSI.|bool|0|O|R||
 |RemoteGT|Адрес gsmSCF_Address при отправке MAP‒ATSI.|string|не используется|O|R||
@@ -106,3 +106,18 @@ weight : 3
 * GT, отсутствующий в [Route] - тарификация не ведется, сообщение регистрируется;
 * ошибка informationNotAvailable (62) - тарификация не ведется, сообщение регистрируется;
 * любая другая ошибка - тарификация не ведется, сообщение отбивается.
+  
+### **<a name="applicationcode">ApplicationCode</a>**
+Возможные значения:
+* 0 - CODE_MOTIV;
+* 1 - CODE_ORGA;
+* 2 - CODE_GLOBAL;
+* 3 - CODE_SITRONICS;
+* 4 - CODE_REDKNEE;
+* 5 - CODE_REDKNEE_2;
+* 6 - CODE_NURTELECOM;
+* 7 - CODE_MTT;
+* 8 - CODE_SPRINT;
+* 9 - CODE_MEGAFON;
+* 10 - CODE_TINKOFF;
+* 11 - CODE_PETER_SERVICE.
