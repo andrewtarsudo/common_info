@@ -38,7 +38,7 @@ weight : 3
 |HbInterval|Периодичность отправления heartbeat-сообщения.|int ms|30000|O|R||
 |AssociationMaxRetrans|Максимальное количество переадресаций, при превышении которого хост считается недоступным.|int|10|O|R||
 |**<a name="localpeercapabitities">[LocalPeerCapabitities]</a>**|параметры участника Peer–to–Peer сети||
-|Origin-Host|Значение Origin-Host для протокола Diameter. Подробное описание приведено в <a href="https://datatracker.ietf.org/doc/html/rfc6733">RFC 6733</a>. Формат:<br>#Host.epc.mnc#Mnc.mcc#Mcc.3gppnetwork.org.|string||M|R||
+|Origin-Host|Значение Origin-Host для протокола Diameter. Подробное описание приведено в <a href="https://datatracker.ietf.org/doc/html/rfc6733">RFC 6733</a>. Формат:<br>#Host.epc.mnc#Mnc.mcc#Mcc.3gppnetwork.org.
 |Origin-Realm|Значение Origin-Realm для протокола Diameter. Подробное описание приведено в <a href="https://datatracker.ietf.org/doc/html/rfc6733">RFC 6733</a>.|string||M|R||
 |Vendor-ID|Идентификатор Vendor-ID. Подробное описание приведено в <a href="https://datatracker.ietf.org/doc/html/rfc6733">RFC 6733</a>.|int||M|R||
 |Product-Name|Название системы Product-Name. Подробное описание приведено в <a href="https://datatracker.ietf.org/doc/html/rfc6733">RFC 6733</a>.|string||M|R||
