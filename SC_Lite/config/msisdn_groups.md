@@ -5,9 +5,8 @@ weight : 3
 ---
 В файле настраиваются группы MSISDN и их префиксы.
 
-**Примечание.** Имя задается параметром GroupsFileName в файле ussd_routing.cfg.
+**Примечание.** Имя задается параметром GroupsFileName в файле <a href="/Protei_SCL/docs/common/config/ussd_routing_cfg.md/#groupsfilename">[ussd_routing.cfg]</a>.
 
-Используется во всех версиях.
 ## Описание параметров
 |Name|Description|Type|Default|O/M|P/R|Version|
 |:---|:----------|:---|:------|:--|:--|:------|
