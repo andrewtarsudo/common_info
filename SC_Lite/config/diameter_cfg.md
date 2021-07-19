@@ -21,7 +21,7 @@ weight : 3
 |Name|Description|Type|Default|O/M|P/R|Version|
 |:---|:----------|:---|:------|:--|:--|:------|
 |**<a name="common">[Common]</a>**||
-|RequestQueueLimit|Допустимое количество запросов, ожидающих отправку в сокете.|int|0 , без ограничений.|O|R||
+|RequestQueueLimit|Допустимое количество запросов, ожидающих отправку в сокете.|int|0, без ограничений|O|R||
 |**<a name="localaddress">[LocalAddress]</a>**|параметры адреса локального host||
 |LocalHost|Адрес локального сетевого интерфейса.|ip||M|P||
 |LocalPort|Локальный IP-порт.|int||M|P||
