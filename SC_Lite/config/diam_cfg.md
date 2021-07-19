@@ -9,18 +9,18 @@ weight : 3
 Ключ для reload - **reload diam.cfg**.
 
 Список разделов:
-* **[General](#general)**;
-* **[ATSI](#atsi)**;
-* **[MT_SMS_Diameter](#mtsmsdiameter)**;
-* **[DiameterError](#diametererror)**;
-* **[SMS_MSC](#smsmsc)**;
-* **[MSISDN_WhiteList](#msisdnwhitelist)**;
-* **[Route](#route)**;
-* **[NumberConvertation](#numberconvertation)**;
-* **[Scenarios](#scenarios)**;
-* **[AVP_Values](#avpvalues)**;
-* **[ATI](#ati)**;
-* **[Other](#other)**.
+* **[General](#general)**
+* **[ATSI](#atsi)**
+* **[MT_SMS_Diameter](#mtsmsdiameter)**
+* **[DiameterError](#diametererror)**
+* **[SMS_MSC](#smsmsc)**
+* **[MSISDN_WhiteList](#msisdnwhitelist)**
+* **[Route](#route)**
+* **[NumberConvertation](#numberconvertation)**
+* **[Scenarios](#scenarios)**
+* **[AVP_Values](#avpvalues)**
+* **[ATI](#ati)**
+* **[Other](#other)**
 
 
 ## Описание параметров
@@ -38,8 +38,8 @@ weight : 3
 |ImsiList|Маски IMSI, для которых необходимо осуществлять MT–тарификацию.|regex||O|R||
 |SrcBlackList|Черный список масок номеров отправителей, для которых не надо осуществлять MT–тарификацию.|regex||O|R||
 |**<a name="diametererror">[DiameterError]** ||
-|SendSMS|Код действия после получения ошибки со стороны биллинга во время обработки SMS–сообщения.<br>1 - передавать SMS дальше;<br>0 - отбивать SMS.|int|0|O|R||
-|SendMAP_MT_SMS|Код действия после получения ошибки со стороны биллинга во время обработки MAP‒MT‒SMS–сообщения.<br>1 - передавать MAP‒MT‒SMS–сообщения дальше;<br>0 - отбивать MAP‒MT‒SMS–сообщения.|int|0|O|R||
+|[SendSMS](#sendsms)|Код действия после получения ошибки со стороны биллинга во время обработки SMS–сообщения.|int|0|O|R||
+|[SendMAP_MT_SMS](#sendmapmtsms)|Код действия после получения ошибки со стороны биллинга во время обработки MAP‒MT‒SMS–сообщения.|int|0|O|R||
 |AllowedErrorCodesForMT|Список кодов ответа от биллинга для МТ, при которых нужно перейти на работу по сценарию.|string||O|R||
 |AllowedErrorCodesForMO|Список кодов ответа от биллинга для МO, при которых нужно перейти на работу по сценарию.|string||O|R||
 |AllowedErrorCodesFor<br>MAP_MT|Список кодов ответа от биллинга для Home Rerouting, при которых нужно перейти на работу по сценарию.|string||O|R||
@@ -52,7 +52,7 @@ weight : 3
 |MSISDN|Маски MSISDN, для которых применяется правило.|regex||O|R||
 |Dest|Адрес GT SCF–Address, полученный в ответ на сообщение MAP‒ATSI.|string|не используется|O|R||
 |Host|Перечень Host_Identity из файла DIAM.cfg.|list, int||O|R||
-|UseCA|Способ выбора Diameter–подключения.<br>0 - используются Host–Identity;<br>1 - используются CA.|int|0|O|R||
+|[UseCA](#usecavalues)|Способ выбора Diameter–подключения.|int|0|O|R||
 |CA|Перечень PCSM из файла DIAM.cfg.<br>**Примечание.** Обязателен, только если UseCA = 1.|list, string||C|R||
 |LoadSharing|Флаг использования режим распределенной нагрузки LoadSharing|bool|0|O|R||
 |MaxErrorCount|Максимальное количество ошибок в процессе обращения к биллингу до прекращения отправки запросов в данном направлении.|int|1|O|R||
@@ -70,7 +70,7 @@ weight : 3
 |NewNPI|Новый NPI, задаваемый номеру.|int|–1, не менять|O|R||
 |UseDiameter|Флаг отправки запроса по протоколу Diameter для данного правила.|bool||O|R||
 |**<a name="scenarios">[Scenarios]**|параметры сценариев работы||
-|Type|Вид SMS.<br>MO - MO‒SMS;<br>MT - MT‒SMS;<br>MAP_MT - SMS, полученное в роуминге.|string||O|R||
+|[Type](#type)|Вид SMS.|string||O|R||
 |MSISDN|Маска номеров отправителей.|regex||O|R||
 |ScenarioID|Уникальный идентификатор сценария.|int||O|R||
 |MSC_GT|Маска GT центра MSC.|regex||O|R||
@@ -106,7 +106,7 @@ weight : 3
 * GT, отсутствующий в [Route] - тарификация не ведется, сообщение регистрируется;
 * ошибка informationNotAvailable (62) - тарификация не ведется, сообщение регистрируется;
 * любая другая ошибка - тарификация не ведется, сообщение отбивается.
-  
+
 ### **<a name="applicationcode">ApplicationCode</a>**
 Возможные значения:
 * 0 - CODE_MOTIV;
@@ -121,3 +121,24 @@ weight : 3
 * 9 - CODE_MEGAFON;
 * 10 - CODE_TINKOFF;
 * 11 - CODE_PETER_SERVICE.
+
+### <a name="sendsms">SendSMS</a>
+Возможные значения:
+* 0 - отбивать SMS;
+* 1 - передавать SMS дальше.
+
+### <a name="sendmapmtsms">SendMAP_MT_SMS</a>
+Возможные значения:
+* 0 - отбивать MAP‒MT‒SMS;
+* 1 - передавать MAP‒MT‒SMS дальше.
+
+### <a name="useca">UseCA</a>
+Возможные значения:
+* 0 - используются Host–Identity;
+* 1 - используются CA.
+
+### <a name="type">Type</a>
+Возможные значения:
+* MO - MO‒SMS;
+* MT - MT‒SMS;
+* MAP_MT - SMS, полученное в роуминге.
