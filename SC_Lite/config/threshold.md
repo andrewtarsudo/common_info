@@ -12,10 +12,10 @@ weight : 3
 |Name|Description|Type|Default|O/M|P/R|Version|
 |:---|:----------|:---|:------|:--|:--|:------|
 |**[HandlersAlarms]**||
-|MaxBusyHandlers|Максимальное количество занятых логик SL, при котором активируется авария OVRLOAD.|int|0.9\*CoreCount|O|R||
+|MaxBusyHandlers|Максимальное количество занятых логик SL, при котором активируется авария OVRLOAD.|int|0.9\*[Handlers](/Protei_SCL/docs/common/config/gsm_cfg/#handlers)|O|R||
 |NormalBusyHandlers|Максимальное количество занятых логик SL, при котором снимается авария OVRLOAD.|int|0.8\*MaxBusyHandlers|O|R||
 |**[QueueAlarms]**||
-|MaxQueueSize|Максимальная длина очереди примитивов, при котором активируется авария OVRLOAD.|int|0.1\*CoreCount|O|R||
+|MaxQueueSize|Максимальная длина очереди примитивов, при котором активируется авария OVRLOAD.|int|0.1\*[Handlers](/Protei_SCL/docs/common/config/gsm_cfg/#handlers)|O|R||
 |NormalQueueSize|Максимальная длина очереди примитивов, при котором снимается авария OVRLOAD.|int|0.8\*MaxQueueSize|O|R||
 |**[TcapAlarms]**||
 |InThreshold|Аварийный порог входящего трафика.<br>**Примечание.** При значении 0 авария не используется.|int||O|R||
