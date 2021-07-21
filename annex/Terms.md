@@ -6,11 +6,11 @@
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |ABC–номер|Телефонный код, присвоенный по не географическому признаку|
-|ACE|Application Control Engine|
+|ACE|Application Control Engine, система управления приложением|
 |ACK|Acknowledge|
 |ACN|Application Context Name, имя контекста приложения|
 |ACQ|All Call Query, запрос по всем вызовам|
-|ACS|Access Control Server|
+|ACS|Access Control Server, сервер управления доступом|
 |ADC|Automatic Device Configuration, автоматическая настройка устройств|
 |ADSP|Analogue-Digital Signal Processing, аналого-цифровая обработка сигналов|
 |AES|Advanced Encrypting Scheme — общепринятый стандарт шифрования|
@@ -32,11 +32,12 @@
 |ATA|Advanced Technology Attachment, параллельный интерфейс подключения накопителей|
 |ATA|Analog Telephony Adapter, аналоговый телефонный адаптер|
 |ATE|Automatic Test Equipment, автоматическая система контроля|
+|AuC|Authentication Center, центр аутентификации|
 |AVP|Attribute–Value Pair, пара "атрибут–значение"|
 |AVS|Application Virtual Switch|
 |B2BUA|Back–to–Back User Agent, пользовательский агент Back–to–back|
 |BAOC|Barring of All Outgoing Calls, запрет исходящих вызовов|
-|BBSM|Building Broadband Service Manager|
+|BBSM|Building Broadband Service Manager, шлюз для доступа к публичным сетям|
 |BCSM|Basic Call State Model, базовая модель состояния вызова CAMEL|
 |BER–TLV|Basic encoding rules — tag, length, value|
 |BFCP|Binary Floor Control Protocol, протокол управления на двоичном уровне — протокол для обмена презентациями во время видеоконференций|
@@ -58,13 +59,14 @@
 |CAPS|Call Attempts per Second, количество попыток вызова в секунду|
 |captcha|Completely Automated Public Turing test to tell Computers and Humans Apart, тест для различения человека и компьютера|
 |CAS|Channel Associated Signaling, сигнализация по выделенному каналу|
-|CAT|Card Application Toolkit|
+|CAT|Card Application Toolkit, пакет прикладноого программного обеспечения для карт|
 |CBC|Cell Broadcast Center, центр вещания по сотам|
 |CBC|Cipher Block Chaining, сцепление шифрованных блоков — один из режимов шифрования|
 |CBE|Cell Broadcast Entity, узел вещания по сотам|
 |CBS|Cell Broadcast Service, услуга трансляции по сотам|
 |CBSP|Cell Broadcast Service Protocol, протокол трансляции по сотам — протокол взаимодействия CBC и RNC|
 |CC|Cryptographic Checksum, криптографическая хэш–суммы|
+|CCF|Charging Collection Function, функция сбора тарификационнных данных|
 |CCT|Cryptographic Checksum Template, шаблон криптографической хэш–суммы|
 |CDIV|Call Diversion, переключение связи|
 |CDM|Continuous Diagnostics and Mitigation|
@@ -116,6 +118,8 @@
 |DF|Dedicated File, специальный выделенный файл|
 |DHCP|Dynamic Host Configuration Protocol, протокол динамической настройки хоста|
 |DISA|Dial–In System Access, прямой внутрисистемный доступ|
+|DL|Downlink, нисходящая линия|
+|DNL|Destination Number Length, длина номера назначения|
 |DNS|Domain Name Server, сервер доменных имен|
 |DoS|Denial of Service, отказ в обслуживании|
 |DPC|Destination Point Code, код сигнальной точки назначения|
@@ -124,6 +128,7 @@
 |DRMP|Diameter Routing Message Priority, приоритет сообщения маршрутизации в протоколе Diameter|
 |DRX|Discontinuous Receiption, технология прерывистой передачи|
 |DS|Digital Signature, цифровая подпись|
+|DSAI|Dynamic Service Activation Information, информация о динамической активации услуги|
 |DSCP|Differentiated Services Code Point, поле кода дифференцированных услуг|
 |DSS|Direct Station Selection, прямой выбор терминала|
 |DSS1|Digital Subscriber Signaling, цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами|
@@ -134,6 +139,7 @@
 |DWDM|Dense Wavelength Division Multiplexing|
 |ECB|Electronic Code Book, электронная кодовая книга — один из режимов шифрования|
 |ECI|Embedded Common Interface, встроенный CI–модуль — интерфейс подключения модулей для взаимодействия с закодированными каналами|
+|ECF|Event Charging Function, функция учета расходов на основе событий|
 |EDE/EDE3|Encrypt–Decrypt–Encrypt, шифрование–дешифрование–шифрование — один из вариантов применения криптографического алгоритма DES/Triple–DES|
 |EDGE|Enhanced Data Rates for GSM Evolution, усовершенствование передачи данных для эволюции GSM|
 |EDR|Event Detail Record, подробная запись о случившемся событии|
@@ -163,9 +169,14 @@
 |FIFO|First in, First out, куча по принципу «первым пришел — первым ушел»|
 |FISU|Fill In Signaling Unit, кадр однонаправленной передачи сигнальных сообщений от получателя о наличии ошибок|
 |FMC|Fixed Mobile Convergence, конвергенция фиксированной и мобильной связи|
+|FO|forwardingOptions, дополнительные опции при передаче дополнительной услуги|
+|FQDN|Fully Qualified Domain Name, полностью уточнённое доменное имя|
 |FSN|Forward Sequence Number, номер последовательности вперед|
+|FTN|forwardedToNumber, номер переадресации вызова
 |FTP|File Transfer Protocol, протокол передачи файлов|
 |FTS|Fixed Terminal System, система связи со стационарным терминалом|
+|FTS|forwardedToSubaddress, субадрес переадресации вызова|
+|GAN|Generative Adversarial Network, генеративно-состязательная сеть| 
 |GERAN|GSM/EDGE Radio Access Network, сеть радиодоступа к GSM/EDGE|
 |GGSN|Gateway GPRS Support Node, узел поддержки шлюза GPRS|
 |GMSC|Gateway MSC, шлюз MSC|
@@ -189,7 +200,10 @@
 |HLR|Home Location Register, регистр местоположения абонентов собственной сети|
 |HMDT|Signaling Message Handling: Message Distribution|обработка сигнальных сообщений: распределение сообщений|
 |HMRT|Signaling Message Handling: Message Routing|обработка сигнальных сообщений: маршрутизация сообщений|
+|HPLMN|Home PLMN, домашняя сеть PLMN|
 |HSL|High-Speed Link, высокоскоростное соединение|
+|HSM|Hardware Security Module, модуль аппаратной защиты|
+|HSPA|High-Speed Packet Access, высокоскоростная пакетная передача данных|
 |HSS|Home Subscriber Server, база данных абонентов собственной сети LTE|
 |I/O|Input/Output, ввод/вывод|
 |IAM|Initial Address Message, начальное адресное сообщение|
@@ -207,6 +221,7 @@
 |IEI|Information Element Identifier|
 |IETF|International Engineering Task Force, Инженерный совет Интернета — открытое международное сообщество, занимающееся развитием сетевых протоколов и архитектуры Интернета|
 |IFC|Initial Filter Criteria, первичные критерии фильтрации|
+|IM-SSF|IP Multimedia Service Switching Function, мультимедийная функция коммутации услуг на базе протокола IP|
 |IMEI|International Mobile Equipment Identifier, международный идентификатор оборудования для мобильной связи|
 |IMPI|IP Multimedia Public Identity, публичный идентификатор абонента мультимедийной IP–сети|
 |IMRN|IP Multimedia Routing Number, номер маршрутизации в сети IMS|
@@ -227,7 +242,6 @@
 |ISS|Intercom Station Selection, система выбора станции внутренней связи|
 |ISUP|ISDN User Part, пользовательская часть ISDN|
 |ITG|Internet Telephony Gateway, шлюз интернет–телефонии|
-|ITP|IP transfer point|
 |ITU|International Telecommunications Union, Международный союз электросвязи|
 |IVR|Interactive Voice Response, интерактивное голосовое меню|
 |IWMSC|Interworking MSC, межсетевой MSC|
@@ -246,8 +260,11 @@
 |KPI|Key Performance Indicators, ключевые показатели эффективности|
 |LAC|Local Area Code, код локальной зоны|
 |LBS|Location Based Services, служба на основе определения местоположения абонента|
+|LCS|Location Service, служба определения местоположения|
+|LFN|longForwardedToNumber, адрес переадресации вызова|
 |LI|Length Indicator, индикатор длины|
 |LIFO|Last in, First out, стек по принципу «последним пришел — первым ушел»|
+|LMSI|Local Mobile Subscriber Identity, локальный идентификатор абонента мобильной связи|
 |LNR|Last Number Redial, услуга повторного набора номера абонента из последнего вызова|
 |LOF|Loss of Frame, сигнал потери цикловой синхронизации|
 |LOS|Loss of Signal, сигнал потери линейного сигнала E1|
@@ -258,14 +275,14 @@
 |M2PA|MTP-2 User Peer-to-Peer Adaptation Part, протокол адаптации пользовательского Peer-to-Peer уровня MTP–2 стандарта SIGTRAN|
 |M3UA|MTP–3 User Adaptation Part, протокол адаптации пользовательского уровня MTP–3 стандарта SIGTRAN|
 |MAC|Media Access Control, уникальный идентификатор оборудования или сетевого интерфейса в сети Ethernet|
-|MAC|Message Authentication Code|
+|MAC|Message Authentication Code, код проверки подлинности сообщения|
 |MAP|Mobile Application Part, протокол мобильных приложений|
 |MCC|Mobile Country Code, код страны в мобильных сетях|
 |MCU|Media Control Unit, сервер обработки медиа–данных|
 |MCU|Multipoint Control Unit, сервер многоточечной конференции|
 |ME|Mobile Equipment, мобильное оборудование|
 |MEID|Mobile Equipment Identifier, идентификатор мобильного оборудования сети CDMA|
-|MF|Master File|
+|MF|Master File, файл с основными данными|
 |MFC|Multi–Frequency Compelled, многочастотный вынужденный|
 |MGCF|Media Gateway Control Function, узел управления медиашлюзом|
 |MGW|Media Gateway, шлюз передачи медиаданных|
@@ -300,7 +317,6 @@
 |MTU|Maximum Transmission Unit, максимальный размер пакета|
 |MVNO|Mobile Virtual Network Operator, виртуальный оператор мобильной связи|
 |MWD|Messages–Waiting–Data, информация о сообщениях в режиме ожидания — список центров, у которых есть сообщения, ожидающие доставки абоненту|
-|MXE|Media Experience Engine|
 |NA|Network Appearance, локальная ссылка на сигнальный шлюз и сервер приложений|
 |NAI|Nature of Address Indicator, индикатор типа адреса|
 |NAPTR|Name Authority Pointer, один из видов записи ресурса на DNS|
@@ -308,15 +324,15 @@
 |NAS|Network Attached Storage, сетевое хранилище данных|
 |NAS|Non–Access Stratum, слой без доступа — содержит информацию, передаваемую между базовой сетью оператора и пользовательским устройством|
 |NAT|Network Address Translation, преобразование сетевых адресов|
-|NCE|Network Capacity Expension|
 |NEF|Network Exposure Function, функция обеспечения взаимодействия с внешними приложениями|
 |NFV|Network Function Virtualization, виртуализация сетевых функций|
 |NGN|Next Generation Networks, сети нового поколения — мультисервисные сети связи|
 |NI|Network Identifier, идентификатор сети|
 |NIC|Network Interface Controller, сетевой контроллер|
-|NMS|Network Management System|
+|NMS|Network Management System, система управления сетью|
 |NP|Numbering Plan, план нумерации|
 |NPI|Numbering Plan Indicator, индикатор плана нумерации|
+|NRCT|noReplyConditionTime, таймер ожидания ответа при переадресации в случае отсутствия вызова|
 |NSAPI|Network Service Access Point Identifier, идентификатор точки доступа к сетевых службам|
 |NSSF|Network Slice Selection Function, функция выбора сетевого слоя|
 |NTP|Network Time Protocol, сетевой протокол синхронизации времени|
@@ -345,6 +361,7 @@
 |PCB|Protocol Control Byte, байт проверки протокола|
 |PCF|Policy Control Function, функция управления политиками|
 |PCI|Peripheral Component Interconnect, взаимодействие периферийных компонентов — шина для подключения устройств к микропроцессору|
+|PCI|Preemption Capability Indicator, индикатор преимущественного занятия линии|
 |PCNTR|Padding Counter, счетчик паддинга|
 |PCP|Protei Case Processor, обработчик методов разработки «ПРОТЕЙ»|
 |PCRF|Policy and Charging Rules Function, правила и политики тарификации — узел LTE, управляющий начислением платы за оказанные услуги|
@@ -371,6 +388,7 @@
 |PSI|Public Service Identity, публичный идентификатор сервиса|
 |PSTN|Public Switched Telephone Network, телефонная сеть общего пользования|
 |PTT|Push–to–Talk, полудуплексный режим приема–передачи|
+|PVI|Preemption Vulnerability Indicator, индикатор возможности завершения текущего вызова при наличии приоритетного входящего вызова|
 |QCI|QoS Class Identifier, идентификатор класса QoS|
 |QoHR|Query on HLR Release, запрос при отбое от HLR|
 |QoP|Quality of Protection, качество предоставления безопасности|
@@ -385,7 +403,6 @@
 |R–APDU|Response–APDU|
 |RAS|Remote Access System, система удаленного доступа|
 |RAT|Radio Access Technology, технология радиодоступа|
-|R–block|Receive–ready block|
 |RBT|Ring Back Tone, контроль посылки вызова|
 |RC|Redundancy Check, проверка избыточности|
 |RC|Repeat Count, количество повторных попыток|
@@ -422,9 +439,9 @@
 |SCS|Service Capabilities Server, сервер обеспечения работоспособности услуг|
 |S–CSCF|Serving CSCF, узел обработки SIP–сообщений IMS|
 |SCTP|Stream Control Transmission Protocol, протокол передачи с управлением потока|
-|SCWS|Smart Card Web Server|
+|SCWS|Smart Card Web Server, Web-сервер смарт-карт|
 |SDP|Session Description Protocol, протокол описания сессии|
-|SEID|Security Environment Identifier|
+|SEID|Security Environment Identifier, индикатор замкнутой безопасной среды|
 |SEP|Signaling Endpoint, оконечный сигнальный узел сети|
 |SFP|Small Form–Factor Pluggable, стандарт модульных компактных приёмопередатчиков в телекоммуникациях|
 |SFTP|SSH File Transfer Protocol, прикладной протокол работы с файлами поверх надежного и безопасного соединения|
@@ -464,6 +481,7 @@
 |SPI|Security Parameters Indication, индикация параметров безопасности|
 |SPI|System Packet Interface, системный пакетный интерфейс|
 |SPN|Service Provider Name, название обслуживающего оператора связи|
+|SPT|Service Point Trigger, условие активации точки триггера|
 |SQL|Structured Query Language, язык структурированных запросов|
 |SRF|Signalling Relay Function, функция ретрансляции сигнальных сообщений|
 |SRI|Status Report Indication, индикация запроса отчета о состоянии|
@@ -482,7 +500,7 @@
 |SSRC|Synchronization Source, источник синхронизации|
 |ST|Status, состояние|
 |STP|Signal Transfer Point, магистральный шлюз для маршрутизации трафика|
-|SWP|Single Wire Protocol|
+|SWP|Single Wire Protocol, однопроводной протокол|
 |TAC|Tracking Area Code, код зоны отслеживания|
 |T–ADS|Terminating Access Domain Selection, выбор домена доступа для вызовов Terminating|
 |TAP|Transferred Account Procedure, процедура передачи счета за услуги в роуминге|
@@ -497,15 +515,16 @@
 |TDM|Time Division Multiplexing, мультиплексирование с разделением по времени|
 |TDP|Trigger Detection Point, триггерная точка обнаружения|
 |TEID|Tunnel Endpoint Identifier, идентификатор конечной точки туннеля|
-|TETRA|Terrestrial Trunked Radio|
+|TETRA|Terrestrial Trunked Radio, магистральная наземная радиосвязь|
 |TID|Thread ID, идентификатор потока|
 |TID|Transaction Identifier, идентификатор транзакции|
+|TIF|Translation Information Flag, флаг разрешения использовать короткие FTN в сети CAMEL|
 |TLS|Transport Layer Security — протокол защищенной передачи данных с применением шифрования|
 |TLV|Tag – Length – Value (data structure)|
 |TMT|Traffic Mode Type, режим передачи трафика|
 |TON|Type of Number, тип нумерации|
 |ToS|Type of Service, тип обслуживания|
-|TPDU|Transport Protocol Data Unit|
+|TPDU|Transport Protocol Data Unit, блок данных транспортного протокола|
 |TPI|Transport Provider Interface, интерфейс драйверов для взаимодействия с транспортными протоколами|
 |TrGW|Transition Gateway, транзитный шлюз|
 |TSP|Telecom Specific Peripheral, телекоммуникационное специальное периферийное устройство|
@@ -513,7 +532,7 @@
 |TTL|Time–to–Live, время жизни|
 |UA|User–Agent, агент пользователя|
 |UBS|Universal Billing Server, универсальная биллинговый сервер|
-|UCA|UICC Ciphering Algorithm|
+|UCA|UICC Ciphering Algorithm, алгоритм шифрования UICC|
 |UDH|User Data Header, пользовательские заголовки запросов|
 |UDHI|User Data Header Indicator, индикатор UDH|
 |UDHL|User Data Header Length, длина UDH|
@@ -525,16 +544,16 @@
 |UE|User Equipment, пользовательское оборудование|
 |UI|User Input, пользовательский ввод|
 |UI|User Interface, пользовательский интерфейс|
-|UICC|Universal Integrated Circuit Card|
-|UIM|UICC Integrity Mechanism|
-|UL|UpdateLocation, запрос местонахождения абонента|
+|UICC|Universal Integrated Circuit Card, универсальная карта с интегральной схемой|
+|UIM|UICC Integrity Mechanism, механизм проверки цельности UICC|
+|UL|Uplink, восходящая линия|
 |UMTS|Universal Mobile Telecommunications System, универсальная мобильная телекоммуникационная система|
 |UP|User Profile, профиль абонента|
 |UPF|User Plane Function, функция передачи данных пользователей|
 |URL|Uniform Resource Locator, унифицированный адрес электронных ресурсов|
 |URN|Uniform Resource Name, универсальное имя источника|
 |USC|USSD Service Center, центр обработки USSD|
-|USIM|Universal Subscriber Identity Module|
+|USIM|Universal Subscriber Identity Module, универсальный модуль идентификации абонента|
 |USSD|Unstructured Supplementary Service Data, неструктурированные дополнительные служебные данные — технология взаимодействия абонента и приложения через обмен короткими сообщениями|
 |USSDC|USSD Center, центр обработки USSD–запросов|
 |UTF|Unicode Transformation Format, формат кодирования символов|
@@ -552,12 +571,14 @@
 |VoLTE|Voice over LTE, голосовой вызов на базе протокола LTE|
 |VP|Validity Period, время прекращения валидности сообщения|
 |VPF|Validity Period Format, флаг наличия Validity Period|
+|VPLMN|Visited PLMN, гостевая PLMN|
 |WAE|WAN Automation Engine|
 |WAP|Wireless Application Protocol, протокол для приложений беспроводной связи|
 |WB|Welcome Back, система оповещения вновь зарегистрированных гостевых абонентов|
 |WISM|Wireless Services Module, модуль, предоставляющий беспроводные услуги|
 |WIX|Wireless Information Exchange, беспроводной обмен информацией|
 |WLAN|Wireless Local Area Network, беспроводная локальная сеть|
+|WLSS|WebLogic SIP Server, программное обеспечение сервера от Oracle для запуска SIP-приложений|
 |WML|Wireless Markup Language|
 |XML|eXtensible Markup Language, расширяемый язык разметки|
 |ААЛ|Абонентская аналоговая линия|
@@ -586,6 +607,7 @@
 |CAP_InitialDP_MT|CAP_InitialDetectionPoint_MobileTerminated|
 |CAP_InitialDP_MT_Resp|CAP_InitialDetectionPoint_MobileTerminated_Response|
 |CAP_InitialDP_MTC|CAP_InitialDetectionPoint_MobileTerminatedCall|
+|CAP_X-CSI|CAP_X–CamelSubscriptionInformation|
 |CAP_PA|CAP_PlayAnnouncement|
 |CAP_RRBCSM|CAP_RequestReportBCSMEvent|
 |CAP_SRR|CAP_SpecializedResourceReport|
@@ -601,6 +623,12 @@
 |Diam CDR|Diameter Connection-Delete-Request|
 |Diam CEA|Diameter Capabilities–Exchange–Answer|
 |Diam CER|Diameter Capabilities–Exchange–Request|
+|Diam CLA|Diameter Cancel-Location-Answer|
+|Diam CLR|Diameter Cancel-Location-Request|
+|Diam DSA|Diameter Delete-Subscriber-Data-Answer|
+|Diam DSR|Diameter Delete-Subscriber-Data-Request|
+|Diam IDA|Diameter Insert-Subscriber-Data-Answer|
+|Diam IDR|Diameter Insert-Subscriber-Data-Request|
 |Diam LIA|Diameter Location–Info–Answer|
 |Diam LIR|Diameter Location–Info–Request|
 |Diam MAA|Diameter Multimedia–Auth–Answer|
@@ -609,6 +637,8 @@
 |Diam PNR|Diameter Push–Notification–Request|
 |Diam PPA|Diameter Push–Profile–Answer|
 |Diam PPR|Diameter Push–Profile–Request|
+|Diam PUA|Diameter Profile–Update–Answer|
+|Diam PUR|Diameter Profile–Update–Request|
 |Diam RCA|Diameter Resource-Create-Answer|
 |Diam RCR|Diameter Resource-Create-Request|
 |Diam RDA|Diameter Resource-Delete-Answer|
@@ -624,35 +654,36 @@
 |Diam UDA|Diameter User–Data–Answer|
 |Diam UDR|Diameter User–Data–Request|
 |ISUP_IAM|ISUP_InitialAddressMessage|
-|MAP_ACK|MAP_Acknowledgement|
-|MAP_AlertSC_Resp|MAP_AlertServiceCenter_Response|
-|MAP_ATI|MAP_AnyTimeInterrogation|
-|MAP_ATI_Resp|MAP_AnyTimeInterrogation_Response|
-|MAP_CL|MAP_CancelLocation|
-|MAP_CL_ACK|MAP_CancelLocation_Acknowledgement|
-|MAP_ISD|MAP_InsertSubscriberData|
-|MAP_ISD_ACK|MAP_InsertSubscriberData_Acknowledgement|
-|MAP_MO_FSM|MAP_MobileOriginated_ForwardShortMessage|
-|MAP_MO_FSM_Resp|MAP_MobileOriginated_ForwardShortMessage_Response|
-|MAP_MT_FSM|MAP_MobileTerminated_ForwardShortMessage|
-|MAP_MT_FSM_Resp|MAP_MobileTerminated_ForwardShortMessage_Response|
-|MAP_PRN|MAP_ProvideRoamingNumber|
-|MAP_PRN_ACK|MAP_ProvideRoamingNumber_Acknowledgement|
-|MAP_PSI|MAP_ProvideSubscriberInfo|
-|MAP_PSI_Resp|MAP_ProvideSubscriberInfo_Response|
-|MAP_PSSD|MAP_ProcessUnstructed_SS_Data|
-|MAP_PSSR|MAP_ProcessUnstructed_SS_Request|
-|MAP_RDR|MAP_ReportShortMessageDeliveryStatus_Request|
-|MAP_ReadySM|MAP_ReadyForShortMessage|
-|MAP_ReadySM_Resp|MAP_ReadyForShortMessage_Response|
-|MAP_SAI|MAP_SendAddressingInformation|
-|MAP_SAI|MAP_SendAuthenticationInfo|
-|MAP_SAI_ACK|MAP_SendAddressingInformation_Acknowledgement|
-|MAP_SAI_Resp|MAP_SendAuthenticationInfo_Response|
-|MAP_SRI|MAP_SendRoutingInfo|
-|MAP_SRI_ACK|MAP_SendRoutingInfo_Acknowledgement|
-|MAP_SRI_SM|MAP_SendRoutingInfo_ForShortMessage|
-|MAP_SRI_SM_ACK|MAP_SendRoutingInfo_ForShortMessage_Acknowledgement|
-|MAP_T-CSI|MAP_Terminated–CamelSubscriptionInfo|
-|MAP_UL|MAP_UpdateLocation|
-|MAP_UL_ACK|MAP_UpdateLocation_Acknowledgement|
+|MAP_ACK|MAP-Acknowledgement|
+|MAP_AlertSC_Resp|MAP-Alert-Service-Centre_Response|
+|MAP_ATI|MAP-Any-Time-Interrogation|
+|MAP_ATI_Resp|MAP-Any-Time-Interrogation_Response|
+|MAP_CL|MAP-Cancel-Location|
+|MAP_CL_ACK|MAP-Cancel-Location_Acknowledgement|
+|MAP_DSD|MAP-Delete-Subscriber-Data|
+|MAP_ISD|MAP-Insert-Subscriber-Data|
+|MAP_ISD_ACK|MAP-Insert-Subscriber-Data_Acknowledgement|
+|MAP_MO_FSM|MAP-Mobile-Originated-Forward-SM|
+|MAP_MO_FSM_Resp|MAP-Mobile-Originated-Forward-SM_Response|
+|MAP_MT_FSM|MAP-Mobile-Terminated-Forward-SM|
+|MAP_MT_FSM_Resp|MAP-Mobile-Terminated-Forward-SM_Response|
+|MAP_PRN|MAP-Provide-Roaming-Number|
+|MAP_PRN_ACK|MAP-Provide-Roaming-Number_Acknowledgement|
+|MAP_PSI|MAP-Provide-Subscriber-Info|
+|MAP_PSI_Resp|MAP-Provide-Subscriber-Info_Response|
+|MAP_PSSD|MAP-ProcessUnstructed-SS-Data|
+|MAP_PSSR|MAP-ProcessUnstructed-SS-Request|
+|MAP_RDR|MAP-Report-Short-Message-Delivery-Status-Request|
+|MAP_ReadySM|MAP-Ready-For-SM|
+|MAP_ReadySM_Resp|MAP-Ready-For-SM_Response|
+|MAP_SAI|MAP-Send-Addressing-Information|
+|MAP_SAI|MAP-Send-Authentication-Info|
+|MAP_SAI_ACK|MAP-Send-Addressing-Information_Acknowledgement|
+|MAP_SAI_Resp|MAP-Send-Authentication-Info_Response|
+|MAP_SRI|MAP-Send-Routing-Info|
+|MAP_SRI_ACK|MAP-Send-Routing-Info_Acknowledgement|
+|MAP_SRI_SM|MAP-SendRoutingInfo-ForSM|
+|MAP_SRI_SM_ACK|MAP-Send-Routing-Info-ForSM_Acknowledgement|
+|MAP_UL|MAP-Update-Location|
+|MAP_UL_ACK|MAP-Update-Location_Acknowledgement|
+|MOLR|LCS Mobile-Originated-Location-Request|
