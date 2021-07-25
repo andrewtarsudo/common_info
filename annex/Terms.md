@@ -38,6 +38,7 @@
 |B2BUA|Back–to–Back User Agent, пользовательский агент Back–to–back|
 |BAOC|Barring of All Outgoing Calls, запрет исходящих вызовов|
 |BBSM|Building Broadband Service Manager, шлюз для доступа к публичным сетям|
+|BCC|Basic Station Colour Code, код раскраски базовой станции|
 |BCSM|Basic Call State Model, базовая модель состояния вызова CAMEL|
 |BER–TLV|Basic encoding rules — tag, length, value|
 |BFCP|Binary Floor Control Protocol, протокол управления на двоичном уровне — протокол для обмена презентациями во время видеоконференций|
@@ -81,6 +82,7 @@
 |CgPC|Calling Party Category, категория вызывающего абонента|
 |CgPN|Calling Party Number, номер вызывающего абонента|
 |CHAP|Challenge Handshake Authentication Protocol, протокол аутентификации с предварительным согласованием вызова|
+|CI|Cell Identity, номер соты|
 |CL|Connection Logic, логика, работающая с соединениями|
 |cli|Command Line Interface, интерфейс командной строки|
 |CLIR|Calling Line Identification Restriction, запрет на автоматическое определение номера|
@@ -103,6 +105,7 @@
 |CSCF|Call Session Control Function, функция управления сеансом голосового вызова|
 |CSFB|Circuit Switch Fallback, переключение на коммутируемую сеть — технология, обеспечивающая возможность входящих и исходящих вызовов в сети LTE с использованием мобильных сетей с коммутацией каналов|
 |CSI|CAMEL Subscription Information, информация о подписках для протоколов CAMEL|
+|CSL|Component Sublevel, подуровень компонентов - подуровень системы TCAP|
 |CSRN|CS domain Routing Number, номер маршрутизации в домене CS|
 |CSU|Channel Service Unit|
 |CSV|Comma Separated Value, формат данных с разделением значений запятыми|
@@ -185,6 +188,7 @@
 |GSM|Global System for Mobile Communications, глобальный стандарт цифровой мобильной сотовой связи|
 |GSMA|GSM Association, Ассоциация GSMA — организация операторов мобильной связи|
 |GT|Global Title, глобальный заголовок|
+|GTI|GT Indicator, индикатор GT|
 |GTP|GPRS Tunneling Protocol, протокол туннелирования GPRS — передача данных между узлами поддержки GPRS в пакетной сети|
 |GTP–C|GTP Control Plane, уровень управления GTP|
 |GUI|Graphical User Interface, графический пользовательский интерфейс|
@@ -194,6 +198,7 @@
 |GUTS|Generic UDP Transport Service, общая услуга доставки сообщений с помощью UDP|
 |GW|Gateway, шлюз|
 |HAC|High–Availability Cluster, высоконагруженный кластер|
+|Handover|хэндовер, передача обслуживания абонента в процессе разговора из одной соты в другую без разрыва соединения|
 |HDC|HTTP–to–Diameter converter, преобразователь данных HTTP в формат протокола Diameter|
 |HDD|Hard Disk Drive, накопитель на жестких дисках|
 |HDLC|High–Level Data Link Control, высокоуровневый протокол управления каналом связи|
@@ -223,6 +228,7 @@
 |IFC|Initial Filter Criteria, первичные критерии фильтрации|
 |IM-SSF|IP Multimedia Service Switching Function, мультимедийная функция коммутации услуг на базе протокола IP|
 |IMEI|International Mobile Equipment Identifier, международный идентификатор оборудования для мобильной связи|
+|IMEISV|International Mobile Equipment Identifier and Software Version, международный идентификатор оборудования для мобильной связи и версия программного обеспечения|
 |IMPI|IP Multimedia Public Identity, публичный идентификатор абонента мультимедийной IP–сети|
 |IMRN|IP Multimedia Routing Number, номер маршрутизации в сети IMS|
 |IMS|IP Multimedia Subsystem, мультимедийная подсистема на базе протокола IP|
@@ -264,11 +270,12 @@
 |LFN|longForwardedToNumber, адрес переадресации вызова|
 |LI|Length Indicator, индикатор длины|
 |LIFO|Last in, First out, стек по принципу «последним пришел — первым ушел»|
-|LMSI|Local Mobile Subscriber Identity, локальный идентификатор абонента мобильной связи|
+|LMSI|Local Mobile Subscriber Identity, местный идентификатор абонента мобильной связи|
 |LNR|Last Number Redial, услуга повторного набора номера абонента из последнего вызова|
 |LOF|Loss of Frame, сигнал потери цикловой синхронизации|
 |LOS|Loss of Signal, сигнал потери линейного сигнала E1|
 |LP|Loop Prevention, предотвращение создания бесконечных зацикливаний|
+|LSA|Localized Service Area, локализованная зона обслуживания|
 |LSB|Least Significant Bit, младший бит|
 |LSSU|Link Status Signal Unit, кадр передачи статусов сигнальных сообщений|
 |LTE|Long–Term Evolution, стандарт беспроводной высокоскоростной передачи связи для мобильных сетей|
@@ -324,6 +331,7 @@
 |NAS|Network Attached Storage, сетевое хранилище данных|
 |NAS|Non–Access Stratum, слой без доступа — содержит информацию, передаваемую между базовой сетью оператора и пользовательским устройством|
 |NAT|Network Address Translation, преобразование сетевых адресов|
+|NCC|Network Colour Code, код раскраски сети|
 |NEF|Network Exposure Function, функция обеспечения взаимодействия с внешними приложениями|
 |NFV|Network Function Virtualization, виртуализация сетевых функций|
 |NGN|Next Generation Networks, сети нового поколения — мультисервисные сети связи|
@@ -478,6 +486,7 @@
 |SOAP|Simple Object Access Protocol, простой протокол доступа к объектам — протокол обмена структурированными сообщениями в формате XML в компьютерных сетях|
 |SoR|Steering of Roaming, стиринг при нахождении в роуминговой сети|
 |SPC|Signaling Point Code, код сигнального пункта|
+|SPCI|SPC Indicator, индикатор SPC|
 |SPI|Security Parameters Indication, индикация параметров безопасности|
 |SPI|System Packet Interface, системный пакетный интерфейс|
 |SPN|Service Provider Name, название обслуживающего оператора связи|
@@ -496,10 +505,12 @@
 |SSH|Secure Shell, безопасная оболочка — прикладной протокол удаленного управления и туннелирования TCP–соединений|
 |SSL|Secure Sockets Layer — протокол защищенных соединений с применением шифрования|
 |SSN|Subsystem Number, номер подсистемы|
+|SSNI|SSN Indicator, индикатор SSN|
 |SSP|Service Switching Point, узел коммутации услуг|
 |SSRC|Synchronization Source, источник синхронизации|
 |ST|Status, состояние|
 |STP|Signal Transfer Point, магистральный шлюз для маршрутизации трафика|
+|SUA|SCCP User Adaptation Layer, уровень адаптации пользователя SCCP к пользователям IP-сети|
 |SWP|Single Wire Protocol, однопроводной протокол|
 |TAC|Tracking Area Code, код зоны отслеживания|
 |T–ADS|Terminating Access Domain Selection, выбор домена доступа для вызовов Terminating|
@@ -521,12 +532,14 @@
 |TIF|Translation Information Flag, флаг разрешения использовать короткие FTN в сети CAMEL|
 |TLS|Transport Layer Security — протокол защищенной передачи данных с применением шифрования|
 |TLV|Tag – Length – Value (data structure)|
+|TMSI|Temporary Mobile Subscriber Identifier, временный идентификатор абонента мобильной связи|
 |TMT|Traffic Mode Type, режим передачи трафика|
 |TON|Type of Number, тип нумерации|
 |ToS|Type of Service, тип обслуживания|
 |TPDU|Transport Protocol Data Unit, блок данных транспортного протокола|
 |TPI|Transport Provider Interface, интерфейс драйверов для взаимодействия с транспортными протоколами|
 |TrGW|Transition Gateway, транзитный шлюз|
+|TSL|Transaction Sublevel, подуровень транзакций - подуровень системы TCAP|
 |TSP|Telecom Specific Peripheral, телекоммуникационное специальное периферийное устройство|
 |TT|Translation Type, тип трансляции|
 |TTL|Time–to–Live, время жизни|
