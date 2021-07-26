@@ -315,6 +315,7 @@
 |MSL|Minimum Security Level, минимально допустимый уровень безопасности|
 |MSML|Media Sessions Markup Language, язык разметки сессии канала передачи|
 |MSRN|Mobile Station Roaming Number, роуминговый номер мобильной станции|
+|MSS|Maximum Segment Size, максимальный размер полезного блока данных TCP| 
 |MSU|Message Signal Unit, сигнальная единица сообщения|
 |MSU|Message Signaling Unit, кадр передачи сигнальных сообщений|
 |MT|Mobile Terminated, входящий|
@@ -371,6 +372,7 @@
 |PCI|Peripheral Component Interconnect, взаимодействие периферийных компонентов — шина для подключения устройств к микропроцессору|
 |PCI|Preemption Capability Indicator, индикатор преимущественного занятия линии|
 |PCNTR|Padding Counter, счетчик паддинга|
+|PCO|Protocol Configuration Options, опции конфигурации протокола|
 |PCP|Protei Case Processor, обработчик методов разработки «ПРОТЕЙ»|
 |PCRF|Policy and Charging Rules Function, правила и политики тарификации — узел LTE, управляющий начислением платы за оказанные услуги|
 |P–CSCF|Proxy CSCF, узел взаимодействия с абонентскими терминалами IMS|
