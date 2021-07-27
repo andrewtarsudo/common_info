@@ -13,11 +13,13 @@
 |ACS|Access Control Server, сервер управления доступом|
 |ADC|Automatic Device Configuration, автоматическая настройка устройств|
 |ADSP|Analogue-Digital Signal Processing, аналого-цифровая обработка сигналов|
-|AES|Advanced Encrypting Scheme — общепринятый стандарт шифрования|
+|AES|Advanced Encrypting Scheme — общепринятый стандарт шифрования Rijndael|
+|AICA|Automatic Initial Call Attempt, автоматическая попытка начального вызова — один из этапов вызова|
 |AID|Application Identifier, идентификатор приложения|
 |AIS|Alarm Indication Signal, сигнал индикации тревоги|
 |ALG|Application Layer Gateway, шлюз уровня приложений|
 |ALPN|Application-Layer Protocol Negotiation, согласование протокола прикладного уровня|
+|AMA|Automatic Message Accounting, автоматическая система учета|
 |AMF|Access and Mobility Management Function, функция управления доступом и мобильностью|
 |AP|Alarm Processor, подсистема обработки аварий|
 |APDU|Application Protocol Data Unit, блок данных прикладного протокола|
@@ -69,6 +71,7 @@
 |CC|Cryptographic Checksum, криптографическая хэш–суммы|
 |CCF|Charging Collection Function, функция сбора тарификационнных данных|
 |CCT|Cryptographic Checksum Template, шаблон криптографической хэш–суммы|
+|CDF|Charging Data Function, функция обработки данных о тарификации|
 |CDIV|Call Diversion, переключение связи|
 |CDM|Continuous Diagnostics and Mitigation|
 |CDMA|Code Division Multiple Access, многостанционный доступ с кодовым разделением каналов|
@@ -83,6 +86,7 @@
 |CgPN|Calling Party Number, номер вызывающего абонента|
 |CHAP|Challenge Handshake Authentication Protocol, протокол аутентификации с предварительным согласованием вызова|
 |CI|Cell Identity, номер соты|
+|CIR|Бинарный файл CDR с преобразованием номеров CgPN и CdPN для root PBX|
 |CL|Connection Logic, логика, работающая с соединениями|
 |cli|Command Line Interface, интерфейс командной строки|
 |CLIR|Calling Line Identification Restriction, запрет на автоматическое определение номера|
@@ -197,8 +201,9 @@
 |GUTI|Globally Unique Temporary UE Identity, глобальный временный идентификатор UE, PLMN + MMEI + M–TMSI|
 |GUTS|Generic UDP Transport Service, общая услуга доставки сообщений с помощью UDP|
 |GW|Gateway, шлюз|
-|HAC|High–Availability Cluster, высоконагруженный кластер|
+|HAC|High–Availability Cluster, кластер высокой доступности|
 |Handover|хэндовер, передача обслуживания абонента в процессе разговора из одной соты в другую без разрыва соединения|
+|HDB3|High Density Bipolar, высокоплотное биполярное кодирование|
 |HDC|HTTP–to–Diameter converter, преобразователь данных HTTP в формат протокола Diameter|
 |HDD|Hard Disk Drive, накопитель на жестких дисках|
 |HDLC|High–Level Data Link Control, высокоуровневый протокол управления каналом связи|
@@ -217,7 +222,7 @@
 |ICC|Integrated Circuit Card, карта со встроенной микросхемой|
 |ICCID|Integrated Circuit Card Identification, идентификатор смарт–карты|
 |ICI|Incoming Call Information, информация о входящем вызове|
-|ICS|Incident Control System|
+|ICS|Incident Control System, система реагирования на инциденты|
 |ICS|IP Multimedia Centralized Services, централизованные службы сети IMS|
 |I–CSCF|Interrogating CSCF, узел взаимодействия с внешними сетями IMS|
 |ID|Identifier, идентификатор|
@@ -226,10 +231,12 @@
 |IEI|Information Element Identifier|
 |IETF|International Engineering Task Force, Инженерный совет Интернета — открытое международное сообщество, занимающееся развитием сетевых протоколов и архитектуры Интернета|
 |IFC|Initial Filter Criteria, первичные критерии фильтрации|
+|iLo|Integrated Lights Out, механизм управления серверами в условиях отсутствия физического доступа к ним|
 |IM-SSF|IP Multimedia Service Switching Function, мультимедийная функция коммутации услуг на базе протокола IP|
 |IMEI|International Mobile Equipment Identifier, международный идентификатор оборудования для мобильной связи|
 |IMEISV|International Mobile Equipment Identifier and Software Version, международный идентификатор оборудования для мобильной связи и версия программного обеспечения|
-|IMPI|IP Multimedia Public Identity, публичный идентификатор абонента мультимедийной IP–сети|
+|IMPI|IMS Private User Identity, приватный идентификатор пользователя в IMS–сети|
+|IMPOU|IMS Public User Identity, публичный идентификатор пользователя в IMS–сети|
 |IMRN|IP Multimedia Routing Number, номер маршрутизации в сети IMS|
 |IMS|IP Multimedia Subsystem, мультимедийная подсистема на базе протокола IP|
 |IMSI|International Mobile Subscriber Identifier, международный идентификатор абонента мобильной связи|
@@ -240,6 +247,7 @@
 |InRoute|Incoming Route, входящий маршрут|
 |INS|Instruction|
 |IP|Internet Protocol, межсетевой протокол|
+|IPMI|Intelligent Platform Management Interface, интеллектуальный интерфейс управления платформой|
 |ISC|Intersystem Communication, межсетевое взаимодействие|
 |ISD|Insert Subscriber Data, вставить данные абонента — обновления данных абонента|
 |ISDN|Integrated Services Digital Network, цифровая сеть с интеграцией услуг|
@@ -247,8 +255,10 @@
 |ISO|International Organization for Standardization, Международная организация по стандартизации|
 |ISS|Intercom Station Selection, система выбора станции внутренней связи|
 |ISUP|ISDN User Part, пользовательская часть ISDN|
+|ITC|Integrated Terminal Controller, интегрированный терминальный контроллер|
 |ITG|Internet Telephony Gateway, шлюз интернет–телефонии|
 |ITU|International Telecommunications Union, Международный союз электросвязи|
+|IUA|ISDN User Adaptation, протокол пользовательской адаптации ISDN|
 |IVR|Interactive Voice Response, интерактивное голосовое меню|
 |IWMSC|Interworking MSC, межсетевой MSC|
 |JAXB|Java Architecture for XML Binding, инструмент для конвертации Java–объектов в XML и обратно|
@@ -265,7 +275,9 @@
 |KIK|Key Identifier for protecting KIc and KID|
 |KPI|Key Performance Indicators, ключевые показатели эффективности|
 |LAC|Local Area Code, код локальной зоны|
+|LBC|Load Balancing Cluster, кластер распределенной нагрузки|
 |LBS|Location Based Services, служба на основе определения местоположения абонента|
+|LI|Legal Intervention, законное вмешательство в вызов|
 |LCS|Location Service, служба определения местоположения|
 |LFN|longForwardedToNumber, адрес переадресации вызова|
 |LI|Length Indicator, индикатор длины|
@@ -279,6 +291,7 @@
 |LSB|Least Significant Bit, младший бит|
 |LSSU|Link Status Signal Unit, кадр передачи статусов сигнальных сообщений|
 |LTE|Long–Term Evolution, стандарт беспроводной высокоскоростной передачи связи для мобильных сетей|
+|LVDS|Low Voltage Differential Signaling, дифференциальная сигнализация низкого напряжения|
 |M2PA|MTP-2 User Peer-to-Peer Adaptation Part, протокол адаптации пользовательского Peer-to-Peer уровня MTP–2 стандарта SIGTRAN|
 |M3UA|MTP–3 User Adaptation Part, протокол адаптации пользовательского уровня MTP–3 стандарта SIGTRAN|
 |MAC|Media Access Control, уникальный идентификатор оборудования или сетевого интерфейса в сети Ethernet|
@@ -291,6 +304,7 @@
 |MEID|Mobile Equipment Identifier, идентификатор мобильного оборудования сети CDMA|
 |MF|Master File, файл с основными данными|
 |MFC|Multi–Frequency Compelled, многочастотный вынужденный|
+|MGC|Media Gateway Control, система управления медиашлюзами|
 |MGCF|Media Gateway Control Function, узел управления медиашлюзом|
 |MGW|Media Gateway, шлюз передачи медиаданных|
 |MID|Message Identifier, идентификатор сообщения|
@@ -355,6 +369,7 @@
 |OgPN|Original Party Number, первоначальный номер абонента|
 |OMA|Open Mobile Alliance, Открытое сообщество операторов мобильной связи|
 |OMI|Open Message Interface, интерфейс открытых сообщений|
+|OMI|Operation and Maintenance Interface, интерфейс эксплуатации и технического обслуживания|
 |OP|Open Platform|
 |OPC|Origination Point Code, код сигнальной точки отправления|
 |OR|Optimal Routing, оптимальная маршрутизация|
@@ -422,13 +437,18 @@
 |RFC|Request for Comments — документы, содержащие общепринятые технические спецификации и стандарты|
 |RFU|Reserved for Future Use, зарезервировано для использования в будущем|
 |RgPN|Redirecting Party Number, номер абонента, на котором последний раз сработала переадресация|
+|RHCP|Remote Hardware Card Protei, протокол управления аппаратным обеспечением|
+|RHCS|Red Hat Cluster Suite, программное обеспечение от Red Hat для создания кластера высокой доступности и кластера распределенной нагрузки|
+|RHEL|Red Hat Enterprise Linux, дистрибутив Linux от Red Hat|
 |RI|Repeat Interval, время ожидания между попытками|
 |RI|Routing Indicator, код направления|
 |RN|Routing Number, маршрутный номер|
+|RnA|Routing and Alerting, маршрутизация и оповещение об ошибке — один из этапов вызова|
 |RNC|Radio Network Controller, контроллер радиосети|
 |RP|Reply Path, адрес для отправки ответа|
 |RPC|Remote Procedure Call, удаленный вызов процедур|
 |RPS|Reductant Power System|
+|RRP|Reductant Ring Protocol, ошибкоустойчивый протокол резервирования|
 |RTCP|Real–Time Transport Control Protocol, протокол, управляющий передачей данных в режиме реального времени. Работает совместно с RTP|
 |RTD|Round Trip Delay, задержка на подтверждение приема|
 |RTO|Recovery Time Objective, допустимое время восстановления|
@@ -453,6 +473,7 @@
 |SDP|Session Description Protocol, протокол описания сессии|
 |SEID|Security Environment Identifier, индикатор замкнутой безопасной среды|
 |SEP|Signaling Endpoint, оконечный сигнальный узел сети|
+|SES|Service Evaluation System, система сбора данных о работе сервисов|
 |SFP|Small Form–Factor Pluggable, стандарт модульных компактных приёмопередатчиков в телекоммуникациях|
 |SFTP|SSH File Transfer Protocol, прикладной протокол работы с файлами поверх надежного и безопасного соединения|
 |SG|Signalling Gateway, сигнальный шлюз|
@@ -486,11 +507,13 @@
 |SNMP|Simple Network Management Protocol, простой протокол управления сетью|
 |SNOW3G|Потоковый алгоритм шифрования 3GPP|
 |SOAP|Simple Object Access Protocol, простой протокол доступа к объектам — протокол обмена структурированными сообщениями в формате XML в компьютерных сетях|
+|SOSM|System of the Operative and Search Measures, Система оперативно–розыскных мероприятий — СОРМ|
 |SoR|Steering of Roaming, стиринг при нахождении в роуминговой сети|
 |SPC|Signaling Point Code, код сигнального пункта|
 |SPCI|SPC Indicator, индикатор SPC|
 |SPI|Security Parameters Indication, индикация параметров безопасности|
 |SPI|System Packet Interface, системный пакетный интерфейс|
+|SPI|Serial Peripheral Interface, интерфейс для передачи данных на аппаратном уровне|
 |SPN|Service Provider Name, название обслуживающего оператора связи|
 |SPT|Service Point Trigger, условие активации точки триггера|
 |SQL|Structured Query Language, язык структурированных запросов|
