@@ -619,6 +619,21 @@
 |WLSS|WebLogic SIP Server, программное обеспечение сервера от Oracle для запуска SIP-приложений|
 |WML|Wireless Markup Language|
 |XML|eXtensible Markup Language, расширяемый язык разметки|
+|AERM|Alignment Error Rate Monitoring, контроль коэффициента ошибок синхронизации|
+|APC|Alias Point Code, код смежной сигнальной точки|
+|BPC|Backplane Programmable Automation Controller, программируемый контроллер автоматизации системной платы|
+|BSNR|Backward Sequence Number Routing, маршрутизация номера последовательности назад|
+|COM|Component Operation and Maintenance, эксплуатация и техническое обслуживание компонент|
+|FIBR|Forward Indicator Bit Routing, маршрутизация указательного бита вперед|
+|HMDT|Signaling Message Handling: Message Distribution, обработка сигнальных сообщений: распределение сообщений|
+|HMRT|Signaling Message Handling: Message Routing, обработка сигнальных сообщений: маршрутизация сообщений|
+|IPSP|IP Server Process, сущность процесса приложения, работающего по IP|
+|IRQ|Interrupt Request, запрос на прерывание процесса|
+|RC|Routing Context, контекст маршрутизации|
+|SGP|Signaling Gateway Process, процесс обработки сигнализации в составе сигнального шлюза|
+|SIO|Status Indication: Out of alignment, индикация статуса: не синхронизировано|
+|SIOS|Status Indication: Out of service, индикация статуса: не обслуживается|
+|SUERM|Signal Unit Error Rate Monitoring, контроль коэффициента ошибок при передаче сигнальных единиц|
 |ААЛ|Абонентская аналоговая линия|
 |ИКМ–30|Плата с импульсно-кодовой модуляцией|
 |ПЛИС|Программируемая логическая интегральная схема|
