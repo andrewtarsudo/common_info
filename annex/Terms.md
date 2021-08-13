@@ -236,7 +236,7 @@
 |IMEI|International Mobile Equipment Identifier, международный идентификатор оборудования для мобильной связи|
 |IMEISV|International Mobile Equipment Identifier and Software Version, международный идентификатор оборудования для мобильной связи и версия программного обеспечения|
 |IMPI|IMS Private User Identity, приватный идентификатор пользователя в IMS–сети|
-|IMPOU|IMS Public User Identity, публичный идентификатор пользователя в IMS–сети|
+|IMPU|IMS Public User Identity, публичный идентификатор пользователя в IMS–сети|
 |IMRN|IP Multimedia Routing Number, номер маршрутизации в сети IMS|
 |IMS|IP Multimedia Subsystem, мультимедийная подсистема на базе протокола IP|
 |IMSI|International Mobile Subscriber Identifier, международный идентификатор абонента мобильной связи|
