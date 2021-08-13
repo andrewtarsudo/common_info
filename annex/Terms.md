@@ -512,6 +512,7 @@
 |SPC|Signaling Point Code, код сигнального пункта|
 |SPCI|SPC Indicator, индикатор SPC|
 |SPI|Security Parameters Indication, индикация параметров безопасности|
+|TSL|Timeslot, ячейка времени|
 |SPI|System Packet Interface, системный пакетный интерфейс|
 |SPI|Serial Peripheral Interface, интерфейс для передачи данных на аппаратном уровне|
 |SPN|Service Provider Name, название обслуживающего оператора связи|
@@ -634,6 +635,11 @@
 |SIO|Status Indication: Out of alignment, индикация статуса: не синхронизировано|
 |SIOS|Status Indication: Out of service, индикация статуса: не обслуживается|
 |SUERM|Signal Unit Error Rate Monitoring, контроль коэффициента ошибок при передаче сигнальных единиц|
+|DAVA|Destination Available|
+|DUNA|Destination Unavailable|
+|SCON|Signalling Congestion|
+|DRST|Destination Restricted|
+|DUPU|Destination User Part Unavailable|
 |ААЛ|Абонентская аналоговая линия|
 |ИКМ–30|Плата с импульсно-кодовой модуляцией|
 |ПЛИС|Программируемая логическая интегральная схема|
