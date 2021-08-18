@@ -554,6 +554,7 @@
 |SSNI|SSN Indicator, индикатор SSN|
 |SSP|Service Switching Point, узел коммутации услуг|
 |SSRC|Synchronization Source, источник синхронизации|
+|SSW|Softswitch, гибкий программный коммутатор|
 |ST|Status, состояние|
 |STP|Signal Transfer Point, магистральный шлюз для маршрутизации трафика|
 |SUA|SCCP User Adaptation Layer, уровень адаптации пользователя SCCP к пользователям IP-сети|
