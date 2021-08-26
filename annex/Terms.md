@@ -398,6 +398,7 @@
 |PA|PlayAnnouncement, проигрыш оповещения|
 |PAP|Password Authentication Protocol, протокол аутентификации по паролю|
 |PBX|Private Branch Exchange, учрежденская телефонная станция|
+|PC|Protocol Class, класс протокола|
 |PCAP|Packet Capture, захват данных — программное обеспечение для обработки сетевых данных, поступающих на сетевую карту оборудования|
 |PCB|Protocol Control Byte, байт проверки протокола|
 |PCF|Policy Control Function, функция управления политиками|
