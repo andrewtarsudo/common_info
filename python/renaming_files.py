@@ -15,7 +15,7 @@ def change_directory(path_dir):
             break
         elif str(path) == "stop":
             print("You stopped work.")
-            path_new = exception()
+            path_new = Exception()
             break
         else:
             print("Path is incorrect.")
