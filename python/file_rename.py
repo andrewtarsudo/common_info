@@ -205,4 +205,19 @@ def main_svn():
         subst_name(name_old, name_new)
 
 
+def main():
+	while True:
+		type = int(input('1-pdf, 0-svn'))
+		if type == 1 or type == 0:
+			break
+		else:
+			print('Wrong input.')
+			type = int(input('1-pdf, 0-svn'))
+
+	if type == 1:
+		main_pdf()
+	elif type == 0:
+		main_svn()
+
+
 main()
