@@ -188,8 +188,7 @@ def main_pdf():
         subst_name(name_old, name_new)
 
 def main_svn():
-    get_list_svn():
-
+    get_list_svn()
     search_list = define_find_words()
     result_find_words = find_str(pdra_pamr, search_list)
     cut_str(result_find_words, search_list)
