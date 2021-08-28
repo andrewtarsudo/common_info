@@ -4,7 +4,7 @@ import pathlib
 
 path_original = ""
 path_destination = ""
-const length_num = 18
+length_num = 18
 
 def change_directory(path_dir):
     path = pathlib.PureWindowsPath(path_dir)
