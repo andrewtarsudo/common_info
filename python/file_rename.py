@@ -27,7 +27,7 @@ def full_path(file_path: str, exist_oblige: bool):
                 else:  # не обязан существовать
                     # создать директории, указанные в пути
                     print('The file is not found, but the folders are created.')
-                    path.mkdir(parents=True)  # создаются все директории
+                    pathlib.Path.mkdir(parents=True)  # создаются все директории
                     break
             break
 
@@ -78,7 +78,7 @@ def cut_str(text: str, args: list):  # разбить на подстроки
             print("The search is finished.")
             break
 
-    if len(str_to_cut) == 0:
+    if len(sub_str) == 0:
         print("No substrings are found, you have made something wrong.")
 
     # проверка деления на подстроки, должно начинаться с ключевых слов
@@ -158,7 +158,7 @@ def get_list_svn():  # получить список файлов из дире�
 
 
 def main_pdf():
-    if os.name != Windows:
+    if os.name != 'Windows':
         print('Prepare for pain!')
     # переход в директорию с pdf
     pdf_dir = input('Type the path to the directory with the pamr/pdra pdf. ')
@@ -181,17 +181,14 @@ def main_pdf():
     new_scan = input('Type the path to the directory to store the new files. ')
     path_new_scan = full_path(new_scan, False)
     # перенос файлов в директорию для переименованных pdf
-    for sub_string in sub_str:
-        index = sub_str.index(sub_string)
+    for sub_string in cut_str:
+        index = cut_str.index(sub_string)
         name_old = pathlib.Path.cwd() / child_files[index] + '.pdf'
         name_new = pathlib.PurePath(path_new_scan) / sub_string + '.pdf'
         subst_name(name_old, name_new)
 
 def main_svn():
     get_list_svn()
-    search_list = define_find_words()
-    result_find_words = find_str(pdra_pamr, search_list)
-    cut_str(result_find_words, search_list)
     # переход в директорию со скан-файлами
     scan = input('Type the path to the directory with the scanned docs. ')
     path_scan = full_path(scan, True)
@@ -201,8 +198,8 @@ def main_svn():
     new_scan = input('Type the path to the directory to store the new files. ')
     path_new_scan = full_path(new_scan, False)
     # перенос файлов в директорию для переименованных pdf
-    for sub_string in sub_str:
-        index = sub_str.index(sub_string)
+    for sub_string in cut_str:
+        index = cut_str.index(sub_string)
         name_old = pathlib.Path.cwd() / child_files[index] + '.pdf'
         name_new = pathlib.PurePath(path_new_scan) / sub_string + '.pdf'
         subst_name(name_old, name_new)
