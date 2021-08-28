@@ -99,7 +99,7 @@ def cut_str(text: str, args: list):  # разбить на подстроки
     return ans
 
 
-def find_str(text: string, find_words: list):  # поиск подстроки в тексте
+def find_str(text: str, find_words: list):  # поиск подстроки в тексте
     result_string = ""  # строка с найденными значениями
     indices = []  # индексы символов, с которых начинаются искомые подстроки
 
