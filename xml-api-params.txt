@@ -1,0 +1,146 @@
+productType - тип продукта
+msisdn — мобильный номер абонента;
+order_number — номер заказа;
+accounting_file_id — идентификатор учетного дела;
+orderNumber — номер заказа;
+productRest — остаток по продукту;
+productId — идентификатор продукта;
+productName — название продукта;
+subscriptionId — идентификатор подписки на услугу;
+startSubscriptionDate дата начала подписки;
+renewalSubscriptionDate - дата обновления подписки;
+nextPeriodCost размер следующего списания средств за услугу;
+currencyCode — код валюты;
+packages — пакеты услуг;
+packageRest — остаток по пакету;
+packageId — идентификатор пакета;
+package_id — идентификатор пакета;
+packageName — название пакета;
+billService — тип сервиса тарификации;
+id — идентификатор сервиса тарификации;
+code — код сервиса тарификации;
+billVolume — тарифицированный размер предоставляемой услуги;
+id — идентификатор единицы измерения услуги;
+measureUnit — единицы измерения услуги. Возможные значения:
+TIME — количество времени;
+TRAFFIC — объем трафика;
+UNIT — штука.
+name — название единицы измерения услуги;
+baseVolume — предоставленный объем услуги;
+totalVolume — заявленный объем услуги в пакете;
+realVolume — действительный объем услуги в пакете;
+remainingVolume — остаток объема услуги в пакете;
+restStatus — текущее состояние подписки. Возможные значения см. Приложение .
+productInfo — информация о продукте;
+productId — идентификатор продукта;
+productName — название продукта;
+productType — тип продукта
+orderCode — код запроса;
+orderCost — стоимость запросаж
+orderCurrencyCode код валюты;
+activeFrom — дата активации
+expired — дата истечения срока;
+id — идентификатор учётного дела
+createdDt — дата создания
+state — административное состояние
+name — название учётного дела
+code — код учётного дела
+info — информация
+currency — валюта
+id — идентификатор валюты
+code — трёхбуквенный код
+name — название
+baseRate — курс относительно основной валюты;
+precision — количество значащих знаков после запятой;
+displayOrder — порядковый номер валюты для отображения;
+enterCost — стоимость подключения;
+initiatorType — инициатор запроса;
+userId — идентификатор пользователя, отправившего запрос;
+userLogin — логин пользователя, отправившего запрос;
+cardId — идентификатор SIM-карты;
+iccId — Integrated Circuit Card ID;
+oldAccountingFileId — идентификатор старого учётного дела;
+newAccountingFileId — идентификатор нового учётного дела;
+id — идентификатор записи;
+recordDate — дата записи;
+oldAccountingFileName — название старого учётного дела;
+newAccountingFileName — название нового учётного дела;
+sortSchema — схема сортировки результатов поиска;
+sortType — тип сортировки;
+sortColumns — колонки, по которым нужна сортировка;
+fromDt — дата записи должна быть позже этой даты;
+tillDt — дата создания записи должна быть до этой даты;
+virtualGroupId — идентификатор виртуальной группы;
+msisdnMask — маска номера абонента;
+initiator — инициатор платежа;
+billService — тип сервиса тарификации;
+id — идентификатор сервиса тарификации;
+code — код сервиса тарификации;
+excludeBillServices — исключенные сервисы;
+serviceVolumeFilter — фильтр по объёму предоставленной услуги;
+compareOperation — операция сравнения;
+serviceCostFilter — фильтр по стоимости услуги;
+balanceChangeValueFilter — фильтр по сумме изменения баланса счёта;
+isStatusOK — фильтр по успешному/неуспешному статусу;
+notSearchMsisdnByAccountIndex — флаг запроса счетов по msisdnMask (в main db), а затем журналов, по умолчанию false;
+virtualGroupId — идентификатор виртуальной группы.
+id — уникальный идентификатор записи;
+sessionStartDt — дата и время начала сессии;
+recordDate — дата записи;
+appSessionId — идентификатор сессии;
+msisdn — номер абонента;
+status — статус OCS;
+accountId — идентификатор счета;
+accountingFileId — идентификатор учётного дела;
+clientId — идентификатор клиента;
+cardId — идентификатор карты;
+cardNumber — номер карты;
+initiator — инициатор платежа;
+billService — тип сервиса тарификации;
+id — идентификатор сервиса тарификации;
+code — код сервиса тарификации;
+billVolume — протарифицированный объём предоставленной услуги;
+billCurrency — валюта стоимости услуги;
+volumeTypeId — идентификатор единицы измерения услуги;
+volumeTypeName — название единицы измерения услуги;
+serviceVolume — объем предоставленной услуги;
+serviceCost — стоимость сервиса;
+balanceIncFlag — флаг увеличения баланса;
+oldAccountBalance — баланс счета до операции;
+newAccountBalance — баланс счета после операции;
+accountCurrency — валюта счета;
+aNum —  номер A, оплачивающий услуги;
+bNum — номер B;
+msrn — номер MSRN;
+vlr — номер VLR;
+accessNumber — номер доступа;
+tariffId — идентификатор тарифа;
+tariffPlanId — идентификатор тарифного плана;
+tariffPlanName — наименование тарифного плана;
+locationId — идентификатор местоположения;
+locationName — название местоположения;
+locationPrefix — префикс, по которому было определено местоположение
+tzoneId — идентификатор тарифной зоны;
+tzoneName —  название тарифной зоны;
+tzonePrefix — префикс направления (B), zпо которому была определена тарифная зона;
+balanceChangeValue — изменение баланса счета;
+accountingFileName — наименование учётного дела;
+baseServiceCode — код базового типа сервиса;
+measureUnitId — идентификатор типа измерения услуги;
+measureUnitCode — код типа измерения услуги;
+additionalInfo — дополнительное описание, формат: key[=value].
+has-active-pdp-context — флаг передачи данных по GPRS;
+registered-on-vlr — флаг регистрации в VLR;
+registered-on-sgsn — флаг регистрации в VLR;
+registered-on-dm-mme — флаг регистрации в VLR;
+registered-on-dm-sgsn-lte — флаг регистрации в VLR;
+network-type — тип сети;
+connected-network-operator-and-country — параметры оператора и страны;
+mnc — код мобильной сети MNC;
+operatorName — имя оператора SPN;
+mcc — мобильный код страны MCC;
+countryName — название страны;
+latest-gprs-session-time — время последней сессии GPRS;
+latest-sms-session-time — время последней сессии передачи SMS;
+latest-voice-session-time — время последней сессии голосового вызова;
+latest-ussd-message-time — время последней сессии передачи USSD.
