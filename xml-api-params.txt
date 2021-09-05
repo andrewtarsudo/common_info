@@ -52,6 +52,7 @@ billServiceId — идентификатор типа услуги;
 billVolume — протарифицированный объём предоставленной услуги;
 billingMode — тип оплаты, см. Приложение «Тип оплаты»;
 birthDt — дата рождения;
+cardGroupTree — дерево группы карт;
 cardActivatedDt — дата активации карты;
 cardExpiredDt — дата окончания срока действия карты;
 cardFirstTransactionDt — дата первой транзакции по карте;
