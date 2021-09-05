@@ -74,6 +74,7 @@
 |CBS|Cell Broadcast Service, услуга трансляции по сотам|
 |CBSP|Cell Broadcast Service Protocol, протокол трансляции по сотам — протокол взаимодействия CBC и RNC|
 |CC|Cryptographic Checksum, криптографическая хэш–суммы|
+|CC|Credit-Control, кредитный контроль|
 |CCF|Charging Collection Function, функция сбора тарификационнных данных|
 |CCT|Cryptographic Checksum Template, шаблон криптографической хэш–суммы|
 |CDF|Charging Data Function, функция обработки данных о тарификации|
@@ -153,6 +154,7 @@
 |DUNA|Destination Unavailable|
 |DUPU|Destination User Part Unavailable|
 |DWDM|Dense Wavelength Division Multiplexing|
+|EAP|Extensible Authentication Protocol, расширяемый протокол аутентификации|
 |E–DSS1|Extended Digital Subscriber Signaling, расширенная цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами|
 |E–UTRAN|Evolved Universal Terrestrial Radio Access Network, улучшенная универсальная сеть наземного радиодоступа стандарта LTE|
 |ECB|Electronic Code Book, электронная кодовая книга — один из режимов шифрования|
@@ -365,6 +367,7 @@
 |NEF|Network Exposure Function, функция обеспечения взаимодействия с внешними приложениями|
 |NFV|Network Function Virtualization, виртуализация сетевых функций|
 |NGN|Next Generation Networks, сети нового поколения — мультисервисные сети связи|
+|NGOSS|New Generation Operation Systems and Software, новое поколение систем технико-эксплуатационной поддержки и программных средств|
 |NI|Network Identifier, идентификатор сети|
 |NIC|Network Interface Controller, сетевой контроллер|
 |NMS|Network Management System, система управления сетью|
