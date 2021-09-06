@@ -149,8 +149,19 @@ def main():
     if len(content) == len(numbers_proper):
         print('Everything is ok.')
     else:
-        raise Exception('The number of files and the number of found strings are different. Check the program')
-
+        print('The number of files and the number of found strings are different. Check the program.')
+        to_continue = str(input('Do you want to continue despite the difference? y/n\n'))
+        while True:
+            if to_continue.casefold() == 'yes' or to_continue.casefold() == 'y' or to_continue.casefold() == 'да' or to_continue.casefold() == 'д' or to_continue.casefold() == 'lf':
+                print('You decide to continue. Ok.')
+                break
+            elif to_continue.casefold() == 'no' or to_continue.casefold() == 'n' or to_continue.casefold() == 'нет' or to_continue.casefold() == 'н' or to_continue.casefold() == 'ytn':
+                print('You decided to stop. Terminating the script...')
+                raise Exception('The list sizes are not the same.')
+            else:
+                print('I do not understand you. Try one more time.')
+                to_continue = str(input('Do you want me to do the script next? y/n'))
+            
     for index in range(0, len(content)):
         subst_name(content[index], old_files, numbers_proper[index], new_files)
 
