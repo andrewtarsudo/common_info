@@ -105,6 +105,9 @@ def define_find_words():  # задать ключевые слова для по
 # numbers_proper — извлеченные номера
 # old_files — директория для старых файлов
 # new_files — директория для новых файлов
+# ins — список содержимого директории old_files
+# content — содержимое
+
 
 # def subst_name(old_name, old_name_path, new_name, new_name_path) -> name
 # def text_extr(file_path, filename) -> text list
@@ -136,7 +139,7 @@ def main():
         else:
             break
 
-    ins = os.listdir(old_files)
+    ins = os.listdir(old_files)  # 
     content = []
 
     for file in ins:
