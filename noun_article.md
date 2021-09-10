@@ -49,5 +49,5 @@ Note: the unique subject that may have one or a small number of entities (the De
   * after <to be/to have> use the indefinite article. Ex.: Protei SMSC is a system ..., Protei SC_Lite has a signaling gateway ...
   * after <as/like> use the indefinite article. Ex.: As a rule, ...; The test do some activity like a fraudster ...
   * some phrases:
-    * in detail;
+    * in detail; on error;
     * 
