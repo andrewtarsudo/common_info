@@ -494,5 +494,16 @@ isPurgedEpsMme — флаг удаления данных из MME;
 purgedEpsMmeDt — дата удаления данных из MME;
 isPurgedEpsSgsn — флаг удаления данных из SGSN;
 purgedEpsSgsnDt — дата удаления данных из SGSN.
+baseServiceCode — базовый тип сервиса;
+serviceVolumeFilter — фильтр по объёму предоставленной услуги;
+serviceCostFilter — фильтр по стоимости услуги;
+value — объём услуги;
+compareOperation — операция сравнения;
+isStatusOK — фильтр по успешному/неуспешному статусу;
+langId — идентификатор языка;
+httpUrlTemplate — шаблон URL;
+httpBodyTemplate — шаблон тела сообщения;
+messageCodes —
+
 
 
