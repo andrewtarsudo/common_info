@@ -96,7 +96,7 @@ def find_str(text, find_words):  # поиск подстроки в тексте
 def define_find_words():  # задать ключевые слова для поиска
     words_find = []  # список, куда записываем нужные слова
     while True:
-        word = str(input('Type the key word to look for. Push the Enter key to leave. If ypou made a mistake, you will have a chance to change them, do not worry. '))
+        word = str(input('Type the key word to look for. Push the Enter key to leave. If you made a mistake, you will have a chance to change them, do not worry. '))
         # условие выхода - пустая строка
         if word == '': 
             print('You finished entering the words.')
@@ -137,6 +137,9 @@ def check_change_list_input(list_words):  # узнаем, хотим ли воо
 
         elif answer == 'delete()':
             delete_find_words(list_words)
+            
+        else:
+            pass
 
     else:
         print("Ok, let's go next!")
