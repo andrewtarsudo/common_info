@@ -3,6 +3,9 @@ import pathlib
 import fitz
 
 
+
+
+
 # old_name - старое название файла с расширением
 # old_name_path - путь до старого файла
 # new_name - новое название файла с расширением
@@ -37,7 +40,7 @@ def text_extr(file_path, filename):  # извлечь текст
         if path.PurePath(full_path).suffix == '.pdf':
             doc = fitz.open(full_path)  # открыть файл
             # извлечь текст постранично
-            for page in doc:  
+            for page in doc:
                 text += page.getText()
 
             break
@@ -66,7 +69,7 @@ def text_extr(file_path, filename):  # извлечь текст
             raise Exception("Choose another file.")
 
     # если текст не удалось считать
-    if len(text) == 0:  
+    if len(text) == 0:
         print('PDF text is not extracted. Change the fitz module to read the file.')
     # разбиение строки на список строк по пробелу
     list_text = text.split('')
@@ -89,7 +92,7 @@ def find_str(text, find_words):  # поиск подстроки в тексте
                 text.remove(string)
 
     # на вывод - строка из найденных подстрок
-    ans = list_ok  
+    ans = list_ok
     return ans
 
 
@@ -98,7 +101,7 @@ def define_find_words():  # задать ключевые слова для по
     while True:
         word = str(input('Type the key word to look for. Push the Enter key to leave. If ypou made a mistake, you will have a chance to change them, do not worry. '))
         # условие выхода - пустая строка
-        if word == '': 
+        if word == '':
             print('You finished entering the words.')
             print(*words_find)
             break
@@ -248,7 +251,7 @@ def main():
             break
 
     # перечень наименований в директории со старыми файлами
-    ins = os.listdir(old_files)  # 
+    ins = os.listdir(old_files)  #
     content = []
 
     # выделить только сканы, вдруг еще есть другие файлы
