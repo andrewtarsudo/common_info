@@ -2,6 +2,9 @@ import os
 import pathlib
 import fitz
 
+#a4 595.2 x 841.69
+#a3 1190.4 x 841.69
+
 # const coordinates for the A4 file
 UP_LEFT_X_A4 = 320
 UP_LEFT_Y_A4 = 950
@@ -187,6 +190,8 @@ def main():
     input_path_dir = str(input_user)
     print(input_user)
     print(type(input_user))
+    os.chdir(input_path_dir)
+    pathlib.Path.cwd()
     # input_path_dir = str('C:\Users\tarasov-a\Desktop\Testing')
     #check for interruption
     if input_path_dir == '_exit':
@@ -195,6 +200,7 @@ def main():
     # check if the path is proper:
     try:
         path_dir = pathlib.Path(input_path_dir).resolve()
+        os.chdir(path_dir)
     except PermissionError:
         print('You have no access, pos.')
         return
