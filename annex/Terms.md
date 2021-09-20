@@ -22,6 +22,7 @@
 |ALPN|Application-Layer Protocol Negotiation, согласование протокола прикладного уровня|
 |AMA|Automatic Message Accounting, автоматическая система учета|
 |AMF|Access and Mobility Management Function, функция управления доступом и мобильностью|
+|AoC|Advice of charge, уведомление об оплате|
 |AP|Alarm Processor, подсистема обработки аварий|
 |APC|Alias Point Code, код смежной сигнальной точки|
 |APDU|Application Protocol Data Unit, блок данных прикладного протокола|
@@ -220,9 +221,7 @@
 |HDD|Hard Disk Drive, накопитель на жестких дисках|
 |HDLC|High–Level Data Link Control, высокоуровневый протокол управления каналом связи|
 |HLR|Home Location Register, регистр местоположения абонентов собственной сети|
-|HMDT|Signaling Message Handling: Message Distribution обработка сигнальных сообщений: распределение сообщений|
 |HMDT|Signaling Message Handling: Message Distribution, обработка сигнальных сообщений: распределение сообщений|
-|HMRT|Signaling Message Handling: Message Routing обработка сигнальных сообщений: маршрутизация сообщений|
 |HMRT|Signaling Message Handling: Message Routing, обработка сигнальных сообщений: маршрутизация сообщений|
 |HPLMN|Home PLMN, домашняя сеть PLMN|
 |HSL|High-Speed Link, высокоскоростное соединение|
@@ -433,6 +432,7 @@
 |PSI|Public Service Identity, публичный идентификатор сервиса|
 |PSTN|Public Switched Telephone Network, телефонная сеть общего пользования|
 |PTT|Push–to–Talk, полудуплексный режим приема–передачи|
+|PUK|PIN Unblocking Key, личный код разблокирования PIN|
 |PVI|Preemption Vulnerability Indicator, индикатор возможности завершения текущего вызова при наличии приоритетного входящего вызова|
 |QCI|QoS Class Identifier, идентификатор класса QoS|
 |QoHR|Query on HLR Release, запрос при отбое от HLR|
@@ -635,9 +635,11 @@
 |VOC|Voice, голосовые сообщения|
 |VoIP|Voice over Internet Protocol, технология передачи голосовых сообщений в IP-сетях|
 |VoLTE|Voice over LTE, голосовой вызов на базе протокола LTE|
+|VoMS|Voucher Management System, система управления платежными картами|
 |VP|Validity Period, время прекращения валидности сообщения|
 |VPF|Validity Period Format, флаг наличия Validity Period|
 |VPLMN|Visited PLMN, гостевая PLMN|
+|VPN|Virtual Private Network, виртуальная частная сеть|
 |WAE|WAN Automation Engine|
 |WAP|Wireless Application Protocol, протокол для приложений беспроводной связи|
 |WB|Welcome Back, система оповещения вновь зарегистрированных гостевых абонентов|
