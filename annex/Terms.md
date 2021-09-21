@@ -115,6 +115,7 @@
 |CSA_ID|Connection Security Association Identity|
 |CSAMAC|Connection Security Association Message Authentication Code|
 |CSCF|Call Session Control Function, функция управления сеансом голосового вызова|
+|CSD|Circuit Switched Data, передача данных по коммутируемым каналам|
 |CSFB|Circuit Switch Fallback, переключение на коммутируемую сеть — технология, обеспечивающая возможность входящих и исходящих вызовов в сети LTE с использованием мобильных сетей с коммутацией каналов|
 |CSI|CAMEL Subscription Information, информация о подписках для протоколов CAMEL|
 |CSL|Component Sublevel, подуровень компонентов - подуровень системы TCAP|
