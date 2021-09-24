@@ -1,19 +1,20 @@
 import os
 import pathlib
 import fitz
+import numpy
 
 
 #a4 595.2 x 841.69
 #a3 1190.4 x 841.69
 # const coordinates for the A4 file
-UP_LEFT_X_A4 = 246
-UP_LEFT_Y_A4 = 655
-DOWN_RIGHT_X_A4 = 578
-DOWN_RIGHT_Y_A4 = 697
+UP_LEFT_X_A4 = 238
+UP_LEFT_Y_A4 = 706
+DOWN_RIGHT_X_A4 = 568
+DOWN_RIGHT_Y_A4 = 747
 # const coordinates for the A3 file
-UP_LEFT_X_A3 = 833
-UP_LEFT_Y_A3 = 658
-DOWN_RIGHT_X_A3 = 1158
+UP_LEFT_X_A3 = 832
+UP_LEFT_Y_A3 = 664
+DOWN_RIGHT_X_A3 = 1160
 DOWN_RIGHT_Y_A3 = 700
 # a list of the symbol combinations to search for
 words_to_find = ['ПАМР', 'ПДРА']
@@ -48,7 +49,7 @@ def check_path_dir(path_dir):
         pass
     # check the access permissions
     try:
-        os.access(file_path, os.O_RDONLY)
+        os.access(path_dir_full, os.O_RDONLY)
     except PermissionError:
         print('It\'s not yours.')
         res = False
@@ -124,33 +125,41 @@ def check_path_file(file_path):
         print('result is ', res)
 
     ans = res
-    return res
-
-
-# path_pdf_file - full path to the file of Path() type
-# output - the page of fitz.Page() type
-# get the snapshot of the page
-def get_pdf_page_copy(path_pdf_file):
-    doc = fitz.open(path_pdf_file)
-    page_pdf = fitz.Document.fullcopy_page(doc[0])
-
-    ans = page_pdf
     return ans
 
 
-# path_file - the full path to the file of str() or Path() type
+# path_pdf_file - full path to the file of Path() type
 # output - the parameters of list() with width of int type and height of int() type
-# get the size of the page to analyze
-def get_bound_pdf(page_file_pdf):
+# get the page amd its dimensions to analyze
+
+def get_doc(path_pdf_file):
+    doc = fitz.Document(path_pdf_file)
+
+    ans = doc
+    return ans
+
+
+def get_page(path_pdf_file):
+    doc = fitz.open(path_pdf_file)
+    page = doc.load_page(0)
+
+    ans = page
+    return ans
+
+
+def get_page_bound_pdf(path_pdf_file):
+    doc = fitz.open(path_pdf_file)
+    page_file_pdf = doc.load_page(0)
     # round the height and the width since it can be float but it's not good to compare numerics of different types
-    iRect = page_file_pdf.irect
+    Rect = page_file_pdf.rect
+    iRect = Rect.irect 
     iRect_tl = iRect.top_left
     iRect_br = iRect.bottom_right
-    iRect_height = iRect.height
+    
     iRect_width = iRect.width
-    print('page bounds:', rectangular)
+    iRect_height = iRect.height
 
-    ans = [rect_width, rect_height]
+    ans = (iRect_tl, iRect_br, iRect_width, iRect_height)
     return ans
 
 
@@ -160,15 +169,17 @@ def get_bound_pdf(page_file_pdf):
 def get_format(rect_width, rect_height):
     # define the most common formats
     page_sizes = (int(rect_width), int(rect_height))
-    if page_sizes == fitz.paper_size('A4'):
+    
+    for index in range(0,1):
+      if numpy.abs(page_sizes[index] - fitz.paper_size('A4')[index]) <= 2:
         format_file = 'A4'  # 595.2 x 841.69
-    elif page_sizes == fitz.paper_size('A3'):
+      elif numpy.abs(page_sizes[index] - fitz.paper_size('A3')[index]) <= 2:
         format_file = 'A3'  # 1190.4 x 841.69
-    else:
+      else:
         # show the warning but continue operating
         format_file = 'PAGE_SIZE_NOT_STANDARD'
         print('Page dimensions are unspecified.')
-
+    
     print('format:', format_file)
     ans = format_file
     return ans
@@ -198,8 +209,8 @@ def get_rectangle_extr(formatFile):
         downright_y = DOWN_RIGHT_Y_A3
 
     # construct Rect() rectangle
-    rect_point_coord = tuple(upleft_x, upleft_y, downright_x, downright_y)
-    print('rectangle coordinates to extract:', rect_point_coord)
+    rect_point_coord = (upleft_x, upleft_y, downright_x, downright_y)
+    print('rectangle coordinates to extract:', *rect_point_coord)
 
     ans = rect_point_coord
     return ans
@@ -226,10 +237,8 @@ def dir_content_pdf(path_to_dir):
 # output - void
 # the main activity for one file
 def main_one_file(path_file_full):
-    
     # Algo:
-    # read the pdf and get its copy -> get_pdf_page_copy
-    # measure its dimensions -> get_bound_pdf
+    # measure its dimensions -> get_page_bound_pdf
     # find its format -> get_format
     # define the rectangle for the textbox to extract the text -> get_rectangle_extr
     # create the rectangle -> fitz.Rect
@@ -238,37 +247,43 @@ def main_one_file(path_file_full):
     # check the text -> check_text
     # define the full paths -> pathlib.Path().resolve(), pathlib.PurePath().parent
     # rename the file -> os.rename()
+    doc_to_extr = fitz.open(path_file_full)
+    page_to_extr = doc_to_extr.load_page(0)
     
-    pdf_file_page = get_pdf_page_copy(path_file_full)
-    page_bounds = get_bound_pdf(pdf_file_page)
-    pdf_format_file = get_format(page_bounds)
+    page_bounds = get_page_bound_pdf(path_file_full)
+    pdf_format_file = get_format(page_bounds[2], page_bounds[3])
     coord_rect_tuple = get_rectangle_extr(pdf_format_file)
-
+    print('type doc_to_extr: ', type(doc_to_extr))
+    print('type page_to_extr: ', type(page_to_extr))
+    print('page parent: ', page_to_extr.parent)
     rect_to_extract = fitz.Rect(coord_rect_tuple)
-    text_extr = pdf_file_page.get_textbox(rect_to_extract)
+    print('rect_to_extract: ', rect_to_extract)
+    # doc_to_extr = get_doc(path_file_full)
+    # page_to_extr = get_page(path_file_full)
+    text_extr = page_to_extr.get_textbox(coord_rect_tuple)
+    print('text_extr: ', text_extr)
 
     # to avoid any problems with objects, links, etc.
-    del doc_to_extr, pdf_file_page
+    del doc_to_extr, page_to_extr
     
     if not check_text(text_extr, words_to_find):
         raise Exception()
         return
-
+    
     new_name = text_extr + '.pdf'
     new_name_full = pathlib.PurePath(path_file_full).parent / new_name
     old_name_full = pathlib.Path(path_file_full).resolve()
     os.rename(old_name_full, new_name_full)
     print('Success.')
-
+    
     ans = new_name_full
     return ans
-
-
+    
+    
 # def check_path_dir: path()/str() -> bool)
 # def check_text: str(), list[str(), str()] ->  bool()
 # def check_path_file: path()/str() -> bool)
-# def get_pdf_page_copy: path() -> fitz.page()
-# def get_bound_pdf: fitz.page() -> list[int(), int()]
+# def get_page_bound_pdf: path() -> list[int(), int()]
 # def get_format: list[int(), int()] -> str()
 # def get_rectangle_extr: str() -> fitz.Rect()
 # def dir_content_pdf: path() -> list[str(), str()]
@@ -294,3 +309,5 @@ def main():
 
     ans = 'Good work'
     return ans
+
+main()
