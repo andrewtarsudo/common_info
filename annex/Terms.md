@@ -93,6 +93,7 @@
 |CgPN|Calling Party Number, номер вызывающего абонента|
 |CHAP|Challenge Handshake Authentication Protocol, протокол аутентификации с предварительным согласованием вызова|
 |CI|Cell Identity, номер соты|
+|CIDR|Classless Inter-Domain Routing, бесклассовая адресация|
 |CIR|Бинарный файл CDR с преобразованием номеров CgPN и CdPN для root PBX|
 |CL|Connection Logic, логика, работающая с соединениями|
 |cli|Command Line Interface, интерфейс командной строки|
@@ -119,7 +120,7 @@
 |CSFB|Circuit Switch Fallback, переключение на коммутируемую сеть — технология, обеспечивающая возможность входящих и исходящих вызовов в сети LTE с использованием мобильных сетей с коммутацией каналов|
 |CSI|CAMEL Subscription Information, информация о подписках для протоколов CAMEL|
 |CSL|Component Sublevel, подуровень компонентов - подуровень системы TCAP|
-|CSRN|CS domain Routing Number, номер маршрутизации в домене CS|
+|CSRN|CS Domain Routing Number, номер маршрутизации в домене CS|
 |CSU|Channel Service Unit|
 |CSV|Comma Separated Value, формат данных с разделением значений запятыми|
 |CT|Command Type, дальнейшая операция с сообщением|
