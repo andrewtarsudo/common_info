@@ -1,287 +1,313 @@
 import os
 import pathlib
 import fitz
+import numpy
 
 
+#a4 595.2 x 841.69
+#a3 1190.4 x 841.69
+# const coordinates for the A4 file
+UP_LEFT_X_A4 = 238
+UP_LEFT_Y_A4 = 706
+DOWN_RIGHT_X_A4 = 568
+DOWN_RIGHT_Y_A4 = 747
+# const coordinates for the A3 file
+UP_LEFT_X_A3 = 832
+UP_LEFT_Y_A3 = 664
+DOWN_RIGHT_X_A3 = 1160
+DOWN_RIGHT_Y_A3 = 700
+# a list of the symbol combinations to search for
+words_to_find = ['ПАМР', 'ПДРА']
 
 
+# path_dir - full path to the directory of str() or Path() type
+# output - the value True/False of bool() type
+# verify the correctness 
+def check_path_dir(path_dir):
+    path_dir_full = pathlib.Path(path_dir).resolve()
+    res = True
+    # check the interruption
+    if path_dir_full == '_exit':
+        res = False
+        raise InterruptedError
+        return
+    else:
+        pass
+    # check the existance
+    if not path_dir_full.exists():
+        print('The path is incorrect.')
+        res = False
+        return
+    else:
+        pass
+    # check the path follows to the directory
+    if not path_dir_full.is_dir():
+        print('The path specifies not a directory.')
+        res = False
+        return
+    else:
+        pass
+    # check the access permissions
+    try:
+        os.access(path_dir_full, os.O_RDONLY)
+    except PermissionError:
+        print('It\'s not yours.')
+        res = False
+        return 
+    else:
+        pass
+    finally:
+        print('result is ', res)
 
-# old_name - старое название файла с расширением
-# old_name_path - путь до старого файла
-# new_name - новое название файла с расширением
-# new_name_path - путь до нового файла
-def subst_name(old_name, old_name_path, new_name, new_name_path):  # подмена названия
-    # старый путь
-    path_file_old = pathlib.Path(old_name_path).resolve() / old_name
-    # новый путь
-    path_file_new = pathlib.Path(new_name_path).resolve() / new_name
-    rename = path_file_old.rename(path_file_new)
-
-    ans = pathlib.PurePath(rename).name()  # название
+    ans = res
     return ans
 
 
-# file_path - путь до директории с файлом
-# filename - название файла с расширением
-def text_extr(file_path, filename):  # извлечь текст
-    path = pathlib.Path(file_path).resolve() / filename  # путь из текущей папки + имя файла c расширением
-    full_path = pathlib.Path(path).resolve()
-    text = ''  # будет хранить текст файла
+# text - the symbols extracted from the area of str() type
+# words_find - the list of searched symbols
+# output - the result of checks of bool() type
+# do some checks for the text from the area
+def check_text(text, words_find):
+    res = False
 
-    while True:
-        # проверка корректности пути
-        if not pathlib.Path(full_path).exists():
-            print('The path is incorrect.')
-            path = input('Type the full path: ')
-            full_path = pathlib.Path(path).resolve()
-
-    while True:
-        # если pdf-файл
-        if path.PurePath(full_path).suffix == '.pdf':
-            doc = fitz.open(full_path)  # открыть файл
-            # извлечь текст постранично
-            for page in doc:
-                text += page.getText()
-
-            break
-        # если txt-файл из pdf
-        elif path.PurePath(full_path).suffix == '.txt':
-            try:
-                # проверяем права доступа
-                doc = os.open(full_path, 'rt')
-                # извлечь текст постранично
-                for line in doc:
-                    text += line + ' '
-                break
-            # ошибка прав доступа
-            except OSError:
-                print('The problem to open in the read-write mode.')
-                break
-        # если путь указан лишь до директории
-        elif path.PurePath(full_path).suffix == '':
-            print('Type the correct path to the file.')
-            file_path = input('The path is: ')
-            path = pathlib.Path(file_path).resolve() / filename  # путь из текущей папки + имя файла
-            full_path = pathlib.Path(path).resolve()
-        # вариант файла другого формата
-        else:
-            print("The correct file types are *.txt and *.pdf.")
-            raise Exception("Choose another file.")
-
-    # если текст не удалось считать
     if len(text) == 0:
-        print('PDF text is not extracted. Change the fitz module to read the file.')
-    # разбиение строки на список строк по пробелу
-    list_text = text.split('')
+        raise Exception('The text is not extracted.')
+    #counter to find out if the words we need are extracted properly
+    
+    for word in words_to_find:
+        if text.startswith(word):
+            # stop the program immediately when the match is found
+            res = True
+            return
 
-    ans = list_text
+    print('text is ok?', counter)
+    ans = counter
     return ans
 
 
-# text - строка с текстом
-# find_words - список искомых слов
-def find_str(text, find_words):  # поиск подстроки в тексте
-    list_ok = []  # список, куда будут записаны нужные подстроки
-
-    for string in text:
-        for word in find_words:
-            if string.startswith(word):
-                list_ok.append(string)
-                text.remove(string)
-            else:
-                text.remove(string)
-
-    # на вывод - строка из найденных подстрок
-    ans = list_ok
-    return ans
-
-
-def define_find_words():  # задать ключевые слова для поиска
-    words_find = []  # список, куда записываем нужные слова
-    while True:
-        word = str(input('Type the key word to look for. Push the Enter key to leave. If ypou made a mistake, you will have a chance to change them, do not worry. '))
-        # условие выхода - пустая строка
-        if word == '':
-            print('You finished entering the words.')
-            print(*words_find)
-            break
-        else:
-            words_find.append(word)
-
-    ans = words_find
-    return ans
-
-
-# проверка на пустой ввод
-def input_empty(input_string, list_values):
-    if isinstance(list_values, list):
-        if input_string == '' or input_string.startswith(' '):
-            list_values.remove(input_string)
-            ans = None
-        else:
-            ans = input_string
-
-    return ans
-
-
-def check_change_list_input(list_words):  # узнаем, хотим ли вообще что-то делать
-    glob_ans_change = str(input('Do you want to do something with words?'))
-
-    if glob_ans_change == 'y' or glob_ans_change.casefold() == 'yes':
-        print("Oh, really? Ok, let's do some work.")
-        print('Choose the action to do: add(), change(), delete(). Choose your destiny! ')
-        answer = str(input())
-
-        if answer == 'add()':
-            add_find_words(list_words)
-
-        elif answer == 'change()':
-            change_find_words(list_words)
-
-        elif answer == 'delete()':
-            delete_find_words(list_words)
-
+# file_path - full path to the file of str() or Path() type
+# output - the value True/False of bool() type
+# verify the correctness 
+def check_path_file(file_path):
+    path_file = pathlib.Path(file_path).resolve()
+    res = True
+    # check the interruption
+    if file_path == '_exit':
+        res = False
+        raise InterruptedError
+        return
     else:
-        print("Ok, let's go next!")
-
-
-# list_words - список со словами
-def add_find_words(list_words):  # добавить ключевое слово для поиска
-    print('You can add only one words at time. Type _exit_ to add nothing and return to other actions.')
-    add_word = str(input('Type the word to add: '))
-    # проверка на выход
-    if add_word == '_exit_':
-        print("Ok, let's return back.")
-    # добавление слова
+        pass
+    # check the existance
+    if not path_file.exists():
+        print('The path is incorrect.')
+        res = False
+        return
     else:
-        list_words.append(add_word)
-        print('The word %s is added.'%add_word)
+        pass
+    # check the path follows to the directory
+    if not path_file.is_file():
+        print('The path specifies not a file.')
+        res = False
+        return
+    else:
+        pass
+    # check the access permissions
+    try:
+        os.access(file_path, os.O_RDONLY)
+    except PermissionError:
+        print('It\'s not yours.')
+        res = False
+        return 
+    else:
+        pass
+    finally:
+        print('result is ', res)
 
-    ans = list_words
-    # возвращаемся в меню
-    check_change_list_input(list_words)
+    ans = res
     return ans
 
 
-# list_words - список со словами
-def delete_find_words(list_words):  # удалить ключевое слово для поиска
-    print('You can delete only one words at time. Type _exit_ to delete nothing and return to other actions.')
-    delete_word = str(input('Type the word to delete: '))
-    # проверка на выход
-    if delete_word == '_exit_':
-        print("Ok, let's return back.")
-    # удаление слова
-    else:
-        try:
-            list_words.remove(add_word)
-            print('The word %s is deleted.'%add_word)
-        except ValueError:
-            print('There is no such word.')
+# path_pdf_file - full path to the file of Path() type
+# output - the parameters of list() with width of int type and height of int() type
+# get the page amd its dimensions to analyze
 
-    ans = list_words
-    # возвращаемся в меню
-    check_change_list_input(list_words)
+def get_doc(path_pdf_file):
+    doc = fitz.Document(path_pdf_file)
+
+    ans = doc
     return ans
 
-# list_words - список со словами
-def change_find_words(list_words):  # изменить ключевые слова для поиска
-    for item in list_words:
-        print('Do you want to change the word %s? y/n'%item)
-        user_input = str(input())
-        # проверка на выход
-        if user_input == '_exit_':
-            print("Ok, let's return back.")
-        # если слово надо изменить
-        elif user_input.casefold() == 'y' or user_input.casefold() == 'yes':
-            print('Well, ok. Type _exit_ to change nothing and return to other actions.')
-            index = list_words.index(item)
-            user_word_add = str(input('Push Enter to change nothing. Type the new word: '))
-            # проверка на пустой ввод
-            if user_word_add == '':
-                print('No changes are made, %s.'%list_words[index])
-            else:
-                list_words[index] = user_word_add
-                print('The new word is %s.'%user_word_add)
-        # если слово не надо менять
-        else:
-            print("Great! Let's go next.")
 
-    ans = list_words
-    check_change_list_input(list_words)
+def get_page(path_pdf_file):
+    doc = fitz.open(path_pdf_file)
+    page = doc.load_page(0)
 
-    return list_words
+    ans = page
+    return ans
 
 
-# file_location — файл, откуда брать ПАМР/ПДРА
-# file_dir — директория file_location
-# file_real_name — название файла
-# key_words — список искомых ключевых слов
-# extracted_text — полученный текст
-# list_proper — извлеченные номера
+def get_page_bound_pdf(path_pdf_file):
+    doc = fitz.open(path_pdf_file)
+    page_file_pdf = doc.load_page(0)
+    # round the height and the width since it can be float but it's not good to compare numerics of different types
+    Rect = page_file_pdf.rect
+    iRect = Rect.irect 
+    iRect_tl = iRect.top_left
+    iRect_br = iRect.bottom_right
+    
+    iRect_width = iRect.width
+    iRect_height = iRect.height
 
-# subst_name(old_name, old_name_path, new_name, new_name_path) -> name
-# def text_extr(file_path, filename) -> text list
-# def find_str(text, find_words) -> list pamr/pdra numbers
-# def define_find_words() -> None
+    ans = (iRect_tl, iRect_br, iRect_width, iRect_height)
+    return ans
 
 
+# rect_width and rect_height - the width and the height of the page of int() type
+# output - the page format of str() type
+# define the format
+def get_format(rect_width, rect_height):
+    # define the most common formats
+    page_sizes = (int(rect_width), int(rect_height))
+    
+    for index in range(0,1):
+      if numpy.abs(page_sizes[index] - fitz.paper_size('A4')[index]) <= 2:
+        format_file = 'A4'  # 595.2 x 841.69
+      elif numpy.abs(page_sizes[index] - fitz.paper_size('A3')[index]) <= 2:
+        format_file = 'A3'  # 1190.4 x 841.69
+      else:
+        # show the warning but continue operating
+        format_file = 'PAGE_SIZE_NOT_STANDARD'
+        print('Page dimensions are unspecified.')
+    
+    print('format:', format_file)
+    ans = format_file
+    return ans
+
+
+# formatFile - the typographic format A#: ..., A3, A4, A5, ... of str() type
+# output - rectangle of fitz.Rect() type
+# define the rectangle
+def get_rectangle_extr(formatFile):
+    # format A4, the common sheet
+    if formatFile == 'A4':
+        upleft_x = UP_LEFT_X_A4
+        upleft_y = UP_LEFT_Y_A4
+        downright_x = DOWN_RIGHT_X_A4
+        downright_y = DOWN_RIGHT_Y_A4
+    # format A3, two common sheets
+    elif formatFile == 'A3':
+        upleft_x = UP_LEFT_X_A3
+        upleft_y = UP_LEFT_Y_A3
+        downright_x = DOWN_RIGHT_X_A3
+        downright_y = DOWN_RIGHT_Y_A3
+    # another format, input its width and height
+    else:
+        upleft_x = 0
+        upleft_y = 0
+        downright_x = DOWN_RIGHT_X_A3
+        downright_y = DOWN_RIGHT_Y_A3
+
+    # construct Rect() rectangle
+    rect_point_coord = (upleft_x, upleft_y, downright_x, downright_y)
+    print('rectangle coordinates to extract:', *rect_point_coord)
+
+    ans = rect_point_coord
+    return ans
+
+
+# path_to_dir - the full path to the directory with pdf files of str() or Path() type
+# output - the list of the files with *.pdf extension inside the directory of list() type with items of Path() type
+# get the specific contents of the directory
+def dir_content_pdf(path_to_dir):
+    full_content = os.listdir(path_to_dir)
+    spec_content = []
+
+    for file in full_content:
+        # transform needed strings to paths of Path() type
+        if pathlib.PurePath(file).suffix == '.pdf':
+            spec_content.append(pathlib.Path(file).resolve())
+
+    print(*spec_content)
+    ans = spec_content
+    return ans
+
+
+# path_file_full - path to the file of path() type
+# output - void
+# the main activity for one file
+def main_one_file(path_file_full):
+    # Algo:
+    # measure its dimensions -> get_page_bound_pdf
+    # find its format -> get_format
+    # define the rectangle for the textbox to extract the text -> get_rectangle_extr
+    # create the rectangle -> fitz.Rect
+    # extract the text -> fitz.Page.get_textbox
+    # clear all links to doc and page -> del
+    # check the text -> check_text
+    # define the full paths -> pathlib.Path().resolve(), pathlib.PurePath().parent
+    # rename the file -> os.rename()
+    doc_to_extr = fitz.open(path_file_full)
+    page_to_extr = doc_to_extr.load_page(0)
+    
+    page_bounds = get_page_bound_pdf(path_file_full)
+    pdf_format_file = get_format(page_bounds[2], page_bounds[3])
+    coord_rect_tuple = get_rectangle_extr(pdf_format_file)
+    print('type doc_to_extr: ', type(doc_to_extr))
+    print('type page_to_extr: ', type(page_to_extr))
+    print('page parent: ', page_to_extr.parent)
+    rect_to_extract = fitz.Rect(coord_rect_tuple)
+    print('rect_to_extract: ', rect_to_extract)
+    # doc_to_extr = get_doc(path_file_full)
+    # page_to_extr = get_page(path_file_full)
+    text_extr = page_to_extr.get_textbox(coord_rect_tuple)
+    print('text_extr: ', text_extr)
+
+    # to avoid any problems with objects, links, etc.
+    del doc_to_extr, page_to_extr
+    
+    if not check_text(text_extr, words_to_find):
+        raise Exception()
+        return
+    
+    new_name = text_extr + '.pdf'
+    new_name_full = pathlib.PurePath(path_file_full).parent / new_name
+    old_name_full = pathlib.Path(path_file_full).resolve()
+    os.rename(old_name_full, new_name_full)
+    print('Success.')
+    
+    ans = new_name_full
+    return ans
+    
+    
+# def check_path_dir: path()/str() -> bool)
+# def check_text: str(), list[str(), str()] ->  bool()
+# def check_path_file: path()/str() -> bool)
+# def get_page_bound_pdf: path() -> list[int(), int()]
+# def get_format: list[int(), int()] -> str()
+# def get_rectangle_extr: str() -> fitz.Rect()
+# def dir_content_pdf: path() -> list[str(), str()]
+# def main_one_file: path() -> void()
 def main():
-    # переход в директорию с pdf
-    file_location = input('Type the path to the directory with the file: ')
-    temp = pathlib.Path(file_location).resolve()
-    file_dir = pathlib.PurePath(temp).parent
-    file_real_name = pathlib.PurePath(temp).name
-    # работа с ключевыми словами поиска
-    key_words = define_find_words()
-    change_find_words(key_words)
-    extracted_text = text_extr(file_dir, file_real_name)
-    numbers_proper = find_str(extracted_text, key_words)
+    input_user = str(input('Type the full path to the directory: '))
+    # check if the path is proper:
+    if not check_path_dir(input_user):
+        raise Exception()
+        return
 
-    old_files = input('Type the path to the dir with files to rename: ')
-    new_files = input('Type the path to the dir with new files: ')
+    path_dir_full = pathlib.Path(input_user).resolve()
+    os.chdir(path_dir_full)
+    # list of filenames after renaming
+    list_new_names = []
+    # get all pdf files in the directory
+    content_list = dir_content_pdf(path_dir_full)
 
-    while True:
-        if not pathlib.Path(old_files).is_dir():
-            print('Try again.')
-            old_files = input('Type the path to the old files: ')
-        elif not pathlib.Path(new_files).is_dir():
-            print('Try again.')
-            new_files = input('Type the path to the new files: ')
-        else:
-            break
+    for string in content_list:
+        file_content = path_dir_full / string
+        res_for_one_file = main_one_file(file_content)
+        list_new_names.append(res_for_one_file)
 
-    # перечень наименований в директории со старыми файлами
-    ins = os.listdir(old_files)  #
-    content = []
-
-    # выделить только сканы, вдруг еще есть другие файлы
-    for file in ins:
-        if file.endswith('.pdf'):
-            content.append(file)
-
-    # проверка длин списка со старыми названиями и новыми названиями
-    if len(content) == len(numbers_proper):
-        print('Everything is ok.')
-    else:
-        print('The number of files and the number of found strings are different. Check the program.')
-        to_continue = str(input('Do you want to continue despite the difference? y/n'))
-        while True:
-            if to_continue.casefold() == 'yes' or to_continue.casefold() == 'y' or to_continue.casefold() == 'да' or to_continue.casefold() == 'д' or to_continue.casefold() == 'lf' or to_continue.casefold() == 'da':
-                print('You decide to continue. Ok.')
-                break
-            elif to_continue.casefold() == 'no' or to_continue.casefold() == 'n' or to_continue.casefold() == 'нет' or to_continue.casefold() == 'н' or to_continue.casefold() == 'ytn' or to_continue.casefold() == 'net':
-                print('You decided to stop. Terminating the script...')
-                raise Exception('The list sizes are not the same.')
-            else:
-                print('I do not understand you. Try one more time.')
-                print("'yes', 'y', 'да', 'д', 'lf', 'da', 'no', 'n', 'нет', 'н', 'ytn', 'net' are acceptable.")
-                to_continue = str(input('Do you want me to do the script next? y/n'))
-
-    # переименование
-    for index in range(0, len(content)):
-        subst_name(content[index], old_files, numbers_proper[index], new_files)
-
-    ans = None
+    ans = 'Good work'
     return ans
 
 main()
