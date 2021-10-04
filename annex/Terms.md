@@ -478,6 +478,7 @@
 |RTO|Recovery Time Objective, допустимое время восстановления|
 |RTO|Retransmission Time, время ожидания до повторной отправки|
 |RTP|Real–Time Transport Protocol, протокол передачи трафика в режиме реального времени|
+|RTSP|Real-Time Streaming Protocol, потоковый протокол реального времени|
 |RTT|Round–Trip Time, время приема-передачи|
 |S–CSCF|Serving CSCF, узел обработки SIP–сообщений IMS|
 |SAC|Service Area Code, код зоны обслуживания|
