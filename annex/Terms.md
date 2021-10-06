@@ -317,6 +317,7 @@
 |MCC|Mobile Country Code, код страны в мобильных сетях|
 |MCU|Media Control Unit, сервер обработки медиа–данных|
 |MCU|Multipoint Control Unit, сервер многоточечной конференции|
+|MD5|Message Digest 5, алгоритм хэширования|
 |ME|Mobile Equipment, мобильное оборудование|
 |MEID|Mobile Equipment Identifier, идентификатор мобильного оборудования сети CDMA|
 |MF|Master File, файл с основными данными|
@@ -329,6 +330,8 @@
 |MMEI|MME Identifier, иденттификатор MME|
 |MMS|More Messages to Send, флаг наличия сообщений, готовых к отправке|
 |MMS|Multimedia Message Service, служба мультимедийных сообщений|
+|MMSC|Multimedia Message Service Center, центр обработки мультимедийных сообщений|
+|MMSI|Multimedia Message Service Interface, MMS-интерфейс|
 |MN|Message Number, номер обрабатываемого сообщения|
 |MNC|Mobile Network Code, код сети мобильной связи|
 |MNP|Mobile Number Portability, переносимость номеров мобильной сети|
@@ -505,6 +508,7 @@
 |SGP|Signaling Gateway Process, процесс обработки сигнализации в составе сигнального шлюза|
 |SGSN|Serving GPRS Support Node, узел обслуживания абонентов GPRS|
 |SGW|Serving Gateway, обслуживающий шлюз|
+|SHA|Secure Hash Algorithm, криптографический алгоритм хэширования|
 |SHARC|Super Harvard Architecture Single–Chip Computer, одночиповый компьютер Super Harvard Architecture|
 |SI|Service Indicator, индикатор услуги|
 |SI|Socket Interface, сокет–интерфейс|
@@ -628,7 +632,7 @@
 |UTF|Unicode Transformation Format, формат кодирования символов|
 |UTRAN|UMTS Terrestrial Radio Access Network, сеть радиодоступа к UMTS|
 |VAS|Value Added Service, дополнительная платная услуга|
-|VASP|VAS Provider, поставщик услуг VAS|
+|VASP|Value Added Service Provider, поставщик дополнительных платных услуг|
 |VFS|Virtual File System, виртуальная файловая система|
 |VLAN|Virtual Local Area Network, виртуальная локальная сеть|
 |VLR|Visitor Location Register, регистр местоположения абонентов в роуминге в своей сети|
