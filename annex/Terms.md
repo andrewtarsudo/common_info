@@ -41,6 +41,7 @@
 |AuC|Authentication Center, центр аутентификации|
 |AVP|Attribute–Value Pair, пара "атрибут–значение"|
 |AVS|Application Virtual Switch|
+|UCS2|Universal Coded Character Set 2, стандарт кодировки букв и символов 2 байтами|
 |B2BUA|Back–to–Back User Agent, пользовательский агент Back–to–back|
 |BAOC|Barring of All Outgoing Calls, запрет исходящих вызовов|
 |BBSM|Building Broadband Service Manager, шлюз для доступа к публичным сетям|
