@@ -8,6 +8,7 @@
 |ABC–номер|Телефонный код, присвоенный по не географическому признаку|
 |ACE|Application Control Engine, система управления приложением|
 |ACK|Acknowledge|
+|TCP|Transport Control Protocol, протокол управления передачей данных|
 |ACN|Application Context Name, имя контекста приложения|
 |ACQ|All Call Query, запрос по всем вызовам|
 |ACS|Access Control Server, сервер управления доступом|
