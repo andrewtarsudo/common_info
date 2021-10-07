@@ -55,4 +55,4 @@
 * stat: the CAMEL voice calls statistics log file;
 * COM_warning: the component configuration subsystem alert log file;
 * COM_info: the component configuration subsystem event log file;
-* error: system error output log file;
+* error: the system error output log file;
