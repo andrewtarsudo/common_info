@@ -1,14 +1,8 @@
-# Термины и сокращения
-## Таблица { SEQ \"Таблица\" \* ARABIC \* MERGEFORMAT }
-
-|Термин|Комментарий|
-|:-----|:----------|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |ABC–номер|Телефонный код, присвоенный по не географическому признаку|
 |ACE|Application Control Engine, система управления приложением|
 |ACK|Acknowledge|
-|TCP|Transport Control Protocol, протокол управления передачей данных|
 |ACN|Application Context Name, имя контекста приложения|
 |ACQ|All Call Query, запрос по всем вызовам|
 |ACS|Access Control Server, сервер управления доступом|
@@ -41,7 +35,6 @@
 |AuC|Authentication Center, центр аутентификации|
 |AVP|Attribute–Value Pair, пара "атрибут–значение"|
 |AVS|Application Virtual Switch|
-|UCS2|Universal Coded Character Set 2, стандарт кодировки букв и символов 2 байтами|
 |B2BUA|Back–to–Back User Agent, пользовательский агент Back–to–back|
 |BAOC|Barring of All Outgoing Calls, запрет исходящих вызовов|
 |BBSM|Building Broadband Service Manager, шлюз для доступа к публичным сетям|
@@ -76,8 +69,8 @@
 |CBE|Cell Broadcast Entity, узел вещания по сотам|
 |CBS|Cell Broadcast Service, услуга трансляции по сотам|
 |CBSP|Cell Broadcast Service Protocol, протокол трансляции по сотам — протокол взаимодействия CBC и RNC|
-|CC|Cryptographic Checksum, криптографическая хэш–суммы|
 |CC|Credit-Control, кредитный контроль|
+|CC|Cryptographic Checksum, криптографическая хэш–суммы|
 |CCF|Charging Collection Function, функция сбора тарификационнных данных|
 |CCT|Cryptographic Checksum Template, шаблон криптографической хэш–суммы|
 |CDF|Charging Data Function, функция обработки данных о тарификации|
@@ -114,8 +107,8 @@
 |CRS|Call Recording System, система записи вызовов|
 |CS|Call Segment, вызов сегмента|
 |CS|Circuit Switch, коммутация каналов|
-|CSA|Connection Security Association|
 |CSA_ID|Connection Security Association Identity|
+|CSA|Connection Security Association|
 |CSAMAC|Connection Security Association Message Authentication Code|
 |CSCF|Call Session Control Function, функция управления сеансом голосового вызова|
 |CSD|Circuit Switched Data, передача данных по коммутируемым каналам|
@@ -159,9 +152,9 @@
 |DUNA|Destination Unavailable|
 |DUPU|Destination User Part Unavailable|
 |DWDM|Dense Wavelength Division Multiplexing|
-|EAP|Extensible Authentication Protocol, расширяемый протокол аутентификации|
 |E–DSS1|Extended Digital Subscriber Signaling, расширенная цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами|
 |E–UTRAN|Evolved Universal Terrestrial Radio Access Network, улучшенная универсальная сеть наземного радиодоступа стандарта LTE|
+|EAP|Extensible Authentication Protocol, расширяемый протокол аутентификации|
 |ECB|Electronic Code Book, электронная кодовая книга — один из режимов шифрования|
 |ECF|Event Charging Function, функция учета расходов на основе событий|
 |ECI|Embedded Common Interface, встроенный CI–модуль — интерфейс подключения модулей для взаимодействия с закодированными каналами|
@@ -210,8 +203,8 @@
 |GSMA|GSM Association, Ассоциация GSMA — организация операторов мобильной связи|
 |GT|Global Title, глобальный заголовок|
 |GTI|GT Indicator, индикатор GT|
-|GTP|GPRS Tunneling Protocol, протокол туннелирования GPRS — передача данных между узлами поддержки GPRS в пакетной сети|
 |GTP–C|GTP Control Plane, уровень управления GTP|
+|GTP|GPRS Tunneling Protocol, протокол туннелирования GPRS — передача данных между узлами поддержки GPRS в пакетной сети|
 |GUI|Graphical User Interface, графический пользовательский интерфейс|
 |GUID|Globally Unique Identifier, глобально уникальный идентификатор|
 |GUP|General User Profile, общий профиль пользователя|
@@ -337,8 +330,8 @@
 |MN|Message Number, номер обрабатываемого сообщения|
 |MNC|Mobile Network Code, код сети мобильной связи|
 |MNP|Mobile Number Portability, переносимость номеров мобильной сети|
-|MO|Mobile Originated, исходящий|
 |MO–SMS|Mobile Originated Short Message, исходящее SMS–сообщение|
+|MO|Mobile Originated, исходящий|
 |MPC|Multiple Party Conference, многопользовательская конференция|
 |MR|Message Reference, идентификатор соответствующего сообщения SMS-SUBMIT|
 |MRFC|Media Resource Function Controller, контролер мультимедийных ресурсов|
@@ -355,8 +348,8 @@
 |MSU|Meaning Signaling Unit, значащая сигнальная единица|
 |MSU|Message Signal Unit, сигнальная единица сообщения|
 |MSU|Message Signaling Unit, кадр передачи сигнальных сообщений|
-|MT|Mobile Terminated, входящий|
 |MT–SMS|Mobile Terminated Short Message, входящее SMS–сообщение|
+|MT|Mobile Terminated, входящий|
 |MTI|Message Type Indicator, индикатор типа сообщения|
 |MTP|Message Transfer Part, подсистема передачи сообщений|
 |MTU|Maximum Transmission Unit, максимальный размер пакета|
@@ -527,10 +520,10 @@
 |SM|Secure Message, сообщение с повышенными параметрами безопасности|
 |SMF|Session Management Function, функция управления сессиями|
 |SMPP|Short Messages Peer–to–Peer Protocol, протокол передачи сообщений одноранговой сети|
-|SMS|Short Message Service, служба коротких сообщений|
 |SMS–CB|Short Message Service – Cell Broadcast|
 |SMS–PP|Short Message Service – Point to Point|
 |SMS–SC|Short Message Service – Service Center|
+|SMS|Short Message Service, служба коротких сообщений|
 |SMSC|Short Message Service Center, центр обработки коротких сообщений|
 |SMSP|SMS Header Parameters, параметры заголовков SMS|
 |SMSP|Storage Management Services Protocol, протокол служб управления запоминающими устройствами|
@@ -583,6 +576,7 @@
 |TCAP|Transaction Capabilities Application Part, прикладная подсистема возможностей транзакции|
 |TCM|Toolkit for Conceptual Modeling, пакет программного обеспечения для концептуального моделирования|
 |TCP|Transport Control Protocol, протокол управления передачей данных|
+|TCP|Transport Control Protocol, протокол управления передачей данных|
 |TCS|Terminal Capability Set, функциональные возможности терминала|
 |TDM|Time Division Multiplexing, мультиплексирование с разделением по времени|
 |TDP|Trigger Detection Point, триггерная точка обнаружения|
@@ -608,6 +602,7 @@
 |UA|User–Agent, агент пользователя|
 |UBS|Universal Billing Server, универсальная биллинговый сервер|
 |UCA|UICC Ciphering Algorithm, алгоритм шифрования UICC|
+|UCS2|Universal Coded Character Set 2, стандарт кодировки букв и символов 2 байтами|
 |UDH|User Data Header, пользовательские заголовки запросов|
 |UDHI|User Data Header Indicator, индикатор UDH|
 |UDHL|User Data Header Length, длина UDH|
@@ -684,20 +679,20 @@
 |CAP_FCI|CAP_FurnishChargingInformation|
 |CAP_InitialDP_MO|CAP_InitialDetectionPoint_MobileOriginated|
 |CAP_InitialDP_MOC|CAP_InitialDetectionPoint_MobileOriginatedCall|
-|CAP_InitialDP_MT|CAP_InitialDetectionPoint_MobileTerminated|
 |CAP_InitialDP_MT_Resp|CAP_InitialDetectionPoint_MobileTerminated_Response|
+|CAP_InitialDP_MT|CAP_InitialDetectionPoint_MobileTerminated|
 |CAP_InitialDP_MTC|CAP_InitialDetectionPoint_MobileTerminatedCall|
-|CAP_X-CSI|CAP_X–CamelSubscriptionInformation|
 |CAP_PA|CAP_PlayAnnouncement|
 |CAP_RRBCSM|CAP_RequestReportBCSMEvent|
 |CAP_SRR|CAP_SpecializedResourceReport|
+|CAP_X-CSI|CAP_X–CamelSubscriptionInformation|
 |Diam ACA|Diameter Accounting–Answer|
 |Diam ACR|Diameter Accounting–Request|
-|Diam CCA|Diameter Credit–Control–Answer|
 |Diam CCA|Diameter Connection-Create-Answer|
 |Diam CCA|Diameter Credit–Control–Answer|
-|Diam CCR|Diameter Credit–Control–Request|
+|Diam CCA|Diameter Credit–Control–Answer|
 |Diam CCR|Diameter Connection-Create-Request|
+|Diam CCR|Diameter Credit–Control–Request|
 |Diam CCR|Diameter Credit–Control–Request|
 |Diam CDA|Diameter Connection-Delete-Answer|
 |Diam CDR|Diameter Connection-Delete-Request|
@@ -736,34 +731,34 @@
 |ISUP_IAM|ISUP_InitialAddressMessage|
 |MAP_ACK|MAP-Acknowledgement|
 |MAP_AlertSC_Resp|MAP-Alert-Service-Centre_Response|
-|MAP_ATI|MAP-Any-Time-Interrogation|
 |MAP_ATI_Resp|MAP-Any-Time-Interrogation_Response|
-|MAP_CL|MAP-Cancel-Location|
+|MAP_ATI|MAP-Any-Time-Interrogation|
 |MAP_CL_ACK|MAP-Cancel-Location_Acknowledgement|
+|MAP_CL|MAP-Cancel-Location|
 |MAP_DSD|MAP-Delete-Subscriber-Data|
-|MAP_ISD|MAP-Insert-Subscriber-Data|
 |MAP_ISD_ACK|MAP-Insert-Subscriber-Data_Acknowledgement|
-|MAP_MO_FSM|MAP-Mobile-Originated-Forward-SM|
+|MAP_ISD|MAP-Insert-Subscriber-Data|
 |MAP_MO_FSM_Resp|MAP-Mobile-Originated-Forward-SM_Response|
-|MAP_MT_FSM|MAP-Mobile-Terminated-Forward-SM|
+|MAP_MO_FSM|MAP-Mobile-Originated-Forward-SM|
 |MAP_MT_FSM_Resp|MAP-Mobile-Terminated-Forward-SM_Response|
-|MAP_PRN|MAP-Provide-Roaming-Number|
+|MAP_MT_FSM|MAP-Mobile-Terminated-Forward-SM|
 |MAP_PRN_ACK|MAP-Provide-Roaming-Number_Acknowledgement|
-|MAP_PSI|MAP-Provide-Subscriber-Info|
+|MAP_PRN|MAP-Provide-Roaming-Number|
 |MAP_PSI_Resp|MAP-Provide-Subscriber-Info_Response|
+|MAP_PSI|MAP-Provide-Subscriber-Info|
 |MAP_PSSD|MAP-ProcessUnstructed-SS-Data|
 |MAP_PSSR|MAP-ProcessUnstructed-SS-Request|
 |MAP_RDR|MAP-Report-Short-Message-Delivery-Status-Request|
-|MAP_ReadySM|MAP-Ready-For-SM|
 |MAP_ReadySM_Resp|MAP-Ready-For-SM_Response|
-|MAP_SAI|MAP-Send-Addressing-Information|
-|MAP_SAI|MAP-Send-Authentication-Info|
+|MAP_ReadySM|MAP-Ready-For-SM|
 |MAP_SAI_ACK|MAP-Send-Addressing-Information_Acknowledgement|
 |MAP_SAI_Resp|MAP-Send-Authentication-Info_Response|
-|MAP_SRI|MAP-Send-Routing-Info|
+|MAP_SAI|MAP-Send-Addressing-Information|
+|MAP_SAI|MAP-Send-Authentication-Info|
 |MAP_SRI_ACK|MAP-Send-Routing-Info_Acknowledgement|
-|MAP_SRI_SM|MAP-SendRoutingInfo-ForSM|
 |MAP_SRI_SM_ACK|MAP-Send-Routing-Info-ForSM_Acknowledgement|
-|MAP_UL|MAP-Update-Location|
+|MAP_SRI_SM|MAP-SendRoutingInfo-ForSM|
+|MAP_SRI|MAP-Send-Routing-Info|
 |MAP_UL_ACK|MAP-Update-Location_Acknowledgement|
+|MAP_UL|MAP-Update-Location|
 |MOLR|LCS Mobile-Originated-Location-Request|
