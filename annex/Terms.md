@@ -5,7 +5,7 @@
 |:-----|:----------|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
-|ABC–номер|Телефонный код, присвоенный по не географическому признаку|
+|ABC-номер|Телефонный код, присвоенный по не географическому признаку|
 |ACE|Application Control Engine, система управления приложением|
 |ACK|Acknowledge|
 |ACN|Application Context Name, имя контекста приложения|
