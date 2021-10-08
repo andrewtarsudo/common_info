@@ -1,5 +1,13 @@
 #### Always Capitalized:
-* all nouns (both proper and common ones), verbs, adjectives, adverbs, participles, pronouns, numerals, transgressives:<br>
+* parts of speech:
+  * all nouns (both proper and common ones);<br>
+  * all verbs;<br>
+  * all adjectives;<br>
+  * all adverbs;<br>
+  * all participles;<br>
+  * all pronouns;<br>
+  * all numerals;<br>
+  * all transgressives:<br>
 Romeo and Juliet; Wake UP, and Rise, and Shine; The Good, the Bad and the Ugly; Nothing Lasts Forever; One Flew Over the Cuckoo's Nest; Fool Me Once; House of Rising Sun; Three Men in a Boat;<br>
 * the first and the last words regardless of the part of speech:<br>
 For Whom the Bell Tolls; What Are You Waiting For?<br>
@@ -13,11 +21,11 @@ Perfume: The Story of a Murderer;<br>
   * the first and the last words, or
   * the ones of four letters or more, or
   * it is a part of the phrasal verb:<br>
-  Word Up; Come With Me Now; Come In; The Wizard of Oz;<br>
-* conjunctions - lowercase except for:
+Word Up; Come With Me Now; Come In; The Wizard of Oz;<br>
+* conjunctions - except for:
   * the ones of four letters or more, or
   * the words "yet", "so", "if":
-  Why Do So Many People Are Stressed; What If ...; I'm Not a Girl, Not Yet a Woman; Go Through the Mill;<br>
+Why Do So Many People Are Stressed; What If ...; I'm Not a Girl, Not Yet a Woman; Go Through the Mill;<br>
 
 #### hyphenated words: all words are capitalized except for:
 * words with prefixes:<br>
