@@ -374,6 +374,7 @@
 |NGN|Next Generation Networks, сети нового поколения — мультисервисные сети связи|
 |NGOSS|New Generation Operation Systems and Software, новое поколение систем технико-эксплуатационной поддержки и программных средств|
 |NI|Network Identifier, идентификатор сети|
+|NI USSI|Network Initiated Unstructured Supplementary Service Data over IMS, инициированный сетью USSD по сетям IMS|
 |NIC|Network Interface Controller, сетевой контроллер|
 |NMS|Network Management System, система управления сетью|
 |NP|Numbering Plan, план нумерации|
