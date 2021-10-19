@@ -4,6 +4,40 @@
 |Термин|Комментарий|
 |:-----|:----------|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
+|AMR|Adaptive multi rate, адаптивное кодирование с переменной скоростью|
+|CNG|Calling Tone, повторяющийся сигнал тональной частоты 1100 Гц, определяющий вызывающее устройство как факсимильный аппарат|
+|CED|Called Tone, сигнал тональной частоты 2100 Гц, определяющий вызываемое устройство как факсимильный аппарат|
+|CIC|Circuit Identity Code, код идентификации канала|
+|CUG|Closed User Group, замкнутая группа пользователей|
+|DIS|Digital Information Signal|
+|DCS|Digital Command Signal|
+|CFR|Confirmation to Receive|
+|TTF|Failure To Train|
+|EOP|End Of Procedure|
+|MPS|MultiPage Signal|
+|VBD|Voice Band Data|
+|DSP|Digital Signal Processor, процессор цифровой обработки сигналов|
+|ECM|Error Correction Mode, режим коррекции ошибок|
+|FXO|Foreign Exchange Office, аналоговый интерфейс абонентских устройств телефонных станций|
+|LAPD|Link Access Procedure on the D-Channel, процедура доступа к звену/линии для канала D|
+|FCS|Frame Check Sequence, контрольная последовательность кадра|
+|SAPT|Service Access Point Identifier, идентификатор точки доступа к услугам|
+|TEI|Terminal Endpoint Identifier, идентификатор оконечной точки терминала|
+|LFA|Loss of Frame Alignment, потеря цикловой (фазовой) синхронизации|
+|MFP|Multi Frequency Packet, блок типа "импульсный пакет №2"|
+|MFS|Multi Frequency Shuttle, блок типа "импульсный челнок"|
+|NSE|Named Signaling Event, ключ для обеспечения взаимодействия между протоколами факсимильной передачи|
+|NSLIP|Negative Slip, отрицательное проскальзывание (пропуск фрейма)|
+|PSLIP|Positive Slip, положительное проскальзывание (повтор фрейма)|
+|PRI|Primary Rate Interface, стандартный интерфейс сети ISDN, определяющий подключение станций ISDN к широкополосным магистралям между АТС или сетевыми коммутаторами|
+|SBC|Session Border Controller, пограничный контроллер сессий|
+|SLTM|SLT Message, сообщение SLT|
+|SLTC|SLT Control, контроль SLT|
+|SNMM|Signaling Network Management Message, сообщение от системы управления сетью сигнализации|
+|TUP|Telephone User Part, абонентская подсистема телефонной связи|
+|VFC|Voice Frequency Circuit, канал тональной частоты|
+|АОН|Автоматический определитель номера|
+|ТфОП|Телефонные сети общего пользования|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |ABC-номер|Телефонный код, присвоенный по не географическому признаку|
 |ABNF|Augmented Backus-Naur Form|
@@ -769,3 +803,42 @@
 |MAP_UL_ACK|MAP-Update-Location_Acknowledgement|
 |MAP_UL|MAP-Update-Location|
 |MOLR|LCS Mobile-Originated-Location-Request|
+
+|Сообщение|Расшифровка|
+|:--------|:----------|
+|CBA|Changeback-acknowledgement signal|
+|CBD|Changeback-declaration signal|
+|CHM|Changeover and changeback messages|
+|CNP|Connection-not-possible signal|
+|CNS|Connection-not-successful signal|
+|COA|Changeover-acknowledgement signal|
+|COO|Changeover-order signal|
+|CSS|Connection-successful signal|
+|DLC|Signalling-data-link-connection-order signal|
+|DLM|Signalling-data-link-connection-order message|
+|ECA|Emergency-changeover-acknowledgement signal|
+|ECM|Emergency-changeover message|
+|ECO|Emergency-changeover-order signal|
+|FCM|Signalling-traffic-flow-control messages|
+|LFU|Link forced uninhibit signal|
+|LIA|Link inhibit acknowledgement signal|
+|LID|Link inhibit denied signal|
+|LIN|Link inhibit signal|
+|LLT|Link local inhibit test signal|
+|LUA|Link uninhibit acknowledgement signal|
+|LUN|Link uninhibit signal|
+|LRT|Link remote inhibit test signal|
+|MIM|Management inhibit messages|
+|RCT|Signalling-route-set-congestion-test signal|
+|RSM|Signalling-route-set-test message|
+|RSR|Signalling-route-set-test signal for restricted destination (national option)|
+|RST|Signalling-route-set-test signal for prohibited destination|
+|TFA|Transfer-allowed signal|
+|TFC|Transfer-controlled signal|
+|TFM|Transfer-prohibited-transfer-allowed-transfer-restricted messages|
+|TFP|Transfer-prohibited signal|
+|TFR|Transfer-restricted signal (national option)|
+|TRA|Traffic-restart-allowed signal|
+|TRM|Traffic-restart-allowed message|
+|UFC|User part flow control messages|
+|UPU|User part unavailable signal|
