@@ -4,40 +4,6 @@
 |Термин|Комментарий|
 |:-----|:----------|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
-|AMR|Adaptive multi rate, адаптивное кодирование с переменной скоростью|
-|CNG|Calling Tone, повторяющийся сигнал тональной частоты 1100 Гц, определяющий вызывающее устройство как факсимильный аппарат|
-|CED|Called Tone, сигнал тональной частоты 2100 Гц, определяющий вызываемое устройство как факсимильный аппарат|
-|CIC|Circuit Identity Code, код идентификации канала|
-|CUG|Closed User Group, замкнутая группа пользователей|
-|DIS|Digital Information Signal|
-|DCS|Digital Command Signal|
-|CFR|Confirmation to Receive|
-|TTF|Failure To Train|
-|EOP|End Of Procedure|
-|MPS|MultiPage Signal|
-|VBD|Voice Band Data|
-|DSP|Digital Signal Processor, процессор цифровой обработки сигналов|
-|ECM|Error Correction Mode, режим коррекции ошибок|
-|FXO|Foreign Exchange Office, аналоговый интерфейс абонентских устройств телефонных станций|
-|LAPD|Link Access Procedure on the D-Channel, процедура доступа к звену/линии для канала D|
-|FCS|Frame Check Sequence, контрольная последовательность кадра|
-|SAPT|Service Access Point Identifier, идентификатор точки доступа к услугам|
-|TEI|Terminal Endpoint Identifier, идентификатор оконечной точки терминала|
-|LFA|Loss of Frame Alignment, потеря цикловой (фазовой) синхронизации|
-|MFP|Multi Frequency Packet, блок типа "импульсный пакет №2"|
-|MFS|Multi Frequency Shuttle, блок типа "импульсный челнок"|
-|NSE|Named Signaling Event, ключ для обеспечения взаимодействия между протоколами факсимильной передачи|
-|NSLIP|Negative Slip, отрицательное проскальзывание (пропуск фрейма)|
-|PSLIP|Positive Slip, положительное проскальзывание (повтор фрейма)|
-|PRI|Primary Rate Interface, стандартный интерфейс сети ISDN, определяющий подключение станций ISDN к широкополосным магистралям между АТС или сетевыми коммутаторами|
-|SBC|Session Border Controller, пограничный контроллер сессий|
-|SLTM|SLT Message, сообщение SLT|
-|SLTC|SLT Control, контроль SLT|
-|SNMM|Signaling Network Management Message, сообщение от системы управления сетью сигнализации|
-|TUP|Telephone User Part, абонентская подсистема телефонной связи|
-|VFC|Voice Frequency Circuit, канал тональной частоты|
-|АОН|Автоматический определитель номера|
-|ТфОП|Телефонные сети общего пользования|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |ABC-номер|Телефонный код, присвоенный по не географическому признаку|
 |ABNF|Augmented Backus-Naur Form|
@@ -57,6 +23,7 @@
 |ALPN|Application-Layer Protocol Negotiation, согласование протокола прикладного уровня|
 |AMA|Automatic Message Accounting, автоматическая система учета|
 |AMF|Access and Mobility Management Function, функция управления доступом и мобильностью|
+|AMR|Adaptive multi rate, адаптивное кодирование с переменной скоростью|
 |AoC|Advice of charge, уведомление об оплате|
 |AP|Alarm Processor, подсистема обработки аварий|
 |APC|Alias Point Code, код смежной сигнальной точки|
@@ -120,7 +87,9 @@
 |CdPA|Called Party Address, адрес вызываемого абонента|
 |CdPN|Called Party Number, номер вызываемого абонента|
 |CDR|Call Detail Record, подробная запись о вызове|
+|CED|Called Tone, сигнал тональной частоты 2100 Гц, определяющий вызываемое устройство как факсимильный аппарат|
 |CellID|Cell Identifier, идентификатор базовой станции сети GSM|
+|CFR|Confirmation to Receive|
 |CG|Cell Global, глобальная сота|
 |CGI|Cell Global Identifier, глобальный идентификатор соты|
 |CgPA|Calling Party Address, адрес вызывающего абонента|
@@ -128,6 +97,7 @@
 |CgPN|Calling Party Number, номер вызывающего абонента|
 |CHAP|Challenge Handshake Authentication Protocol, протокол аутентификации с предварительным согласованием вызова|
 |CI|Cell Identity, номер соты|
+|CIC|Circuit Identity Code, код идентификации канала|
 |CIDR|Classless Inter-Domain Routing, бесклассовая адресация|
 |CIR|Бинарный файл CDR с преобразованием номеров CgPN и CdPN для root PBX|
 |CL|Connection Logic, логика, работающая с соединениями|
@@ -135,6 +105,7 @@
 |CLIR|Calling Line Identification Restriction, запрет на автоматическое определение номера|
 |CLK|Clock, хронометр|
 |CMT|Cellular Messaging, передача сообщений в сотовой сети|
+|CNG|Calling Tone, повторяющийся сигнал тональной частоты 1100 Гц, определяющий вызывающее устройство как факсимильный аппарат|
 |CNTR|Counter, счетчик|
 |COM|Component Operation and Maintenance, эксплуатация и техническое обслуживание компонент|
 |CoS|Class of Service, класс обслуживания|
@@ -159,16 +130,19 @@
 |CSU|Channel Service Unit|
 |CSV|Comma Separated Value, формат данных с разделением значений запятыми|
 |CT|Command Type, дальнейшая операция с сообщением|
+|CUG|Closed User Group, замкнутая группа пользователей|
 |DAD|Destination Address, адрес назначения|
 |DAVA|Destination Available|
 |DBI|Database Interface, интерфейс базы данных|
 |DBRM|Database Request Machine, подсистема запросов к базе данных|
 |DCS|Data Coding Scheme, схема кодирования данных|
+|DCS|Digital Command Signal|
 |DEA|Diameter Edge Agent, пограничный агент сигнальной сети оператора в протоколе Diameter|
 |DEF–номер|Телефонный код, присвоенный по не географическому признаку|
 |DES/3DES|Data Encryption Standard, стандарт для шифрования данных — алгоритм шифрования, 3DES, Triple–DES, алгоритм шифрования на основе последовательного применения DES трижды|
 |DF|Dedicated File, специальный выделенный файл|
 |DHCP|Dynamic Host Configuration Protocol, протокол динамической настройки хоста|
+|DIS|Digital Information Signal|
 |DISA|Dial–In System Access, прямой внутрисистемный доступ|
 |DL|Downlink, нисходящая линия|
 |DNL|Destination Number Length, длина номера назначения|
@@ -183,6 +157,7 @@
 |DS|Digital Signature, цифровая подпись|
 |DSAI|Dynamic Service Activation Information, информация о динамической активации услуги|
 |DSCP|Differentiated Services Code Point, поле кода дифференцированных услуг|
+|DSP|Digital Signal Processor, процессор цифровой обработки сигналов|
 |DSS|Direct Station Selection, прямой выбор терминала|
 |DSS1|Digital Subscriber Signaling, цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами|
 |DST|Digital Signature Template, шаблон цифровой подписи|
@@ -198,6 +173,7 @@
 |ECB|Electronic Code Book, электронная кодовая книга — один из режимов шифрования|
 |ECF|Event Charging Function, функция учета расходов на основе событий|
 |ECI|Embedded Common Interface, встроенный CI–модуль — интерфейс подключения модулей для взаимодействия с закодированными каналами|
+|ECM|Error Correction Mode, режим коррекции ошибок|
 |EDE/EDE3|Encrypt–Decrypt–Encrypt, шифрование–дешифрование–шифрование — один из вариантов применения криптографического алгоритма DES/Triple–DES|
 |EDGE|Enhanced Data Rates for GSM Evolution, усовершенствование передачи данных для эволюции GSM|
 |EDR|Event Detail Record, подробная запись о случившемся событии|
@@ -210,6 +186,7 @@
 |eMSS|Enhanced MSC Server, улучшенный сервер MSC|
 |eNodeB|Evolved Node B, базовая станция сети LTE|
 |ENUM|E.164 Number Mapping, протоколы для преобразования номеров E.164 к системе Интернет–адресации|
+|EOP|End Of Procedure|
 |EPC|Evolved Packet Core, улучшенное пакетное ядро|
 |EPS|Evolved Packet System, пакетная система нового поколения|
 |ERMES|European Radio Messaging System, европейская система передачи сообщений на радиочастотах - один из стандартов, ныне не действующий|
@@ -219,6 +196,7 @@
 |ETSI|European Telecommunications Standards Institute, Европейский институт телекоммуникационных стандартов|
 |f|frequency, частота|
 |FCS|Failure Cause, причина неуспешного выполнения|
+|FCS|Frame Check Sequence, контрольная последовательность кадра|
 |FCS|Frame Check Sequence, контрольное поле|
 |FEC|Forward Error Correction, упреждающая коррекция ошибок — техника помехоустойчивого кодирования / декодирования|
 |FIB|Forward Indicator Bit, указательный бит вперед|
@@ -233,6 +211,7 @@
 |FTP|File Transfer Protocol, протокол передачи файлов|
 |FTS|Fixed Terminal System, система связи со стационарным терминалом|
 |FTS|forwardedToSubaddress, субадрес переадресации вызова|
+|FXO|Foreign Exchange Office, аналоговый интерфейс абонентских устройств телефонных станций|
 |GAN|Generative Adversarial Network, генеративно-состязательная сеть  |
 |GERAN|GSM/EDGE Radio Access Network, сеть радиодоступа к GSM/EDGE|
 |GGSN|Gateway GPRS Support Node, узел поддержки шлюза GPRS|
@@ -327,9 +306,11 @@
 |KIK|Key Identifier for protecting KIc and KID|
 |KPI|Key Performance Indicators, ключевые показатели эффективности|
 |LAC|Local Area Code, код локальной зоны|
+|LAPD|Link Access Procedure on the D-Channel, процедура доступа к звену/линии для канала D|
 |LBC|Load Balancing Cluster, кластер распределенной нагрузки|
 |LBS|Location Based Services, служба на основе определения местоположения абонента|
 |LCS|Location Service, служба определения местоположения|
+|LFA|Loss of Frame Alignment, потеря цикловой (фазовой) синхронизации|
 |LFN|longForwardedToNumber, адрес переадресации вызова|
 |LI|Legal Intervention, законное вмешательство в вызов|
 |LI|Length Indicator, индикатор длины|
@@ -357,6 +338,8 @@
 |MEID|Mobile Equipment Identifier, идентификатор мобильного оборудования сети CDMA|
 |MF|Master File, файл с основными данными|
 |MFC|Multi–Frequency Compelled, многочастотный вынужденный|
+|MFP|Multi Frequency Packet, блок типа "импульсный пакет №2"|
+|MFS|Multi Frequency Shuttle, блок типа "импульсный челнок"|
 |MGC|Media Gateway Control, система управления медиашлюзами|
 |MGCF|Media Gateway Control Function, узел управления медиашлюзом|
 |MGW|Media Gateway, шлюз передачи медиаданных|
@@ -373,6 +356,7 @@
 |MO–SMS|Mobile Originated Short Message, исходящее SMS–сообщение|
 |MO|Mobile Originated, исходящий|
 |MPC|Multiple Party Conference, многопользовательская конференция|
+|MPS|MultiPage Signal|
 |MR|Message Reference, идентификатор соответствующего сообщения SMS-SUBMIT|
 |MRFC|Media Resource Function Controller, контролер мультимедийных ресурсов|
 |MRFP|Media Resource Function Processor, процессор мультимедийных ресурсов|
@@ -407,14 +391,16 @@
 |NFV|Network Function Virtualization, виртуализация сетевых функций|
 |NGN|Next Generation Networks, сети нового поколения — мультисервисные сети связи|
 |NGOSS|New Generation Operation Systems and Software, новое поколение систем технико-эксплуатационной поддержки и программных средств|
-|NI|Network Identifier, идентификатор сети|
 |NI USSI|Network Initiated Unstructured Supplementary Service Data over IMS, инициированный сетью USSD по сетям IMS|
+|NI|Network Identifier, идентификатор сети|
 |NIC|Network Interface Controller, сетевой контроллер|
 |NMS|Network Management System, система управления сетью|
 |NP|Numbering Plan, план нумерации|
 |NPI|Numbering Plan Indicator, индикатор плана нумерации|
 |NRCT|noReplyConditionTime, таймер ожидания ответа при переадресации в случае отсутствия вызова|
 |NSAPI|Network Service Access Point Identifier, идентификатор точки доступа к сетевых службам|
+|NSE|Named Signaling Event, ключ для обеспечения взаимодействия между протоколами факсимильной передачи|
+|NSLIP|Negative Slip, отрицательное проскальзывание (пропуск фрейма)|
 |NSSF|Network Slice Selection Function, функция выбора сетевого слоя|
 |NTP|Network Time Protocol, сетевой протокол синхронизации времени|
 |O–CSI|Originating–CAMEL Subscription Information, информация о подписках для протоколов CAMEL при исходящих вызовах|
@@ -468,9 +454,11 @@
 |PoR|Proof–of–Receipt, уведомление о получении|
 |PRBT|Private Ring Back Tone, персональный сигнал контроля посылки вызова|
 |PRI|Primary Rate Interface, интерфейс первичного уровня — протокол для задания правил подключения станций ISDN к широкополосным магистралям|
+|PRI|Primary Rate Interface, стандартный интерфейс сети ISDN, определяющий подключение станций ISDN к широкополосным магистралям между АТС или сетевыми коммутаторами|
 |PS|Packet Switch, коммутация пакетов|
 |PS|Profile Server, профайл–сервер|
 |PSI|Public Service Identity, публичный идентификатор сервиса|
+|PSLIP|Positive Slip, положительное проскальзывание (повтор фрейма)|
 |PSTN|Public Switched Telephone Network, телефонная сеть общего пользования|
 |PTT|Push–to–Talk, полудуплексный режим приема–передачи|
 |PUK|PIN Unblocking Key, личный код разблокирования PIN|
@@ -523,8 +511,10 @@
 |SAC|Service Area Code, код зоны обслуживания|
 |SAD|Source Address, адрес отправителя|
 |SAI|Send Authentication Info, данные абонента для идентификации в сети|
+|SAPT|Service Access Point Identifier, идентификатор точки доступа к услугам|
 |SATA|Serial ATA, последовательный ATA|
 |SB|Service Builder, среда для настраиваемой инфраструктуры разработки приложений|
+|SBC|Session Border Controller, пограничный контроллер сессий|
 |SBcAP|SBc Application Part, прикладная часть протокола SBc — протокол взаимодействия CBC и MME|
 |SCC–AS|Service Centralization and Continuity Application Server, сервер для централизации и непрерывности предоставления услуг|
 |SCCP|Signaling Connection Control Part, подсистема управления сигнализацией|
@@ -558,6 +548,8 @@
 |SLC|Signaling Link Code, код сигнального соединения|
 |SLF|Subscriber Location Function, функция определения местоположения абонента|
 |SLS|Signaling Link Set, набор сигнальных линий  |
+|SLTC|SLT Control, контроль SLT|
+|SLTM|SLT Message, сообщение SLT|
 |SM|Secure Message, сообщение с повышенными параметрами безопасности|
 |SMF|Session Management Function, функция управления сессиями|
 |SMPP|Short Messages Peer–to–Peer Protocol, протокол передачи сообщений одноранговой сети|
@@ -572,6 +564,7 @@
 |SN|Notification System, система оповещения|
 |SN|Serial Number, серийный номер|
 |SNI|Server Name Indication, индикация имени сервера|
+|SNMM|Signaling Network Management Message, сообщение от системы управления сетью сигнализации|
 |SNMP|Simple Network Management Protocol, простой протокол управления сетью|
 |SNOW3G|Потоковый алгоритм шифрования 3GPP|
 |SOAP|Simple Object Access Protocol, простой протокол доступа к объектам — протокол обмена структурированными сообщениями в формате XML в компьютерных сетях|
@@ -621,6 +614,7 @@
 |TCS|Terminal Capability Set, функциональные возможности терминала|
 |TDM|Time Division Multiplexing, мультиплексирование с разделением по времени|
 |TDP|Trigger Detection Point, триггерная точка обнаружения|
+|TEI|Terminal Endpoint Identifier, идентификатор оконечной точки терминала|
 |TEID|Tunnel Endpoint Identifier, идентификатор конечной точки туннеля|
 |TETRA|Terrestrial Trunked Radio, магистральная наземная радиосвязь|
 |TID|Thread ID, идентификатор потока|
@@ -639,7 +633,9 @@
 |TSL|Transaction Sublevel, подуровень транзакций - подуровень системы TCAP|
 |TSP|Telecom Specific Peripheral, телекоммуникационное специальное периферийное устройство|
 |TT|Translation Type, тип трансляции|
+|TTF|Failure To Train|
 |TTL|Time–to–Live, время жизни|
+|TUP|Telephone User Part, абонентская подсистема телефонной связи|
 |UA|User–Agent, агент пользователя|
 |UBS|Universal Billing Server, универсальная биллинговый сервер|
 |UCA|UICC Ciphering Algorithm, алгоритм шифрования UICC|
@@ -671,6 +667,8 @@
 |UTRAN|UMTS Terrestrial Radio Access Network, сеть радиодоступа к UMTS|
 |VAS|Value Added Service, дополнительная платная услуга|
 |VASP|Value Added Service Provider, поставщик дополнительных платных услуг|
+|VBD|Voice Band Data|
+|VFC|Voice Frequency Circuit, канал тональной частоты|
 |VFS|Virtual File System, виртуальная файловая система|
 |VLAN|Virtual Local Area Network, виртуальная локальная сеть|
 |VLR|Visitor Location Register, регистр местоположения абонентов в роуминге в своей сети|
@@ -695,10 +693,12 @@
 |WML|Wireless Markup Language|
 |XML|eXtensible Markup Language, расширяемый язык разметки|
 |ААЛ|Абонентская аналоговая линия|
+|АОН|Автоматический определитель номера|
 |ИКМ–30|Плата с импульсно-кодовой модуляцией|
 |КТЧ|Канал тональной частоты|
 |ЛБДПН|Локальная база данных перенесенных абонентских номеров|
 |ПЛИС|Программируемая логическая интегральная схема|
+|ТфОП|Телефонные сети общего пользования|
 |УКИО|Унифицированная карточка информационного обмена|
 |ЦАЛ|Центральная аналоговая линия|
 |ЦБДПН|Центральная база данных перенесенных номеров|
