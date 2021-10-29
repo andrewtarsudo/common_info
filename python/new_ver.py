@@ -7,15 +7,15 @@ import numpy
 #a4 595.2 x 841.69
 #a3 1190.4 x 841.69
 # const coordinates for the A4 file
-UP_LEFT_X_A4 = 238
-UP_LEFT_Y_A4 = 706
-DOWN_RIGHT_X_A4 = 568
-DOWN_RIGHT_Y_A4 = 747
+UP_LEFT_X_A4 = 250
+UP_LEFT_Y_A4 = 650
+DOWN_RIGHT_X_A4 = 600
+DOWN_RIGHT_Y_A4 = 750
 # const coordinates for the A3 file
-UP_LEFT_X_A3 = 832
-UP_LEFT_Y_A3 = 664
-DOWN_RIGHT_X_A3 = 1160
-DOWN_RIGHT_Y_A3 = 700
+UP_LEFT_X_A3 = 750
+UP_LEFT_Y_A3 = 600
+DOWN_RIGHT_X_A3 = 1200
+DOWN_RIGHT_Y_A3 = 750
 # a list of the symbol combinations to search for
 words_to_find = ['ПАМР', 'ПДРА']
 
@@ -57,31 +57,49 @@ def check_path_dir(path_dir):
     else:
         pass
     finally:
-        print('result is ', res)
+        print('result is', res)
 
     ans = res
     return ans
 
 
+# line - the symbols to check
+# check_text - the words to check with
+# output - the result of checks of bool() type
+# do the check of the line, additional func fot check_text
+def check_line_start(line, check_text):
+    res = False
+
+    for word in check_text:
+        if line.startswith(word):
+            res = True
+            break
+    
+    return res
+
+
 # text - the symbols extracted from the area of str() type
 # words_find - the list of searched symbols
 # output - the result of checks of bool() type
-# do some checks for the text from the area
-def check_text(text, words_find):
-    res = False
+# filter the text from the area to leave only needed part
+def text_filtering(text, words_find):
+    text_list = text.splitlines()
+    # index to extract the correct line
+    index = -1
 
-    if len(text) == 0:
-        raise Exception('The text is not extracted.')
-    #counter to find out if the words we need are extracted properly
-    
-    for word in words_to_find:
-        if text.startswith(word):
-            # stop the program immediately when the match is found
+    for i in range(len(text_list)):
+        if check_line_start(text_list[i], words_find):
+            index = i
             res = True
-            return
+            break
 
-    print('text is ok?', counter)
-    ans = counter
+    if index == -1:
+        raise Exception('The text is not extracted.')
+
+    text = text_list[index].strip()
+    print(text)
+
+    ans = text
     return ans
 
 
@@ -169,16 +187,23 @@ def get_page_bound_pdf(path_pdf_file):
 def get_format(rect_width, rect_height):
     # define the most common formats
     page_sizes = (int(rect_width), int(rect_height))
+    print(rect_width, rect_height)
+    print(fitz.paper_size('A3'))
     
     for index in range(0,1):
-      if numpy.abs(page_sizes[index] - fitz.paper_size('A4')[index]) <= 2:
-        format_file = 'A4'  # 595.2 x 841.69
-      elif numpy.abs(page_sizes[index] - fitz.paper_size('A3')[index]) <= 2:
-        format_file = 'A3'  # 1190.4 x 841.69
-      else:
-        # show the warning but continue operating
-        format_file = 'PAGE_SIZE_NOT_STANDARD'
-        print('Page dimensions are unspecified.')
+        print(numpy.abs(page_sizes[index] - fitz.paper_size('A4')[index]))
+        print(numpy.abs(page_sizes[index] - fitz.paper_size('A3')[1-index]))
+        
+        if numpy.abs(page_sizes[index] - fitz.paper_size('A4')[index]) <= 2:
+            format_file = 'A4'  # 595.2 x 841.69.
+            
+        elif numpy.abs(page_sizes[index] - fitz.paper_size('A3')[1-index]) <= 2:
+            format_file = 'A3'  # 1190.4 x 841.69
+            
+        else:
+            # show the warning but continue operating
+            format_file = 'PAGE_SIZE_NOT_STANDARD'
+            print('Page dimensions are unspecified.')
     
     print('format:', format_file)
     ans = format_file
@@ -228,7 +253,6 @@ def dir_content_pdf(path_to_dir):
         if pathlib.PurePath(file).suffix == '.pdf':
             spec_content.append(pathlib.Path(file).resolve())
 
-    print(*spec_content)
     ans = spec_content
     return ans
 
@@ -266,11 +290,9 @@ def main_one_file(path_file_full):
     # to avoid any problems with objects, links, etc.
     del doc_to_extr, page_to_extr
     
-    if not check_text(text_extr, words_to_find):
-        raise Exception()
-        return
+    text = text_filtering(text_extr, words_to_find)
     
-    new_name = text_extr + '.pdf'
+    new_name = text + '.pdf'
     new_name_full = pathlib.PurePath(path_file_full).parent / new_name
     old_name_full = pathlib.Path(path_file_full).resolve()
     os.rename(old_name_full, new_name_full)
