@@ -9,11 +9,11 @@ import numpy
 # const coordinates for the A4 file
 UP_LEFT_X_A4 = 250
 UP_LEFT_Y_A4 = 650
-DOWN_RIGHT_X_A4 = 600
+DOWN_RIGHT_X_A4 = 580
 DOWN_RIGHT_Y_A4 = 750
 # const coordinates for the A3 file
-UP_LEFT_X_A3 = 750
-UP_LEFT_Y_A3 = 600
+UP_LEFT_X_A3 = 830
+UP_LEFT_Y_A3 = 650
 DOWN_RIGHT_X_A3 = 1200
 DOWN_RIGHT_Y_A3 = 750
 # a list of the symbol combinations to search for
@@ -66,16 +66,38 @@ def check_path_dir(path_dir):
 # line - the symbols to check
 # check_text - the words to check with
 # output - the result of checks of bool() type
-# do the check of the line, additional func fot check_text
+# do the check of the line, additional func for check_text
 def check_line_start(line, check_text):
     res = False
-
+    
     for word in check_text:
+        
         if line.startswith(word):
             res = True
             break
     
     return res
+
+
+# text - the symbols to correct
+# output - the new string with the change of str() type
+# do the substitution of some symbols
+def text_correct(text):
+    list_text = list(text)
+    print(list_text)
+    # correction of ' ' and '/' that ruin the naming
+    for index in range(len(list_text)-1):
+        print(index)
+        if list_text[index] == ' ':
+            del list_text[index]
+        
+        if list_text[index] == '/':
+            list_text[index] = str('7')
+          
+    # converse the list to the string
+    ans = ''.join(list_text)
+    print(ans)
+    return ans
 
 
 # text - the symbols extracted from the area of str() type
@@ -88,7 +110,7 @@ def text_filtering(text, words_find):
     index = -1
 
     for i in range(len(text_list)):
-        if check_line_start(text_list[i], words_find):
+        if check_line_start(text_list[i].strip(), words_find):
             index = i
             res = True
             break
@@ -96,9 +118,10 @@ def text_filtering(text, words_find):
     if index == -1:
         raise Exception('The text is not extracted.')
 
-    text = text_list[index].strip()
-    print(text)
-
+    text_res = text_list[index].strip()
+    print(text_res)
+    text = text_correct(text_res)
+ 
     ans = text
     return ans
 
