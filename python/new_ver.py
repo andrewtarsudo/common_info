@@ -2,6 +2,7 @@ import os
 import pathlib
 import fitz
 import numpy
+import warnings
 
 
 #a4 595.2 x 841.69
@@ -18,7 +19,8 @@ DOWN_RIGHT_X_A3 = 1200
 DOWN_RIGHT_Y_A3 = 750
 # a list of the symbol combinations to search for
 words_to_find = ['ПАМР', 'ПДРА', 'АМР']
-
+# list of improper renamed files
+list_bad_names = []
 
 # path_dir - full path to the directory of str() or Path() type
 # output - the value True/False of bool() type
@@ -92,7 +94,7 @@ def text_correct(text_to_corr):
     counter = True
 
     if len(list_text) < 15:
-        print(Warning)
+        warnings.warn('The name is too short.')
     else:
         if not str(list_text[4]) == '.':
             list_text.insert(4, '.')
@@ -106,6 +108,13 @@ def text_correct(text_to_corr):
 
             if str(list_text[index]) == 'О':
                 list_text[index] = str('0')
+
+    if len(list_text) > 16:
+        if str(list_text[-1:-3]) == str('СЬБ'):
+            del list_text[-2]
+
+        if str(list_text[-1:-2]) == str('СЬ'):
+            list_text[-1] = str('Б')
     
     # converse the list to the string
     ans = ''.join(list_text)
@@ -329,6 +338,10 @@ def main_one_file(path_file_full):
     del doc_to_extr, page_to_extr
     
     text = text_filtering(text_extr, words_to_find)
+
+    if len(text) < 15:
+        warnings.warn('The name is incorrect. Pay attention on it: ', text)
+        list_bad_names.append(text)
     
     new_name = text + '.pdf'
     new_name_full = pathlib.PurePath(path_file_full).parent / new_name
@@ -359,6 +372,8 @@ def main():
     os.chdir(path_dir_full)
     # list of filenames after renaming
     list_new_names = []
+
+
     # get all pdf files in the directory
     content_list = dir_content_pdf(path_dir_full)
 
@@ -366,6 +381,8 @@ def main():
         file_content = path_dir_full / string
         res_for_one_file = main_one_file(file_content)
         list_new_names.append(res_for_one_file)
+
+    print('Bad names: ', *list_bad_names)
 
     ans = 'Good work'
     return ans
