@@ -22,6 +22,7 @@ words_to_find = ['ПАМР', 'ПДРА', 'АМР']
 # list of improper renamed files
 list_bad_names = []
 
+
 # path_dir - full path to the directory of str() or Path() type
 # output - the value True/False of bool() type
 # verify the correctness 
