@@ -236,12 +236,8 @@ def get_format(rect_width, rect_height):
     # define the most common formats
     page_sizes = (int(rect_width), int(rect_height))
     print(rect_width, rect_height)
-    print(fitz.paper_size('A3'))
     
     for index in range(0,1):
-        print(numpy.abs(page_sizes[index] - fitz.paper_size('A4')[index]))
-        print(numpy.abs(page_sizes[index] - fitz.paper_size('A3')[1-index]))
-        
         if numpy.abs(page_sizes[index] - fitz.paper_size('A4')[index]) <= 2:
             format_file = 'A4'  # 595.2 x 841.69.
             
@@ -251,7 +247,7 @@ def get_format(rect_width, rect_height):
         else:
             # show the warning but continue operating
             format_file = 'PAGE_SIZE_NOT_STANDARD'
-            print('Page dimensions are unspecified.')
+            warnings.warn('Page dimensions are unspecified.')
     
     print('format:', format_file)
     ans = format_file
@@ -325,8 +321,6 @@ def main_one_file(path_file_full):
     page_bounds = get_page_bound_pdf(path_file_full)
     pdf_format_file = get_format(page_bounds[2], page_bounds[3])
     coord_rect_tuple = get_rectangle_extr(pdf_format_file)
-    print('type doc_to_extr: ', type(doc_to_extr))
-    print('type page_to_extr: ', type(page_to_extr))
     print('page parent: ', page_to_extr.parent)
     rect_to_extract = fitz.Rect(coord_rect_tuple)
     print('rect_to_extract: ', rect_to_extract)
@@ -341,7 +335,7 @@ def main_one_file(path_file_full):
     text = text_filtering(text_extr, words_to_find)
 
     if len(text) < 15:
-        warnings.warn('The name is incorrect. Pay attention on it: ', text)
+        warnings.warn('The name is incorrect. Pay attention on it')
         list_bad_names.append(text)
     
     new_name = text + '.pdf'
