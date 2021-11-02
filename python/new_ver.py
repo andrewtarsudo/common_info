@@ -17,7 +17,7 @@ UP_LEFT_Y_A3 = 650
 DOWN_RIGHT_X_A3 = 1200
 DOWN_RIGHT_Y_A3 = 750
 # a list of the symbol combinations to search for
-words_to_find = ['ПАМР', 'ПДРА']
+words_to_find = ['ПАМР', 'ПДРА', 'АМР']
 
 
 # path_dir - full path to the directory of str() or Path() type
@@ -71,7 +71,6 @@ def check_line_start(line, check_text):
     res = False
     
     for word in check_text:
-        
         if line.startswith(word):
             res = True
             break
@@ -82,18 +81,32 @@ def check_line_start(line, check_text):
 # text - the symbols to correct
 # output - the new string with the change of str() type
 # do the substitution of some symbols
-def text_correct(text):
+def text_correct(text_to_corr):
+    indeces = [5, 6, 7, 8, 9, 10, 12, 13, 14]
+    
+    text = text_to_corr.replace('/', '7')
     list_text = list(text)
     print(list_text)
     # correction of ' ' and '/' that ruin the naming
-    for index in range(len(list_text)-1):
-        print(index)
-        if list_text[index] == ' ':
-            del list_text[index]
-        
-        if list_text[index] == '/':
-            list_text[index] = str('7')
-          
+
+    counter = True
+
+    if len(list_text) < 15:
+        print(Warning)
+    else:
+        if not str(list_text[4]) == '.':
+            list_text.insert(4, '.')
+
+        if not str(list_text[11]) == '.':
+            list_text.insert(11, '.')
+
+        for index in indeces:
+            if str(list_text[index]) == 'З':
+                list_text[index] = str('3')
+
+            if str(list_text[index]) == 'О':
+                list_text[index] = str('0')
+    
     # converse the list to the string
     ans = ''.join(list_text)
     print(ans)
@@ -110,7 +123,9 @@ def text_filtering(text, words_find):
     index = -1
 
     for i in range(len(text_list)):
-        if check_line_start(text_list[i].strip(), words_find):
+        text_list[i] = text_list[i].replace(' ', '')
+        print('text_list_i', text_list[i])
+        if check_line_start(text_list[i], words_find):
             index = i
             res = True
             break
@@ -118,7 +133,7 @@ def text_filtering(text, words_find):
     if index == -1:
         raise Exception('The text is not extracted.')
 
-    text_res = text_list[index].strip()
+    text_res = text_list[index]
     print(text_res)
     text = text_correct(text_res)
  
@@ -128,12 +143,12 @@ def text_filtering(text, words_find):
 
 # file_path - full path to the file of str() or Path() type
 # output - the value True/False of bool() type
-# verify the correctness 
+# verify the correctness
 def check_path_file(file_path):
     path_file = pathlib.Path(file_path).resolve()
     res = True
     # check the interruption
-    if file_path == '_exit':
+    if file_path == '_exit_':
         res = False
         raise InterruptedError
         return
@@ -258,7 +273,7 @@ def get_rectangle_extr(formatFile):
 
     # construct Rect() rectangle
     rect_point_coord = (upleft_x, upleft_y, downright_x, downright_y)
-    print('rectangle coordinates to extract:', *rect_point_coord)
+    print('Rectangle coordinates to extract:', *rect_point_coord)
 
     ans = rect_point_coord
     return ans
