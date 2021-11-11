@@ -1,154 +1,291 @@
 import os
 import pathlib
 import fitz
+import numpy
+import warnings
 
-#a4 595.2 x 841.69
-#a3 1190.4 x 841.69
-
+# a4 595.2 x 841.69
+# a3 1190.4 x 841.69
 # const coordinates for the A4 file
-UP_LEFT_X_A4 = 246
-UP_LEFT_Y_A4 = 655
-DOWN_RIGHT_X_A4 = 578
-DOWN_RIGHT_Y_A4 = 697
-
+UP_LEFT_X_A4 = 242
+UP_LEFT_Y_A4 = 659
+DOWN_RIGHT_X_A4 = 550
+DOWN_RIGHT_Y_A4 = 826
 # const coordinates for the A3 file
-UP_LEFT_X_A3 = 833
-UP_LEFT_Y_A3 = 658
-DOWN_RIGHT_X_A3 = 1158
-DOWN_RIGHT_Y_A3 = 700
-
+UP_LEFT_X_A3 = 820
+UP_LEFT_Y_A3 = 672
+DOWN_RIGHT_X_A3 = 1140
+DOWN_RIGHT_Y_A3 = 826
 # a list of the symbol combinations to search for
-words_to_find = ['ПАМР', 'ПДРА']
+words_to_find = ['ПАМР', 'ПДРА', 'АМР']
+# list of improper renamed files
+list_bad_names = []
+# accuracy for the file format
+eps = 2
 
 
-# formatFile - the typographic format A#: ..., A3, A4, A5, ...
-# output - rectangle of Rect(x0, y0, x1, y1) type.
-# define the rectangle
-def rectangle_extr(formatFile):
-    # format A4, the common sheet
-    if formatFile == 'A4':
-        upleft_x = UP_LEFT_X_A4
-        upleft_y = UP_LEFT_Y_A4
-        downright_x = DOWN_RIGHT_X_A4
-        downright_y = DOWN_RIGHT_Y_A4
-    # format A3, two common sheets
-    elif formatFile == 'A3':
-        upleft_x = UP_LEFT_X_A3
-        upleft_y = UP_LEFT_Y_A3
-        downright_x = DOWN_RIGHT_X_A3
-        downright_y = DOWN_RIGHT_Y_A3
-    # another format, input its width and height
-    else:
-        upleft_x = 0
-        upleft_y = 0
-        downright_x = DOWN_RIGHT_X_A3
-        downright_y = DOWN_RIGHT_Y_A3
+# path_dir - full path to the directory of str() or Path() type
+# output - the value True/False of bool() type
+# verify the correctness
+def check_path_dir(path_dir):
+    path_dir_full = pathlib.Path(path_dir).resolve()
+    ans = True
+    # check the interruption
+    if path_dir_full == '_exit_':
+        raise InterruptedError
 
-    # construct Rect() rectangle
-    rectangle = fitz.Rect(upleft_x, upleft_y, downright_x, downright_y)
-    print('rectangle to extract: ', rectangle)
+    # check the existance
+    if not path_dir_full.exists():
+        print('The path is incorrect.')
+        ans = False
+    # check the path follows to the directory
+    if not path_dir_full.is_dir():
+        print('The path specifies not a directory.')
+        ans = False
+    # check the access permissions
+    try:
+        os.access(path_dir_full, os.O_RDONLY)
+    except PermissionError:
+        print('It\'s not yours.')
+        ans = False
+    finally:
+        print('result is', ans)
 
-    ans = rectangle
     return ans
 
 
-# path_file - the full path to the file of str() or Path() type
-# output - the first page of the file of Page() type
-# get the page to analyze
-def read_pdf(path_file):
-    while True:
-        if path_file == '_exit_':
-            print('The script is stopped.')
-            raise InterruptedError('_exit_ is used to quit the program.')
-        else:
-            file_path = pathlib.Path(path_file).resolve()
+# line - the symbols to check
+# check_text - the words to check with
+# output - the result of checks of bool() type
+# do the check of the line, additional func for check_text
+def check_line_start(line, check_text):
+    res = False
 
-            try:
-                # open the file
-                doc = fitz.open(file_path)
-                print('doc type:', type(doc))
-            except FileNotFoundError:
-                print('You fucked up. Type the real path to the real pdf file.')
-            except IsADirectoryError:
-                print('Type the path to the file up to the end.')
-            except PermissionError:
-                print('You have no access to the file. Do smth with it.')
-            else:
-                # extract the first page, interrupt the loop
-                doc_page = doc.load_page(0)
-                print('doc_page Type:', type(doc_page))
-                break
+    for word in check_text:
+        if line.startswith(word):
+            res = True
+            break
 
-    ans = doc_page
-    return ans
+    return res
 
 
-# page_pdf - the page of the document of Page() type
-# output - the format of the page of str() type. A3 and A4 are specified
-# determine the page format
-def file_format(page_doc):
-    # round the height and the width since it can be float but it's not good to compare numerics of different types
-    rectangular = page_doc.bound()
-    print('page bounds:', rectangular)
-    lRect_page = rectangular.round()
-    print('rounded page bounds:', lRect_page)
-    
-    # check if the rectangle becomes an interval
-    if lRect_page.is_empty:
-        print('You have some problems. I\'m sorry.')
-    #check if the rectangle is infinite, {x0, x1} and {y0, y1} are messed
-    #modify the rectangle if it's infinite
-    if lRect_page.is_infinite:
-        lRect_page.normalize()
+# text - the symbols to correct
+# output - the new string with the change of str() type
+# do the substitution of some symbols
+def text_correct(text_to_corr):
+    indeces = [5, 6, 7, 8, 9, 10, 12, 13, 14]
 
-    print('width = ', lRect_page.width)
-    print('height = ', lRect_page.height)
-    # define the most common formats
-    if lRect_page.height < 845 and lRect_page.height > 835:
-        if lRect_page.width < 600 and lRect_page.width > 590:
-            format = 'A4'  # 595.2 x 841.69
-        elif lRect_page.width < 1195 and lRect_page.width > 1185:
-            format = 'A3'  # 1190.4 x 841.69
-        else:
-            # show the warning but continue operating
-            format = 'UNKNOWN_FORMAT'
-            raise Warning('The format is non-standard.')
+    text = text_to_corr.replace('/', '7')
+    list_text = list(text)
+    print(list_text)
+    # correction of ' ' and '/' that ruin the naming
+
+    counter = True
+
+    if len(list_text) < 15:
+        warnings.warn('The name is too short.')
     else:
-        # show the warning but continue operating
-        format = 'PAGE_SIZE_NOT_STANDARD'
-        raise Warning('Page dimensions are unspecified')
+        if not str(list_text[4]) == '.':
+            list_text.insert(4, '.')
 
-    ans = format
-    print('format:', format)
+        if not str(list_text[11]) == '.':
+            list_text.insert(11, '.')
+
+        for index in indeces:
+            if str(list_text[index]) == 'З':
+                list_text[index] = str('3')
+
+            if str(list_text[index]) == 'О':
+                list_text[index] = str('0')
+
+    if len(list_text) > 16:
+        if str(list_text[-1:-3]) == str('СЬБ'):
+            del list_text[-2]
+
+        if str(list_text[-1:-2]) == str('СЬ'):
+            list_text[-1] = str('Б')
+
+    # converse the list to the string
+    ans = ''.join(list_text)
+    print(ans)
     return ans
 
 
 # text - the symbols extracted from the area of str() type
+# words_find - the list of searched symbols
 # output - the result of checks of bool() type
-# do some checks for the text from the area
-def check_text(text):
-    if len(text) == 0:
-        raise Exception('The text is not extracted.')
-    #counter to find out if the words we need are extracted properly
-    counter = 1
-    for word in words_to_find:
-        if text.startswith(word):
-            # stop the program immediately when the match is found
-            counter = 0
+# filter the text from the area to leave only needed part
+def text_filtering(text, words_find):
+    text_list = text.splitlines()
+    # index to extract the correct line
+    index = -1
+
+    for i in range(len(text_list)):
+        text_list[i] = text_list[i].replace(' ', '')
+        print('text_list_i', text_list[i])
+        if check_line_start(text_list[i], words_find):
+            index = i
+            res = True
             break
 
-    # the word is found
-    if counter == 0:
-        res = True
-    # the word is not found
-    elif counter == 1:
-        res = False
-    # smth strange happened
+    if index == -1:
+        warnings.warn('The text is not extracted.')
+        ans = '_fail_'
     else:
-        raise Exception('You\'d better praise your sins. The elementary counter works badly.')
+        text_res = text_list[index]
+        print(text_res)
+        ans = text_correct(text_res)
 
-    print('text is ok?', res)
+    return ans
+
+
+# file_path - full path to the file of str() or Path() type
+# output - the value True/False of bool() type
+# verify the correctness
+def check_path_file(file_path):
+    path_file = pathlib.Path(file_path).resolve()
+    res = True
+    # check the interruption
+    if file_path == '_exit_':
+        res = False
+        raise InterruptedError
+    # check the existance
+    if not path_file.exists():
+        print('The path is incorrect.')
+        res = False
+    # check the path follows to the directory
+    if not path_file.is_file():
+        print('The path specifies not a file.')
+        res = False
+    # check the access permissions
+    try:
+        os.access(file_path, os.O_RDONLY)
+    except PermissionError:
+        print('It\'s not yours.')
+        res = False
+    finally:
+        print('result is ', res)
+
     ans = res
+    return ans
+
+
+# path_pdf_file - full path to the file of Path() type
+# output - the parameters of list() with width of int type and height of int() type
+# get the page amd its dimensions to analyze
+
+def get_doc(path_pdf_file):
+    ans = fitz.Document(path_pdf_file)
+    return ans
+
+
+def get_page(path_pdf_file):
+    doc = fitz.open(path_pdf_file)
+    ans = doc.load_page(0)
+    return ans
+
+
+def get_page_bound_pdf(path_pdf_file):
+    doc = fitz.open(path_pdf_file)
+    page_file_pdf = doc.load_page(0)
+    # round the height and the width since it can be float but it's not good to compare numerics of different types
+    Rect = page_file_pdf.rect
+    iRect = Rect.irect
+    ans = (iRect.top_left, iRect.bottom_right, iRect.width, iRect.height)
+    return ans
+
+
+# rect_width and rect_height - the width and the height of the page of int() type
+# output - the page format of str() type
+# define the format
+def get_format(rect_width, rect_height):
+    # define the most common formats
+    page_sizes = (int(rect_width), int(rect_height))
+    print(rect_width, rect_height)
+
+    if rect_width - rect_height < 0:
+        orientation = 'portrait'
+
+        for index in range(0, 1):
+            if numpy.abs(page_sizes[index] - fitz.paper_size('A4')[index]) <= eps:
+                format_file = 'A4'  # 595.2 x 841.69
+            elif numpy.abs(page_sizes[index] - fitz.paper_size('A3')[index]) <= eps:
+                format_file = 'A3'  # 841.69 x 1190.4
+            else:
+                format_file = 'PAGE_SIZE_NOT_STANDARD'
+
+    elif rect_width - rect_height > 0:
+        orientation = 'landscape'
+
+        for index in range(0, 1):
+            if numpy.abs(page_sizes[index] - fitz.paper_size('A4')[1 - index]) <= eps:
+                format_file = 'A4'  # 841.69 x 595.2
+            elif numpy.abs(page_sizes[index] - fitz.paper_size('A3')[1 - index]) <= eps:
+                format_file = 'A3'  # 1190.4 x 841.69
+            else:
+                format_file = 'PAGE_SIZE_NOT_STANDARD'
+
+    else:
+        orientation = 'fucking sick bastard'
+        format_file = 'PAGE_SIZE_NOT_STANDARD'
+        warnings.warn('Page dimensions are unspecified.')
+
+    print('format:', format_file)
+    print('orientation:', orientation)
+
+    return (format_file, orientation)
+
+
+# formatFile - the typographic format A#: ..., A3, A4, A5, ... of str() type
+# output - rectangle of fitz.Rect() type
+# define the rectangle
+def get_rectangle_extr(format_file, orientation):
+    # format A4, the common sheet
+    if format_file == 'A4':
+        if orientation == 'portrait':
+            upleft_x = UP_LEFT_X_A4
+            upleft_y = UP_LEFT_Y_A4
+            downright_x = DOWN_RIGHT_X_A4
+            downright_y = DOWN_RIGHT_Y_A4
+        elif orientation == 'landscape':
+            upleft_x = UP_LEFT_X_A4
+            upleft_y = DOWN_RIGHT_Y_A4
+            downright_x = DOWN_RIGHT_X_A4
+            downright_y = UP_LEFT_Y_A4
+        else:
+            upleft_x = 0
+            upleft_y = 0
+            downright_x = fitz.paper_size('A4')[0]
+            downright_y = fitz.paper_size('A4')[1]
+    # format A3, two common sheets
+    elif format_file == 'A3':
+        if orientation == 'landscape':
+            upleft_x = UP_LEFT_X_A3
+            upleft_y = UP_LEFT_Y_A3
+            downright_x = DOWN_RIGHT_X_A3
+            downright_y = DOWN_RIGHT_Y_A3
+        if orientation == 'landscape':
+            upleft_x = UP_LEFT_X_A3
+            upleft_y = DOWN_RIGHT_Y_A3
+            downright_x = DOWN_RIGHT_X_A3
+            downright_y = UP_LEFT_Y_A3
+        else:
+            upleft_x = 0
+            upleft_y = 0
+            downright_x = fitz.paper_size('A3')[0]
+            downright_y = fitz.paper_size('A3')[1]
+    # another format, input its width and height
+    else:
+        upleft_x = 0
+        upleft_y = 0
+        downright_x = fitz.paper_size('A3')[0]
+        downright_y = fitz.paper_size('A3')[1]
+
+    # construct Rect() rectangle
+    rect_point_coord = (upleft_x, upleft_y, downright_x, downright_y)
+    print('Rectangle coordinates to extract:', *rect_point_coord)
+
+    ans = rect_point_coord
     return ans
 
 
@@ -164,109 +301,96 @@ def dir_content_pdf(path_to_dir):
         if pathlib.PurePath(file).suffix == '.pdf':
             spec_content.append(pathlib.Path(file).resolve())
 
-    print(*spec_content)
     ans = spec_content
     return ans
 
 
-# path_dir - full path to the directory of str() or Path() type
-# output - the value True/False of bool() type
-# verify the correctness 
-def check_path_dir(path_dir):
-    path_dir_full = pathlib.Path(path_dir).resolve()
-    res = True
+# path_file_full - path to the file of path() type
+# output - void
+# the main activity for one file
+def main_one_file(path_file_full):
+    # Algo:
+    # measure its dimensions -> get_page_bound_pdf
+    # find its format -> get_format
+    # define the rectangle for the textbox to extract the text -> get_rectangle_extr
+    # create the rectangle -> fitz.Rect
+    # extract the text -> fitz.Page.get_textbox
+    # clear all links to doc and page -> del
+    # check the text -> check_text
+    # define the full paths -> pathlib.Path().resolve(), pathlib.PurePath().parent
+    # rename the file -> os.rename()
+    doc_to_extr = fitz.open(path_file_full)
+    page_to_extr = doc_to_extr.load_page(0)
 
-    if path_dir_full == '_exit':
-        res = False
-        raise InterruptedError
-        return
+    page_bounds = get_page_bound_pdf(path_file_full)
+    pdf_format_file = get_format(page_bounds[2], page_bounds[3])
+    coord_rect_tuple = get_rectangle_extr(pdf_format_file)
+    print('page parent: ', page_to_extr.parent)
+    rect_to_extract = fitz.Rect(coord_rect_tuple)
+    print('rect_to_extract: ', rect_to_extract)
+    # doc_to_extr = get_doc(path_file_full)
+    # page_to_extr = get_page(path_file_full)
+    text_extr = page_to_extr.get_textbox(coord_rect_tuple)
+    print('text_extr: ', text_extr)
 
-    if not path_dir_full.exists():
-        print('The path is incorrect.')
-        res = False
-        return
+    # to avoid any problems with objects, links, etc.
+    del doc_to_extr, page_to_extr
 
-    if not path_dir_full.is_dir():
-        print('The path specifies not a directory.')
-        res = False
-        return
+    text = text_filtering(text_extr, words_to_find)
 
-    priint(res)
-    ans = res
+    if text == '_fail_':
+        warnings.warn('The text is not found. You have to rename the file manually.')
+        text_fail = True
+    elif len(text) < 15:
+        warnings.warn('The name is incorrect. Pay attention on it')
+        list_bad_names.append(text)
+        text_fail = True
+    else:
+        text_fail = False
+
+    if not text_fail:
+        new_name = text + '.pdf'
+        new_name_full = pathlib.PurePath(path_file_full).parent / new_name
+        old_name_full = pathlib.Path(path_file_full).resolve()
+        os.rename(old_name_full, new_name_full)
+        print('Success.')
+    else:
+        new_name_full = pathlib.PurePath(path_file_full).name
+
+    ans = new_name_full
     return ans
 
 
-# path_dir - full path to the file of str() or Path() type
-# output - the value True/False of bool() type
-# verify the correctness 
-def check_path_file(path_file):
-    path_dir_full = pathlib.Path(path_dir).resolve()
-    res = True
-
-    if path_dir_full == '_exit':
-        res = False
-        raise InterruptedError
-        return
-
-    if not path_dir_full.exists():
-        print('The path is incorrect.')
-        res = False
-        return
-
-    if not path_dir_full.is_file():
-        print('The path specifies not a file.')
-        res = False
-        return
-
-    print(res)
-    ans = res
-    return ans
-
-
-# def rectangle_extr(formatFile) -> fitz.Rect()
-# def file_format(page) -> str()
-# def read_pdf(file_path) -> fitz.Page()
-# def check_text(text) -> bool()
-# def dir_content_pdf(path_to_dir) -> list() of pathlib.PurePath()
+# def check_path_dir: path()/str() -> bool)
+# def check_text: str(), list[str(), str()] ->  bool()
+# def check_path_file: path()/str() -> bool)
+# def get_page_bound_pdf: path() -> list[int(), int()]
+# def get_format: list[int(), int()] -> str()
+# def get_rectangle_extr: str() -> fitz.Rect()
+# def dir_content_pdf: path() -> list[str(), str()]
+# def main_one_file: path() -> void()
 def main():
     input_user = str(input('Type the full path to the directory: '))
-    print(input_user)
-    input_path_dir = pathlib.Path(input_user).resolve()   
     # check if the path is proper:
     if not check_path_dir(input_user):
         raise Exception()
-        return
-    else:
-        os.chdir(input_path_dir)
 
+    path_dir_full = pathlib.Path(input_user).resolve()
+    os.chdir(path_dir_full)
     # list of filenames after renaming
     list_new_names = []
 
-    for file in dir_content_pdf(pathlib.Path.cwd()):
-        print(file)
-        pdf_file_page = read_pdf(pathlib.Path.cwd() / file)
-        print(type(pdf_file_page))
-        format_pdf = file_format(pdf_file_page)
-        print(format_pdf)
-        rect = rectangle_extr(format_pdf)
-        # rect - fitz.Rect()
-        # output - str()
-        extr_text = pdf_file_page.get_textbox(rect)
-        print(extr_text)
-        
-        # check the text from the pdf
-        if check_text(extr_text):
-            new_name_full = extr_text + '.pdf'
-            os.rename(pathlib.Path.cwd() / file, pathlib.Path.cwd() / new_name_full)
-            list_new_names.append(new_name_full)
-            print('Success.')
-            print(new_name_full)
-        # if the text fails
-        else:
-            print('The text is incorrect.')
-            list_new_names.append('FAILED')
+    # get all pdf files in the directory
+    content_list = dir_content_pdf(path_dir_full)
 
-    ans = list_new_names
+    for string in content_list:
+        file_content = path_dir_full / string
+        res_for_one_file = main_one_file(file_content)
+        list_new_names.append(res_for_one_file)
+
+    print('Bad names: ', *list_bad_names)
+
+    ans = 'Good work'
     return ans
 
 
