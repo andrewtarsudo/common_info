@@ -3,6 +3,35 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|PCB|Printed Circuit Board, печатная плата|
+|CRC4|Cyclic Redundancy Check 4 - метод контроля целостности данных потока Е1, описанный в ITU-T G.704|
+|NCS|Network Computing System, Remote Procedure Call (RPC) implementation of Apollo's Network Computing Architecture|
+|NSC|Non-Standard Facilities Command, сообщение о посылке NSF в протоколе T.30|
+|NSF|Non-Standard Facilities, нестандартное сообщение в протоколе T.30|
+|NSS|Non-Standard Facilities Setup, настройка NSF в протоколе T.30|
+|DSP|Digital Signal Processor, процессор цифровой обработки сигналов|
+|MGCP|Media Gateway Control Protocol|
+|VAD|Voice Activity Detection, функция обнаружения голоса|
+|ECM|Error Correction Mode, режим коррекции ошибок|
+|VBD|Voice Band Data, данные, передаваемые в полосе речевого сигнала|
+|NTE|Named Telephony Event? именное событие телефонии|
+|NCS|Network Communication Server, сервер управления сетью связи|
+|NSE|Named Signaling Event, именное событие сигнализации|
+|RSC|Reset Circuit, сброс канала ISUP|
+|RLC|Release Complete, освобождение канала ISUP завершено|
+|REL|Release, освобождение линии ISUP|
+|ACM|Address Complete Message, сообщение о приеме полного номера ISUP|
+|BLA|Blocking Acknowledgement, подтверждение блокировки канала ISUP|
+|BLO|Blocking, блокировка канала ISUP|
+|UBA|Unblocking Acknowledgement, подтверждение разблокировки канала ISUP|
+|UBL|Unblocking, разблокировка канала ISUP|
+|INF|Information, сообщение о передачи информации в ISUP|
+|SAM|Subsequent Address Message, последующее адресное сообщение ISUP|
+|CON|Connect, сообщение о получении ответа от вызываемого абонента в ISUP|
+|ANM|Answer Message, ответное сообщение от вызываемого абонента ISUP|
+|BCI|Backward Call Indicator, индикатор обратного вызова|
+|INR|Information Request, запрос информации в ISUP|
+|SUS|Suspend, удержание вызова ISUP|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |ABC-номер|Телефонный код, присвоенный по не географическому признаку|
