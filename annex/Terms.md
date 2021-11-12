@@ -596,7 +596,7 @@
 |SSRC|Synchronization Source, источник синхронизации|
 |SSW|Softswitch, гибкий программный коммутатор|
 |ST|Status, состояние|
-|STP|Signal Transfer Point, магистральный шлюз для маршрутизации трафика|
+|STP|Signaling Transfer Point, магистральный шлюз для маршрутизации трафика|
 |SUA|SCCP User Adaptation Layer, уровень адаптации пользователя SCCP к пользователям IP-сети|
 |SUERM|Signal Unit Error Rate Monitoring, контроль коэффициента ошибок при передаче сигнальных единиц|
 |SWP|Single Wire Protocol, однопроводной протокол|
