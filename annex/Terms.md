@@ -4,6 +4,8 @@
 |Термин|Комментарий|
 |:-----|:----------|
 |PCB|Printed Circuit Board, печатная плата|
+|GMLC|Gateway Mobile Location Centre, шлюзовой центр позиционирования|
+|SMLC|Serving Mobile Location Centre, обслуживающий центр позиционирования|
 |CRC4|Cyclic Redundancy Check 4 - метод контроля целостности данных потока Е1, описанный в ITU-T G.704|
 |NCS|Network Computing System, Remote Procedure Call (RPC) implementation of Apollo's Network Computing Architecture|
 |NSC|Non-Standard Facilities Command, сообщение о посылке NSF в протоколе T.30|
@@ -14,7 +16,7 @@
 |VAD|Voice Activity Detection, функция обнаружения голоса|
 |ECM|Error Correction Mode, режим коррекции ошибок|
 |VBD|Voice Band Data, данные, передаваемые в полосе речевого сигнала|
-|NTE|Named Telephony Event? именное событие телефонии|
+|NTE|Named Telephony Event, именное событие телефонии|
 |NCS|Network Communication Server, сервер управления сетью связи|
 |NSE|Named Signaling Event, именное событие сигнализации|
 |RSC|Reset Circuit, сброс канала ISUP|
