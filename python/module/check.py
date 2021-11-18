@@ -52,3 +52,11 @@ def check_path_file(file_path: str) -> bool:
         return False
     else:
         return True
+
+
+def main():
+    pass
+
+
+if __name__ == '__main__':
+    main()
