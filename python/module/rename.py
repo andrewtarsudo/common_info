@@ -27,27 +27,20 @@ TYPE_FILE_SUFFIX = '.pdf'
 
 # path_pdf_file - full path to the file of Path() type
 # output - the parameters of list() with width of int type and height of int() type
-# get the page amd its dimensions to analyze
+# get the page and its dimensions to analyze
 
 
-def get_page(path_pdf_file):
+def get_page(path_pdf_file: pathlib.PurePath) -> fitz.Page:
     doc = fitz.open(path_pdf_file)
     return doc.load_page(0)
 
 
-def get_page_bound_pdf(path_pdf_file):
+def get_page_bound_pdf(path_pdf_file: pathlib.PurePath) -> tuple:
     page_file_pdf = get_page(path_pdf_file)
     # round the height and the width since it can be float but it's not good to compare numerics of different types
     Rect = page_file_pdf.rect
-    iRect = Rect.irect
-    iRect_tl = iRect.top_left
-    iRect_br = iRect.bottom_right
 
-    iRect_width = iRect.width
-    iRect_height = iRect.height
-
-    ans = (iRect_tl, iRect_br, iRect_width, iRect_height)
-    return ans
+    return Rect.irect.top_left, Rect.irect.bottom_right, Rect.irect.width, Rect.irect.height
 
 
 # rect_width and rect_height - the width and the height of the page of int() type
@@ -55,13 +48,15 @@ def get_page_bound_pdf(path_pdf_file):
 # define the format
 def get_format(rect_width: int, rect_height: int) -> str:
     # define the most common formats
-    page_sizes = (int(rect_width), int(rect_height))
+    page_sizes = (rect_width, rect_height)
 
     for index in range(0, 1):
         if numpy.abs(page_sizes[index] - fitz.paper_size('A4')[index]) <= 2:
-            return 'A4'  # 595.2 x 841.69.
+            orientation = 'landscape'
+            return 'A4'  # 595.2 x 841.69
 
         elif numpy.abs(page_sizes[index] - fitz.paper_size('A3')[1 - index]) <= 2:
+            orientation = 'portrait'
             return 'A3'  # 1190.4 x 841.69
 
         else:
@@ -76,42 +71,28 @@ def get_format(rect_width: int, rect_height: int) -> str:
 def get_rectangle_extr(format_file: str) -> tuple:
     # format A4, the common sheet
     if format_file == 'A4':
-        upleft_x = UP_LEFT_X_A4
-        upleft_y = UP_LEFT_Y_A4
-        downright_x = DOWN_RIGHT_X_A4
-        downright_y = DOWN_RIGHT_Y_A4
+        return UP_LEFT_X_A4, UP_LEFT_Y_A4, DOWN_RIGHT_X_A4, DOWN_RIGHT_Y_A4
     # format A3, two common sheets
     elif format_file == 'A3':
-        upleft_x = UP_LEFT_X_A3
-        upleft_y = UP_LEFT_Y_A3
-        downright_x = DOWN_RIGHT_X_A3
-        downright_y = DOWN_RIGHT_Y_A3
+        return UP_LEFT_X_A3, UP_LEFT_Y_A3, DOWN_RIGHT_X_A3, DOWN_RIGHT_Y_A3
     # another format, input its width and height
     else:
-        upleft_x = 0
-        upleft_y = 0
-        downright_x = DOWN_RIGHT_X_A3
-        downright_y = DOWN_RIGHT_Y_A3
-
-    # construct Rect() rectangle
-    return tuple(upleft_x, upleft_y, downright_x, downright_y)
+        return 0, 0, DOWN_RIGHT_X_A3, DOWN_RIGHT_Y_A3
 
 
 # path_to_dir - the full path to the directory with pdf files of str() or Path() type
 # output - the list of the files with *.pdf extension inside the directory of list() type with items of Path() type
 # get the specific contents of the directory
-def dir_content_pdf(path_to_dir):
+def dir_content_specified(path_to_dir: pathlib.Path) -> list:
     full_content = os.listdir(path_to_dir)
-
-    for file in full_content:
-        # transform needed strings to paths of Path() type
-        return [file for file in full_content if pathlib.PurePath(file).suffix == TYPE_FILE_SUFFIX]
+    # transform needed strings to paths of Path() type
+    return [file for file in full_content if pathlib.PurePath(file).suffix == TYPE_FILE_SUFFIX]
 
 
 # path_file_full - path to the file of path() type
 # output - void
 # the main activity for one file
-def main_one_file(path_file_full):
+def main_one_file(path_file_full: pathlib.PurePath) -> pathlib.PurePath:
     # Algo:
     # measure its dimensions -> get_page_bound_pdf
     # find its format -> get_format
@@ -163,7 +144,7 @@ def main_one_file(path_file_full):
 # def dir_content_pdf: path() -> list[str(), str()]
 # def main_one_file: path() -> void()
 def main():
-    input_user = str(input('Type the full path to the directory: '))
+    input_user = input('Type the full path to the directory: ')
     # check if the path is proper:
     if not check.check_path_dir(input_user):
         raise Exception()
@@ -171,17 +152,18 @@ def main():
     path_dir_full = pathlib.Path(input_user).resolve()
     os.chdir(path_dir_full)
     # list of filenames after renaming
-    list_new_names = []
-
     # get all pdf files in the directory
-    content_list = dir_content_pdf(path_dir_full)
+    content_list = dir_content_specified(path_dir_full)
 
-    for string in content_list:
-        file_content = path_dir_full / string
-        res_for_one_file = main_one_file(file_content)
-        list_new_names.append(res_for_one_file)
+    # for string in content_list:
+    #     file_content = path_dir_full / string
+    #     res_for_one_file = main_one_file(file_content)
+    #     list_new_names.append(res_for_one_file)
+    
+    list_new_names = [main_one_file(path_dir_full / string) for string in content_list]
 
     print('Bad names: ', *list_bad_names)
+    print('New names', *list_new_names)
 
     ans = 'Good work'
     return ans
