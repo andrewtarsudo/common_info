@@ -28,8 +28,6 @@ TYPE_FILE_SUFFIX = '.pdf'
 # path_pdf_file - full path to the file of Path() type
 # output - the parameters of list() with width of int type and height of int() type
 # get the page and its dimensions to analyze
-
-
 def get_page(path_pdf_file: pathlib.PurePath) -> fitz.Page:
     doc = fitz.open(path_pdf_file)
     return doc.load_page(0)
@@ -40,15 +38,11 @@ def get_page_bound_pdf(path_pdf_file: pathlib.PurePath) -> tuple:
     # round the height and the width since it can be float but it's not good to compare numerics of different types
     Rect = page_file_pdf.rect
 
-    return Rect.irect.top_left, Rect.irect.bottom_right, Rect.irect.width, Rect.irect.height
+    return Rect.irect.width, Rect.irect.height
 
 
 def get_orient(rect_width: int, rect_height: int) -> str:
     return 'landscape' if numpy.greater(rect_width, rect_height) else 'portrait'
-
-
-def get_diff_eps(var1, var2, eps) -> bool:
-    return numpy.sum(numpy.abs(numpy.subtract(var1, var2))) > eps
 
 
 # rect_width and rect_height - the width and the height of the page of int() type
@@ -60,18 +54,25 @@ def get_format(rect_width: int, rect_height: int, orient: str) -> tuple:
     print(rect_width, rect_height)
     match orient:
         case 'portrait':
-            return 'A4' (int(page[index]) in range(value - EPS, value + EPS) for index, value in enumerate(
-                fitz.paper_size('A4')))
-            # if rect_width in range(fitz.paper_size('A4')[0] - EPS, fitz.paper_size('A4')[0] + EPS)
-            if get_diff_eps(numpy.array(rect_width, rect_height), fitz.paper_size('A4'), EPS):
-                return 'A4', orient  # 595.2 x 841.69
-            elif get_diff_eps(numpy.array(rect_width, rect_height), fitz.paper_size('A3'), EPS):
-                return 'A3', orient  # 841.69 x 1190.4
+            # return 'A4'
+            for index, value in enumerate(fitz.paper_size('A4')):
+                if -EPS <= page[index] - value <= EPS:
+                    return 'A4', orient  # 595.2 x 841.69
+
+            for index, value in enumerate(fitz.paper_size('A4')):
+                if -EPS <= page[index] - value <= EPS:
+                    return 'A3', orient  # 841.69 x 1190.4
+
         case 'landscape':
-            if get_diff_eps(numpy.array(rect_height, rect_width), fitz.paper_size('A4'), EPS):
-                return 'A4', orient  # 841.69 x 595.2
-            elif get_diff_eps(numpy.array(rect_height, rect_width), fitz.paper_size('A3'), EPS):
-                return 'A3', orient  # 1190.4 x 841.69
+            for index, value in enumerate(fitz.paper_size('A4')):
+                if -EPS <= page[1 - index] - value <= EPS:
+                    return 'A4', orient  # 841.69 x 595.2
+
+            for index, value in enumerate(fitz.paper_size('A4')):
+                if -EPS <= page[index] - value <= EPS:
+                    return 'A3', orient  # 1190.4 x 841.69
+        case _:
+            return 'NON_STANDARD', orient
 
 
 # formatFile - the typographic format A#: ..., A3, A4, A5, ... of str() type
@@ -116,13 +117,11 @@ def main_one_file(path_file_full: pathlib.PurePath) -> pathlib.PurePath:
     page_to_extr = doc_to_extr.load_page(0)
 
     page_bounds = get_page_bound_pdf(path_file_full)
-    pdf_format_file = get_format(page_bounds[2], page_bounds[3])
-    coord_rect_tuple = get_rectangle_extr(pdf_format_file)
+    pdf_format_file = get_format(page_bounds[0], page_bounds[1], get_orient(page_bounds[0], page_bounds[1]))
+    coord_rect_tuple = get_rectangle_extr(pdf_format_file[0], pdf_format_file[1])
     print('page parent: ', page_to_extr.parent)
     rect_to_extract = fitz.Rect(coord_rect_tuple)
     print('rect_to_extract: ', rect_to_extract)
-    # doc_to_extr = get_doc(path_file_full)
-    # page_to_extr = get_page(path_file_full)
     text_extr = page_to_extr.get_textbox(coord_rect_tuple)
     print('text_extr: ', text_extr)
 
@@ -163,11 +162,6 @@ def main():
     # list of filenames after renaming
     # get all pdf files in the directory
     content_list = dir_content_specified(path_dir_full)
-
-    # for string in content_list:
-    #     file_content = path_dir_full / string
-    #     res_for_one_file = main_one_file(file_content)
-    #     list_new_names.append(res_for_one_file)
 
     list_new_names = [main_one_file(path_dir_full / string) for string in content_list]
 
