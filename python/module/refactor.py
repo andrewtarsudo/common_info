@@ -69,7 +69,7 @@ def get_format(rect_width: int, rect_height: int, orient: str) -> tuple:
                     return 'A4', orient  # 841.69 x 595.2
 
             for index, value in enumerate(fitz.paper_size('A4')):
-                if -EPS <= page[index] - value <= EPS:
+                if -EPS <= page[1 - index] - value <= EPS:
                     return 'A3', orient  # 1190.4 x 841.69
         case _:
             return 'NON_STANDARD', orient
