@@ -3,43 +3,13 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
-|PCB|Printed Circuit Board, печатная плата|
-|GMLC|Gateway Mobile Location Centre, шлюзовой центр позиционирования|
-|SMLC|Serving Mobile Location Centre, обслуживающий центр позиционирования|
-|CRC4|Cyclic Redundancy Check 4 - метод контроля целостности данных потока Е1, описанный в ITU-T G.704|
-|NCS|Network Computing System, Remote Procedure Call (RPC) implementation of Apollo's Network Computing Architecture|
-|NSC|Non-Standard Facilities Command, сообщение о посылке NSF в протоколе T.30|
-|NSF|Non-Standard Facilities, нестандартное сообщение в протоколе T.30|
-|NSS|Non-Standard Facilities Setup, настройка NSF в протоколе T.30|
-|DSP|Digital Signal Processor, процессор цифровой обработки сигналов|
-|MGCP|Media Gateway Control Protocol|
-|VAD|Voice Activity Detection, функция обнаружения голоса|
-|ECM|Error Correction Mode, режим коррекции ошибок|
-|VBD|Voice Band Data, данные, передаваемые в полосе речевого сигнала|
-|NTE|Named Telephony Event, именное событие телефонии|
-|NCS|Network Communication Server, сервер управления сетью связи|
-|NSE|Named Signaling Event, именное событие сигнализации|
-|RSC|Reset Circuit, сброс канала ISUP|
-|RLC|Release Complete, освобождение канала ISUP завершено|
-|REL|Release, освобождение линии ISUP|
-|ACM|Address Complete Message, сообщение о приеме полного номера ISUP|
-|BLA|Blocking Acknowledgement, подтверждение блокировки канала ISUP|
-|BLO|Blocking, блокировка канала ISUP|
-|UBA|Unblocking Acknowledgement, подтверждение разблокировки канала ISUP|
-|UBL|Unblocking, разблокировка канала ISUP|
-|INF|Information, сообщение о передачи информации в ISUP|
-|SAM|Subsequent Address Message, последующее адресное сообщение ISUP|
-|CON|Connect, сообщение о получении ответа от вызываемого абонента в ISUP|
-|ANM|Answer Message, ответное сообщение от вызываемого абонента ISUP|
-|BCI|Backward Call Indicator, индикатор обратного вызова|
-|INR|Information Request, запрос информации в ISUP|
-|SUS|Suspend, удержание вызова ISUP|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |ABC-номер|Телефонный код, присвоенный по не географическому признаку|
-|ABNF|Augmented Backus-Naur Form|
+|ABNF|Augmented Backus-Naur Form, расширенная форма Бэкуса-Наура|
 |ACE|Application Control Engine, система управления приложением|
 |ACK|Acknowledge|
+|ACM|Address Complete Message, сообщение о приеме полного номера ISUP|
 |ACN|Application Context Name, имя контекста приложения|
 |ACQ|All Call Query, запрос по всем вызовам|
 |ACS|Access Control Server, сервер управления доступом|
@@ -55,6 +25,7 @@
 |AMA|Automatic Message Accounting, автоматическая система учета|
 |AMF|Access and Mobility Management Function, функция управления доступом и мобильностью|
 |AMR|Adaptive multi rate, адаптивное кодирование с переменной скоростью|
+|ANM|Answer Message, ответное сообщение от вызываемого абонента ISUP|
 |AoC|Advice of charge, уведомление об оплате|
 |AP|Alarm Processor, подсистема обработки аварий|
 |APC|Alias Point Code, код смежной сигнальной точки|
@@ -72,18 +43,21 @@
 |ATE|Automatic Test Equipment, автоматическая система контроля|
 |AuC|Authentication Center, центр аутентификации|
 |AVP|Attribute–Value Pair, пара "атрибут–значение"|
-|AVS|Application Virtual Switch|
+|AVS|Application Virtual Switch, виртуальный коммутатор приложений|
 |B2BUA|Back–to–Back User Agent, пользовательский агент Back–to–back|
 |BAOC|Barring of All Outgoing Calls, запрет исходящих вызовов|
 |BBSM|Building Broadband Service Manager, шлюз для доступа к публичным сетям|
 |BCC|Basic Station Colour Code, код раскраски базовой станции|
+|BCI|Backward Call Indicator, индикатор обратного вызова|
 |BCSM|Basic Call State Model, базовая модель состояния вызова CAMEL|
 |BER–TLV|Basic encoding rules — tag, length, value|
 |BFCP|Binary Floor Control Protocol, протокол управления на двоичном уровне — протокол для обмена презентациями во время видеоконференций|
 |BGCF|Breakout Gateway Control Function, узел управления шлюзами|
 |BGP|Border Gateway Protocol, протокол граничного шлюза|
 |BIB|Backward Indicator Bit, указательный бит назад|
+|BLA|Blocking Acknowledgement, подтверждение блокировки канала ISUP|
 |BLF|Busy Lamp Field, панель индикации состояния абонентов|
+|BLO|Blocking, блокировка канала ISUP|
 |BPC|Backplane Programmable Automation Controller, программируемый контроллер автоматизации системной платы|
 |BRAS|Broadband Remote Access Server, широкополосный сервер удаленного доступа|
 |BRI|Basic Rate Interface, интерфейс базового доступа|
@@ -92,7 +66,7 @@
 |BSN|Backward Sequence Number, номер последовательности назад|
 |BSNR|Backward Sequence Number Routing, маршрутизация номера последовательности назад|
 |BV|Bon Voyage, система оповещения роумеров при пересечении границы партнерской сети связи|
-|BWT|Block Waiting Time|
+|BWT|Block Waiting Time, время ожидания блока|
 |C–APDU|Command–APDU|
 |C–TPDU|Command–TPDU|
 |CA|Component Address, компонентный адрес|
@@ -113,7 +87,7 @@
 |CCT|Cryptographic Checksum Template, шаблон криптографической хэш–суммы|
 |CDF|Charging Data Function, функция обработки данных о тарификации|
 |CDIV|Call Diversion, переключение связи|
-|CDM|Continuous Diagnostics and Mitigation|
+|CDM|Continuous Diagnostics and Mitigation, система диагностики и предотвращения аварий|
 |CDMA|Code Division Multiple Access, многостанционный доступ с кодовым разделением каналов|
 |CdPA|Called Party Address, адрес вызываемого абонента|
 |CdPN|Called Party Number, номер вызываемого абонента|
@@ -139,6 +113,7 @@
 |CNG|Calling Tone, повторяющийся сигнал тональной частоты 1100 Гц, определяющий вызывающее устройство как факсимильный аппарат|
 |CNTR|Counter, счетчик|
 |COM|Component Operation and Maintenance, эксплуатация и техническое обслуживание компонент|
+|CON|Connect, сообщение о получении ответа от вызываемого абонента в ISUP|
 |CoS|Class of Service, класс обслуживания|
 |CPE|Control Power Entity, модуль служебных логик|
 |CPE|Control Processing Entity, управляющий процессор|
@@ -146,6 +121,7 @@
 |CPM|Central Processor Module, модуль главного процессора|
 |CPT|Cellular Paging, сотовая пейджинговая связь|
 |CPU|Central Processing Unit, центральный процессор|
+|CRC4|Cyclic Redundancy Check 4 - метод контроля целостности данных потока Е1, описанный в ITU-T G.704|
 |CRS|Call Recording System, система записи вызовов|
 |CS|Call Segment, вызов сегмента|
 |CS|Circuit Switch, коммутация каналов|
@@ -173,7 +149,7 @@
 |DES/3DES|Data Encryption Standard, стандарт для шифрования данных — алгоритм шифрования, 3DES, Triple–DES, алгоритм шифрования на основе последовательного применения DES трижды|
 |DF|Dedicated File, специальный выделенный файл|
 |DHCP|Dynamic Host Configuration Protocol, протокол динамической настройки хоста|
-|DIS|Digital Information Signal|
+|DIS|Digital Identification Signal|
 |DISA|Dial–In System Access, прямой внутрисистемный доступ|
 |DL|Downlink, нисходящая линия|
 |DNL|Destination Number Length, длина номера назначения|
@@ -188,6 +164,7 @@
 |DS|Digital Signature, цифровая подпись|
 |DSAI|Dynamic Service Activation Information, информация о динамической активации услуги|
 |DSCP|Differentiated Services Code Point, поле кода дифференцированных услуг|
+|DSP|Digital Signal Processor, процессор цифровой обработки сигналов|
 |DSP|Digital Signal Processor, процессор цифровой обработки сигналов|
 |DSS|Direct Station Selection, прямой выбор терминала|
 |DSS1|Digital Subscriber Signaling, цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами|
@@ -204,6 +181,7 @@
 |ECB|Electronic Code Book, электронная кодовая книга — один из режимов шифрования|
 |ECF|Event Charging Function, функция учета расходов на основе событий|
 |ECI|Embedded Common Interface, встроенный CI–модуль — интерфейс подключения модулей для взаимодействия с закодированными каналами|
+|ECM|Error Correction Mode, режим коррекции ошибок|
 |ECM|Error Correction Mode, режим коррекции ошибок|
 |EDE/EDE3|Encrypt–Decrypt–Encrypt, шифрование–дешифрование–шифрование — один из вариантов применения криптографического алгоритма DES/Triple–DES|
 |EDGE|Enhanced Data Rates for GSM Evolution, усовершенствование передачи данных для эволюции GSM|
@@ -246,6 +224,7 @@
 |GAN|Generative Adversarial Network, генеративно-состязательная сеть  |
 |GERAN|GSM/EDGE Radio Access Network, сеть радиодоступа к GSM/EDGE|
 |GGSN|Gateway GPRS Support Node, узел поддержки шлюза GPRS|
+|GMLC|Gateway Mobile Location Centre, шлюзовой центр позиционирования|
 |GMSC|Gateway MSC, шлюз MSC|
 |GPRS|General Packet Radio Service, система пакетной радиосвязи общего пользования|
 |GSI|Geographical Scope Interface, интерфейс услуги геолокации|
@@ -302,8 +281,10 @@
 |IMSI|International Mobile Subscriber Identifier, международный идентификатор абонента мобильной связи|
 |IN|Intellectual Networks, интеллектуальные сети|
 |INAP|Intelligent Network Application Protocol, прикладной протокол интеллектуальной сети|
+|INF|Information, сообщение о передачи информации в ISUP|
 |InitialDP|Initial Detection Point, начальное место обнаружения|
 |INN|Internal Network Number, внутренний сетевой номер|
+|INR|Information Request, запрос информации в ISUP|
 |InRoute|Incoming Route, входящий маршрут|
 |INS|Instruction|
 |IP|Internet Protocol, межсетевой протокол|
@@ -338,6 +319,7 @@
 |KPI|Key Performance Indicators, ключевые показатели эффективности|
 |LAC|Local Area Code, код локальной зоны|
 |LAPD|Link Access Procedure on the D-Channel, процедура доступа к звену/линии для канала D|
+|LAU|Location-Area-Update|
 |LBC|Load Balancing Cluster, кластер распределенной нагрузки|
 |LBS|Location Based Services, служба на основе определения местоположения абонента|
 |LCS|Location Service, служба определения местоположения|
@@ -373,6 +355,7 @@
 |MFS|Multi Frequency Shuttle, блок типа "импульсный челнок"|
 |MGC|Media Gateway Control, система управления медиашлюзами|
 |MGCF|Media Gateway Control Function, узел управления медиашлюзом|
+|MGCP|Media Gateway Control Protocol, протокол управления медиашлюзами|
 |MGW|Media Gateway, шлюз передачи медиаданных|
 |MID|Message Identifier, идентификатор сообщения|
 |MME|Mobility Management Entity, узел управления мобильностью|
@@ -418,6 +401,8 @@
 |NAS|Non–Access Stratum, слой без доступа — содержит информацию, передаваемую между базовой сетью оператора и пользовательским устройством|
 |NAT|Network Address Translation, преобразование сетевых адресов|
 |NCC|Network Colour Code, код раскраски сети|
+|NCS|Network Communication Server, сервер управления сетью связи|
+|NCS|Network Computing System, Remote Procedure Call (RPC) implementation of Apollo's Network Computing Architecture|
 |NEF|Network Exposure Function, функция обеспечения взаимодействия с внешними приложениями|
 |NFV|Network Function Virtualization, виртуализация сетевых функций|
 |NGN|Next Generation Networks, сети нового поколения — мультисервисные сети связи|
@@ -430,9 +415,14 @@
 |NPI|Numbering Plan Indicator, индикатор плана нумерации|
 |NRCT|noReplyConditionTime, таймер ожидания ответа при переадресации в случае отсутствия вызова|
 |NSAPI|Network Service Access Point Identifier, идентификатор точки доступа к сетевых службам|
+|NSC|Non-Standard Facilities Command, сообщение о посылке NSF в протоколе T.30|
+|NSE|Named Signaling Event, именное событие сигнализации|
 |NSE|Named Signaling Event, ключ для обеспечения взаимодействия между протоколами факсимильной передачи|
+|NSF|Non-Standard Facilities, нестандартное сообщение в протоколе T.30|
 |NSLIP|Negative Slip, отрицательное проскальзывание (пропуск фрейма)|
+|NSS|Non-Standard Facilities Setup, настройка NSF в протоколе T.30|
 |NSSF|Network Slice Selection Function, функция выбора сетевого слоя|
+|NTE|Named Telephony Event, именное событие телефонии|
 |NTP|Network Time Protocol, сетевой протокол синхронизации времени|
 |O–CSI|Originating–CAMEL Subscription Information, информация о подписках для протоколов CAMEL при исходящих вызовах|
 |OA|Originating Address, адрес отправления|
@@ -460,6 +450,7 @@
 |PBX|Private Branch Exchange, учрежденская телефонная станция|
 |PC|Protocol Class, класс протокола|
 |PCAP|Packet Capture, захват данных — программное обеспечение для обработки сетевых данных, поступающих на сетевую карту оборудования|
+|PCB|Printed Circuit Board, печатная плата|
 |PCB|Protocol Control Byte, байт проверки протокола|
 |PCF|Policy Control Function, функция управления политиками|
 |PCI|Peripheral Component Interconnect, взаимодействие периферийных компонентов — шина для подключения устройств к микропроцессору|
@@ -509,6 +500,7 @@
 |RAM|Random Access Memory, оперативное запоминающее устройство|
 |RAS|Remote Access System, система удаленного доступа|
 |RAT|Radio Access Technology, технология радиодоступа|
+|RAU|Routing-Area-Update|
 |RBT|Ring Back Tone, контроль посылки вызова|
 |RC|Redundancy Check, проверка избыточности|
 |RC|Repeat Count, количество повторных попыток|
@@ -516,6 +508,7 @@
 |RCS|Rich Communication Services, система передачи сообщений и контактных данных в сетях мобильной связи|
 |RD|Reject Duplicates, флаг приема/отбоя сообщений SMS-SUBMIT с одинаковыми MR и DA|
 |RdPN|Redirected Party Number, номер абонента, перенаправленный в последний раз|
+|REL|Release, освобождение линии ISUP|
 |RFC|Request for Comments — документы, содержащие общепринятые технические спецификации и стандарты|
 |RFU|Reserved for Future Use, зарезервировано для использования в будущем|
 |RgPN|Redirecting Party Number, номер абонента, на котором последний раз сработала переадресация|
@@ -524,6 +517,7 @@
 |RHEL|Red Hat Enterprise Linux, дистрибутив Linux от Red Hat|
 |RI|Repeat Interval, время ожидания между попытками|
 |RI|Routing Indicator, код направления|
+|RLC|Release Complete, освобождение канала ISUP завершено|
 |RN|Routing Number, маршрутный номер|
 |RnA|Routing and Alerting, маршрутизация и оповещение об ошибке — один из этапов вызова|
 |RNC|Radio Network Controller, контроллер радиосети|
@@ -531,6 +525,7 @@
 |RPC|Remote Procedure Call, удаленный вызов процедур|
 |RPS|Reductant Power Supply, резервный источник питания|
 |RRP|Reductant Ring Protocol, ошибкоустойчивый протокол резервирования|
+|RSC|Reset Circuit, сброс канала ISUP|
 |RTCP|Real–Time Transport Control Protocol, протокол, управляющий передачей данных в режиме реального времени. Работает совместно с RTP|
 |RTD|Round Trip Delay, задержка на подтверждение приема|
 |RTO|Recovery Time Objective, допустимое время восстановления|
@@ -542,6 +537,7 @@
 |SAC|Service Area Code, код зоны обслуживания|
 |SAD|Source Address, адрес отправителя|
 |SAI|Send Authentication Info, данные абонента для идентификации в сети|
+|SAM|Subsequent Address Message, последующее адресное сообщение ISUP|
 |SAPT|Service Access Point Identifier, идентификатор точки доступа к услугам|
 |SATA|Serial ATA, последовательный ATA|
 |SB|Service Builder, среда для настраиваемой инфраструктуры разработки приложений|
@@ -583,6 +579,7 @@
 |SLTM|SLT Message, сообщение SLT|
 |SM|Secure Message, сообщение с повышенными параметрами безопасности|
 |SMF|Session Management Function, функция управления сессиями|
+|SMLC|Serving Mobile Location Centre, обслуживающий центр позиционирования|
 |SMPP|Short Messages Peer–to–Peer Protocol, протокол передачи сообщений одноранговой сети|
 |SMS–CB|Short Message Service – Cell Broadcast|
 |SMS–PP|Short Message Service – Point to Point|
@@ -630,6 +627,7 @@
 |STP|Signaling Transfer Point, магистральный шлюз для маршрутизации трафика|
 |SUA|SCCP User Adaptation Layer, уровень адаптации пользователя SCCP к пользователям IP-сети|
 |SUERM|Signal Unit Error Rate Monitoring, контроль коэффициента ошибок при передаче сигнальных единиц|
+|SUS|Suspend, удержание вызова ISUP|
 |SWP|Single Wire Protocol, однопроводной протокол|
 |T–ADS|Terminating Access Domain Selection, выбор домена доступа для вызовов Terminating|
 |T–CSI|Terminating — CAMEL Subscription Information, информация о подписках для протоколов CAMEL при входящих вызовах|
@@ -638,6 +636,7 @@
 |TAR|Toolkit Application Reference, справочник приложений — уникальный идентификатор приложений верхнего уровня|
 |TAS|Telephony Application Server, сервер приложений телефонии|
 |TAU|Tracking Area Update, обновление зоны обслуживания|
+|TAU|Tracking-Area-Update|
 |TCAP|Transaction Capabilities Application Part, прикладная подсистема возможностей транзакции|
 |TCM|Toolkit for Conceptual Modeling, пакет программного обеспечения для концептуального моделирования|
 |TCP|Transport Control Protocol, протокол управления передачей данных|
@@ -668,6 +667,8 @@
 |TTL|Time–to–Live, время жизни|
 |TUP|Telephone User Part, абонентская подсистема телефонной связи|
 |UA|User–Agent, агент пользователя|
+|UBA|Unblocking Acknowledgement, подтверждение разблокировки канала ISUP|
+|UBL|Unblocking, разблокировка канала ISUP|
 |UBS|Universal Billing Server, универсальная биллинговый сервер|
 |UCA|UICC Ciphering Algorithm, алгоритм шифрования UICC|
 |UCS2|Universal Coded Character Set 2, стандарт кодировки букв и символов 2 байтами|
@@ -696,8 +697,10 @@
 |USSDC|USSD Center, центр обработки USSD–запросов|
 |UTF|Unicode Transformation Format, формат кодирования символов|
 |UTRAN|UMTS Terrestrial Radio Access Network, сеть радиодоступа к UMTS|
+|VAD|Voice Activity Detection, функция обнаружения голоса|
 |VAS|Value Added Service, дополнительная платная услуга|
 |VASP|Value Added Service Provider, поставщик дополнительных платных услуг|
+|VBD|Voice Band Data, данные, передаваемые в полосе речевого сигнала|
 |VBD|Voice Band Data|
 |VFC|Voice Frequency Circuit, канал тональной частоты|
 |VFS|Virtual File System, виртуальная файловая система|
