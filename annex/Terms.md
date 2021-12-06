@@ -151,7 +151,7 @@
 |DHCP|Dynamic Host Configuration Protocol, протокол динамической настройки хоста|
 |DIS|Digital Identification Signal|
 |DISA|Dial–In System Access, прямой внутрисистемный доступ|
-|DL|Downlink, нисходящая линия|
+|DL|Downlink, нисходящая линия| 
 |DNL|Destination Number Length, длина номера назначения|
 |DNS|Domain Name Server, сервер доменных имен|
 |DoS|Denial of Service, отказ в обслуживании|
