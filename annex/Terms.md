@@ -165,7 +165,6 @@
 |DSAI|Dynamic Service Activation Information, информация о динамической активации услуги|
 |DSCP|Differentiated Services Code Point, поле кода дифференцированных услуг|
 |DSP|Digital Signal Processor, процессор цифровой обработки сигналов|
-|DSP|Digital Signal Processor, процессор цифровой обработки сигналов|
 |DSS|Direct Station Selection, прямой выбор терминала|
 |DSS1|Digital Subscriber Signaling, цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами|
 |DST|Digital Signature Template, шаблон цифровой подписи|
