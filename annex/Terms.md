@@ -494,6 +494,7 @@
 |RA|Recipient Address, адрес получателя предыдущего сообщения MAP-MO-SM|
 |RAC|Routing Area Code, код зоны маршрутизации|
 |RADIUS|Remote Authentication in Dial–In User Service, услуга удалённой аутентификации абонента телефонной сети — протокол для реализации аутентификации, авторизации и сбора сведений об использованных ресурсах|
+|RAI|Remote Alarm Indication, индикация удаленной аварии|
 |RAI|Routing Area Identifier, идентификатор области адресации|
 |RAID|Redundant Array of Independent Disks,	избыточный набор независимых дисковых накопителей|
 |RAM|Random Access Memory, оперативное запоминающее устройство|
