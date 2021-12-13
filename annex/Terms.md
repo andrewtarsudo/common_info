@@ -652,6 +652,7 @@
 |TIF|Translation Information Flag, флаг разрешения использовать короткие FTN в сети CAMEL|
 |TLS|Transport Layer Security — протокол защищенной передачи данных с применением шифрования|
 |TLV|Tag – Length – Value (data structure)|
+|TMR|Transmission Medium Requirement, требование к среде передачи|
 |TMSI|Temporary Mobile Subscriber Identifier, временный идентификатор абонента мобильной связи|
 |TMT|Traffic Mode Type, режим передачи трафика|
 |TON|Type of Number, тип нумерации|
