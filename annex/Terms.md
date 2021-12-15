@@ -120,6 +120,7 @@
 |CPE|Control Processing Entity, управляющий процессор|
 |CPE|Customer Premises Equipment, оборудование конечных пользователей — используется при указании на платформу Protei CPE|
 |CPM|Central Processor Module, модуль главного процессора|
+|CPS|Calls per Second, количество вызовов в секунду|
 |CPT|Cellular Paging, сотовая пейджинговая связь|
 |CPU|Central Processing Unit, центральный процессор|
 |CRC4|Cyclic Redundancy Check 4 - метод контроля целостности данных потока Е1, описанный в ITU-T G.704|
@@ -210,7 +211,7 @@
 |FEC|Forward Error Correction, упреждающая коррекция ошибок — техника помехоустойчивого кодирования / декодирования|
 |FIB|Forward Indicator Bit, указательный бит вперед|
 |FIBR|Forward Indicator Bit Routing, маршрутизация указательного бита вперед|
-|FIFO|First in, First out, куча по принципу «первым пришел — первым ушел»|
+|FIFO|First In, First Out, куча по принципу «первым пришел — первым ушел»|
 |FISU|Fill In Signaling Unit, кадр однонаправленной передачи сигнальных сообщений от получателя о наличии ошибок|
 |FMC|Fixed Mobile Convergence, конвергенция фиксированной и мобильной связи|
 |FO|forwardingOptions, дополнительные опции при передаче дополнительной услуги|
@@ -447,7 +448,7 @@
 |P–CSCF|Proxy CSCF, узел взаимодействия с абонентскими терминалами IMS|
 |PA|PlayAnnouncement, проигрыш оповещения|
 |PAP|Password Authentication Protocol, протокол аутентификации по паролю|
-|PBX|Private Branch Exchange, учрежденская телефонная станция|
+|PBX|Private Branch Exchange, учрежденческая телефонная станция|
 |PC|Protocol Class, класс протокола|
 |PCAP|Packet Capture, захват данных — программное обеспечение для обработки сетевых данных, поступающих на сетевую карту оборудования|
 |PCB|Printed Circuit Board, печатная плата|
@@ -525,6 +526,7 @@
 |RP|Reply Path, адрес для отправки ответа|
 |RPC|Remote Procedure Call, удаленный вызов процедур|
 |RPS|Reductant Power Supply, резервный источник питания|
+|RPS|Requests per Second, количество запросов в секунду|
 |RRP|Reductant Ring Protocol, ошибкоустойчивый протокол резервирования|
 |RSC|Reset Circuit, сброс канала ISUP|
 |RTCP|Real–Time Transport Control Protocol, протокол, управляющий передачей данных в режиме реального времени. Работает совместно с RTP|
@@ -611,6 +613,7 @@
 |SRI|Status Report Indication, индикация запроса отчета о состоянии|
 |SRQ|Status Report Qualifier, указатель предыдущего сообщения: SMS-SUBMIT или SMS-COMMAND|
 |SRR|Status Report Request, индикация запроса отчета о состоянии|
+|SRTP|Secure Real–Time Transport Protocol, безопасный протокол передачи трафика в режиме реального времени|
 |SRV|Service Record, служебная запись — стандарт для DNS, задающий имена хостов и номера портов для некоторых служб|
 |SRVCC|Single Radio Voice Call Continuity, система непрерывной голосовой связи с одним радиомодулем|
 |SS|Supplementary Service, дополнительная услуга|
