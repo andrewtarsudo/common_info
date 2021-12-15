@@ -14,7 +14,7 @@
 |ACQ|All Call Query, запрос по всем вызовам|
 |ACS|Access Control Server, сервер управления доступом|
 |ADC|Automatic Device Configuration, автоматическая настройка устройств|
-|ADSP|Analogue-Digital Signal Processing, аналого-цифровая обработка сигналов|
+|ADSP|Analog-Digital Signal Processing, аналого-цифровая обработка сигналов|
 |AERM|Alignment Error Rate Monitoring, контроль коэффициента ошибок синхронизации|
 |AES|Advanced Encrypting Scheme — общепринятый стандарт шифрования Rijndael|
 |AICA|Automatic Initial Call Attempt, автоматическая попытка начального вызова — один из этапов вызова|
@@ -24,9 +24,10 @@
 |ALPN|Application-Layer Protocol Negotiation, согласование протокола прикладного уровня|
 |AMA|Automatic Message Accounting, автоматическая система учета|
 |AMF|Access and Mobility Management Function, функция управления доступом и мобильностью|
-|AMR|Adaptive multi rate, адаптивное кодирование с переменной скоростью|
+|AMR|Adaptive Multi Rate, адаптивное кодирование с переменной скоростью|
 |ANM|Answer Message, ответное сообщение от вызываемого абонента ISUP|
-|AoC|Advice of charge, уведомление об оплате|
+|AoC|Advice of Charge, уведомление об оплате|
+|AOR|Address of Record, адрес регистрации|
 |AP|Alarm Processor, подсистема обработки аварий|
 |APC|Alias Point Code, код смежной сигнальной точки|
 |APDU|Application Protocol Data Unit, блок данных прикладного протокола|
