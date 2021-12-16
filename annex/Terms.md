@@ -571,6 +571,7 @@
 |SIC|Service Information Code, код сервисной информации|
 |SIGTRAN|Signaling Transport, передача сигнальных сообщений телефонных сигнализаций по IP–сети|
 |SIM|Subscriber Identity Module, модуль идентификации абонента|
+|SIMD|Single Instruction, Multiple Data; одиночный поток команд, множественный поток данных — принцип, обеспечивающий параллельные вычисления|
 |SIO|Status Indication: Out of alignment, индикация статуса: не синхронизировано|
 |SIOS|Status Indication: Out of service, индикация статуса: не обслуживается|
 |SIP|Session Initiation Protocol, протокол инициирования сеансов связи|
@@ -619,6 +620,7 @@
 |SS|Supplementary Service, дополнительная услуга|
 |SS7|Signaling System 7, общий канал сигнализации 7|
 |SSD|Solid State Drive, твердотельный накопитель|
+|SSE2|Streaming SIMD Extensions 2, потоковое расширение SIMD-процессора версии 2|
 |SSF|Server Switching Functions, сервер функциональной коммутации|
 |SSH|Secure Shell, безопасная оболочка — прикладной протокол удаленного управления и туннелирования TCP–соединений|
 |SSL|Secure Sockets Layer — протокол защищенных соединений с применением шифрования|
