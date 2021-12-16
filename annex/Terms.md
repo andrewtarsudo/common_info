@@ -183,7 +183,6 @@
 |ECF|Event Charging Function, функция учета расходов на основе событий|
 |ECI|Embedded Common Interface, встроенный CI–модуль — интерфейс подключения модулей для взаимодействия с закодированными каналами|
 |ECM|Error Correction Mode, режим коррекции ошибок|
-|ECM|Error Correction Mode, режим коррекции ошибок|
 |EDE/EDE3|Encrypt–Decrypt–Encrypt, шифрование–дешифрование–шифрование — один из вариантов применения криптографического алгоритма DES/Triple–DES|
 |EDGE|Enhanced Data Rates for GSM Evolution, усовершенствование передачи данных для эволюции GSM|
 |EDR|Event Detail Record, подробная запись о случившемся событии|
@@ -207,7 +206,6 @@
 |f|frequency, частота|
 |FCS|Failure Cause, причина неуспешного выполнения|
 |FCS|Frame Check Sequence, контрольная последовательность кадра|
-|FCS|Frame Check Sequence, контрольное поле|
 |FEC|Forward Error Correction, упреждающая коррекция ошибок — техника помехоустойчивого кодирования / декодирования|
 |FIB|Forward Indicator Bit, указательный бит вперед|
 |FIBR|Forward Indicator Bit Routing, маршрутизация указательного бита вперед|
