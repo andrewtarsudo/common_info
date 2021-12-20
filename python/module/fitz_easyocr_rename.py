@@ -7,6 +7,9 @@ from operator import sub
 
 rect_A3 = fitz.IRect(832, 664, 1160, 700)
 rect_A4 = fitz.IRect(238, 706, 568, 747)
+
+INDECES = {5, 6, 7, 8, 9, 10, 12, 13, 14}
+
 pattern = r'ПАМР\.\d{6}\.\d{3}-?\d*[а-яА-Я]*-?[а-яА-Я]*'
 
 
@@ -79,17 +82,37 @@ def text_pattern(text: str):
 
 
 def text_correction(text: str) -> str:
-    # list_text = list(text)
     if len(text) < 15:
         print('Bad name')
         return text
 
-    for index, sym in enumerate(text):
-        
+    list_text = list(text)
 
+    if not list_text[4] == '.':
+        list_text.insert(4, '.')
+
+    if not list_text[11] == '.':
+        list_text.insert(11, '.')
+
+    for index in INDECES:
+        if list_text[index] == 'З':
+            list_text[index] = '3'
+
+        if list_text[index] == 'О':
+            list_text[index] = '0'
+
+    if len(text) > 16 and list_text[-1:-3] == 'СЬБ':
+        del list_text[-2]
+
+    if len(text) > 16 and list_text[-1:-2] == 'СЬ':
+        list_text[-1] = 'Б'
+
+    return str(list_text)
 
 
 def main():
+    fitz_name_list = []
+    easyocr_name_list = []
     reader = easyocr.Reader(['ru'])
     path_file_pdf = ''
     path_file = pathlib.Path(path_file_pdf).resolve()
@@ -99,7 +122,9 @@ def main():
     png_name = path_file.stem + '.png'
     path_file_png = pathlib.PurePath(path_file).with_name(png_name)
     text_fitz = page_rect.get_textbox(rectangle_extract)
+    fitz_name_list.append(text_fitz)
     text_easyocr = reader.readtext(create_png(page, rectangle_extract, path_file_png), detail=0, paragraph=True)
+    easyocr_name_list.append(text_easyocr)
 
 
 if __name__ == '__main__':
