@@ -11,6 +11,7 @@ rect_A4 = fitz.IRect(238, 706, 568, 747)
 INDECES = {5, 6, 7, 8, 9, 10, 12, 13, 14}
 
 pattern = r'ПАМР\.\d{6}\.\d{3}-?\d*[а-яА-Я]*-?[а-яА-Я]*'
+pattern_to_check = r'\w{1,4}\.?\d{1,6}\.?\d{1,3}-?\d*[а-яА-Я]*-?[а-яА-Я]*'
 
 
 def rect_proper(rect: fitz.Rect) -> fitz.Rect:
