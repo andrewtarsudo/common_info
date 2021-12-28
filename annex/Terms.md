@@ -3,6 +3,17 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|MMTel|IMS Multimedia Telephony, мультимедийная телефония в сетях IMS|
+|GMLC|Gateway Mobile Location Centre, шлюзовый центр позиционирования|
+|SMLC|Serving Mobile Location Centre, сервисный центр позиционирования|
+|MLC|Mobile Location Centre, центр позиционирования|
+|LMU|Line Measurement Unit, стационарный измерительный модуль|
+|SSCP|Supplementary Service Control Protocol, протокол дополнительного сервисного контроля|
+|PRCF|Positioning Radio Coordinating Function, функция позиционирования в радиоподсистеме|
+|PSMF|Positioning Signal Measurement Function, функция измерения параметров сигнала при позиционировании|
+|PCF|Position Calculation Function, функция вычисления местоположения|
+|PRAF|Positioning Radio Assistance Function, вспомогательная функция радиоподсистемы|
+|BSSAP|Base Station System Application Part, протокол прикладной части подсистемы базовых станций|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |ABC-номер|Телефонный код, присвоенный по не географическому признаку|
