@@ -3,6 +3,15 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|LMMF|LMU Mobility Management Function, функция управления мобильностью LMU|
+|LSCF|Location System Control Function, функция управления системой позиционирования|
+|LSBF|Location System Billing Function, функция биллинга для системы позиционирования|
+|LCCTF|Location Client Coordinate Transformation Function, функция преобразования коодинат позиции пользователя|
+|LSOF|Location Subscriber Operations Function, функция операций позиции абонента|
+|LSPF|Location Subscriber Privacy Function, функция приватности позиции абонента|
+|LSAF|Location Subscriber Authorization Function, функция авторизации позиции абонента|
+|SDCCH|Standalone Dedicated Control Channel, однополосный выделенный канал управления|
+|DTAP|Direct Transfer Application Part, прикладная часть протокола прямой передачи|
 |MMTel|IMS Multimedia Telephony, мультимедийная телефония в сетях IMS|
 |GMLC|Gateway Mobile Location Centre, шлюзовый центр позиционирования|
 |SMLC|Serving Mobile Location Centre, сервисный центр позиционирования|
