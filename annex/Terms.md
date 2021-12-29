@@ -3,29 +3,6 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
-|PPR|Privacy Profile Register, регистр приватных профилей|
-|PMD|Pseudonym Mediation Device, устройство передачи псевдонимов|
-|WTP|Wireless Transport Protocol, протокол беспроводной передачи|
-|LMMF|LMU Mobility Management Function, функция управления мобильностью LMU|
-|LSCF|Location System Control Function, функция управления системой позиционирования|
-|LSBF|Location System Billing Function, функция биллинга для системы позиционирования|
-|LCCTF|Location Client Coordinate Transformation Function, функция преобразования коодинат позиции пользователя|
-|LSOF|Location Subscriber Operations Function, функция операций позиции абонента|
-|LSPF|Location Subscriber Privacy Function, функция приватности позиции абонента|
-|LSAF|Location Subscriber Authorization Function, функция авторизации позиции абонента|
-|SDCCH|Standalone Dedicated Control Channel, однополосный выделенный канал управления|
-|DTAP|Direct Transfer Application Part, прикладная часть протокола прямой передачи|
-|MMTel|IMS Multimedia Telephony, мультимедийная телефония в сетях IMS|
-|GMLC|Gateway Mobile Location Centre, шлюзовый центр позиционирования|
-|SMLC|Serving Mobile Location Centre, сервисный центр позиционирования|
-|MLC|Mobile Location Centre, центр позиционирования|
-|LMU|Line Measurement Unit, стационарный измерительный модуль|
-|SSCP|Supplementary Service Control Protocol, протокол дополнительного сервисного контроля|
-|PRCF|Positioning Radio Coordinating Function, функция позиционирования в радиоподсистеме|
-|PSMF|Positioning Signal Measurement Function, функция измерения параметров сигнала при позиционировании|
-|PCF|Position Calculation Function, функция вычисления местоположения|
-|PRAF|Positioning Radio Assistance Function, вспомогательная функция радиоподсистемы|
-|BSSAP|Base Station System Application Part, протокол прикладной части подсистемы базовых станций|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |ABC-номер|Телефонный код, присвоенный по не географическому признаку|
@@ -89,6 +66,7 @@
 |BSC|Base Station Controller, контроллер базовых станций|
 |BSN|Backward Sequence Number, номер последовательности назад|
 |BSNR|Backward Sequence Number Routing, маршрутизация номера последовательности назад|
+|BSSAP|Base Station System Application Part, протокол прикладной части подсистемы базовых станций|
 |BV|Bon Voyage, система оповещения роумеров при пересечении границы партнерской сети связи|
 |BWT|Block Waiting Time, время ожидания блока|
 |C–APDU|Command–APDU|
@@ -195,6 +173,7 @@
 |DST|Digital Signature Template, шаблон цифровой подписи|
 |DSU|Data Service Unit|
 |DT|Discharge Time, время прекращения валидности состояния|
+|DTAP|Direct Transfer Application Part, прикладная часть протокола прямой передачи|
 |DTMF|Dual–Tone Multi–Frequency, двухтональный многочастотный набор|
 |DUNA|Destination Unavailable|
 |DUPU|Destination User Part Unavailable|
@@ -247,6 +226,7 @@
 |GERAN|GSM/EDGE Radio Access Network, сеть радиодоступа к GSM/EDGE|
 |GGSN|Gateway GPRS Support Node, узел поддержки шлюза GPRS|
 |GMLC|Gateway Mobile Location Centre, шлюзовой центр позиционирования|
+|GMLC|Gateway Mobile Location Centre, шлюзовый центр позиционирования|
 |GMSC|Gateway MSC, шлюз MSC|
 |GPRS|General Packet Radio Service, система пакетной радиосвязи общего пользования|
 |GSI|Geographical Scope Interface, интерфейс услуги геолокации|
@@ -344,19 +324,27 @@
 |LAU|Location-Area-Update|
 |LBC|Load Balancing Cluster, кластер распределенной нагрузки|
 |LBS|Location Based Services, служба на основе определения местоположения абонента|
+|LCCTF|Location Client Coordinate Transformation Function, функция преобразования коодинат позиции пользователя|
 |LCS|Location Service, служба определения местоположения|
 |LFA|Loss of Frame Alignment, потеря цикловой (фазовой) синхронизации|
 |LFN|longForwardedToNumber, адрес переадресации вызова|
 |LI|Legal Intervention, законное вмешательство в вызов|
 |LI|Length Indicator, индикатор длины|
 |LIFO|Last in, First out, стек по принципу «последним пришел — первым ушел»|
+|LMMF|LMU Mobility Management Function, функция управления мобильностью LMU|
 |LMSI|Local Mobile Subscriber Identity, местный идентификатор абонента мобильной связи|
+|LMU|Line Measurement Unit, стационарный измерительный модуль|
 |LNR|Last Number Redial, услуга повторного набора номера абонента из последнего вызова|
 |LOF|Loss of Frame, сигнал потери цикловой синхронизации|
 |LOS|Loss of Signal, сигнал потери линейного сигнала E1|
 |LP|Loop Prevention, предотвращение создания бесконечных зацикливаний|
 |LSA|Localized Service Area, локализованная зона обслуживания|
+|LSAF|Location Subscriber Authorization Function, функция авторизации позиции абонента|
 |LSB|Least Significant Bit, младший бит|
+|LSBF|Location System Billing Function, функция биллинга для системы позиционирования|
+|LSCF|Location System Control Function, функция управления системой позиционирования|
+|LSOF|Location Subscriber Operations Function, функция операций позиции абонента|
+|LSPF|Location Subscriber Privacy Function, функция приватности позиции абонента|
 |LSSU|Link Status Signal Unit, кадр передачи статусов сигнальных сообщений|
 |LTE|Long–Term Evolution, стандарт беспроводной высокоскоростной передачи связи для мобильных сетей|
 |LVDS|Low Voltage Differential Signaling, дифференциальная сигнализация низкого напряжения|
@@ -380,12 +368,14 @@
 |MGCP|Media Gateway Control Protocol, протокол управления медиашлюзами|
 |MGW|Media Gateway, шлюз передачи медиаданных|
 |MID|Message Identifier, идентификатор сообщения|
+|MLC|Mobile Location Centre, центр позиционирования|
 |MME|Mobility Management Entity, узел управления мобильностью|
 |MMEI|MME Identifier, иденттификатор MME|
 |MMS|More Messages to Send, флаг наличия сообщений, готовых к отправке|
 |MMS|Multimedia Message Service, служба мультимедийных сообщений|
 |MMSC|Multimedia Message Service Center, центр обработки мультимедийных сообщений|
 |MMSI|Multimedia Message Service Interface, MMS-интерфейс|
+|MMTel|IMS Multimedia Telephony, мультимедийная телефония в сетях IMS|
 |MN|Message Number, номер обрабатываемого сообщения|
 |MNC|Mobile Network Code, код сети мобильной связи|
 |MNP|Mobile Number Portability, переносимость номеров мобильной сети|
@@ -475,6 +465,7 @@
 |PCB|Printed Circuit Board, печатная плата|
 |PCB|Protocol Control Byte, байт проверки протокола|
 |PCF|Policy Control Function, функция управления политиками|
+|PCF|Position Calculation Function, функция вычисления местоположения|
 |PCI|Peripheral Component Interconnect, взаимодействие периферийных компонентов — шина для подключения устройств к микропроцессору|
 |PCI|Preemption Capability Indicator, индикатор преимущественного занятия линии|
 |PCNTR|Padding Counter, счетчик паддинга|
@@ -493,16 +484,21 @@
 |PID|Protocol ID, идентификатор протокола|
 |PIN|Personal Identification Number, личный идентификационный номер|
 |PLMN|Public Landing Mobile Network, наземная сеть мобильной связи общего пользования|
+|PMD|Pseudonym Mediation Device, устройство передачи псевдонимов|
 |PNG|Portable Network Graphics|
 |PNR|Phone Number Registry, регистр телефонных номеров — сервис определения региона/субъекта РФ и часового пояса по номеру|
 |PoR|Proof–of–Receipt, уведомление о получении|
+|PPR|Privacy Profile Register, регистр приватных профилей|
+|PRAF|Positioning Radio Assistance Function, вспомогательная функция радиоподсистемы|
 |PRBT|Private Ring Back Tone, персональный сигнал контроля посылки вызова|
+|PRCF|Positioning Radio Coordinating Function, функция позиционирования в радиоподсистеме|
 |PRI|Primary Rate Interface, интерфейс первичного уровня — протокол для задания правил подключения станций ISDN к широкополосным магистралям|
 |PRI|Primary Rate Interface, стандартный интерфейс сети ISDN, определяющий подключение станций ISDN к широкополосным магистралям между АТС или сетевыми коммутаторами|
 |PS|Packet Switch, коммутация пакетов|
 |PS|Profile Server, профайл–сервер|
 |PSI|Public Service Identity, публичный идентификатор сервиса|
 |PSLIP|Positive Slip, положительное проскальзывание (повтор фрейма)|
+|PSMF|Positioning Signal Measurement Function, функция измерения параметров сигнала при позиционировании|
 |PSTN|Public Switched Telephone Network, телефонная сеть общего пользования|
 |PTT|Push–to–Talk, полудуплексный режим приема–передачи|
 |PUK|PIN Unblocking Key, личный код разблокирования PIN|
@@ -575,6 +571,7 @@
 |SCS|Service Capabilities Server, сервер обеспечения работоспособности услуг|
 |SCTP|Stream Control Transmission Protocol, протокол передачи с управлением потока|
 |SCWS|Smart Card Web Server, Web-сервер смарт-карт|
+|SDCCH|Standalone Dedicated Control Channel, однополосный выделенный канал управления|
 |SDP|Session Description Protocol, протокол описания сессии|
 |SEID|Security Environment Identifier, индикатор замкнутой безопасной среды|
 |SEP|Signaling Endpoint, оконечный сигнальный узел сети|
@@ -605,6 +602,7 @@
 |SM|Secure Message, сообщение с повышенными параметрами безопасности|
 |SMF|Session Management Function, функция управления сессиями|
 |SMLC|Serving Mobile Location Centre, обслуживающий центр позиционирования|
+|SMLC|Serving Mobile Location Centre, сервисный центр позиционирования|
 |SMPP|Short Messages Peer–to–Peer Protocol, протокол передачи сообщений одноранговой сети|
 |SMS–CB|Short Message Service – Cell Broadcast|
 |SMS–PP|Short Message Service – Point to Point|
@@ -640,6 +638,7 @@
 |SRVCC|Single Radio Voice Call Continuity, система непрерывной голосовой связи с одним радиомодулем|
 |SS|Supplementary Service, дополнительная услуга|
 |SS7|Signaling System 7, общий канал сигнализации 7|
+|SSCP|Supplementary Service Control Protocol, протокол дополнительного сервисного контроля|
 |SSD|Solid State Drive, твердотельный накопитель|
 |SSE2|Streaming SIMD Extensions 2, потоковое расширение SIMD-процессора версии 2|
 |SSF|Server Switching Functions, сервер функциональной коммутации|
@@ -753,6 +752,7 @@
 |WLAN|Wireless Local Area Network, беспроводная локальная сеть|
 |WLSS|WebLogic SIP Server, программное обеспечение сервера от Oracle для запуска SIP-приложений|
 |WML|Wireless Markup Language|
+|WTP|Wireless Transport Protocol, протокол беспроводной передачи|
 |XML|eXtensible Markup Language, расширяемый язык разметки|
 |ААЛ|Абонентская аналоговая линия|
 |АОН|Автоматический определитель номера|
