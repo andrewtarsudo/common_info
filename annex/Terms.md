@@ -3,6 +3,7 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|WTP|Wireless Transport Protocol, протокол беспроводной передачи|
 |LMMF|LMU Mobility Management Function, функция управления мобильностью LMU|
 |LSCF|Location System Control Function, функция управления системой позиционирования|
 |LSBF|Location System Billing Function, функция биллинга для системы позиционирования|
