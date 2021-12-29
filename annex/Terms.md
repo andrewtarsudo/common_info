@@ -3,6 +3,8 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|PPR|Privacy Profile Register, регистр приватных профилей|
+|PMD|Pseudonym Mediation Device, устройство передачи псевдонимов|
 |WTP|Wireless Transport Protocol, протокол беспроводной передачи|
 |LMMF|LMU Mobility Management Function, функция управления мобильностью LMU|
 |LSCF|Location System Control Function, функция управления системой позиционирования|
