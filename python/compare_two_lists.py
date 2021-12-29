@@ -12,7 +12,12 @@ def make_list():
 
 # sort the lists and check if each element of the first list is equal to the element of the second
 def check_lists(list_1: list, list_2: list) -> bool:
-    return list_1.sort() == list_2.sort()
+    list_1.sort()
+    list_2.sort()
+    if list_1 == list_2:
+        return True
+    else:
+        return False
 
 
 # create two lists and compare them
