@@ -1,4 +1,5 @@
-## Таблица { SEQ "Таблица" \* ARABIC \* MERGEFORMAT } ##
+# CAP Messages #
+## Таблица { SEQ "Таблица" \*ARABIC \*MERGEFORMAT } ##
 
 |Сообщение|Расшифровка|
 |:--------|:----------|
@@ -22,6 +23,12 @@
 |CAP_RRBCSM|CAP_RequestReportBCSMEvent|
 |CAP_SRR|CAP_SpecializedResourceReport|
 |CAP_X-CSI|CAP_X–CamelSubscriptionInformation|
+
+# Diameter Messages #
+## Таблица { SEQ "Таблица" \*ARABIC \*MERGEFORMAT } ##
+
+|Сообщение|Расшифровка|
+|:--------|:----------|
 |Diam ACA|Diameter Accounting–Answer|
 |Diam ACR|Diameter Accounting–Request|
 |Diam AMA|Diameter AA–Mobile–Node–Answer|
@@ -66,12 +73,24 @@
 |Diam UAR|Diameter User–Authorization–Request|
 |Diam UDA|Diameter User–Data–Answer|
 |Diam UDR|Diameter User–Data–Request|
+
+# ISUP Messages #
+## Таблица { SEQ "Таблица" \*ARABIC \*MERGEFORMAT } ##
+
+|Сообщение|Расшифровка|
+|:--------|:----------|
 |ISUP_IAM|ISUP_InitialAddressMessage|
 |ISUP_SAM|ISUP_SubsequentAddressMessage|
 |ISUP_ACM|ISUP_AddressCompleteMessage|
 |ISUP_ANM|ISUP_AnswerMessage|
 |ISUP_REL|ISUP_Release|
 |ISUP_RLC|ISUP_ReleaseConnect|
+
+# MAP Messages #
+## Таблица { SEQ "Таблица" \*ARABIC \*MERGEFORMAT } ##
+
+|Сообщение|Расшифровка|
+|:--------|:----------|
 |MAP_ACK|MAP-Acknowledgement|
 |MAP_AlertSC_Resp|MAP-Alert-Service-Centre_Response|
 |MAP_ATI_Resp|MAP-Any-Time-Interrogation_Response|
@@ -104,43 +123,79 @@
 |MAP_SRI|MAP-Send-Routing-Info|
 |MAP_UL_ACK|MAP-Update-Location_Acknowledgement|
 |MAP_UL|MAP-Update-Location|
-|LCS_MOLR|LCS Mobile-Originated-Location-Request|
+
+# LCS Messages #
+## Таблица { SEQ "Таблица" \*ARABIC \*MERGEFORMAT } ##
 
 |Сообщение|Расшифровка|
 |:--------|:----------|
-|CBA|Changeback-acknowledgement signal|
-|CBD|Changeback-declaration signal|
-|CHM|Changeover and changeback messages|
-|CNP|Connection-not-possible signal|
-|CNS|Connection-not-successful signal|
-|COA|Changeover-acknowledgement signal|
-|COO|Changeover-order signal|
-|CSS|Connection-successful signal|
-|DLC|Signalling-data-link-connection-order signal|
-|DLM|Signalling-data-link-connection-order message|
-|ECA|Emergency-changeover-acknowledgement signal|
-|ECM|Emergency-changeover message|
-|ECO|Emergency-changeover-order signal|
-|FCM|Signalling-traffic-flow-control messages|
-|LFU|Link forced uninhibit signal|
-|LIA|Link inhibit acknowledgement signal|
-|LID|Link inhibit denied signal|
-|LIN|Link inhibit signal|
-|LLT|Link local inhibit test signal|
-|LUA|Link uninhibit acknowledgement signal|
-|LUN|Link uninhibit signal|
-|LRT|Link remote inhibit test signal|
-|MIM|Management inhibit messages|
-|RCT|Signalling-route-set-congestion-test signal|
-|RSM|Signalling-route-set-test message|
-|RSR|Signalling-route-set-test signal for restricted destination (national option)|
-|RST|Signalling-route-set-test signal for prohibited destination|
-|TFA|Transfer-allowed signal|
-|TFC|Transfer-controlled signal|
-|TFM|Transfer-prohibited-transfer-allowed-transfer-restricted messages|
-|TFP|Transfer-prohibited signal|
-|TFR|Transfer-restricted signal (national option)|
-|TRA|Traffic-restart-allowed signal|
-|TRM|Traffic-restart-allowed message|
-|UFC|User part flow control messages|
-|UPU|User part unavailable signal|
+|LCS_MOLR|LCS Mobile-Originated-Location-Request|
+
+# SS7 Network Management Messages SNMM #
+## Таблица { SEQ "Таблица" \*ARABIC \*MERGEFORMAT } ##
+
+|H1|H0|Код|Расшифровка|
+|:-|:-|:--|:----------|
+||0001|CHM|Changeover and changeback messages|
+|0001|0001|COO|Changeover-order signal|
+|0010|0001|COA|Changeover-acknowledgement signal|
+|0101|0001|CBD|Changeback-declaration signal|
+|0110|0001|CBA|Changeback-acknowledgement signal|
+||0010|ECM|Emergency-changeover message|
+|0001|0010|ECO|Emergency changeover-order signal|
+|0010|0010|ECA|Emergency changeover-acknowledgement signal|
+||0011|FCM|Signalling-traffic-flow control messages|
+|0001|0011|RCT|Signalling-route-set-congestion-test signal|
+|0010|0011|TFC|Transfer-controlled signal|
+||0100|TFM|Transfer-prohibited-allowed-restricted messages|
+|0001|0100|TFP|Transfer-prohibited signal|
+|0011|0100|TFR|Transfer-restricted signal (national option)|
+|0101|0100|TFA|Transfer-allowed signal|
+||0101|RSM|Signalling-route-set-test messages|
+|0001|0101|RST|Signalling-route-set-test signal for prohibited destination|
+|0010|0101|RSR|Signalling-route-set-test signal for restricted destination (national option)|
+||0110|MIM|Management inhibit messages|
+|0001|0110|LIN|Link inhibit signal|
+|0010|0110|LUN|Link uninhibit signal|
+|0011|0110|LIA|Link inhibit acknowledgement signal|
+|0100|0110|LUA|Link uninhibit acknowledgement signal|
+|0101|0110|LID|Link inhibit denied signal|
+|0110|0110|LFU|Link forced uninhibit signal|
+|0111|0110|LLT|Link local inhibit test signal|
+|1000|0110|LRT|Link remote inhibit test signal|
+||0111|TRM|Traffic restart allowed message|
+|0001|0111|TRA|Traffic-restart-allowed signal|
+||1000|DLM|Signalling-data-link-connection messages|
+|0001|1000|DLC|Signalling-data-link-connection-order signal|
+|0010|1000|CSS|Connection-successful signal|
+|0011|1000|CNS|Connection-not-successful signal|
+|0100|1000|CNP|Connection-not-possible signal|
+||1010|UFC|User part flow control messages|
+|0001|1010|UPU|User part unavailable signal|
+
+# TCAP Messages #
+## Таблица { SEQ "Таблица" \*ARABIC \*MERGEFORMAT } ##
+
+|Сообщение|Расшифровка|
+|:--------|:----------|
+|TP-MTI|TP-Message-Type-Indicator|
+|TP-MMS|TP-More-Messages-to-Send|
+|TP-LP|TP-Loop-Prevention|
+|TP-RP|TP-Reply-Path|
+|TP-UDHI|TP-User-Data-Header-Indicator|
+|TP-SRI|TP-Status-Report-Indication|
+|TP-OA|TP-Originating-Address|
+|TP-PID|TP-Protocol-Identifier|
+|TP-DCS|TP-Data-Coding-Scheme|
+|TP-FCS|TP-Failure-Cause|
+|TP-RD|TP-Reject-Duplicates|
+|TP-VPF|TP-Validity-Period-Format|
+|TP-VP|TP-Validity-Period|
+|TP-SRR|TP-Status-Report-Request|
+|TP-MR|TP-Message-Reference|
+|TP-SRQ|TP-Status-Report-Qualifier|
+|TP-RA|TP-Recipient-Address|
+|TP-DT|TP-Discharge-Time|
+|TP-ST|TP-Status|
+|TP-CT|TP-Command-Type|
+|TP-MN|TP-Message-Number|
