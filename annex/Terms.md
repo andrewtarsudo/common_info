@@ -1,5 +1,5 @@
-# Термины и сокращения
-## Таблица { SEQ \"Таблица\" \* ARABIC \* MERGEFORMAT }
+# Термины и сокращения #
+## Таблица { SEQ "Таблица" \* ARABIC \* MERGEFORMAT } ##
 
 |Термин|Комментарий|
 |:-----|:----------|
@@ -64,6 +64,7 @@
 |BRI|Basic Rate Interface, интерфейс базового доступа|
 |BRT|Billing Real–Time, биллинг в режиме реального времени|
 |BSC|Base Station Controller, контроллер базовых станций|
+|BSDB|Business Services, агенты бизнес-логики|
 |BSN|Backward Sequence Number, номер последовательности назад|
 |BSNR|Backward Sequence Number Routing, маршрутизация номера последовательности назад|
 |BSSAP|Base Station System Application Part, протокол прикладной части подсистемы базовых станций|
@@ -111,6 +112,7 @@
 |cli|Command Line Interface, интерфейс командной строки|
 |CLIR|Calling Line Identification Restriction, запрет на автоматическое определение номера|
 |CLK|Clock, хронометр|
+|CMSDB|Call Management Services Database, база данных услуг управления вызовами|
 |CMT|Cellular Messaging, передача сообщений в сотовой сети|
 |CNG|Calling Tone, повторяющийся сигнал тональной частоты 1100 Гц, определяющий вызывающее устройство как факсимильный аппарат|
 |CNTR|Counter, счетчик|
@@ -176,6 +178,7 @@
 |DTAP|Direct Transfer Application Part, прикладная часть протокола прямой передачи|
 |DTMF|Dual–Tone Multi–Frequency, двухтональный многочастотный набор|
 |DUNA|Destination Unavailable|
+|DUP|Data User Part, абонентская подсистема передачи данных|
 |DUPU|Destination User Part Unavailable|
 |DWDM|Dense Wavelength Division Multiplexing|
 |E–DSS1|Extended Digital Subscriber Signaling, расширенная цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами|
@@ -256,6 +259,7 @@
 |HSM|Hardware Security Module, модуль аппаратной защиты|
 |HSPA|High-Speed Packet Access, высокоскоростная пакетная передача данных|
 |HSS|Home Subscriber Server, база данных абонентов собственной сети LTE|
+|HUP|Handover User Part, абонентская подсистема хэндовера|
 |I–CSCF|Interrogating CSCF, узел взаимодействия с внешними сетями IMS|
 |I/O|Input/Output, ввод/вывод|
 |IAM|Initial Address Message, начальное адресное сообщение|
@@ -330,6 +334,7 @@
 |LFN|longForwardedToNumber, адрес переадресации вызова|
 |LI|Legal Intervention, законное вмешательство в вызов|
 |LI|Length Indicator, индикатор длины|
+|LIDB|Line Information Database, информационная база данных линии связи|
 |LIFO|Last in, First out, стек по принципу «последним пришел — первым ушел»|
 |LMMF|LMU Mobility Management Function, функция управления мобильностью LMU|
 |LMSI|Local Mobile Subscriber Identity, местный идентификатор абонента мобильной связи|
@@ -403,6 +408,7 @@
 |MTI|Message Type Indicator, индикатор типа сообщения|
 |MTP|Message Transfer Part, подсистема передачи сообщений|
 |MTU|Maximum Transmission Unit, максимальный размер пакета|
+|MUP|Mobile User Part, абонентская подсистема мобильной связи|
 |MVNO|Mobile Virtual Network Operator, виртуальный оператор мобильной связи|
 |MWD|Messages–Waiting–Data, информация о сообщениях в режиме ожидания — список центров, у которых есть сообщения, ожидающие доставки абоненту|
 |NA|Network Appearance, локальная ссылка на сигнальный шлюз и сервер приложений|
@@ -445,6 +451,7 @@
 |OFCS|Offline Charging System, система учета расходов в режиме offline|
 |OgPN|Original Party Number, первоначальный номер абонента|
 |OMA|Open Mobile Alliance, Открытое сообщество операторов мобильной связи|
+|OMAP|Operation, Maintenance, and Administration Part; подсистема эксплуатации, администрирования и технического обслуживания|
 |OMI|Open Message Interface, интерфейс открытых сообщений|
 |OMI|Operation and Maintenance Interface, интерфейс эксплуатации и технического обслуживания|
 |OP|Open Platform|
