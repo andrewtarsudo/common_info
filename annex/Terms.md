@@ -791,11 +791,11 @@
 |CAP_X-CSI|CAP_X–CamelSubscriptionInformation|
 |Diam ACA|Diameter Accounting–Answer|
 |Diam ACR|Diameter Accounting–Request|
+|Diam AMA|Diameter AA–Mobile–Node–Answer|
+|Diam AMR|Diameter AA–Mobile–Node–Request|
 |Diam CCA|Diameter Connection-Create-Answer|
 |Diam CCA|Diameter Credit–Control–Answer|
-|Diam CCA|Diameter Credit–Control–Answer|
 |Diam CCR|Diameter Connection-Create-Request|
-|Diam CCR|Diameter Credit–Control–Request|
 |Diam CCR|Diameter Credit–Control–Request|
 |Diam CDA|Diameter Connection-Delete-Answer|
 |Diam CDR|Diameter Connection-Delete-Request|
@@ -805,6 +805,8 @@
 |Diam CLR|Diameter Cancel-Location-Request|
 |Diam DSA|Diameter Delete-Subscriber-Data-Answer|
 |Diam DSR|Diameter Delete-Subscriber-Data-Request|
+|Diam DWA|Diameter Device-Watchdog-Answer|
+|Diam DWR|Diameter Device-Watchdog-Request|
 |Diam IDA|Diameter Insert-Subscriber-Data-Answer|
 |Diam IDR|Diameter Insert-Subscriber-Data-Request|
 |Diam LIA|Diameter Location–Info–Answer|
