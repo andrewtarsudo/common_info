@@ -1,5 +1,3 @@
-* log_files_description.md
-* 
 * abonent — журнал событий профилей абонентов;
 * abort_cdr — журнал CDR вызовов, завершенных Abort;
 * alarm — журнал аварий системы;
