@@ -234,7 +234,6 @@
 |GERAN|GSM/EDGE Radio Access Network, сеть радиодоступа к GSM/EDGE|
 |GGSN|Gateway GPRS Support Node, узел поддержки шлюза GPRS|
 |GMLC|Gateway Mobile Location Centre, шлюзовой центр позиционирования|
-|GMLC|Gateway Mobile Location Centre, шлюзовый центр позиционирования|
 |GMSC|Gateway MSC, шлюз MSC|
 |GPRS|General Packet Radio Service, система пакетной радиосвязи общего пользования|
 |GSI|Geographical Scope Interface, интерфейс услуги геолокации|
