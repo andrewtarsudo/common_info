@@ -3,6 +3,62 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|RANAP|Radio Access Network Application Protocol|
+|RCAF|RAN Congestion Awareness Function|
+|RNC|Radio Network Controller|
+|RNS|Radio Network Subsystem|
+|RNTI|Radio Network Temporary Identity|
+|RRC|Radio Resource Control|
+|RUCI|RAN User Plane Congestion Information|
+|SBSC|Serving Base Station Controller|
+|SBSS|Serving BSS|
+|SIPTO|Selected IP Traffic Offload|
+|SNDC|Subnetwork Dependent Convergence|
+|SNDCP|SubNetwork Dependent Convergence Protocol|
+|SPI|Security Parameter Index|
+|TFT|Traffic Flow Template|
+|TLLI|Temporary Logical Link Identity|
+|ToM|Tunnelling of Messages|
+|TRAU|Transcoder and Rate Adaptor Unit|
+|UE-AMBR|UE-Aggregate Maximum Bit Rate|
+|UEA|UMTS Encryption Algorithm|
+|UIA|UMTS Integrity Algorithm|
+|URA|UTRAN Registration Area|
+|URRP|UE Reachability Request Parameter|
+|ICMP|Internet Control Message Protocol|
+|IoT|Internet of Things|
+|KSI|Key Set Identifier|
+|L2TP|Layer 2 Tunnelling Protocol|
+|LLC|Logical Link Control|
+|MNRR|Mobile Station Not Reachable Reason|
+|MOCN|Multi-Operator Core Network|
+|NACC|Network Assisted Cell Change|
+|NGAF|Non-GPRS Alert Flag|
+|NRSU|Network Request Support UE|
+|NRSN Network Request Support Network|
+|PCU|Packet Control Unit|
+|PDCH|Packet Data Channel|
+|PDCP|Packet Data Convergence Protocol|
+|PMM|Packet Mobility Management|
+|PPF|Paging Proceed Flag|
+|PSM|Power Saving Mode|
+|PVC|Permanent Virtual Circuit|
+|AAL5|ATM Adaptation Layer Type 5|
+|ADD|Automatic Device Detection|
+|AUTN|Authentication Token|
+|BCM|Bearer Control Mode|
+|BSSAP|Base Station System Application Part|
+|BSSGP|Base Station System GPRS Protocol|
+|BVCI|BSSGP Virtual Connection Identifier|
+|CCU|Channel Codec Unit|
+|CMM|Circuit Mobility Management|
+|DCN|Dedicated Core Network|
+|DTI|Direct Tunnel Indicator|
+|ESP|Encapsulating Security Payload|
+|ETFTN|Extended TFT Support Network|
+|ETFTU|Extended TFT Support UE|
+|GCSI|GPRS CAMEL Subscription Information Indicator|
+|GEA|GPRS Encryption Algorithm|
 |RAB|Radio Access Bearer, канал радиодоступа|
 |NI-LR|Network Induced Location Request, запрос местоположения от сети|
 |FQPC|Fully Qualified Partial CDR, полностью уточнённая частичная запись CDR|
