@@ -3,6 +3,7 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|SCEF|Service Capability Exposure Function|
 |RANAP|Radio Access Network Application Protocol|
 |RCAF|RAN Congestion Awareness Function|
 |RNC|Radio Network Controller|
