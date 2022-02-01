@@ -3,6 +3,7 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|SCC-AS|Service Centralization and Continuity Application Server, сервер централизации и продолжения сервиса|
 |MB|Music Box, автоматическое воспроизведение мелодий|
 |OMC|Operation and Maintenance Centre, центр эксплуатации и технического обслуживания|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
