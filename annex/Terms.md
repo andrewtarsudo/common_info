@@ -3,6 +3,7 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|ARP|Allocation and Retention Priority, приоритет при распределении и хранении|
 |eDRX|Extended Discontinuous Reception, расширенный режим прерывистого приема|
 |NIDD|Non-IP Data Delivery, передача данных не по IP|
 |SCC-AS|Service Centralization and Continuity Application Server, сервер централизации и продолжения сервиса|
