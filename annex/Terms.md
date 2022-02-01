@@ -3,6 +3,11 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|ANDSP|Access Network Discovery and Selection Policy, политика обнаружения и выбора сети доступа|
+|BSF|Binding Support Function, функция поддержки привязки|
+|NWDAF|Network Data Analytics Function, функция анализа сетевых данных|
+|PFD|Packet Flow Description, описание потока пакетов|
+|URSP|UE Route Selection Policy, политика выбора маршрута для оборудования пользователя|
 |ARP|Allocation and Retention Priority, приоритет при распределении и хранении|
 |eDRX|Extended Discontinuous Reception, расширенный режим прерывистого приема|
 |NIDD|Non-IP Data Delivery, передача данных не по IP|
