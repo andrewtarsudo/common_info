@@ -3,6 +3,7 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|eDRX|Extended Discontinuous Reception, расширенный режим прерывистого приема|
 |SCC-AS|Service Centralization and Continuity Application Server, сервер централизации и продолжения сервиса|
 |MB|Music Box, автоматическое воспроизведение мелодий|
 |OMC|Operation and Maintenance Centre, центр эксплуатации и технического обслуживания|
