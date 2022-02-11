@@ -3,23 +3,6 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
-|DP|Detection Point, точка обнаружения — места генерирования уведомлений в сервис-логике в процессе обработки данных и передачи управления в gsmSCF|
-|gsmSCF|GSM Service Control Function, служба контроля сервисов GSM|
-|gsmSRF|GSM Specialized Resource Function, служба специализированных ресурсов GSM|
-|MIB|Management Information Base, база управляющей информации — виртуальная база данных, используемая для управления объектами в сетях связи|
-|SAE|System Architecture Evolution, эволюция архитектуры системы — архитектура сети для стандарта LTE|
-|SCA|Service Center Address, адрес сервисного центра|
-|ANDSP|Access Network Discovery and Selection Policy, политика обнаружения и выбора сети доступа|
-|BSF|Binding Support Function, функция поддержки привязки|
-|NWDAF|Network Data Analytics Function, функция анализа сетевых данных|
-|PFD|Packet Flow Description, описание потока пакетов|
-|URSP|UE Route Selection Policy, политика выбора маршрута для оборудования пользователя|
-|ARP|Allocation and Retention Priority, приоритет при распределении и хранении|
-|eDRX|Extended Discontinuous Reception, расширенный режим прерывистого приема|
-|NIDD|Non-IP Data Delivery, передача данных не по IP|
-|SCC-AS|Service Centralization and Continuity Application Server, сервер централизации и продолжения сервиса|
-|MB|Music Box, автоматическое воспроизведение мелодий|
-|OMC|Operation and Maintenance Centre, центр эксплуатации и технического обслуживания|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |AAL5|ATM Adaptation Layer Type 5, уровень адаптации ATM|
@@ -44,6 +27,7 @@
 |AMA|Automatic Message Accounting, автоматическая система учета|
 |AMF|Access and Mobility Management Function, функция управления доступом и мобильностью|
 |AMR|Adaptive Multi Rate, адаптивное кодирование с переменной скоростью|
+|ANDSP|Access Network Discovery and Selection Policy, политика обнаружения и выбора сети доступа|
 |ANM|Answer Message, ответное сообщение от вызываемого абонента ISUP|
 |AoC|Advice of Charge, уведомление об оплате|
 |AOR|Address of Record, адрес регистрации|
@@ -52,6 +36,7 @@
 |APDU|Application Protocol Data Unit, блок данных прикладного протокола|
 |APN|Access Point Name, имя точки доступа|
 |APRI|Address Presentation Restriction Indicator, индикатор запрета отображения адреса|
+|ARP|Allocation and Retention Priority, приоритет при распределении и хранении|
 |AS|Application Server, узел дополнительного управления вызовом или логический объект SIGTRAN, обрабатывающий сигнализацию|
 |AS|Application Service, служба приложений|
 |ASCII|American Standard Code for Information Interchange, американский стандартный код обмена информацией|
@@ -88,6 +73,7 @@
 |BRT|Billing Real–Time, биллинг в режиме реального времени|
 |BSC|Base Station Controller, контроллер базовых станций|
 |BSDB|Business Services, агенты бизнес-логики|
+|BSF|Binding Support Function, функция поддержки привязки|
 |BSN|Backward Sequence Number, номер последовательности назад|
 |BSNR|Backward Sequence Number Routing, маршрутизация номера последовательности назад|
 |BSSAP|Base Station System Application Part, протокол прикладной части подсистемы базовых станций|
@@ -189,6 +175,7 @@
 |DNL|Destination Number Length, длина номера назначения|
 |DNS|Domain Name Server, сервер доменных имен|
 |DoS|Denial of Service, отказ в обслуживании|
+|DP|Detection Point, точка обнаружения — места генерирования уведомлений в сервис-логике в процессе обработки данных и передачи управления в gsmSCF|
 |DPC|Destination Point Code, код сигнальной точки назначения|
 |DPDK|Data Plane Development Kit, набор библиотек для ускорения обработки пакетных данных|
 |DRA|Diameter Routing Agent, агент маршрутизации протокола Diameter|
@@ -221,6 +208,7 @@
 |EDE/EDE3|Encrypt–Decrypt–Encrypt, шифрование–дешифрование–шифрование — один из вариантов применения криптографического алгоритма DES/Triple–DES|
 |EDGE|Enhanced Data Rates for GSM Evolution, усовершенствование передачи данных для эволюции GSM|
 |EDR|Event Detail Record, подробная запись о случившемся событии|
+|eDRX|Extended Discontinuous Reception, расширенный режим прерывистого приема|
 |EEA|EPS Encrypting Algorithm, алгоритм шифрования EPS|
 |EF|Elementary File, элементарный файл|
 |EFDIR|Elementary File Directory, элементарная файловая директория|
@@ -269,6 +257,8 @@
 |GSI|Geographical Scope Interface, интерфейс услуги геолокации|
 |GSM|Global System for Mobile Communications, глобальный стандарт цифровой мобильной сотовой связи|
 |GSMA|GSM Association, Ассоциация GSMA — организация операторов мобильной связи|
+|gsmSCF|GSM Service Control Function, служба контроля сервисов GSM|
+|gsmSRF|GSM Specialized Resource Function, служба специализированных ресурсов GSM|
 |GT|Global Title, глобальный заголовок|
 |GTI|GT Indicator, индикатор GT|
 |GTP–C|GTP Control Plane, уровень управления GTP|
@@ -397,6 +387,7 @@
 |MAC|Media Access Control, уникальный идентификатор оборудования или сетевого интерфейса в сети Ethernet|
 |MAC|Message Authentication Code, код проверки подлинности сообщения|
 |MAP|Mobile Application Part, протокол мобильных приложений|
+|MB|Music Box, автоматическое воспроизведение мелодий|
 |MCC|Mobile Country Code, код страны в мобильных сетях|
 |MCU|Media Control Unit, сервер обработки медиа–данных|
 |MCU|Multipoint Control Unit, сервер многоточечной конференции|
@@ -411,6 +402,7 @@
 |MGCF|Media Gateway Control Function, узел управления медиашлюзом|
 |MGCP|Media Gateway Control Protocol, протокол управления медиашлюзами|
 |MGW|Media Gateway, шлюз передачи медиаданных|
+|MIB|Management Information Base, база управляющей информации — виртуальная база данных, используемая для управления объектами в сетях связи|
 |MID|Message Identifier, идентификатор сообщения|
 |MLC|Mobile Location Centre, центр позиционирования|
 |MME|Mobility Management Entity, узел управления мобильностью|
@@ -472,6 +464,7 @@
 |NI-LR|Network Induced Location Request, запрос местоположения от сети|
 |NI|Network Identifier, идентификатор сети|
 |NIC|Network Interface Controller, сетевой контроллер|
+|NIDD|Non-IP Data Delivery, передача данных не по IP|
 |NMS|Network Management System, система управления сетью|
 |NP|Numbering Plan, план нумерации|
 |NPI|Numbering Plan Indicator, индикатор плана нумерации|
@@ -487,6 +480,7 @@
 |NSSF|Network Slice Selection Function, функция выбора сетевого слоя|
 |NTE|Named Telephony Event, именное событие телефонии|
 |NTP|Network Time Protocol, сетевой протокол синхронизации времени|
+|NWDAF|Network Data Analytics Function, функция анализа сетевых данных|
 |OA|Originating Address, адрес отправления|
 |OAM|Operation, Administration, and Maintenance; эксплуатация, администрирование и техническое обслуживание|
 |OCS|Online Charging System, система учета расходов в реальном времени|
@@ -496,6 +490,7 @@
 |OgPN|Original Party Number, первоначальный номер абонента|
 |OMA|Open Mobile Alliance, Открытое сообщество операторов мобильной связи|
 |OMAP|Operation, Maintenance, and Administration Part; подсистема эксплуатации, администрирования и технического обслуживания|
+|OMC|Operation and Maintenance Centre, центр эксплуатации и технического обслуживания|
 |OMI|Open Message Interface, интерфейс открытых сообщений|
 |OMI|Operation and Maintenance Interface, интерфейс эксплуатации и технического обслуживания|
 |OP|Open Platform|
@@ -531,6 +526,7 @@
 |PDP|Packet Data Protocol, протокол пакетной передачи данных|
 |PDU|Protocol Data Unit, единица данных протокола|
 |PERL|Practical Extraction and Report Language — язык программирования|
+|PFD|Packet Flow Description, описание потока пакетов|
 |PGW|Packet Data Network Gateway, шлюз пакетной передачи данных|
 |PI|Presentation Indicator, индикатор отображения (адреса)|
 |PIC|Performance Intelligence Center, центр изучения производительности — узел сети, обрабатывающий информацию о трафике для повышения эффективности|
@@ -619,6 +615,7 @@
 |S–CSCF|Serving CSCF, узел обработки SIP–сообщений IMS|
 |SAC|Service Area Code, код зоны обслуживания|
 |SAD|Source Address, адрес отправителя|
+|SAE|System Architecture Evolution, эволюция архитектуры системы — архитектура сети для стандарта LTE|
 |SAI|Send Authentication Info, данные абонента для идентификации в сети|
 |SAM|Subsequent Address Message, последующее адресное сообщение ISUP|
 |SAPT|Service Access Point Identifier, идентификатор точки доступа к услугам|
@@ -628,6 +625,8 @@
 |SBcAP|SBc Application Part, прикладная часть протокола SBc — протокол взаимодействия CBC и MME|
 |SBSC|Serving Base Station Controller, контроллер |
 |SBSS|Serving BSS, обслуживающая BSS|
+|SCA|Service Center Address, адрес сервисного центра|
+|SCC-AS|Service Centralization and Continuity Application Server, сервер централизации и продолжения сервиса|
 |SCC–AS|Service Centralization and Continuity Application Server, сервер для централизации и непрерывности предоставления услуг|
 |SCCP|Signaling Connection Control Part, подсистема управления сигнализацией|
 |SCEF|Service Capability Exposure Function, технология для взаимодействия с сетью Интернета вещей через единый интерфейс|
@@ -792,6 +791,7 @@
 |URL|Uniform Resource Locator, унифицированный адрес электронных ресурсов|
 |URN|Uniform Resource Name, универсальное имя источника|
 |URRP|UE Reachability Request Parameter, параметр запроса доступности в сетях UMTS|
+|URSP|UE Route Selection Policy, политика выбора маршрута для оборудования пользователя|
 |USC|USSD Service Center, центр обработки USSD|
 |USIM|Universal Subscriber Identity Module, универсальный модуль идентификации абонента|
 |USSD|Unstructured Supplementary Service Data, неструктурированные дополнительные служебные данные — технология взаимодействия абонента и приложения через обмен короткими сообщениями|
