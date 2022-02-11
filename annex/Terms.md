@@ -3,6 +3,12 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|DP|Detection Point, точка обнаружения — места генерирования уведомлений в сервис-логике в процессе обработки данных и передачи управления в gsmSCF|
+|gsmSCF|GSM Service Control Function, служба контроля сервисов GSM|
+|gsmSRF|GSM Specialized Resource Function, служба специализированных ресурсов GSM|
+|MIB|Management Information Base, база управляющей информации — виртуальная база данных, используемая для управления объектами в сетях связи|
+|SAE|System Architecture Evolution, эволюция архитектуры системы — архитектура сети для стандарта LTE|
+|SCA|Service Center Address, адрес сервисного центра|
 |ANDSP|Access Network Discovery and Selection Policy, политика обнаружения и выбора сети доступа|
 |BSF|Binding Support Function, функция поддержки привязки|
 |NWDAF|Network Data Analytics Function, функция анализа сетевых данных|
