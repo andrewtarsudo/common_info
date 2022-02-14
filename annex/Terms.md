@@ -3,6 +3,7 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|SQN|Sequence Number, порядковый номер|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |AAL5|ATM Adaptation Layer Type 5, уровень адаптации ATM|
