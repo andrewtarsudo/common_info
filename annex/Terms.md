@@ -3,6 +3,8 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|SCAP|Ericsson Service Charging Application Protocol, прикладной протокол тарификации услуг Ericsson|
+|LDAP|Lightweight Directory Access Protocol, упрощённый протокол доступа к каталогам|
 |SQN|Sequence Number, порядковый номер|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
