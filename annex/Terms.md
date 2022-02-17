@@ -3,6 +3,11 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|MPS|Multimedia Priority Services|
+|NMC|Network Management Controls|
+|ETS|Emergency Telecommunications Services|
+|WPS|Wireless Priority Service|
+|RPH|Resource Priority Header|
 |SCAP|Ericsson Service Charging Application Protocol, прикладной протокол тарификации услуг Ericsson|
 |LDAP|Lightweight Directory Access Protocol, упрощённый протокол доступа к каталогам|
 |SQN|Sequence Number, порядковый номер|
