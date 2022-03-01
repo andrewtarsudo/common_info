@@ -3,6 +3,8 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|VBS|Voice Broadcast Service|
+|VGCS|Voice Group Call Service|
 |MPS|Multimedia Priority Services|
 |NMC|Network Management Controls|
 |ETS|Emergency Telecommunications Services|
