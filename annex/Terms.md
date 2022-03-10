@@ -3,7 +3,7 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
-|RDS|Route Selection Descriptor|
+|RDS|Route Selection Descriptor, дескриптор выбора маршрута|
 |VBS|Voice Broadcast Service|
 |VGCS|Voice Group Call Service|
 |MPS|Multimedia Priority Services|
