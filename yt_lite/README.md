@@ -1,4 +1,7 @@
-Краткая инструкция без картинок:
+Краткая инструкция:
+YouTrack -> Профиль/Profile -> Аккаунт Hub/Hub account -> Обновление анкетных данных и управление логинами/Update personal information and manage logins -> Аутентификация/Authentication -> Новый токен.../New token... -> заполнить Имя/Name -> добавить пункт YouTrack в Область доступа/Scope -> Создать/Create -> Сохранить в буфер обмена/Save to the buffer -> открыть youtrack.json -> вставить из буфера в параметр auth_token -> задать значение параметру login (-> задать значение параметру timestamp)
+
+Алгоритм:
 1) нажать на аватар на верхней панели YouTrack;
 2) выбрать "Профиль"/"Profile" в выпавшем меню;
 3) нажать на "Обновление анкетных данных и управление логинами"/"Update personal information and manage logins" в пункте "Аккаунт Hub"/"Hub account";
