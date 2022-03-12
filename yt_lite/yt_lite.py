@@ -1,8 +1,9 @@
 import pathlib
+from typing import Union
 import requests
 import json
 import datetime
-import decimal
+from decimal import Decimal
 import time
 import codecs
 
@@ -43,14 +44,10 @@ class UserYT:
     @property
     def headers_user_yt(self):
         """
-        Defines the headers for the requests. Contains the following headers:
-
-        'Authorization': 'Bearer perm: self.auth_token',
-
-        'Accept': 'application/json',
-
-        'Content-Type': 'application/json'.
-
+        Defines the headers for the requests. Contains the following headers: \n
+        'Authorization': 'Bearer perm: self.auth_token',\n
+        'Accept': 'application/json',\n
+        'Content-Type': 'application/json'.\n
         :return: the headers parameters of the dict type.
         """
         bearer = ' '.join(('Bearer', self.auth_token))
@@ -69,8 +66,7 @@ class UserYT:
 
     def write_auth_user_yt(self, path: pathlib.Path):
         """
-        Defines the method to save the authentication parameters to the file.
-
+        Defines the method to save the authentication parameters to the file.\n
         :param path: the path to the json file, pathlib.Path
         :return: None.
         """
@@ -89,8 +85,7 @@ class UserYT:
 
     def get_issue_deadline(self, issue_name: str) -> datetime.date:
         """
-        Defines the deadline of the issue from the YouTrack.
-
+        Defines the deadline of the issue from the YouTrack.\n
         :param issue_name: the issue identifier, idReadable, str
         :return: the issue deadline of the date type.
         """
@@ -110,8 +105,7 @@ class UserYT:
 
     def get_work_items_deadline(self, date_period: str) -> list[tuple[str, datetime.date, int, datetime.date]]:
         """
-        Defines the dict of the work issue parameters: issue_name, date, spent_time.
-
+        Defines the dict of the work issue parameters: issue_name, date, spent_time.\n
         :param date_period: the period of creating the work issue item, YYYY-MM-DD/YYYY-MM, str
         :return: the work issue parameters of the dict[str, list[str, date, int, date]] type.
         """
@@ -145,24 +139,20 @@ class UserYT:
 
 def read_auth_user_yt(path: pathlib.Path) -> UserYT:
     """
-    Defines the method to read the authentication parameters from the file.
-
+    Defines the method to read the authentication parameters from the file.\n
     :param path: the path to the file, pathlib.Path
     :return: the entity of the user with the authentication parameters of the UserYT type.
     """
     with open(path, 'r') as file:
         json_text = file.read()
         parsed_text = json.loads(json_text)
-
-        user = UserYT(parsed_text['login'], parsed_text['auth_token'])
-
-    return user
+        # get the authentication parameters
+        return UserYT(login=parsed_text['login'], auth_token=parsed_text['auth_token'])
 
 
 def read_auth_timestamp(path: pathlib.Path) -> str:
     """
-    Defines the method to read the path to the table.
-
+    Defines the method to read the path to the table.\n
     :param path: the path to the file, pathlib.Path
     :return: the path to the xlsx table of the str type.
     """
@@ -175,9 +165,8 @@ def read_auth_timestamp(path: pathlib.Path) -> str:
 
 def get_request(url: str, headers: dict, params: tuple) -> str:
     """
-    Defines the GET request.
-    If the initial input parameters are invalid, the exception is raised.
-
+    Defines the GET request.\n
+    If the initial input parameters are invalid, the exception is raised.\n
     :param url: URL to send the request, str
     :param headers: request headers, dict
     :param params: request parameters, tuple
@@ -193,10 +182,10 @@ def get_request(url: str, headers: dict, params: tuple) -> str:
         return '{}'
 
 
-def convert_long_datetime(value):
+def convert_long_datetime(value) -> datetime.date:
     """Converts the long value to the datetime.date."""
     if value is None:
-        return datetime.date(year=2021, month=1, day=1)
+        return datetime.date(year=1, month=1, day=1)
     else:
         return datetime.date.fromtimestamp(value // 1000)
 
@@ -207,10 +196,9 @@ dict_issue_name = {"ARCH_ST": '139-1028', "DOC_ST": '139-595', "ARCH": '139-1027
 
 def define_deadline(issue_name: str) -> str:
     """
-    Defines the deadline and state identifier in the query based on the issue name.
-
+    Defines the deadline and state identifier in the query based on the issue name.\n
     :param issue_name: the name of the issue, str
-    :return: the parameter identifier, str
+    :return: the parameter identifier of the str type.
     """
     if issue_name.startswith('ARCH_ST'):
         key = 'ARCH_ST'
@@ -236,8 +224,7 @@ def convert_work_items(
         start_date: datetime.date,
         end_date: datetime.date):
     """
-    Converts the list of work items to the printable form.
-
+    Converts the list of work items to the printable form.\n
     :param list_work_items: the dict with the work items, list[tuple[str, date, int, date]]
     :param start_date: the first day of the period, date
     :param end_date: the last day of the period, date
@@ -278,17 +265,16 @@ def convert_work_items(
     return list_final
 
 
-def convert_spent_time(spent_time: int):
+def convert_spent_time(spent_time: int) -> Union[int, Decimal]:
     """
-    Converts the spent time in minutes to hours.
-
+    Converts the spent time in minutes to hours.\n
     :param spent_time: the spent time in minutes, int
     :return: the converted spent time of the decimal or the int type.
     """
     if spent_time % 60 == 0:
         return spent_time // 60
     else:
-        return decimal.Decimal(spent_time / 60).normalize()
+        return Decimal(spent_time / 60).normalize()
 
 
 def main():
