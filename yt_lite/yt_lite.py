@@ -150,6 +150,11 @@ def read_auth_user_yt(path: pathlib.Path) -> UserYT:
         return UserYT(login=parsed_text['login'], auth_token=parsed_text['auth_token'])
 
 
+# define the default timestamp if the parameter is missing
+today: datetime.date = datetime.date.today()
+default_timestamp = f'{today.year}-01-01'
+
+
 def read_auth_timestamp(path: pathlib.Path) -> str:
     """
     Defines the method to read the path to the table.\n
@@ -158,9 +163,12 @@ def read_auth_timestamp(path: pathlib.Path) -> str:
     """
     with open(path, 'r') as file:
         json_text = file.read()
-        parsed_text = json.loads(json_text)
-
-    return parsed_text['timestamp']
+        parsed_text: dict = json.loads(json_text)
+    # check if the timestamp is defined in the file
+    if 'timestamp' not in parsed_text.keys():
+        return default_timestamp
+    else:
+        return parsed_text['timestamp']
 
 
 def get_request(url: str, headers: dict, params: tuple) -> str:
@@ -277,8 +285,15 @@ def convert_spent_time(spent_time: int) -> Union[int, Decimal]:
         return Decimal(spent_time / 60).normalize()
 
 
+def terminate_script(string: str):
+    """Set the value to terminate the program in any input to ignore any loops or KeyInterruptError."""
+    if string.strip() == '__exit__':
+        print('Работа прервана. Программа закрывается.')
+        exit()
+
+
 def main():
-    # path to the the json file
+    # path to the json file
     path = pathlib.Path('./youtrack.json').resolve()
     # get the authorization parameters for the UserYT
     user: UserYT = read_auth_user_yt(path)
@@ -293,14 +308,20 @@ def main():
     # set the period for requests
     # define the first date in the period
     first_date_input = input('Введите начальную дату интервала в формате ГГГГ-ММ-ДД или нажмите "Enter":\n')
-    # check if the input is empty
+    terminate_script(first_date_input)
+    # check if the input is correct
     try:
-        first_datetime = datetime.datetime.fromisoformat(first_date_input)
+        first_datetime = datetime.datetime.fromisoformat(first_date_input.strip())
     except ValueError:
         print(f'Введенное значение некорректно. Будет использовано значение по умолчанию {timestamp}.')
         first_datetime = datetime.datetime.fromisoformat(timestamp)
+    except Exception as e:
+        print(f'Ошибка {e.__class__.__name__}. Будет использовано значение по умолчанию {timestamp}.')
+        print('Сообщите о полученной ошибке для исправления кода. Спасибо.')
+        first_datetime = datetime.datetime.fromisoformat(timestamp)
     else:
-        if first_date_input == '' or first_date_input is None:
+        # if the input is empty
+        if first_date_input.strip():
             # apply the default values if empty
             print(f'Будет использовано значение по умолчанию {timestamp}.')
             first_datetime = datetime.datetime.fromisoformat(timestamp)
@@ -308,23 +329,38 @@ def main():
     first_date = str(first_datetime.date())
     # define the last date in the period
     last_day_input = input('Введите конечную дату интервала в формате ГГГГ-ММ-ДД или нажмите "Enter":\n')
-    # check if the input is empty
+    terminate_script(last_day_input)
+    # check if the input is correct
     try:
-        last_datetime = datetime.datetime.fromisoformat(last_day_input)
+        last_datetime = datetime.datetime.fromisoformat(last_day_input.strip())
         last_date = str(last_datetime.date())
     except ValueError:
         print(f'Введенное значение некорректно. Будет использовано значение по умолчанию {datetime.date.today()}.')
         last_datetime = datetime.datetime.today()
         last_date = 'Today'
+    except Exception as e:
+        print(f'Ошибка {e.__class__.__name__}. Будет использовано значение по умолчанию {datetime.date.today()}.')
+        print('Сообщите о полученной ошибке для исправления кода. Спасибо.')
+        last_datetime = datetime.datetime.today()
+        last_date = 'Today'
     else:
-        if last_day_input == '' or last_day_input is None:
+        # if the input is empty
+        if last_day_input.strip():
             # apply the default values if empty
             print(f'Будет использовано значение по умолчанию {datetime.date.today()}.')
             last_datetime = datetime.datetime.today()
             last_date = 'Today'
 
     # set the string for the period
-    date_period: str = f'{first_date} .. {last_date}'
+    # check the input dates if the period is proper, the default one is not checked
+    if (first_date, last_date) != (timestamp, datetime.date.today()) and first_date > last_date:
+        # the period is improper
+        print('Введенный промежуток некорректен. Будет использован промежуток по умолчанию:')
+        print(f'{timestamp} .. {datetime.date.today()}')
+        date_period: str = f'{timestamp} .. {datetime.date.today()}'
+    else:
+        date_period: str = f'{first_date} .. {last_date}'
+
     # get all YouTrack WorkItem entities
     list_work_items = user.get_work_items_deadline(date_period=date_period)
     # define the period
@@ -346,8 +382,9 @@ def main():
         # ask to save the results to the file
         print('\nСохранить в файл txt? Нажмите "Enter", чтобы закрыть без сохранения немедленно.')
         save_input = input('Для записи в файл введите название файла без расширения:\n')
+        terminate_script(save_input)
         # not to save the results
-        if save_input == '' or save_input is None:
+        if save_input.strip():
             # terminate the program
             print('Завершается работа ...')
             time.sleep(1)
@@ -379,8 +416,9 @@ def main():
                 # if it exists
                 print('Такой файл уже существует, перезаписать его? По умолчанию - нет.')
                 approve_input = input('Y или Д - да / N или Н - нет.\n')
+                terminate_script(approve_input)
                 # not to rewrite the file, start the cycle again
-                if approve_input in ('', None) or approve_input.lower() in ('n', 'н'):
+                if approve_input.strip() or approve_input.lower() in ('n', 'н'):
                     continue
                 else:
                     # rewrite the file
