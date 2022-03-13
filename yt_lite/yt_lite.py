@@ -145,9 +145,15 @@ def read_auth_user_yt(path: pathlib.Path) -> UserYT:
     """
     with open(path, 'r') as file:
         json_text = file.read()
-        parsed_text = json.loads(json_text)
-        # get the authentication parameters
-        return UserYT(login=parsed_text['login'], auth_token=parsed_text['auth_token'])
+        parsed_text: dict = json.loads(json_text)
+        # check if the file contains the login and auth_token parameters
+        if "login" not in parsed_text.keys() or "auth_token" not in parsed_text.keys():
+            login, auth_token = "__nofile__", "__nofile__"
+        else:
+            # get the authentication parameters
+            login, auth_token = parsed_text['login'], parsed_text['auth_token']
+
+        return UserYT(login=login, auth_token=auth_token)
 
 
 # define the default timestamp if the parameter is missing
@@ -285,6 +291,29 @@ def convert_spent_time(spent_time: int) -> Union[int, Decimal]:
         return Decimal(spent_time / 60).normalize()
 
 
+def check_json_file(path: pathlib.Path) -> bool:
+    """
+    Checks if the JSON file exists.\n
+    :param path: the path to the json file, pathlilb.Path
+    :return: the file existence flag of the bool type. 
+    """
+    try:
+        with open(path, 'w+') as file:
+            file.close()
+    except FileNotFoundError:
+        print('Файл youtrack.json не найден. Программа прекращает работу.')
+        return False
+    except PermissionError:
+        print('Возникла проблема с правами доступа. Программа прекращает работу.')
+        return False
+    except OSError as e:
+        print(f'Возникла ошибка {e.__class__.__name__}. Программа прекращает работу.')
+        print('Сообщите о полученной ошибке для исправления кода. Спасибо.')
+        return False
+    else:
+        return True
+
+
 def terminate_script(string: str):
     """Set the value to terminate the program in any input to ignore any loops or KeyInterruptError."""
     if string.strip() == '__exit__':
@@ -295,6 +324,11 @@ def terminate_script(string: str):
 def main():
     # path to the json file
     path = pathlib.Path('./youtrack.json').resolve()
+    # check if the youtrack.json file exists
+    if not check_json_file(path):
+        time.sleep(3)
+        input('Нажмите любую клавишу, чтобы закрыть программу.\n')
+        exit()
     # get the authorization parameters for the UserYT
     user: UserYT = read_auth_user_yt(path)
     # read the timestamp
@@ -417,10 +451,8 @@ def main():
                 print('Такой файл уже существует, перезаписать его? По умолчанию - нет.')
                 approve_input = input('Y или Д - да / N или Н - нет.\n')
                 terminate_script(approve_input)
-                # not to rewrite the file, start the cycle again
-                if approve_input.strip() or approve_input.lower() in ('n', 'н'):
-                    continue
-                else:
+                # check the approval
+                if not approve_input.strip() and approve_input.strip().lower() in ('y', 'д'):
                     # rewrite the file
                     flag = False
                     # write the results instead of the file contents and close
@@ -428,6 +460,9 @@ def main():
                         file.writelines(readable_printable_res)
                         print(f"Файл {save_input}.txt перезаписан.")
                         file.close()
+                # not to rewrite the file, start the cycle again
+                else:
+                    continue
 
 
 if __name__ == '__main__':
