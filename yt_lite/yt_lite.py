@@ -338,6 +338,8 @@ def main():
     if (user.login, user.auth_token) == ('__nofile__', '__nofile__'):
         print('В файле youtrack.json не найдены параметры login, auth_token.')
         print('Добавьте в файл youtrack.json недостающий параметр и задайте ему значение.')
+        input('Нажмите любую клавишу, чтобы закрыть программу.\n')
+        exit()
     # read the timestamp
     timestamp: str = read_auth_timestamp(path)
 
