@@ -458,6 +458,7 @@ def main():
                 with open(path_file, 'w+', encoding="cp1251") as file:
                     file.writelines(readable_printable_res)
                     print(f"Файл {file_name}.txt создан.")
+                    time.sleep(1)
                     file.close()
             else:
                 # if it exists
@@ -472,6 +473,7 @@ def main():
                     with open(path_file, 'w+', encoding="cp1251") as file:
                         file.writelines(readable_printable_res)
                         print(f"Файл {file_name}.txt перезаписан.")
+                        time.sleep(1)
                         file.close()
                 # not to rewrite the file, start the cycle again
                 else:
