@@ -191,8 +191,11 @@ def get_request(url: str, headers: dict, params: tuple) -> str:
         response.raise_for_status()
         return response.text
     except Exception as e:
-        print(e.__class__)
-        print('The request demands on the proper URL, headers, and params.')
+        print(e.__class__.__name__)
+        print('Значения параметров login и/или auth_token некорректны.')
+        print('Убедитесь, что при создании токена в Область доступа был добавлен YouTrack.')
+        print('Проверьте значения login и auth_token на наличие опечаток.')
+        print('Если все выше не решило проблему, сообщите об ошибке. Спасибо.')
         return '{}'
 
 
@@ -295,7 +298,7 @@ def check_json_file(path: pathlib.Path) -> bool:
     """
     Checks if the JSON file exists.\n
     :param path: the path to the json file, pathlilb.Path
-    :return: the file existence flag of the bool type. 
+    :return: the file existence flag of the bool type.
     """
     try:
         with open(path, 'w+') as file:
@@ -316,7 +319,7 @@ def check_json_file(path: pathlib.Path) -> bool:
 
 def terminate_script(string: str):
     """Set the value to terminate the program in any input to ignore any loops or KeyInterruptError."""
-    if string.strip() == '__exit__':
+    if string.strip() in ('__exit__', '"__exit"', "'__exit__'"):
         print('Работа прервана. Программа закрывается.')
         exit()
 
@@ -331,11 +334,15 @@ def main():
         exit()
     # get the authorization parameters for the UserYT
     user: UserYT = read_auth_user_yt(path)
+    # check if the login and authentication token are specified in the json file
+    if (user.login, user.auth_token) == ('__nofile__', '__nofile__'):
+        print('В файле youtrack.json не найдены параметры login, auth_token.')
+        print('Добавьте в файл youtrack.json недостающий параметр и задайте ему значение.')
     # read the timestamp
     timestamp: str = read_auth_timestamp(path)
 
     # define the announcement
-    print('Введите интервал для вывода работ, зафиксированных в YouTrack.')
+    print('Введите интервал для вывода работ, созданных в YouTrack.')
     print(f'По умолчанию запрос делается для промежутка с момента последнего запуска {timestamp} до сегодняшнего дня')
     print('Для этого далее нажимайте "Enter".')
 
@@ -424,6 +431,10 @@ def main():
             time.sleep(1)
             exit()
         else:
+            if save_input.strip().endswith('.txt'):
+                file_name = save_input.strip()[:-4]
+            else:
+                file_name = save_input.strip()
             readable_printable_res = []
             # convert to the readable format
             for string in printable_res:
@@ -435,7 +446,7 @@ def main():
                 readable_printable_res.append(string_encoded.decode("cp1251"))
 
             # combine the file name
-            path_file = str(save_input) + '.txt'
+            path_file = str(file_name) + '.txt'
 
             # check if the file exists
             if not pathlib.Path(f'./{path_file}').resolve().exists():
@@ -444,7 +455,7 @@ def main():
                 # create the file, write the results, and close
                 with open(path_file, 'w+', encoding="cp1251") as file:
                     file.writelines(readable_printable_res)
-                    print(f"Файл {save_input}.txt создан.")
+                    print(f"Файл {file_name}.txt создан.")
                     file.close()
             else:
                 # if it exists
@@ -458,7 +469,7 @@ def main():
                     # write the results instead of the file contents and close
                     with open(path_file, 'w+', encoding="cp1251") as file:
                         file.writelines(readable_printable_res)
-                        print(f"Файл {save_input}.txt перезаписан.")
+                        print(f"Файл {file_name}.txt перезаписан.")
                         file.close()
                 # not to rewrite the file, start the cycle again
                 else:
