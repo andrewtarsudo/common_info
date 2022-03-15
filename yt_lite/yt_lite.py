@@ -1,4 +1,5 @@
 import pathlib
+import re
 from typing import Union
 import requests
 import json
@@ -12,24 +13,14 @@ class UserYT:
     """
     Displays parameters of the user in the YouTrack.
     """
-    def __init__(self, login: str, auth_token: str):
-        self._login = login
+    def __init__(self, auth_token: str):
         self._auth_token = auth_token
 
     def __str__(self):
-        return f"login = {self._login}, auth_token = {self._auth_token}"
+        return f"auth_token = {self._auth_token}"
 
     def __repr__(self):
-        return f"UserYT(login={self._login}, auth_token = {self._auth_token})"
-
-    @property
-    def login(self):
-        """Defines the login in the YouTrack."""
-        return self._login
-
-    @login.setter
-    def login(self, value):
-        self._login = value
+        return f"UserYT(auth_token = {self._auth_token})"
 
     @property
     def auth_token(self):
@@ -37,9 +28,8 @@ class UserYT:
         return self._auth_token
 
     @auth_token.setter
-    def auth_token(self, value):
+    def auth_token(self, value: str):
         self._auth_token = value
-        self.check_auth_token()
 
     @property
     def headers_user_yt(self):
@@ -58,11 +48,13 @@ class UserYT:
             'Content-Type': 'application/json',
         }
 
+    @property
     def check_auth_token(self):
         """Adds the 'perm:' prefix to the authentication token if it is omitted."""
         if not self.auth_token.startswith('perm:'):
-            upd_auth_token = ''.join(('perm:', self.auth_token))
-            self.auth_token = upd_auth_token
+            return ''.join(('perm:', self.auth_token))
+        else:
+            return self.auth_token
 
     def write_auth_user_yt(self, path: pathlib.Path):
         """
@@ -72,7 +64,6 @@ class UserYT:
         """
         # set the data in the dict format
         dict_data = {
-            "login": self.login,
             "auth_token": self.auth_token,
             "timestamp": str(datetime.date.today())
         }
@@ -103,10 +94,14 @@ class UserYT:
 
             return convert_long_datetime(parsed_response['value'])
 
-    def get_work_items_deadline(self, date_period: str) -> list[tuple[str, datetime.date, int, datetime.date]]:
+    def get_work_items_deadline(
+            self,
+            date_period: str,
+            user_login: str = 'me') -> list[tuple[str, datetime.date, int, datetime.date]]:
         """
         Defines the dict of the work issue parameters: issue_name, date, spent_time.\n
         :param date_period: the period of creating the work issue item, YYYY-MM-DD/YYYY-MM, str
+        :param user_login: the user login in the YouTrack, default = 'me', str
         :return: the work issue parameters of the dict[str, list[str, date, int, date]] type.
         """
         list_work_items: list[tuple[str, datetime.date, int, datetime.date]] = list()
@@ -114,7 +109,7 @@ class UserYT:
         url = 'https://youtrack.protei.ru/api/workItems'
         headers = self.headers_user_yt
         parameters_fields = ','.join(('duration(minutes)', 'date', 'issue(idReadable)'))
-        parameters_query = ' '.join(('work author: me', f'work date: {date_period}'))
+        parameters_query = ' '.join((f'work author: {user_login}', f'work date: {date_period}'))
         params = (
             ('fields', parameters_fields),
             ('query', parameters_query),
@@ -146,14 +141,14 @@ def read_auth_user_yt(path: pathlib.Path) -> UserYT:
     with open(path, 'r') as file:
         json_text = file.read()
         parsed_text: dict = json.loads(json_text)
+        file.close()
         # check if the file contains the login and auth_token parameters
-        if "login" not in parsed_text.keys() or "auth_token" not in parsed_text.keys():
-            login, auth_token = "__nofile__", "__nofile__"
+        if "auth_token" not in parsed_text.keys():
+            auth_token = "__nofile__"
         else:
-            # get the authentication parameters
-            login, auth_token = parsed_text['login'], parsed_text['auth_token']
+            auth_token = parsed_text['auth_token']
 
-        return UserYT(login=login, auth_token=auth_token)
+        return UserYT(auth_token=auth_token)
 
 
 # define the default timestamp if the parameter is missing
@@ -170,6 +165,7 @@ def read_auth_timestamp(path: pathlib.Path) -> str:
     with open(path, 'r') as file:
         json_text = file.read()
         parsed_text: dict = json.loads(json_text)
+        file.close()
     # check if the timestamp is defined in the file
     if 'timestamp' not in parsed_text.keys():
         return default_timestamp
@@ -192,7 +188,7 @@ def get_request(url: str, headers: dict, params: tuple) -> str:
         return response.text
     except Exception as e:
         print(e.__class__.__name__)
-        print('Значения параметров login и/или auth_token некорректны.')
+        print('Значение параметра login и/или auth_token некорректны.')
         print('Убедитесь, что при создании токена в Область доступа был добавлен YouTrack.')
         print('Проверьте значения login и auth_token на наличие опечаток.')
         print('Если все выше не решило проблему, сообщите об ошибке. Спасибо.')
@@ -213,25 +209,24 @@ dict_issue_name = {"ARCH_ST": '139-1028', "DOC_ST": '139-595', "ARCH": '139-1027
 
 def define_deadline(issue_name: str) -> str:
     """
-    Defines the deadline and state identifier in the query based on the issue name.\n
+    Defines the deadline identifier in the query based on the issue name.\n
     :param issue_name: the name of the issue, str
     :return: the parameter identifier of the str type.
     """
-    if issue_name.startswith('ARCH_ST'):
-        key = 'ARCH_ST'
-    elif issue_name.startswith('DOC_ST'):
-        key = 'DOC_ST'
-    elif issue_name.startswith('ARCH'):
-        key = 'ARCH'
-    elif issue_name.startswith('DOC'):
-        key = 'DOC'
-    elif issue_name.startswith('VCST'):
-        key = 'VCST'
-    else:
-        key = None
+    if not re.match(r'\w{3,}-\d+', issue_name):
+        return 'None'
 
-    if key is not None:
-        return dict_issue_name[key]
+    list_st = [key for key in dict_issue_name.keys() if re.search(r'_ST-', key)]
+    list_other = [key for key in dict_issue_name.keys() if key not in list_st]
+
+    if any(issue_name.startswith(item) for item in list_st):
+        for item in list_st:
+            if issue_name.startswith(item):
+                return dict_issue_name[item]
+    elif any(issue_name.startswith(item) for item in list_other):
+        for item in list_other:
+            if issue_name.startswith(item):
+                return dict_issue_name[item]
     else:
         return 'None'
 
@@ -254,29 +249,31 @@ def convert_work_items(
     # add the empty string
     print('\n')
 
+    list_final.append('----------')
     while req_date <= end_date:
-        list_final.append('----------')
-        for issue_name, date, spent_time, deadline in list_work_items:
-            # check if the date coincides with the required one
-            if date == req_date:
-                # define the spent time in hours for the table
-                spent_time_hours = convert_spent_time(spent_time=spent_time)
+        if any(date == req_date for issue_name, date, spent_time, deadline in list_work_items):
+            for issue_name, date, spent_time, deadline in list_work_items:
+                # check if the date coincides with the required one
+                if date == req_date:
+                    # define the spent time in hours for the table
+                    spent_time_hours = convert_spent_time(spent_time=spent_time)
 
-                # add the strings to the list
-                list_final.append(f'Дата: {date.strftime("%d %B %Y г")}')
-                list_final.append(f'Задача: {issue_name}')
-                list_final.append(f'Затраченное время: {spent_time} мин, для таблицы: {spent_time_hours} ч')
+                    # add the strings to the list
+                    list_final.append(f'Дата: {date.strftime("%d %B %Y г")}')
+                    list_final.append(f'Задача: {issue_name}')
+                    list_final.append(f'Затраченное время: {spent_time} мин, для таблицы: {spent_time_hours} ч')
 
-                # if the deadline is not specified
-                if deadline == datetime.date(year=1, month=1, day=1):
-                    list_final.append(f'Дедлайн/deadline: не задан\n')
-                # if the deadline is specified
-                else:
-                    # define the readable deadline
-                    deadline_readable = deadline.strftime("%d %B %Y г")
-                    # define the deadline for the table
-                    deadline_for_table = deadline.strftime("%d.%m.%Y")
-                    list_final.append(f'Дедлайн/deadline: {deadline_readable}, для таблицы: {deadline_for_table}')
+                    # if the deadline is not specified
+                    if deadline == datetime.date(year=1, month=1, day=1):
+                        list_final.append(f'Дедлайн/deadline: не задан\n')
+                    # if the deadline is specified
+                    else:
+                        # define the readable deadline
+                        deadline_readable = deadline.strftime("%d %B %Y г")
+                        # define the deadline for the table
+                        deadline_for_table = deadline.strftime("%d.%m.%Y")
+                        list_final.append(f'Дедлайн/deadline: {deadline_readable}, для таблицы: {deadline_for_table}')
+
         req_date += datetime.timedelta(days=1)
 
     return list_final
@@ -319,7 +316,7 @@ def check_json_file(path: pathlib.Path) -> bool:
 
 def terminate_script(string: str):
     """Set the value to terminate the program in any input to ignore any loops or KeyInterruptError."""
-    if string.strip() in ('__exit__', '"__exit"', "'__exit__'"):
+    if string.lower().strip() in ('__exit__', '"__exit"', "'__exit__'"):
         print('Работа прервана. Программа закрывается.')
         exit()
 
@@ -334,9 +331,9 @@ def main():
         exit()
     # get the authorization parameters for the UserYT
     user: UserYT = read_auth_user_yt(path)
-    # check if the login and authentication token are specified in the json file
-    if (user.login, user.auth_token) == ('__nofile__', '__nofile__'):
-        print('В файле youtrack.json не найдены параметры login, auth_token.')
+    # check if the authentication token are specified in the json file
+    if user.auth_token == '__nofile__':
+        print('В файле youtrack.json не найден параметр auth_token.')
         print('Добавьте в файл youtrack.json недостающий параметр и задайте ему значение.')
         input('Нажмите любую клавишу, чтобы закрыть программу.\n')
         exit()
