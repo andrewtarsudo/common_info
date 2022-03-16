@@ -1,4 +1,5 @@
 import pathlib
+import re
 import requests
 import json
 import datetime
@@ -6,100 +7,62 @@ import decimal
 import time
 import codecs
 
+# logins that may use it
 reg_logins = ('kuksina', 'matyushina', 'brovko', 'lyalina', 'demyanenko', 'nikitina', 'mazyarova', 'fesenko', 'nigrej',
               'vykhodtsev', 'bochkova', 'tarasov-a')
+# possible differences in names and logins
+dict_convert_logins: dict[str, str] = {'mozglyakova': 'matyushina'}
+
+date_today = datetime.date.today()
+timestamp = datetime.date(year=date_today.year, month=1, day=1)
+default_timestamp = timestamp.strftime('%Y-%m-%d')
+today = 'Today'
 
 
 class UserYT:
     """
     Displays parameters of the user in the YouTrack.
     """
-    def __init__(self,
-                 login: str = 'no_login',
-                 auth_token: str = 'perm:dGFyYXNvdi1h.NjEtMTM5.UwE7X2y0NFDXiUVJHzdNly7F3NlDh0',
-                 json_file: bool = False,
-                 json_path: str = ''):
+    def __init__(self, login: str = '__nologin__'):
         self._login = login
-        self._auth_token = auth_token
-        self._json_file = json_file
-        self._json_path = json_path
 
     def __str__(self):
         return f"login = {self._login}"
 
     def __repr__(self):
-        return f"UserYT(login = {self._login})"
+        return f"UserYT(login={self._login})"
 
     @property
     def login(self):
-        """Defines the authentication token in the YouTrack."""
-        user = pathlib.Path('.').home()
-        login = user.stem
-
-        if login in reg_logins:
-            return login
-        else:
-            return '__nologin__'
+        """Defines the login in the YouTrack based on the account name."""
+        return self._login
 
     @login.setter
     def login(self, value):
         self._login = value
 
     @property
-    def auth_token(self):
-        return 'perm:dGFyYXNvdi1h.NjEtMTM5.UwE7X2y0NFDXiUVJHzdNly7F3NlDh0'
-
-    @property
-    def json_file(self):
-        return self._json_file
-
-    @json_file.setter
-    def json_file(self, value: bool):
-        self._json_file = value
-
-    @property
-    def json_path(self):
-        if self.json_file:
-            path = pathlib.Path().cwd() / 'youtrack.json'
-            return str(path)
-        else:
-            return ''
-
-    @json_path.setter
-    def json_path(self, value):
-        if self.json_file:
-            self._json_path = value
-        else:
-            self._json_path = ''
-
-    @property
     def headers_user_yt(self):
         """
-        Defines the headers for the requests. Contains the following headers:
-
-        'Authorization': 'Bearer perm: self.auth_token',
-
-        'Accept': 'application/json',
-
-        'Content-Type': 'application/json'.
-
+        Defines the headers for the requests. Contains the following headers:\n
+        'Authorization': 'Bearer perm: auth_token',\n
+        'Accept': 'application/json',\n
+        'Content-Type': 'application/json'.\n
         :return: the headers parameters of the dict type.
         """
-        bearer = ' '.join(('Bearer', self.auth_token))
-
         return {
-            'Authorization': bearer,
+            'Authorization': 'Bearer "perm:dGFyYXNvdi1h.NjEtMTM5.UwE7X2y0NFDXiUVJHzdNly7F3NlDh0"',
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         }
 
     def get_issue_deadline(self, issue_name: str) -> datetime.date:
         """
-        Defines the deadline of the issue from the YouTrack.
-
+        Defines the deadline of the issue from the YouTrack.\n
         :param issue_name: the issue identifier, idReadable, str
         :return: the issue deadline of the date type.
         """
+        # get the identifier of the deadline for the issue project
         deadline_identifier = define_deadline(issue_name)
 
         if deadline_identifier == 'None':
@@ -116,8 +79,7 @@ class UserYT:
 
     def get_work_items(self, date_period: str) -> list[tuple[str, datetime.date, int, datetime.date]]:
         """
-        Defines the dict of the work issue parameters: issue_name, date, spent_time.
-
+        Defines the dict of the work issue parameters: issue_name, date, spent_time.\n
         :param date_period: the period of creating the work issue item, YYYY-MM-DD/YYYY-MM, str
         :return: the work issue parameters of the dict[str, list[str, date, int, date]] type.
         """
@@ -148,87 +110,29 @@ class UserYT:
 
         return list_work_items
 
-    @property
-    def set_timestamp(self):
-        default_timestamp = datetime.date(year=datetime.date.today().year, month=1, day=1).strftime("%Y-%m-%d")
 
-        if self.json_file:
-            with open(self.json_path, 'w+') as file:
-                json_text = file.read()
-                parsed_text: dict = json.loads(json_text)
-
-                if "timestamp" in parsed_text.keys():
-                    return parsed_text["timestamp"]
-                else:
-                    return default_timestamp
-        else:
-            return default_timestamp
-
-    def write_timestamp_json_file(self):
-        if self.json_file:
-            with open(self.json_path, 'w+') as file:
-                json_text = file.read()
-                parsed_text: dict = json.loads(json_text)
-
-                if "timestamp" in parsed_text.keys():
-                    parsed_text['timestamp'] = datetime.date.today()
-                    json_upd = json.dumps(json_text, indent=2)
-                    file.write(json_upd)
-                    print('Параметр timestamp в JSON-файле youtrack.json обновлен.')
-
-                file.close()
-
-
-def get_user():
-    path = pathlib.Path().cwd()
-    list_json = [file for file in path.glob('*.json')]
-
-    if any(file.stem == 'youtrack' for file in list_json):
-        path = pathlib.Path().cwd() / 'youtrack.json'
-
-        with open(path, 'r') as file:
-            json_text = file.read()
-            parsed_text = json.loads(json_text)
-
-            if "login" in parsed_text.keys():
-                login = parsed_text['login']
-            else:
-                login = '__nologin__'
-
-            user = UserYT(login=login, json_file=True)
-
-        return user
-
+def get_user() -> UserYT:
+    """
+    Sets the UserYT based on the user parameters.\n
+    :return: the user parameters of the UserYT type.
+    """
+    # get the path
+    path: pathlib.Path = pathlib.Path().cwd()
+    # get the user
+    home_user: str = path.home().stem
+    # check if the user and the login differ
+    login = dict_convert_logins[home_user] if home_user in dict_convert_logins.keys() else home_user
+    # check if the login is valid
+    if login in reg_logins:
+        return UserYT(login=home_user)
     else:
-        home_user = path.home().stem
-
-        if home_user in reg_logins:
-            user = UserYT(login=home_user)
-        else:
-            user = UserYT(login='__nologin__')
-
-    return user
-
-
-def read_auth_timestamp(path: pathlib.Path) -> str:
-    """
-    Defines the method to read the path to the table.
-
-    :param path: the path to the file, pathlib.Path
-    :return: the path to the xlsx table of the str type.
-    """
-    with open(path, 'r') as file:
-        json_text = file.read()
-        parsed_text = json.loads(json_text)
-
-    return parsed_text['timestamp']
+        return UserYT(login='__nologin__')
 
 
 def get_request(url: str, headers: dict, params: tuple) -> str:
     """
-    Defines the GET request.
-    If the initial input parameters are invalid, the exception is raised.
-
+    Defines the GET request.\n
+    If the initial input parameters are invalid, the exception is raised.\n
     :param url: URL to send the request, str
     :param headers: request headers, dict
     :param params: request parameters, tuple
@@ -237,15 +141,20 @@ def get_request(url: str, headers: dict, params: tuple) -> str:
     try:
         response = requests.get(url=url, headers=headers, params=params)
         response.raise_for_status()
-        return response.text
     except Exception as e:
-        print(e.__class__)
-        print('Некорректные параметры URL, headers и params.')
-        return '{}'
+        print(f'Ошибка {e.__class__.__name__}. Некорректные параметры URL, headers и params.')
+        input('Нажмите на любую клавишу, чтобы завершить работу')
+        exit()
+    else:
+        return response.text
 
 
-def convert_long_datetime(value):
-    """Converts the long value to the datetime.date."""
+def convert_long_datetime(value: int) -> datetime.date:
+    """
+    Converts the long value to the datetime.date.\n
+    :param value: the integer to convert, int
+    :return: the associated date of the date type.
+    """
     if value is None:
         return datetime.date(year=2021, month=1, day=1)
     else:
@@ -258,26 +167,26 @@ dict_issue_name = {"ARCH_ST": '139-1028', "DOC_ST": '139-595', "ARCH": '139-1027
 
 def define_deadline(issue_name: str) -> str:
     """
-    Defines the deadline and state identifier in the query based on the issue name.
-
+    Defines the deadline identifier in the query based on the issue name.\n
     :param issue_name: the name of the issue, str
     :return: the parameter identifier, str
     """
-    if issue_name.startswith('ARCH_ST'):
-        key = 'ARCH_ST'
-    elif issue_name.startswith('DOC_ST'):
-        key = 'DOC_ST'
-    elif issue_name.startswith('ARCH'):
-        key = 'ARCH'
-    elif issue_name.startswith('DOC'):
-        key = 'DOC'
-    elif issue_name.startswith('VCST'):
-        key = 'VCST'
-    else:
-        key = None
-
-    if key is not None:
-        return dict_issue_name[key]
+    if not re.match(r'[A-Z_]*-\d+', issue_name.upper()):
+        return 'None'
+    # separate project with _ST and without it
+    list_st: list[str] = [project for project in dict_issue_name.keys() if re.match(r'\w{3,4}_ST', project)]
+    list_other: list[str] = [project for project in dict_issue_name.keys() if project not in list_st]
+    # check if the issue project has _ST
+    if any(issue_name.startswith(project_st) for project_st in list_st):
+        for project_st in list_st:
+            if issue_name.startswith(project_st):
+                return dict_issue_name[project_st]
+    # check if the issue project has no _ST
+    elif any(issue_name.startswith(project_other) for project_other in list_other):
+        for project_other in list_other:
+            if issue_name.startswith(project_other):
+                return dict_issue_name[project_other]
+    # if smth went wrong
     else:
         return 'None'
 
@@ -287,8 +196,7 @@ def convert_work_items(
         start_date: datetime.date,
         end_date: datetime.date):
     """
-    Converts the list of work items to the printable form.
-
+    Converts the list of work items to the printable format.\n
     :param list_work_items: the dict with the work items, list[tuple[str, date, int, date]]
     :param start_date: the first day of the period, date
     :param end_date: the last day of the period, date
@@ -301,8 +209,9 @@ def convert_work_items(
     # add the empty string
     print('\n')
 
+    list_final.append('----------')
+
     while req_date <= end_date:
-        list_final.append('----------')
         for issue_name, date, spent_time, deadline in list_work_items:
             # check if the date coincides with the required one
             if date == req_date:
@@ -324,15 +233,44 @@ def convert_work_items(
                     # define the deadline for the table
                     deadline_for_table = deadline.strftime("%d.%m.%Y")
                     list_final.append(f'Дедлайн/deadline: {deadline_readable}, для таблицы: {deadline_for_table}')
+
+        list_final.append('----------')
         req_date += datetime.timedelta(days=1)
 
     return list_final
 
 
+# date format conversion rules
+date_conversion: list[tuple[re.Pattern, tuple[int, int, int]]] = [
+    (re.compile(r'(\d{4})-(\d{1,2})-(\d{1,2})'), (1, 2, 3)),
+    (re.compile(r'(\d{4})\.(\d{1,2})\.(\d{1,2})'), (1, 2, 3)),
+    (re.compile(r'(\d{1,2})-(\d{1,2})-(\d{4})'), (3, 2, 1)),
+    (re.compile(r'(\d{1,2})\.(\d{1,2})\.(\d{4})'), (3, 2, 1))
+]
+
+
+def convert_date_iso(input_date: str) -> str:
+    """
+    Converts different date formats to the ISO standard.\n
+    :param input_date: the date to convert, str
+    :return: the modified date of the str type.
+    """
+    # if the date format is not specified
+    if not any(re.match(pattern, input_date) for pattern, match in date_conversion):
+        return 'None'
+
+    for pattern, group_match in date_conversion:
+        match = re.match(pattern, input_date)
+        # find the pattern to convert
+        if match:
+            i_1, i_2, i_3 = group_match
+
+            return f'{match.group(i_1)}.{match.group(i_2)}.{match.group(i_3)}'
+
+
 def convert_spent_time(spent_time: int):
     """
-    Converts the spent time in minutes to hours.
-
+    Converts the spent time in minutes to hours.\n
     :param spent_time: the spent time in minutes, int
     :return: the converted spent time of the decimal or the int type.
     """
@@ -342,9 +280,13 @@ def convert_spent_time(spent_time: int):
         return decimal.Decimal(spent_time / 60).normalize()
 
 
+# the commands to stop the program
+terminate_commands = ('__exit__', '"__exit"', "'__exit__'")
+
+
 def terminate_script(string: str):
-    """Set the value to terminate the program in any input to ignore any loops or KeyInterruptError."""
-    if string.lower().strip() in ('__exit__', '"__exit"', "'__exit__'"):
+    """Set the value to terminate the program in any input to ignore any loops and KeyInterruptError."""
+    if string.lower().strip() in terminate_commands:
         print('Работа прервана. Программа закрывается.')
         exit()
 
@@ -352,73 +294,96 @@ def terminate_script(string: str):
 def main():
     user: UserYT = get_user()
 
-    flag = True
-
-    while flag:
+    while True:
+        # check if the login is not specified
         if user.login == '__nologin__':
             login_input = input('Не удалось определить пользователя. Введите логин пользователя на YouTrack.\n')
             login_input_upd = login_input.lower().strip()
             terminate_script(login_input_upd)
-
+            # verify the new login from the input
             if login_input_upd in reg_logins:
                 user.login = login_input_upd
-                flag = False
+                break
             else:
                 print('Введенный логин не совпадает ни с одним из предусмотренных. Введите логин еще раз.\n')
 
-    # read the timestamp
-    timestamp: str = user.set_timestamp
-
     # define the announcement
     print('Введите интервал для вывода работ, зафиксированных в YouTrack.')
-    print(f'По умолчанию запрос делается для промежутка с момента последнего запуска {timestamp} до сегодняшнего дня')
+    print(f'По умолчанию запрос делается для промежутка с {default_timestamp} до сегодняшнего дня')
     print('Для этого далее нажимайте "Enter".')
 
-    # set the period for requests
-    # define the first date in the period
-    first_date_input = input('Введите начальную дату интервала в формате ГГГГ-ММ-ДД или нажмите "Enter":\n')
-    # check if the input is empty
-    try:
-        first_datetime = datetime.datetime.fromisoformat(first_date_input)
-    except ValueError:
-        print(f'Введенное значение некорректно. Будет использовано значение по умолчанию {timestamp}.')
-        first_datetime = datetime.datetime.fromisoformat(timestamp)
-    else:
-        if first_date_input == '' or first_date_input is None:
-            # apply the default values if empty
-            print(f'Будет использовано значение по умолчанию {timestamp}.')
-            first_datetime = datetime.datetime.fromisoformat(timestamp)
+    # indicate if the attempt to type the start date is the first
+    first_try = True
+    # flag for the cycle
+    flag = True
+    # the default start date
+    start_string: str = default_timestamp
+    start_date: datetime.date = timestamp
 
-    first_date = str(first_datetime.date())
+    while flag:
+        # the text for the date input
+        if first_try:
+            prompt = 'Введите начальную дату интервала в формате ГГГГ-ММ-ДД или нажмите "Enter":\n'
+        # the text after the faile login change
+        else:
+            prompt = 'Введенный логин не зарегистрирован на YouTrack. Повторите ввод:\n'
+
+        first_date_input = input(prompt)
+        terminate_script(first_date_input)
+        # the first try is over
+        first_try = False
+        # check if the user wants to change the login
+        if first_date_input.lower().strip().startswith('login '):
+            new_login: str = first_date_input[6:].lower().strip()
+            # verify the new login
+            if new_login in reg_logins:
+                # change the login
+                user.login = new_login
+                print(f'Логин изменен на {new_login}.')
+                first_try = True
+            else:
+                continue
+        else:
+            flag = False
+            # check if the input is empty
+            if first_date_input:
+                # apply the default values if empty
+                print(f'Будет использовано значение по умолчанию {default_timestamp}.')
+            else:
+                try:
+                    # convert the input date
+                    start_string: str = convert_date_iso(first_date_input)
+                    start_date: datetime.date = datetime.date.fromisoformat(start_string)
+                except ValueError:
+                    print(f'Введенное значение некорректно.')
+                    print(f'Будет использовано значение по умолчанию {default_timestamp}.')
+
+    # the default end date
+    end_date: datetime.date = date_today
+    end_string: str = today
+
     # define the last date in the period
     last_day_input = input('Введите конечную дату интервала в формате ГГГГ-ММ-ДД или нажмите "Enter":\n')
+    terminate_script(last_day_input)
     # check if the input is empty
-    try:
-        last_datetime = datetime.datetime.fromisoformat(last_day_input)
-        last_date = str(last_datetime.date())
-    except ValueError:
-        print(f'Введенное значение некорректно. Будет использовано значение по умолчанию {datetime.date.today()}.')
-        last_datetime = datetime.datetime.today()
-        last_date = 'Today'
+    if last_day_input:
+        # apply the default values if empty
+        print(f'Будет использовано значение по умолчанию {date_today}.')
     else:
-        if last_day_input == '' or last_day_input is None:
-            # apply the default values if empty
-            print(f'Будет использовано значение по умолчанию {datetime.date.today()}.')
-            last_datetime = datetime.datetime.today()
-            last_date = 'Today'
+        try:
+            # convert the input date
+            end_string = convert_date_iso(last_day_input)
+            end_date = datetime.date.fromisoformat(end_string)
+        except ValueError:
+            print(f'Введенное значение некорректно. Будет использовано значение по умолчанию {date_today}.')
 
     # set the string for the period
-    date_period: str = f'{first_date} .. {last_date}'
+    date_period: str = f'{start_string} .. {end_string}'
     # get all YouTrack WorkItem entities
     list_work_items = user.get_work_items(date_period=date_period)
-    # define the period
-    start_date = first_datetime.date()
-    end_date = last_datetime.date()
     # convert the info to the readable format
     printable_res = convert_work_items(list_work_items=list_work_items, start_date=start_date, end_date=end_date)
 
-    # update the timestamp
-    user.write_timestamp_json_file()
     # print the results
     for string in printable_res:
         print(string)
@@ -430,8 +395,9 @@ def main():
         # ask to save the results to the file
         print('\nСохранить в файл txt? Нажмите "Enter", чтобы закрыть без сохранения немедленно.')
         save_input = input('Для записи в файл введите название файла без расширения:\n')
+        terminate_script(save_input)
         # not to save the results
-        if save_input == '' or save_input is None:
+        if save_input.strip():
             # terminate the program
             print('Завершается работа ...')
             time.sleep(1)
@@ -446,9 +412,13 @@ def main():
                 string_encoded = codecs.encode(upd_string, "cp1251")
                 # required for proper printing
                 readable_printable_res.append(string_encoded.decode("cp1251"))
-
+            # delete the extension
+            if save_input.strip().endswith('.txt'):
+                save_input_upd: str = save_input[:-4].strip()
+            else:
+                save_input_upd = save_input.strip()
             # combine the file name
-            path_file = pathlib.Path().cwd() / f'{save_input}.txt'
+            path_file = pathlib.Path().cwd() / f'{save_input_upd}.txt'
 
             # check if the file exists
             if not path_file.exists():
@@ -457,16 +427,17 @@ def main():
                 # create the file, write the results, and close
                 with open(path_file, 'w+', encoding="cp1251") as file:
                     file.writelines(readable_printable_res)
-                    print(f"Файл {save_input}.txt создан.")
                     file.close()
+                    print(f"Файл {save_input_upd}.txt создан.")
                     input('Нажмите любую клавишу для закрытия программы.\n')
                     exit()
             else:
                 # if it exists
                 print('Такой файл уже существует, перезаписать его? По умолчанию - нет.')
                 approve_input = input('Y или Д - да / N или Н - нет.\n')
+                terminate_script(approve_input)
                 # not to rewrite the file, start the cycle again
-                if approve_input.strip() == '' or approve_input.lower().strip() in ('n', 'н'):
+                if approve_input.strip() or approve_input.lower().strip() in ('n', 'н'):
                     continue
                 else:
                     # rewrite the file
@@ -474,8 +445,10 @@ def main():
                     # write the results instead of the file contents and close
                     with open(path_file, 'w+', encoding="cp1251") as file:
                         file.writelines(readable_printable_res)
-                        print(f"Файл {save_input}.txt перезаписан.")
                         file.close()
+                        print(f"Файл {save_input}.txt перезаписан.")
+                        input('Нажмите любую клавишу для закрытия программы.\n')
+                        exit()
 
 
 if __name__ == '__main__':
