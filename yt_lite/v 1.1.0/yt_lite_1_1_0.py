@@ -51,7 +51,7 @@ class UserYT:
         :return: the headers parameters of the dict type.
         """
         return {
-            'Authorization': 'Bearer "perm:dGFyYXNvdi1h.NjEtMTM5.UwE7X2y0NFDXiUVJHzdNly7F3NlDh0"',
+            'Authorization': 'Bearer perm:dGFyYXNvdi1h.NjEtMTQw.1udDlV6zaAitHIgvw2eNQvF1sZ9JTZ',
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         }
@@ -138,6 +138,7 @@ def get_request(url: str, headers: dict, params: tuple) -> str:
     :param params: request parameters, tuple
     :return: the response text of the str type. If the exception is raised, the empty string is returned.
     """
+    print(f'url = {url}, headers = {headers}, params = {params}')
     try:
         response = requests.get(url=url, headers=headers, params=params)
         response.raise_for_status()
@@ -171,6 +172,7 @@ def define_deadline(issue_name: str) -> str:
     :param issue_name: the name of the issue, str
     :return: the parameter identifier, str
     """
+    print(f'issue_name = {issue_name}')
     if not re.match(r'[A-Z_]*-\d+', issue_name.upper()):
         return 'None'
     # separate project with _ST and without it
@@ -212,41 +214,35 @@ def convert_work_items(
     list_final.append('----------')
 
     while req_date <= end_date:
-        for issue_name, date, spent_time, deadline in list_work_items:
-            # check if the date coincides with the required one
-            if date == req_date:
-                # define the spent time in hours for the table
-                spent_time_hours = convert_spent_time(spent_time=spent_time)
+        if any(date == req_date for issue_name, date, spent_time, deadline in list_work_items):
+            for issue_name, date, spent_time, deadline in list_work_items:
+                # check if the date coincides with the required one
+                if date == req_date:
+                    # define the spent time in hours for the table
+                    spent_time_hours = convert_spent_time(spent_time=spent_time)
 
-                # add the strings to the list
-                list_final.append(f'Дата: {date.strftime("%d %B %Y г")}')
-                list_final.append(f'Задача: {issue_name}')
-                list_final.append(f'Затраченное время: {spent_time} мин, для таблицы: {spent_time_hours} ч')
+                    # add the strings to the list
 
-                # if the deadline is not specified
-                if deadline == datetime.date(year=1, month=1, day=1):
-                    list_final.append(f'Дедлайн/deadline: не задан\n')
-                # if the deadline is specified
-                else:
-                    # define the readable deadline
-                    deadline_readable = deadline.strftime("%d %B %Y г")
-                    # define the deadline for the table
-                    deadline_for_table = deadline.strftime("%d.%m.%Y")
-                    list_final.append(f'Дедлайн/deadline: {deadline_readable}, для таблицы: {deadline_for_table}')
+                    list_final.append(f'Дата: {date.strftime("%d %B %Y г")}')
+                    list_final.append(f'Задача: {issue_name}')
+                    list_final.append(f'Затраченное время: {spent_time} мин, для таблицы: {spent_time_hours} ч\n')
 
-        list_final.append('----------')
+                    # if the deadline is not specified
+                    if deadline == datetime.date(year=1, month=1, day=1):
+                        list_final.append(f'Дедлайн/deadline: не задан\n')
+                    # if the deadline is specified
+                    else:
+                        # define the readable deadline
+                        deadline_readable = deadline.strftime("%d %B %Y г")
+                        # define the deadline for the table
+                        deadline_for_table = deadline.strftime("%d.%m.%Y")
+                        list_final.append(f'Дедлайн/deadline: {deadline_readable}, для таблицы: {deadline_for_table}\n')
+
+            list_final.append('----------')
+
         req_date += datetime.timedelta(days=1)
 
     return list_final
-
-
-# date format conversion rules
-date_conversion: list[tuple[re.Pattern, tuple[int, int, int]]] = [
-    (re.compile(r'(\d{4})-(\d{1,2})-(\d{1,2})'), (1, 2, 3)),
-    (re.compile(r'(\d{4})\.(\d{1,2})\.(\d{1,2})'), (1, 2, 3)),
-    (re.compile(r'(\d{1,2})-(\d{1,2})-(\d{4})'), (3, 2, 1)),
-    (re.compile(r'(\d{1,2})\.(\d{1,2})\.(\d{4})'), (3, 2, 1))
-]
 
 
 def convert_date_iso(input_date: str) -> str:
@@ -255,17 +251,23 @@ def convert_date_iso(input_date: str) -> str:
     :param input_date: the date to convert, str
     :return: the modified date of the str type.
     """
+    date_conversion_rules = (
+        (re.compile(r'(\d{4}).(\d{1,2}).(\d{1,2})'), (1, 2, 3)),
+        (re.compile(r'(\d{1,2}).(\d{1,2}).(\d{4})'), (3, 2, 1))
+    )
+    print(f'input_date = {input_date}')
     # if the date format is not specified
-    if not any(re.match(pattern, input_date) for pattern, match in date_conversion):
+    if not any(re.match(pattern, input_date) for pattern, match in date_conversion_rules):
         return 'None'
 
-    for pattern, group_match in date_conversion:
+    for pattern, group_match in date_conversion_rules:
         match = re.match(pattern, input_date)
         # find the pattern to convert
         if match:
             i_1, i_2, i_3 = group_match
+            print(f'i_1, i_2, i_3 = {i_1}, {i_2}, {i_3}')
 
-            return f'{match.group(i_1)}.{match.group(i_2)}.{match.group(i_3)}'
+            return f'{match.group(i_1)}-{match.group(i_2)}-{match.group(i_3)}'
 
 
 def convert_spent_time(spent_time: int):
@@ -293,6 +295,7 @@ def terminate_script(string: str):
 
 def main():
     user: UserYT = get_user()
+    print(f'user = {user}')
 
     while True:
         # check if the login is not specified
@@ -306,6 +309,8 @@ def main():
                 break
             else:
                 print('Введенный логин не совпадает ни с одним из предусмотренных. Введите логин еще раз.\n')
+        else:
+            break
 
     # define the announcement
     print('Введите интервал для вывода работ, зафиксированных в YouTrack.')
@@ -335,8 +340,12 @@ def main():
         # check if the user wants to change the login
         if first_date_input.lower().strip().startswith('login '):
             new_login: str = first_date_input[6:].lower().strip()
+            if new_login in dict_convert_logins.keys():
+                new_login_upd = dict_convert_logins[new_login]
+            else:
+                new_login_upd = dict_convert_logins[new_login]
             # verify the new login
-            if new_login in reg_logins:
+            if new_login_upd in reg_logins:
                 # change the login
                 user.login = new_login
                 print(f'Логин изменен на {new_login}.')
@@ -346,17 +355,19 @@ def main():
         else:
             flag = False
             # check if the input is empty
-            if first_date_input:
+            if not first_date_input:
+                print(f'first_date_input = {first_date_input}')
                 # apply the default values if empty
                 print(f'Будет использовано значение по умолчанию {default_timestamp}.')
             else:
                 try:
                     # convert the input date
                     start_string: str = convert_date_iso(first_date_input)
-                    start_date: datetime.date = datetime.date.fromisoformat(start_string)
                 except ValueError:
                     print(f'Введенное значение некорректно.')
                     print(f'Будет использовано значение по умолчанию {default_timestamp}.')
+                else:
+                    start_date: datetime.date = datetime.date.fromisoformat(start_string)
 
     # the default end date
     end_date: datetime.date = date_today
@@ -366,19 +377,21 @@ def main():
     last_day_input = input('Введите конечную дату интервала в формате ГГГГ-ММ-ДД или нажмите "Enter":\n')
     terminate_script(last_day_input)
     # check if the input is empty
-    if last_day_input:
+    if not last_day_input:
         # apply the default values if empty
         print(f'Будет использовано значение по умолчанию {date_today}.')
     else:
         try:
             # convert the input date
             end_string = convert_date_iso(last_day_input)
-            end_date = datetime.date.fromisoformat(end_string)
         except ValueError:
             print(f'Введенное значение некорректно. Будет использовано значение по умолчанию {date_today}.')
+        else:
+            end_date = datetime.date.fromisoformat(end_string)
 
     # set the string for the period
     date_period: str = f'{start_string} .. {end_string}'
+    print(f'date_period = {date_period}')
     # get all YouTrack WorkItem entities
     list_work_items = user.get_work_items(date_period=date_period)
     # convert the info to the readable format
@@ -397,7 +410,7 @@ def main():
         save_input = input('Для записи в файл введите название файла без расширения:\n')
         terminate_script(save_input)
         # not to save the results
-        if save_input.strip():
+        if not save_input.strip():
             # terminate the program
             print('Завершается работа ...')
             time.sleep(1)
@@ -417,6 +430,7 @@ def main():
                 save_input_upd: str = save_input[:-4].strip()
             else:
                 save_input_upd = save_input.strip()
+            print(f'save_input_upd = {save_input_upd}')
             # combine the file name
             path_file = pathlib.Path().cwd() / f'{save_input_upd}.txt'
 
@@ -437,7 +451,7 @@ def main():
                 approve_input = input('Y или Д - да / N или Н - нет.\n')
                 terminate_script(approve_input)
                 # not to rewrite the file, start the cycle again
-                if approve_input.strip() or approve_input.lower().strip() in ('n', 'н'):
+                if not approve_input.strip() or approve_input.lower().strip() in ('n', 'н'):
                     continue
                 else:
                     # rewrite the file
