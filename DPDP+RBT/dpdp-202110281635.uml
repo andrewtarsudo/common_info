@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.charging_policy</OriginalElement>
+  <nodes>
+    <node x="1487.7265993265996" y="981.5">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.notification_template</node>
+    <node x="472.69166666666666" y="0.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.user</node>
+    <node x="958.0" y="2064.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.DATABASECHANGELOGLOCK</node>
+    <node x="2003.3479797979799" y="0.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.SenderMessage</node>
+    <node x="523.5729797979797" y="1516.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content_ownership</node>
+    <node x="1765.3479797979799" y="554.5">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.notification_event</node>
+    <node x="971.625" y="1818.5">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscription_purchase</node>
+    <node x="32.53131313131303" y="1781.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.gift</node>
+    <node x="324.3333333333334" y="856.5">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content</node>
+    <node x="0.0" y="2064.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.DATABASECHANGELOG</node>
+    <node x="751.3479797979796" y="567.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.charging_policy</node>
+    <node x="297.0" y="2064.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.seq_content_order_code</node>
+    <node x="1253.3479797979796" y="492.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service</node>
+    <node x="857.7280303030307" y="1416.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscription</node>
+    <node x="89.33333333333337" y="994.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscriber</node>
+    <node x="684.625" y="1818.5">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.renewal_task</node>
+    <node x="200.83333333333337" y="1453.5">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content_purchase</node>
+    <node x="1509.3479797979796" y="529.5">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.notification_webhook</node>
+    <node x="966.3479797979796" y="567.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.rollover_policy</node>
+    <node x="720.9780303030307" y="794.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service_variant</node>
+    <node x="344.3333333333333" y="504.5">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.price_category</node>
+    <node x="1322.8479797979796" y="300.0">e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.product</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.gift" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content" relationship="REFERENCES">
+      <point x="152.99968686868698" y="0.0" />
+      <point x="473.0" y="1900.0" />
+      <point x="473.0" y="1421.0" />
+      <point x="448.333" y="1421.0" />
+      <point x="-18.0003333333334" y="206.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service_variant" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service_variant" relationship="REFERENCES">
+      <point x="15.0" y="269.0" />
+      <point x="922.4780303030307" y="1349.5" />
+      <point x="1111.4780303030307" y="1349.5" />
+      <point x="1111.4780303030307" y="1078.0" />
+      <point x="186.5" y="15.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content_purchase" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content" relationship="REFERENCES">
+      <point x="127.49966666666666" y="-15.0" />
+      <point x="473.0" y="1557.5" />
+      <point x="473.0" y="1421.0" />
+      <point x="448.333" y="1421.0" />
+      <point x="-18.0003333333334" y="206.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.product" relationship="REFERENCES">
+      <point x="-139.5003333333334" y="-206.5" />
+      <point x="326.833" y="465.0" />
+      <point x="1439.348" y="465.0" />
+      <point x="2.020202032326779E-5" y="69.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service_variant" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.charging_policy" relationship="REFERENCES">
+      <point x="-58.63005050505103" y="-269.0" />
+      <point x="0.0" y="44.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service_variant" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.user" relationship="REFERENCES">
+      <point x="-173.6300303030307" y="-269.0" />
+      <point x="733.848" y="369.0" />
+      <point x="605.192" y="369.0" />
+      <point x="3.3333333340124227E-4" y="119.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.user" relationship="REFERENCES">
+      <point x="-71.84797979797963" y="-119.0" />
+      <point x="1299.5" y="369.0" />
+      <point x="605.192" y="369.0" />
+      <point x="3.3333333340124227E-4" y="119.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.product" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.user" relationship="REFERENCES">
+      <point x="0.0" y="-69.0" />
+      <point x="1439.3479797979796" y="119.0" />
+      <point x="132.5" y="0.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content_ownership" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscriber" relationship="REFERENCES">
+      <point x="-126.49997979797968" y="0.0" />
+      <point x="490.0" y="1572.5" />
+      <point x="490.0" y="1436.0" />
+      <point x="183.333" y="1436.0" />
+      <point x="-7.000333333333373" y="69.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content_ownership" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content" relationship="REFERENCES">
+      <point x="-126.49997979797968" y="-15.0" />
+      <point x="473.0" y="1557.5" />
+      <point x="473.0" y="1421.0" />
+      <point x="448.333" y="1421.0" />
+      <point x="-18.0003333333334" y="206.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service_variant" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.price_category" relationship="REFERENCES">
+      <point x="-186.5000303030307" y="-224.0" />
+      <point x="499.5" y="839.0" />
+      <point x="499.5" y="811.0" />
+      <point x="466.333" y="811.0" />
+      <point x="-3.3333333328755543E-4" y="106.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content_purchase" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscriber" relationship="REFERENCES">
+      <point x="127.49966666666666" y="0.0" />
+      <point x="490.0" y="1572.5" />
+      <point x="490.0" y="1436.0" />
+      <point x="183.333" y="1436.0" />
+      <point x="-7.000333333333373" y="69.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.gift" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscriber" relationship="REFERENCES">
+      <point x="-17.19831313131303" y="-119.0" />
+      <point x="-22.000333333333373" y="69.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.user" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.user" relationship="REFERENCES">
+      <point x="0.0" y="-119.0" />
+      <point x="605.1916666666666" y="-17.5" />
+      <point x="973.8479797979796" y="-17.5" />
+      <point x="973.8479797979796" y="104.0" />
+      <point x="132.5" y="-15.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscription" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service" relationship="REFERENCES">
+      <point x="142.9999696969694" y="0.0" />
+      <point x="1199.0" y="1572.5" />
+      <point x="1199.0" y="677.5" />
+      <point x="-117.99997979797968" y="66.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscription" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscriber" relationship="REFERENCES">
+      <point x="-3.030303071227536E-5" y="156.5" />
+      <point x="1000.728" y="1785.0" />
+      <point x="490.0" y="1785.0" />
+      <point x="490.0" y="1436.0" />
+      <point x="183.333" y="1436.0" />
+      <point x="-7.000333333333373" y="69.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.renewal_task" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscriber" relationship="REFERENCES">
+      <point x="0.0" y="-81.5" />
+      <point x="818.125" y="1785.0" />
+      <point x="490.0" y="1785.0" />
+      <point x="490.0" y="1436.0" />
+      <point x="183.333" y="1436.0" />
+      <point x="-7.000333333333373" y="69.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.price_category" relationship="REFERENCES">
+      <point x="-3.3333333340124227E-4" y="-206.5" />
+      <point x="-3.3333333328755543E-4" y="106.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.gift" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content_purchase" relationship="REFERENCES">
+      <point x="142.80202020202034" y="-119.0" />
+      <point x="0.0" y="119.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.notification_template" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service" relationship="REFERENCES">
+      <point x="-114.49959932659954" y="0.0" />
+      <point x="1199.0" y="1063.0" />
+      <point x="1199.0" y="677.5" />
+      <point x="-117.99997979797968" y="66.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.notification_webhook" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.product" relationship="REFERENCES">
+      <point x="2.020202032326779E-5" y="-81.5" />
+      <point x="1627.348" y="465.0" />
+      <point x="1439.348" y="465.0" />
+      <point x="2.020202032326779E-5" y="69.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscription" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service_variant" relationship="REFERENCES">
+      <point x="-93.25" y="-156.5" />
+      <point x="0.0" y="269.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.product" relationship="REFERENCES">
+      <point x="2.020202032326779E-5" y="-119.0" />
+      <point x="1371.348" y="465.0" />
+      <point x="1439.348" y="465.0" />
+      <point x="2.020202032326779E-5" y="69.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscription_purchase" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscription" relationship="REFERENCES">
+      <point x="0.0" y="-81.5" />
+      <point x="1105.125" y="1802.0" />
+      <point x="961.5" y="1802.0" />
+      <point x="-39.228030303030664" y="156.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.price_category" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.user" relationship="REFERENCES">
+      <point x="-3.3333333328755543E-4" y="-106.5" />
+      <point x="466.333" y="369.0" />
+      <point x="605.192" y="369.0" />
+      <point x="3.3333333340124227E-4" y="119.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service_variant" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.rollover_policy" relationship="REFERENCES">
+      <point x="179.0" y="-269.0" />
+      <point x="-13.369949494948969" y="44.0" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.renewal_task" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.subscription" relationship="REFERENCES">
+      <point x="-15.0" y="-81.5" />
+      <point x="803.125" y="1802.0" />
+      <point x="961.5" y="1802.0" />
+      <point x="-39.228030303030664" y="156.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.notification_template" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.notification_event" relationship="REFERENCES">
+      <point x="114.5" y="0.0" />
+      <point x="1861.8479797979799" y="1063.0" />
+      <point x="0.0" y="56.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service_variant" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.service" relationship="REFERENCES">
+      <point x="186.4999696969694" y="0.0" />
+      <point x="1199.0" y="1063.0" />
+      <point x="1199.0" y="677.5" />
+      <point x="-117.99997979797968" y="66.5" />
+    </edge>
+    <edge source="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.content" target="e9e5674e-b9cb-45c7-b439-c703a868f49a.TABLE:dpdp.user" relationship="REFERENCES">
+      <point x="-142.0" y="-86.5" />
+      <point x="283.83333333333337" y="976.5" />
+      <point x="283.83333333333337" y="119.0" />
+      <point x="-132.49999999999994" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.3459220570510245" showDependencies="false" x="1131.0" y="1216.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Comments</Category>
+    <Category>Key columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+
