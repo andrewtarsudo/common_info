@@ -3,6 +3,12 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|APM|Application Transport Mechanism|
+|BICC|Bearer Independent Call Control|
+|CCD|Conference Call Device|
+|RAB|Radio Access Bearer|
+|TICC|Transport Independent Call Control|
+|TFO|Tandem Free Operation|
 |RDS|Route Selection Descriptor, дескриптор выбора маршрута|
 |VBS|Voice Broadcast Service|
 |VGCS|Voice Group Call Service|
