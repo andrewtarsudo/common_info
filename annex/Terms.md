@@ -3,6 +3,7 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|MCA|Mobile Communication on Aircraft|
 |APM|Application Transport Mechanism|
 |BICC|Bearer Independent Call Control|
 |CCD|Conference Call Device|
