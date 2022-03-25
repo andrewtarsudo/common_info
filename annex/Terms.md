@@ -3,6 +3,7 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|SLA|Service Level Agreement, соглашение о качестве предоставляемых услуг|
 |MCA|Mobile Communication on Aircraft|
 |APM|Application Transport Mechanism|
 |BICC|Bearer Independent Call Control|
