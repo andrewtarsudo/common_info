@@ -283,7 +283,7 @@ def convert_spent_time(spent_time: int):
 
 
 # the commands to stop the program
-terminate_commands = ('__exit__', '"__exit"', "'__exit__'")
+terminate_commands = ('__exit__', '"__exit__"', "'__exit__'")
 
 
 def terminate_script(string: str):
@@ -328,7 +328,7 @@ def main():
     while flag:
         # the text for the date input
         if first_try:
-            prompt = 'Введите начальную дату интервала в формате ГГГГ-ММ-ДД или нажмите "Enter":\n'
+            prompt = 'Введите начальную дату интервала в формате ГГГГ ММ ДД или ДД ММ ГГГГ или нажмите "Enter":\n'
         # the text after the faile login change
         else:
             prompt = 'Введенный логин не зарегистрирован на YouTrack. Повторите ввод:\n'
@@ -374,7 +374,7 @@ def main():
     end_string: str = today
 
     # define the last date in the period
-    last_day_input = input('Введите конечную дату интервала в формате ГГГГ-ММ-ДД или нажмите "Enter":\n')
+    last_day_input = input('Введите конечную дату интервала в формате ГГГГ-ММ-ДД или ДД ММ ГГГГ или нажмите "Enter":\n')
     terminate_script(last_day_input)
     # check if the input is empty
     if not last_day_input:
