@@ -1,6 +1,6 @@
-## MariaDB data types
+## MariaDB Data Types ##
 
-### Data types
+### Data types ###
 
 | Type | Description | Storage |
 | :--- | :---------- | :------ |
@@ -15,7 +15,7 @@
 
 **len** - actual length in bytes.
 
-### Date and time notation
+### Date and time notation ###
 
 * YYYY - year, four digits;
 * MM - month, two digits;
@@ -23,3 +23,14 @@
 * hh - hour, two digits;
 * mm - minute, two digits;
 * ss - second, two digits.
+
+
+### Table Keys ###
+
+| Key | Full key name | Description |
+| :-- | :------------ | :------ |
+| PRI | Primary | Key identifier of the object. | 
+| UNI | Unique | No two distinct object have the same value. |
+| MUL | Multiple | May contain a number of objects. |
+| NULL | Nullable | If NO, the parameter is mandatory. |
+| auto_increment |  | Automatically increased by 1 after the value is received. |
