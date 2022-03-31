@@ -17,9 +17,9 @@
 
 ### Date and time notation
 
-YYYY - year, four digits;
-MM - month, two digits;
-DD - day, two digits;
-hh - hour, two digits;
-mm - minute, two digits;
-ss - second, two digits.
+* YYYY - year, four digits;
+* MM - month, two digits;
+* DD - day, two digits;
+* hh - hour, two digits;
+* mm - minute, two digits;
+* ss - second, two digits.
