@@ -44,6 +44,22 @@ def parse_db_info():
     print("++++++++++end++++++++++")
     print(f"lines: {num_lines}")
 
+    
+def parse_db_rows():
+    sentinel = ""
+    final_lines: list[str] = []
+    for line in iter(input, sentinel):
+        if line.startswith("+"):
+            continue
+        else:
+            line_updated = line[1:-1]
+            lines = [f"{line_split.strip()}" for line_split in line_updated.split("|")]
+            line_append = '__'.join(lines)[:]
+            final_lines.append('__'.join(lines)[:])
+
+    return *final_lines,    
+
+
 class DPDP_RBT:
     ip_server = "192.168.125.148"
     web_port = 8081
