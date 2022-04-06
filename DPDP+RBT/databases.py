@@ -1,11 +1,11 @@
 from pprint import pprint
-import sys
 import re
+from typing import Optional
+
 
 def parse_db_info():
-    dict_indexes = {0: "Parameter", 1: "Type", 2: "NULL", 3: "Key", 4: "Default", 5: "Extra"}
+    # dict_indexes = {0: "Parameter", 1: "Type", 2: "NULL", 3: "Key", 4: "Default", 5: "Extra"}
     print("Lines to parse:")
-    # lines = sys.stdin.read().splitlines()
     list_1 = []
     list_2 = []
     list_3 = []
@@ -17,10 +17,10 @@ def parse_db_info():
     num_lines = -1
 
     for line in iter(input, sentinel):
-        # parameter, par_type, null, key, extra
         parse_line = line.split(sep="|")
         num_lines = len(parse_line)
         parsed_line = []
+
         for val in parse_line:
             if val:
                 parsed_line.append(val)
@@ -35,7 +35,6 @@ def parse_db_info():
                     res[index].append(f"{item.strip()}")
 
     for idx, res_list in enumerate(res):
-        # print(f"{dict_indexes[idx]}")
         for value in res_list:
             if value == "------":
                 print()
@@ -54,6 +53,7 @@ def line_join(lines: list[str]):
 def parse_db_rows():
     sentinel = ""
     final_lines: list[str] = []
+
     for line in iter(input, sentinel):
         if line.startswith("+"):
             continue
@@ -62,12 +62,10 @@ def parse_db_rows():
             print(line_updated)
             pattern = re.compile(r'\s*\|\s*')
             line_mod = re.sub(pattern=pattern, repl="\t", string=line_updated)
-            # line_mod = line_updated.replace(r"\s{}|", "\t")
             final_lines.append(line_mod)
 
     for final_line in final_lines:
         print(final_line)
-        # print(final_line[1:-1])
 
 
 def parse_db_rows_item(item):
@@ -79,7 +77,6 @@ def parse_db_rows_item(item):
             line_updated = line[1:-1]
             pattern = re.compile(r'\s*\|\s*')
             line_mod = re.sub(pattern=pattern, repl="\t", string=line_updated)
-            # line_mod = line_updated.replace(r"\s{}|", "\t")
             final_lines.append(line_mod.lstrip())
 
     final_lines[0].rstrip()
@@ -92,12 +89,11 @@ def parse_db_rows_item(item):
         line_null = re.sub(pattern=pattern_null, repl="", string=final_line)
         line_res = re.sub(pattern=pattern_auto_increment, repl="Auto_increment.", string=line_null)
 
-        if line_res and not re.match(pattern_final, line_res):
+        if line_res and not re.match(pattern_final, line_res) and not line_res.startswith("+"):
             print(line_res)
-    print(len(final_lines))
 
 
-class DPDP_RBT:
+class DpdpRbt:
     ip_server = "192.168.125.148"
     web_port = 8081
     login = "root"
@@ -105,9 +101,52 @@ class DPDP_RBT:
     command = "mysql -uroot -p"
     db_password = "elephant"
 
-    dict_rbt_dpdp: dict[str, dict] = {}
+    dict_db_parameters = {
+        'content_id': 'Content identifier.',
+        'external_id': 'External service identifier.',
+        'hlr_id': 'HLR node identifier.',
+        'is_default': 'Flag to set as a default value.\nDefault: false.',
+        'is_hidden': 'Flag not to display the content.',
+        'msisdn': 'Subscriber MSISDN.',
+        'partner_id': 'Partner identifier.',
+        'price': 'Subscription price.',
+        'product_id': 'Service product identifier.',
+        'provider_id': 'Content provider identifier.',
+        'purchase_fee': 'Purchase price.',
+        'purchase_id': 'Purchase policy identifier.',
+        'refund_information': 'Information about the refund conditions.',
+        'renewal_fee': 'Renewal price.',
+        'renewal_id': 'Renewal policy identifier.',
+        'service_variant_id': 'Service option identifier.',
+        'subscriber_id': 'Subscriber identifier.',
+        'subscription_id': 'Subscription identifier.',
+        'service_id': 'Service identifier.',
+        'channel_id': 'Identifier of the media channel.',
+        'channel': 'Media channel name.'
+    }
+
+    dict_default_text = {
+        "heading_name": "Table {table_name}",
+        "summary": "The parameters of the table {table_name} are provided below."
+    }
+
+    dict_rbt_dpdp: dict[str, dict] = {"dict_db_parameters": dict_db_parameters, "dict_default_text": dict_default_text}
 
     list_questions: list[tuple[str, str]] = []
+
+    list_types = [
+        "bigint(M)", "bit(M)", "blob", "datetime(M)", "int(M)", "json", "text", "timestamp", "varchar(M)",
+        "smallint(M)", "longtext", "tinyint(M)"]
+
+    @classmethod
+    def get_dict_value(cls):
+        value = input('Print the parameter name:\n')
+        if value in cls.dict_db_parameters.keys():
+            print(cls.dict_db_parameters[value])
+        else:
+            print(f"The parameter {value} is not in the dict.")
+            print("Available names:")
+            pprint(cls.dict_db_parameters.keys())
 
     @classmethod
     def print_out(cls):
@@ -117,8 +156,10 @@ class DPDP_RBT:
         print(f"login = {cls.login}")
         print(f"password = {cls.password}")
         print(f"db_password = {cls.db_password}")
-        print(f"dict:")
-        pprint(cls.dict_rbt_dpdp)
+        print("dict:")
+        pprint(cls.dict_rbt_dpdp,)
+        cls.print_questions()
+        print(f"types = {cls.list_types}")
 
     @classmethod
     def print_questions(cls):
@@ -133,8 +174,32 @@ class DPDP_RBT:
         else:
             print(f"ValueError. {dict_name} does not exist yet.")
 
+    @classmethod
+    def check_types(cls, new_types: list[str]) -> list[str]:
+        return [new_type for new_type in modify_types(new_types) if new_type not in cls.list_types]
 
-class RBT_Web(DPDP_RBT):
+    @classmethod
+    def add_types(cls, new_types: list[str]):
+        add_types = cls.check_types(new_types)
+        cls.list_types.append(*add_types)
+        return cls.list_types
+
+    @classmethod
+    def print_new_types(cls, kind_type: str, types: list[str]):
+        kind_types = kind_type.strip().lower()
+        if kind_types == "new":
+            pprint(types)
+        elif kind_types == "modified":
+            pprint(modify_types(types))
+        elif kind_types == "check":
+            pprint(cls.check_types(types))
+        elif kind_types == "add":
+            pprint(cls.add_types(types))
+        else:
+            print('There is no such types. "NEW", "MODIFIED", "CHECK", "ADD".')
+
+
+class RbtWeb(DpdpRbt):
     def __init__(self):
         super().__init__()
 
@@ -237,7 +302,7 @@ class RBT_Web(DPDP_RBT):
     list_questions = [("rbt type", "subscriber.type"), ("unknown_rule", "rule.order"), ("id", "subscriber_content.id")]
 
 
-class DPDP_Core(DPDP_RBT):
+class DpdpCore(DpdpRbt):
     def __init__(self):
         super().__init__()
 
@@ -254,339 +319,485 @@ class DPDP_Core(DPDP_RBT):
         "9": "CANCEL_REQUEST"
     }
 
+    dict_rbt_dpdp = {
+        "operation": dict_operation,
+    }
+
     list_state = ["SUSPENDED", "INACTIVE", "PRE_ACTIVE", "ACTIVE", "GRACE", "PENDING"]
 
     list_provider_type = ["CONTENT_PROVIDER", "SERVICE_PROVIDER", "BOTH"]
 
-    list_questions = [
+    list_questions = (
         ("remove", "RepoMetadata.remove"), ("url", "SenderMessage.url"), ("node_name", "TaskQueue.node_name"),
-        ("remote_task_id", "TaskQueue.remote_task_id"), ("owner", "TaskQueue.owner"), ("purchase_id",
-                                                                                       "price_category.purchase_id")]
+        ("remote_task_id", "TaskQueue.remote_task_id"), ("owner", "TaskQueue.owner"),
+        ("purchase_id", "price_category.purchase_id"), ("is_file_present", "content.is_file_present"),
+        ("type", "notification_webhook.type")
+    )
+    list_channels = ["IVR", "SMS", "WEB", "USSD", "API", "OKP", "SERVICE", "RETAIL", "SYSTEM"]
 
 
-def divide_item(item: str):
+def divide_item(item: str, name_from_list: str) -> tuple[str, list[str]]:
     list_items: list[str] = item.split('\n')
-    if not list_items[1].startswith(('|', '+')):
+
+    if not list_items[1].strip().startswith(('|', '+')):
         name = list_items[1].strip()
-        return name, list_items[2:]
+        num_start = 2
     else:
-        name = "default"
-        return name, list_items[1:]
+        name = name_from_list
+        num_start = 1
+
+    return name, list_items[num_start:]
+
+
+def modify_types(list_types: list[str]):
+    list_modified_types: list[str] = []
+    pattern = re.compile(r"(.*)\(\d+\)")
+
+    for new_type in list_types:
+        match = re.match(pattern, new_type)
+        if match:
+            list_modified_types.append(f"{match.group(0)}(M)")
+        else:
+            list_modified_types.append(new_type)
+
+    return list_modified_types
+
+
+def get_info_tables(tables: list[str], command_db: str) -> Optional[str]:
+    if command_db == "describe":
+        print_strings: list[str] = [f"describe {table};" for table in tables]
+    elif command_db == "select":
+        print_strings: list[str] = [f"SELECT * FROM {table};" for table in tables]
+    else:
+        return None
+
+    return " ".join(print_strings)
+
+
+def full_parse_db(list_parse: list[str]):
+    list_names = [
+        "album", "album_category", "app_settings", "artist", "audit", "category", "content_list",
+        "content_list_content", "license", "partner", "playlist", "playlist_content", "provided_content", "raw_album",
+        "raw_album_category", "raw_artist", "raw_custom_tone", "raw_license", "raw_partner", "raw_partner_service",
+        "raw_playlist", "raw_playlist_content", "raw_service_variant", "raw_tone", "raw_tone_category", "role", "tone",
+        "tone_category", "user", "user_moderator", "user_role"]
+
+    for index, item in enumerate(list_parse):
+        name, list_items = divide_item(item, list_names[index])
+        print('----------')
+        print(f"{name}")
+        parse_db_rows_item(list_items)
+        print('----------')
 
 
 def main():
-    # parse_db_info()
-#     list_parse = [
-#         """
-#         TaskQueue
-# +-----------------+--------------+------+-----+---------+----------------+
-# | Field           | Type         | Null | Key | Default | Extra          |
-# +-----------------+--------------+------+-----+---------+----------------+
-# | id              | bigint(20)   | NO   | PRI | NULL    | auto_increment |
-# | action          | int(11)      | NO   |     | NULL    |                |
-# | node_name       | varchar(128) | NO   |     | NULL    |                |
-# | content_id      | bigint(20)   | NO   | MUL | NULL    |                |
-# | remote_task_id  | int(11)      | YES  |     | NULL    |                |
-# | owner           | varchar(256) | NO   |     | NULL    |                |
-# | content_version | bigint(20)   | NO   |     | NULL    |                |
-# +-----------------+--------------+------+-----+---------+----------------+
-#         """,
-#         """
-#         content
-# +-------------------+----------------------+------+-----+---------------------------------------------------+----------------+
-# | Field             | Type                 | Null | Key | Default                                           | Extra          |
-# +-------------------+----------------------+------+-----+---------------------------------------------------+----------------+
-# | id                | bigint(20) unsigned  | NO   | PRI | NULL                                              | auto_increment |
-# | external_id       | bigint(20) unsigned  | YES  | UNI | NULL                                              |                |
-# | order_code        | bigint(20) unsigned  | NO   | UNI | nextval(`dpdp_core_fix`.`seq_content_order_code`) |                |
-# | name              | varchar(255)         | NO   |     | NULL                                              |                |
-# | is_hidden         | bit(1)               | NO   |     | b'0'                                              |                |
-# | duration_days     | smallint(5) unsigned | YES  |     | NULL                                              |                |
-# | metadata          | longtext             | YES  |     | NULL                                              |                |
-# | product_id        | bigint(20) unsigned  | NO   | MUL | NULL                                              |                |
-# | provider_id       | bigint(20) unsigned  | YES  | MUL | NULL                                              |                |
-# | price_category_id | bigint(20) unsigned  | YES  | MUL | NULL                                              |                |
-# | created_date      | datetime(3)          | YES  |     | NULL                                              |                |
-# | status            | varchar(15)          | NO   |     | ACTIVE                                            |                |
-# | type              | varchar(24)          | NO   |     | TONE                                              |                |
-# | is_file_present   | bit(1)               | YES  |     | b'0'                                              |                |
-# | expiration_date   | datetime(3)          | YES  |     | NULL                                              |                |
-# +-------------------+----------------------+------+-----+---------------------------------------------------+----------------+
-#         """,
-#         """
-#         content_ownership
-# +---------------+---------------------+------+-----+---------+----------------+
-# | Field         | Type                | Null | Key | Default | Extra          |
-# +---------------+---------------------+------+-----+---------+----------------+
-# | id            | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-# | content_id    | bigint(20) unsigned | NO   | MUL | NULL    |                |
-# | subscriber_id | bigint(20) unsigned | NO   | MUL | NULL    |                |
-# | created_date  | datetime(3)         | NO   |     | NULL    |                |
-# +---------------+---------------------+------+-----+---------+----------------+
-#         """,
-#         """
-#         content_purchase
-# +--------------------+---------------------+------+-----+---------+----------------+
-# | Field              | Type                | Null | Key | Default | Extra          |
-# +--------------------+---------------------+------+-----+---------+----------------+
-# | id                 | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-# | subscriber_id      | bigint(20) unsigned | NO   |     | NULL    |                |
-# | content_id         | bigint(20) unsigned | NO   |     | NULL    |                |
-# | date               | datetime(3)         | YES  |     | NULL    |                |
-# | price              | bigint(20)          | NO   |     | NULL    |                |
-# | channel            | varchar(32)         | NO   |     | NULL    |                |
-# | is_copied          | bit(1)              | NO   |     | b'0'    |                |
-# | refund_information | varchar(128)        | YES  |     | NULL    |                |
-# +--------------------+---------------------+------+-----+---------+----------------+
-#         """,
-#         """
-#         gift
-# +---------------------+---------------------+------+-----+----------------------+----------------+
-# | Field               | Type                | Null | Key | Default              | Extra          |
-# +---------------------+---------------------+------+-----+----------------------+----------------+
-# | id                  | bigint(20) unsigned | NO   | PRI | NULL                 | auto_increment |
-# | content_purchase_id | bigint(20) unsigned | YES  | MUL | NULL                 |                |
-# | content_id          | bigint(20) unsigned | NO   | MUL | NULL                 |                |
-# | from_subscriber_id  | bigint(20) unsigned | NO   | MUL | NULL                 |                |
-# | to_subscriber_id    | bigint(20) unsigned | NO   | MUL | NULL                 |                |
-# | status              | varchar(24)         | NO   |     | PENDING              |                |
-# | is_requested        | bit(1)              | YES  |     | b'0'                 |                |
-# | created_date        | datetime(3)         | NO   |     | current_timestamp(3) |                |
-# +---------------------+---------------------+------+-----+----------------------+----------------+
-#         """,
-#         """
-#         notification_event
-# +---------------+---------------------+------+-----+---------+----------------+
-# | Field         | Type                | Null | Key | Default | Extra          |
-# +---------------+---------------------+------+-----+---------+----------------+
-# | id            | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-# | name          | varchar(255)        | NO   |     | NULL    |                |
-# | is_predefined | bit(1)              | NO   |     | b'0'    |                |
-# +---------------+---------------------+------+-----+---------+----------------+
-#         """,
-#         """
-#         notification_template
-# +------------+---------------------+------+-----+---------+----------------+
-# | Field      | Type                | Null | Key | Default | Extra          |
-# +------------+---------------------+------+-----+---------+----------------+
-# | id         | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-# | event_id   | bigint(20) unsigned | NO   | MUL | NULL    |                |
-# | service_id | bigint(20) unsigned | YES  | MUL | NULL    |                |
-# | language   | varchar(10)         | NO   |     | NULL    |                |
-# | text       | text                | YES  |     | NULL    |                |
-# +------------+---------------------+------+-----+---------+----------------+
-#         """,
-#         """
-#         notification_webhook
-# +---------------+---------------------+------+-----+--------------+----------------+
-# | Field         | Type                | Null | Key | Default      | Extra          |
-# +---------------+---------------------+------+-----+--------------+----------------+
-# | id            | bigint(20) unsigned | NO   | PRI | NULL         | auto_increment |
-# | endpoint_url  | varchar(255)        | NO   | MUL | NULL         |                |
-# | endpoint_name | varchar(255)        | YES  |     | NULL         |                |
-# | product_id    | bigint(20) unsigned | NO   | MUL | NULL         |                |
-# | type          | varchar(32)         | NO   |     | SUBSCRIPTION |                |
-# +---------------+---------------------+------+-----+--------------+----------------+
-#         """,
-#         """
-#         price_category
-# +----------------+---------------------+------+-----+---------+----------------+
-# | Field          | Type                | Null | Key | Default | Extra          |
-# +----------------+---------------------+------+-----+---------+----------------+
-# | id             | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-# | purchase_id    | bigint(20) unsigned | NO   |     | NULL    |                |
-# | renewal_id     | bigint(20) unsigned | NO   |     | NULL    |                |
-# | name           | varchar(255)        | NO   |     | NULL    |                |
-# | purchase_fee   | bigint(20)          | NO   |     | NULL    |                |
-# | renewal_fee    | bigint(20)          | NO   |     | NULL    |                |
-# | creator_id     | bigint(20) unsigned | NO   | MUL | NULL    |                |
-# | creation_date  | datetime(3)         | YES  |     | NULL    |                |
-# | channel_params | longtext            | YES  |     | NULL    |                |
-# +----------------+---------------------+------+-----+---------+----------------+
-# """,
-#         """
-# product
-# +-------------+---------------------+------+-----+---------+----------------+
-# | Field       | Type                | Null | Key | Default | Extra          |
-# +-------------+---------------------+------+-----+---------+----------------+
-# | id          | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-# | external_id | varchar(255)        | YES  | UNI | NULL    |                |
-# | name        | varchar(255)        | NO   | UNI | NULL    |                |
-# | partner_id  | bigint(20) unsigned | YES  | MUL | NULL    |                |
-# +-------------+---------------------+------+-----+---------+----------------+
-# """,
-#         """
-# reminder
-# +-----------------+---------------------+------+-----+----------------------+----------------+
-# | Field           | Type                | Null | Key | Default              | Extra          |
-# +-----------------+---------------------+------+-----+----------------------+----------------+
-# | id              | bigint(20) unsigned | NO   | PRI | NULL                 | auto_increment |
-# | subscription_id | bigint(20) unsigned | NO   | MUL | NULL                 |                |
-# | sent_date       | datetime(3)         | NO   |     | current_timestamp(3) |                |
-# | receipt_date    | datetime(3)         | YES  |     | NULL                 |                |
-# +-----------------+---------------------+------+-----+----------------------+----------------+
-# """,
-#         """
-# reminder_policy
-# +-----------------------+----------------------+------+-----+---------+----------------+
-# | Field                 | Type                 | Null | Key | Default | Extra          |
-# +-----------------------+----------------------+------+-----+---------+----------------+
-# | id                    | bigint(20) unsigned  | NO   | PRI | NULL    | auto_increment |
-# | days_to_reminder      | smallint(5) unsigned | NO   |     | NULL    |                |
-# | notification_event_id | bigint(20) unsigned  | NO   | MUL | NULL    |                |
-# +-----------------------+----------------------+------+-----+---------+----------------+
-# """,
-#         """
-# renewal_policy
-# +-------------+----------------------+------+-----+---------+----------------+
-# | Field       | Type                 | Null | Key | Default | Extra          |
-# +-------------+----------------------+------+-----+---------+----------------+
-# | id          | bigint(20) unsigned  | NO   | PRI | NULL    | auto_increment |
-# | version     | smallint(5) unsigned | NO   |     | 1       |                |
-# | policy_info | longtext             | NO   |     | NULL    |                |
-# +-------------+----------------------+------+-----+---------+----------------+
-# """,
-#         """
-# renewal_task
-# +-----------------+---------------------+------+-----+----------------------+----------------+
-# | Field           | Type                | Null | Key | Default              | Extra          |
-# +-----------------+---------------------+------+-----+----------------------+----------------+
-# | id              | bigint(20) unsigned | NO   | PRI | NULL                 | auto_increment |
-# | type            | varchar(24)         | NO   |     | NULL                 |                |
-# | subscription_id | bigint(20) unsigned | YES  | MUL | NULL                 |                |
-# | created_date    | datetime(3)         | NO   |     | current_timestamp(3) |                |
-# | subscriber_id   | bigint(20) unsigned | NO   | MUL | NULL                 |                |
-# | debt_only       | bit(1)              | YES  |     | b'0'                 |                |
-# +-----------------+---------------------+------+-----+----------------------+----------------+
-# """,
-#         """
-# seq_content_order_code
-# +-----------------------+---------------------+------+-----+---------+-------+
-# | Field                 | Type                | Null | Key | Default | Extra |
-# +-----------------------+---------------------+------+-----+---------+-------+
-# | next_not_cached_value | bigint(21)          | NO   |     | NULL    |       |
-# | minimum_value         | bigint(21)          | NO   |     | NULL    |       |
-# | maximum_value         | bigint(21)          | NO   |     | NULL    |       |
-# | start_value           | bigint(21)          | NO   |     | NULL    |       |
-# | increment             | bigint(21)          | NO   |     | NULL    |       |
-# | cache_size            | bigint(21) unsigned | NO   |     | NULL    |       |
-# | cycle_option          | tinyint(1) unsigned | NO   |     | NULL    |       |
-# | cycle_count           | bigint(21)          | NO   |     | NULL    |       |
-# +-----------------------+---------------------+------+-----+---------+-------+
-# """,
-#         """
-# service
-# +-----------------+---------------------+------+-----+---------+----------------+
-# | Field           | Type                | Null | Key | Default | Extra          |
-# +-----------------+---------------------+------+-----+---------+----------------+
-# | id              | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-# | product_id      | bigint(20) unsigned | NO   | MUL | NULL    |                |
-# | name            | varchar(255)        | NO   | UNI | NULL    |                |
-# | is_hlr_required | bit(1)              | NO   |     | b'0'    |                |
-# | hlr_id          | bigint(20) unsigned | YES  |     | NULL    |                |
-# | is_default      | bit(1)              | NO   |     | b'0'    |                |
-# | created_date    | datetime(3)         | YES  |     | NULL    |                |
-# | creator_id      | bigint(20) unsigned | NO   | MUL | NULL    |                |
-# +-----------------+---------------------+------+-----+---------+----------------+
-# """,
-#         """
-# service_variant
-# +------------------------------+----------------------+------+-----+---------+----------------+
-# | Field                        | Type                 | Null | Key | Default | Extra          |
-# +------------------------------+----------------------+------+-----+---------+----------------+
-# | id                           | bigint(20) unsigned  | NO   | PRI | NULL    | auto_increment |
-# | name                         | varchar(255)         | NO   |     | NULL    |                |
-# | is_hidden                    | bit(1)               | NO   |     | b'0'    |                |
-# | is_default                   | bit(1)               | NO   |     | b'0'    |                |
-# | subscription_type            | varchar(10)          | NO   |     | FULL    |                |
-# | profit_multiplier            | bigint(20)           | NO   |     | 1       |                |
-# | discount_multiplier          | bigint(20)           | NO   |     | 1       |                |
-# | duration_days                | smallint(5) unsigned | NO   |     | NULL    |                |
-# | service_id                   | bigint(20) unsigned  | NO   | MUL | NULL    |                |
-# | downgrade_service_variant_id | bigint(20) unsigned  | YES  | MUL | NULL    |                |
-# | price_category_id            | bigint(20) unsigned  | NO   | MUL | NULL    |                |
-# | renewal_policy_id            | bigint(20) unsigned  | YES  | MUL | NULL    |                |
-# | pre_active_renewal_policy_id | bigint(20) unsigned  | YES  | MUL | NULL    |                |
-# | reminder_policy_id           | bigint(20) unsigned  | YES  | MUL | NULL    |                |
-# | created_date                 | datetime(3)          | YES  |     | NULL    |                |
-# | creator_id                   | bigint(20) unsigned  | NO   | MUL | NULL    |                |
-# | channel                      | varchar(10)          | YES  |     | WEB     |                |
-# | purchase_id                  | bigint(20) unsigned  | YES  |     | NULL    |                |
-# | renewal_id                   | bigint(20) unsigned  | YES  |     | NULL    |                |
-# +------------------------------+----------------------+------+-----+---------+----------------+
-# """,
-#         """
-# subscriber
-# +--------------+---------------------+------+-----+----------------------+----------------+
-# | Field        | Type                | Null | Key | Default              | Extra          |
-# +--------------+---------------------+------+-----+----------------------+----------------+
-# | id           | bigint(20) unsigned | NO   | PRI | NULL                 | auto_increment |
-# | msisdn       | varchar(16)         | NO   | UNI | NULL                 |                |
-# | language     | varchar(32)         | NO   |     | en                   |                |
-# | created_date | datetime(3)         | NO   |     | current_timestamp(3) |                |
-# +--------------+---------------------+------+-----+----------------------+----------------+
-# """,
-#         """
-# subscription
-# +-------------------------+---------------------+------+-----+---------+----------------+
-# | Field                   | Type                | Null | Key | Default | Extra          |
-# +-------------------------+---------------------+------+-----+---------+----------------+
-# | id                      | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-# | created_date            | datetime(3)         | YES  |     | NULL    |                |
-# | end_date                | datetime(3)         | YES  |     | NULL    |                |
-# | last_charging_date      | datetime(3)         | YES  |     | NULL    |                |
-# | next_charging_date      | datetime(3)         | YES  | MUL | NULL    |                |
-# | charging_metadata       | longtext            | YES  |     | NULL    |                |
-# | status                  | varchar(15)         | NO   |     | NULL    |                |
-# | subscriber_id           | bigint(20) unsigned | NO   | MUL | NULL    |                |
-# | service_id              | bigint(20) unsigned | NO   | MUL | NULL    |                |
-# | service_variant_id      | bigint(20) unsigned | NO   | MUL | NULL    |                |
-# | last_activation_date    | datetime(3)         | NO   |     | NULL    |                |
-# | renewal_cycle_state     | longtext            | YES  |     | NULL    |                |
-# | next_debt_charging_date | datetime(3)         | YES  | MUL | NULL    |                |
-# | channel                 | varchar(10)         | NO   |     | NULL    |                |
-# +-------------------------+---------------------+------+-----+---------+----------------+
-# """,
-#         """
-# subscription_purchase
-# +--------------------+---------------------+------+-----+---------+----------------+
-# | Field              | Type                | Null | Key | Default | Extra          |
-# +--------------------+---------------------+------+-----+---------+----------------+
-# | id                 | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-# | subscription_id    | bigint(20) unsigned | YES  |     | NULL    |                |
-# | subscriber_id      | bigint(20) unsigned | NO   |     | NULL    |                |
-# | service_variant_id | bigint(20) unsigned | NO   |     | NULL    |                |
-# | date               | datetime(3)         | YES  |     | NULL    |                |
-# | price              | bigint(20)          | NO   |     | NULL    |                |
-# | refund_information | varchar(128)        | YES  |     | NULL    |                |
-# +--------------------+---------------------+------+-----+---------+----------------+
-# """,
-#         """
-# user
-# +----------------+---------------------+------+-----+---------+----------------+
-# | Field          | Type                | Null | Key | Default | Extra          |
-# +----------------+---------------------+------+-----+---------+----------------+
-# | id             | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-# | username       | varchar(255)        | NO   | UNI | NULL    |                |
-# | email          | varchar(255)        | YES  |     | NULL    |                |
-# | password       | varchar(255)        | NO   |     | NULL    |                |
-# | is_blocked     | bit(1)              | NO   |     | b'0'    |                |
-# | role           | varchar(255)        | YES  |     | NULL    |                |
-# | provider_type  | varchar(15)         | NO   |     | BOTH    |                |
-# | parent_user_id | bigint(20) unsigned | YES  | MUL | NULL    |                |
-# +----------------+---------------------+------+-----+---------+----------------+
-#         """
-#     ]
-#     for item in list_parse:
-#         name, list_items = divide_item(item)
-#         print('----------')
-#         print(f"{name}")
-#         parse_db_rows_item(list_items)
-#         print('----------')
-#     print(DPDP_RBT.print_out())
-#     list_types = ["bigint(20) unsigned", "varchar", "varchar", "varchar", "bit(1)", "varchar", "varchar", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "datetime(3)", "bigint(20)", "varchar", "bigint(20) unsigned", "datetime(3)", "datetime(3)", "datetime(3)", "datetime(3)", "longtext", "varchar", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "datetime(3)", "longtext", "datetime(3)", "varchar", "bigint(20) unsigned", "varchar", "varchar", "datetime(3)", "bigint(20) unsigned", "bigint(20) unsigned", "varchar", "bit(1)", "bigint(20) unsigned", "bit(1)", "datetime(3)", "bigint(20) unsigned", "varchar", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "varchar", "bit(1)", "bigint(20) unsigned", "bit(1)", "datetime(3)", "bigint(20) unsigned", "bigint(21)", "bigint(21)", "bigint(21)", "bigint(21)", "bigint(21)", "bigint(21) unsigned", "tinyint(1) unsigned", "bigint(21)", "bigint(20) unsigned", "varchar", "bigint(20) unsigned", "datetime(3)", "bigint(20) unsigned", "bit(1)", "bigint(20) unsigned", "smallint(5) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "smallint(5) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "datetime(3)", "datetime(3)", "bigint(20) unsigned", "varchar", "varchar", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "varchar", "bigint(20)", "bigint(20)", "bigint(20) unsigned", "datetime(3)", "longtext", "bigint(20) unsigned", "varchar", "varchar", "bigint(20) unsigned", "varchar", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "varchar", "text", "bigint(20) unsigned", "varchar", "bit(1)", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "varchar", "bit(1)", "datetime(3)", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "datetime(3)", "bigint(20)", "varchar", "bit(1)", "varchar", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "datetime(3)", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "varchar", "bit(1)", "smallint(5) unsigned", "longtext", "bigint(20) unsigned", "bigint(20) unsigned", "bigint(20) unsigned", "datetime(3)", "varchar", "varchar", "bit(1)", "datetime(3)", "bigint(20)", "int(11)", "varchar", "bigint(20)", "int(11)", "varchar", "bigint(20)", "bigint(20)", "varchar", "text", "varchar", "varchar", "text", "int(11)", "bit(1)", "datetime", "bit(1)", "datetime", "varchar", "varchar", "varchar", "varchar", "datetime", "bigint(20)", "varchar", "varchar", "datetime", "varchar", "varchar", "bit(1)", "bit(1)", "text", "bigint(20)", "varchar", "text", "bigint(20)", "bigint(20)", "varchar", "varchar"]
-#     print(set(list_types))
-    pprint(RBT_Web.dict_rbt_dpdp)
+    # item = [
+    #     """
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field           | Type         | Null | Key | Default             | Extra                         |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id              | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | creation_time   | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | creator_id      | int(11)      | NO   | MUL | NULL                |                               |
+    #     | name            | varchar(255) | NO   | MUL | NULL                |                               |
+    #     | thumbnail       | blob         | YES  |     | NULL                |                               |
+    #     | releaseYear     | int(11)      | YES  |     | NULL                |                               |
+    #     | moderation_time | timestamp    | YES  |     | NULL                |                               |
+    #     | moderator_id    | int(11)      | YES  | MUL | NULL                |                               |
+    #     | update_time     | timestamp    | YES  |     | NULL                |                               |
+    #     | updater_id      | int(11)      | YES  | MUL | NULL                |                               |
+    #     | artist_id       | int(11)      | YES  | MUL | NULL                |                               |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +-------------+---------+------+-----+---------+-------+
+    #     | Field       | Type    | Null | Key | Default | Extra |
+    #     +-------------+---------+------+-----+---------+-------+
+    #     | album_id    | int(11) | NO   | MUL | NULL    |       |
+    #     | category_id | int(11) | NO   | MUL | NULL    |       |
+    #     +-------------+---------+------+-----+---------+-------+
+    #     """,
+    #     """
+    #     +--------------------------+---------+------+-----+---------+----------------+
+    #     | Field                    | Type    | Null | Key | Default | Extra          |
+    #     +--------------------------+---------+------+-----+---------+----------------+
+    #     | id                       | int(11) | NO   | PRI | NULL    | auto_increment |
+    #     | custom_price_category_id | int(11) | YES  |     | NULL    |                |
+    #     +--------------------------+---------+------+-----+---------+----------------+
+    #     """,
+    #     """
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field           | Type         | Null | Key | Default             | Extra                         |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id              | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | creation_time   | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | creator_id      | int(11)      | NO   | MUL | NULL                |                               |
+    #     | name            | varchar(255) | NO   | UNI | NULL                |                               |
+    #     | thumbnail       | blob         | YES  |     | NULL                |                               |
+    #     | moderation_time | timestamp    | YES  |     | NULL                |                               |
+    #     | moderator_id    | int(11)      | YES  | MUL | NULL                |                               |
+    #     | update_time     | timestamp    | YES  |     | NULL                |                               |
+    #     | updater_id      | int(11)      | YES  | MUL | NULL                |                               |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field           | Type         | Null | Key | Default             | Extra                         |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id              | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | date_time       | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | user_id         | int(11)      | YES  | MUL | NULL                |                               |
+    #     | user_ip         | varchar(255) | YES  |     | NULL                |                               |
+    #     | channel_id      | int(11)      | YES  |     | NULL                |                               |
+    #     | msisdn          | bigint(20)   | YES  |     | NULL                |                               |
+    #     | operation       | int(11)      | NO   |     | NULL                |                               |
+    #     | object_type     | int(11)      | NO   | MUL | NULL                |                               |
+    #     | props           | longtext     | NO   |     | NULL                |                               |
+    #     | object_owner_id | int(11)      | YES  | MUL | NULL                |                               |
+    #     | product_id      | bigint(20)   | YES  |     | NULL                |                               |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +---------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field         | Type         | Null | Key | Default             | Extra                         |
+    #     +---------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id            | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | creation_time | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | creator_id    | int(11)      | NO   | MUL | NULL                |                               |
+    #     | name          | varchar(255) | NO   | UNI | NULL                |                               |
+    #     | update_time   | timestamp    | YES  |     | NULL                |                               |
+    #     | updater_id    | int(11)      | YES  | MUL | NULL                |                               |
+    #     +---------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +----------------+--------------+------+-----+---------------------+----------------+
+    #     | Field          | Type         | Null | Key | Default             | Extra          |
+    #     +----------------+--------------+------+-----+---------------------+----------------+
+    #     | id             | int(11)      | NO   | PRI | NULL                | auto_increment |
+    #     | name           | varchar(255) | NO   | UNI | NULL                |                |
+    #     | content_orders | longtext     | NO   |     | NULL                |                |
+    #     | creator_id     | int(11)      | NO   | MUL | NULL                |                |
+    #     | creation_time  | timestamp    | NO   |     | current_timestamp() |                |
+    #     +----------------+--------------+------+-----+---------------------+----------------+
+    #     """,
+    #     """
+    #     +-----------------+------------+------+-----+---------+-------+
+    #     | Field           | Type       | Null | Key | Default | Extra |
+    #     +-----------------+------------+------+-----+---------+-------+
+    #     | content_list_id | int(11)    | NO   | PRI | NULL    |       |
+    #     | content_id      | bigint(20) | NO   | PRI | NULL    |       |
+    #     +-----------------+------------+------+-----+---------+-------+
+    #     """,
+    #     """
+    #     +---------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field         | Type         | Null | Key | Default             | Extra                         |
+    #     +---------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id            | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | creation_time | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | expire_date   | timestamp    | YES  |     | NULL                |                               |
+    #     | name          | varchar(255) | NO   | UNI | NULL                |                               |
+    #     | provider_id   | int(11)      | YES  | MUL | NULL                |                               |
+    #     | update_time   | timestamp    | YES  |     | NULL                |                               |
+    #     | updater_id    | int(11)      | YES  | MUL | NULL                |                               |
+    #     +---------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +--------------------+--------------+------+-----+---------+----------------+
+    #     | Field              | Type         | Null | Key | Default | Extra          |
+    #     +--------------------+--------------+------+-----+---------+----------------+
+    #     | id                 | bigint(20)   | NO   | PRI | NULL    | auto_increment |
+    #     | type               | int(11)      | NO   |     | NULL    |                |
+    #     | business_division  | int(11)      | NO   |     | NULL    |                |
+    #     | company_name       | varchar(255) | NO   | MUL | NULL    |                |
+    #     | company_owner_name | varchar(255) | NO   |     | NULL    |                |
+    #     | address            | varchar(255) | NO   |     | NULL    |                |
+    #     | point_of_contact   | varchar(255) | NO   |     | NULL    |                |
+    #     | contact_number     | varchar(255) | NO   |     | NULL    |                |
+    #     | point_of_contact2  | varchar(255) | NO   |     | NULL    |                |
+    #     | contact_number2    | varchar(255) | NO   |     | NULL    |                |
+    #     | email              | varchar(255) | NO   |     | NULL    |                |
+    #     | agreements_no      | varchar(255) | NO   |     | NULL    |                |
+    #     +--------------------+--------------+------+-----+---------+----------------+
+    #     """,
+    #     """
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field           | Type         | Null | Key | Default             | Extra                         |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id              | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | name            | varchar(255) | NO   | UNI | NULL                |                               |
+    #     | creation_time   | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | creator_id      | int(11)      | NO   | MUL | NULL                |                               |
+    #     | thumbnail       | blob         | YES  |     | NULL                |                               |
+    #     | moderation_time | timestamp    | YES  |     | NULL                |                               |
+    #     | moderator_id    | int(11)      | YES  | MUL | NULL                |                               |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +-------------+------------+------+-----+---------+-------+
+    #     | Field       | Type       | Null | Key | Default | Extra |
+    #     +-------------+------------+------+-----+---------+-------+
+    #     | playlist_id | int(11)    | NO   | MUL | NULL    |       |
+    #     | content_id  | bigint(20) | YES  | MUL | NULL    |       |
+    #     +-------------+------------+------+-----+---------+-------+
+    #     """,
+    #     """
+    #     +-------------------+------------+------+-----+---------------------+-------------------------------+
+    #     | Field             | Type       | Null | Key | Default             | Extra                         |
+    #     +-------------------+------------+------+-----+---------------------+-------------------------------+
+    #     | content_id        | bigint(20) | NO   | PRI | NULL                |                               |
+    #     | creation_time     | timestamp  | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | creator_id        | int(11)    | YES  | MUL | NULL                |                               |
+    #     | price_category_id | int(11)    | NO   |     | NULL                |                               |
+    #     | order_code        | bigint(20) | YES  | UNI | NULL                |                               |
+    #     | is_hidden         | bit(1)     | NO   |     | NULL                |                               |
+    #     | tone_id           | bigint(20) | YES  | MUL | NULL                |                               |
+    #     | playlist_id       | int(11)    | YES  | MUL | NULL                |                               |
+    #     | is_expired        | bit(1)     | YES  |     | b'0'                |                               |
+    #     +-------------------+------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field          | Type         | Null | Key | Default             | Extra                         |
+    #     +----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id             | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | creator_id     | int(11)      | NO   | MUL | NULL                |                               |
+    #     | name           | varchar(255) | YES  | MUL | NULL                |                               |
+    #     | operation_time | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | thumbnail      | blob         | YES  |     | NULL                |                               |
+    #     | releaseYear    | int(11)      | YES  |     | NULL                |                               |
+    #     | is_moderate    | bit(1)       | NO   |     | NULL                |                               |
+    #     | moderator_id   | int(11)      | YES  | MUL | NULL                |                               |
+    #     | album_id       | int(11)      | YES  | MUL | NULL                |                               |
+    #     | artist_id      | int(11)      | YES  | MUL | NULL                |                               |
+    #     +----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +--------------+---------+------+-----+---------+-------+
+    #     | Field        | Type    | Null | Key | Default | Extra |
+    #     +--------------+---------+------+-----+---------+-------+
+    #     | raw_album_id | int(11) | NO   | MUL | NULL    |       |
+    #     | category_id  | int(11) | NO   | MUL | NULL    |       |
+    #     +--------------+---------+------+-----+---------+-------+
+    #     """,
+    #     """
+    #     +----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field          | Type         | Null | Key | Default             | Extra                         |
+    #     +----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id             | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | creator_id     | int(11)      | YES  | MUL | NULL                |                               |
+    #     | name           | varchar(255) | YES  |     | NULL                |                               |
+    #     | operation_time | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | thumbnail      | blob         | YES  |     | NULL                |                               |
+    #     | is_moderate    | bit(1)       | NO   |     | NULL                |                               |
+    #     | artist_id      | int(11)      | YES  | MUL | NULL                |                               |
+    #     | moderator_id   | int(11)      | YES  | MUL | NULL                |                               |
+    #     +----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field          | Type         | Null | Key | Default             | Extra                         |
+    #     +----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id             | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | name           | varchar(255) | YES  |     | NULL                |                               |
+    #     | operation_time | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | is_moderate    | bit(1)       | NO   |     | NULL                |                               |
+    #     | msisdn         | bigint(20)   | YES  |     | NULL                |                               |
+    #     | moderator_id   | int(11)      | YES  | MUL | NULL                |                               |
+    #     +----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +----------------+--------------+------+-----+---------+----------------+
+    #     | Field          | Type         | Null | Key | Default | Extra          |
+    #     +----------------+--------------+------+-----+---------+----------------+
+    #     | id             | int(11)      | NO   | PRI | NULL    | auto_increment |
+    #     | creator_id     | int(11)      | YES  | MUL | NULL    |                |
+    #     | name           | varchar(255) | YES  |     | NULL    |                |
+    #     | expire_date    | timestamp    | YES  |     | NULL    |                |
+    #     | operation_time | timestamp    | YES  |     | NULL    |                |
+    #     | moderator_id   | int(11)      | YES  | MUL | NULL    |                |
+    #     | license_id     | int(11)      | YES  | MUL | NULL    |                |
+    #     +----------------+--------------+------+-----+---------+----------------+
+    #     """,
+    #     """
+    #     +--------------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field              | Type         | Null | Key | Default             | Extra                         |
+    #     +--------------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id                 | bigint(20)   | NO   | PRI | NULL                | auto_increment                |
+    #     | type               | int(11)      | NO   |     | NULL                |                               |
+    #     | business_division  | int(11)      | NO   |     | NULL                |                               |
+    #     | company_name       | varchar(255) | NO   | MUL | NULL                |                               |
+    #     | company_owner_name | varchar(255) | NO   |     | NULL                |                               |
+    #     | address            | varchar(255) | NO   |     | NULL                |                               |
+    #     | point_of_contact   | varchar(255) | NO   |     | NULL                |                               |
+    #     | contact_number     | varchar(255) | NO   |     | NULL                |                               |
+    #     | point_of_contact2  | varchar(255) | NO   |     | NULL                |                               |
+    #     | contact_number2    | varchar(255) | NO   |     | NULL                |                               |
+    #     | email              | varchar(255) | NO   |     | NULL                |                               |
+    #     | agreements_no      | varchar(255) | NO   |     | NULL                |                               |
+    #     | creation_time      | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | moderator_id       | int(11)      | YES  | MUL | NULL                |                               |
+    #     +--------------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field           | Type         | Null | Key | Default             | Extra                         |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id              | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | name            | varchar(255) | NO   |     | NULL                |                               |
+    #     | hlr_id          | int(11)      | YES  |     | NULL                |                               |
+    #     | is_hlr_required | bit(1)       | YES  |     | NULL                |                               |
+    #     | is_default      | bit(1)       | YES  |     | NULL                |                               |
+    #     | creation_time   | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | creator_id      | int(11)      | YES  | MUL | NULL                |                               |
+    #     | moderator_id    | int(11)      | YES  | MUL | NULL                |                               |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +-------------------+--------------+------+-----+---------+----------------+
+    #     | Field             | Type         | Null | Key | Default | Extra          |
+    #     +-------------------+--------------+------+-----+---------+----------------+
+    #     | id                | int(11)      | NO   | PRI | NULL    | auto_increment |
+    #     | creator_id        | int(11)      | NO   | MUL | NULL    |                |
+    #     | moderator_id      | int(11)      | YES  | MUL | NULL    |                |
+    #     | name              | varchar(255) | YES  |     | NULL    |                |
+    #     | operation_time    | timestamp    | YES  |     | NULL    |                |
+    #     | order_code        | bigint(20)   | YES  |     | NULL    |                |
+    #     | price_category_id | int(11)      | YES  |     | NULL    |                |
+    #     | thumbnail         | blob         | YES  |     | NULL    |                |
+    #     | is_moderate       | bit(1)       | NO   |     | NULL    |                |
+    #     | playlist_id       | int(11)      | YES  | MUL | NULL    |                |
+    #     +-------------------+--------------+------+-----+---------+----------------+
+    #     """,
+    #     """
+    #     +-----------------+------------+------+-----+---------+-------+
+    #     | Field           | Type       | Null | Key | Default | Extra |
+    #     +-----------------+------------+------+-----+---------+-------+
+    #     | raw_playlist_id | int(11)    | NO   | MUL | NULL    |       |
+    #     | content_id      | bigint(20) | YES  | MUL | NULL    |       |
+    #     +-----------------+------------+------+-----+---------+-------+
+    #     """,
+    #     """
+    #     +------------------------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field                        | Type         | Null | Key | Default             | Extra                         |
+    #     +------------------------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id                           | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | name                         | varchar(255) | NO   |     | NULL                |                               |
+    #     | service_id                   | int(11)      | NO   |     | NULL                |                               |
+    #     | price_id                     | int(11)      | NO   |     | NULL                |                               |
+    #     | variant                      | int(11)      | NO   |     | NULL                |                               |
+    #     | type_id                      | int(11)      | NO   |     | NULL                |                               |
+    #     | is_hidden                    | bit(1)       | NO   |     | NULL                |                               |
+    #     | is_default                   | bit(1)       | NO   |     | NULL                |                               |
+    #     | downgrade_service_variant_id | int(11)      | YES  |     | NULL                |                               |
+    #     | renewal_policy_id            | int(11)      | NO   |     | NULL                |                               |
+    #     | profit_multiplier            | int(11)      | YES  |     | NULL                |                               |
+    #     | discount_multiplier          | int(11)      | YES  |     | NULL                |                               |
+    #     | creation_time                | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | creator_id                   | int(11)      | YES  | MUL | NULL                |                               |
+    #     | moderator_id                 | int(11)      | YES  | MUL | NULL                |                               |
+    #     +------------------------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +-------------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field             | Type         | Null | Key | Default             | Extra                         |
+    #     +-------------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id                | int(11)      | NO   | PRI | NULL                | auto_increment                |
+    #     | creator_id        | int(11)      | NO   | MUL | NULL                |                               |
+    #     | moderator_id      | int(11)      | YES  | MUL | NULL                |                               |
+    #     | operation_time    | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | order_code        | bigint(20)   | YES  |     | NULL                |                               |
+    #     | price_category_id | int(11)      | YES  |     | NULL                |                               |
+    #     | title             | varchar(255) | YES  |     | NULL                |                               |
+    #     | album_id          | int(11)      | YES  | MUL | NULL                |                               |
+    #     | artist_id         | int(11)      | YES  | MUL | NULL                |                               |
+    #     | tone_id           | bigint(20)   | YES  | MUL | NULL                |                               |
+    #     | license_id        | int(11)      | YES  | MUL | NULL                |                               |
+    #     | is_moderate       | bit(1)       | NO   |     | NULL                |                               |
+    #     +-------------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +-------------+---------+------+-----+---------+-------+
+    #     | Field       | Type    | Null | Key | Default | Extra |
+    #     +-------------+---------+------+-----+---------+-------+
+    #     | raw_tone_id | int(11) | NO   | MUL | NULL    |       |
+    #     | category_id | int(11) | NO   | MUL | NULL    |       |
+    #     +-------------+---------+------+-----+---------+-------+
+    #     """,
+    #     """
+    #     +---------------+--------------+------+-----+---------+----------------+
+    #     | Field         | Type         | Null | Key | Default | Extra          |
+    #     +---------------+--------------+------+-----+---------+----------------+
+    #     | id            | int(11)      | NO   | PRI | NULL    | auto_increment |
+    #     | name          | varchar(255) | NO   | UNI | NULL    |                |
+    #     | privileges    | longtext     | NO   |     | NULL    |                |
+    #     | session_limit | int(11)      | YES  |     | NULL    |                |
+    #     +---------------+--------------+------+-----+---------+----------------+
+    #     """,
+    #     """
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | Field           | Type         | Null | Key | Default             | Extra                         |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     | id              | bigint(20)   | NO   | PRI | NULL                | auto_increment                |
+    #     | creation_time   | timestamp    | NO   |     | current_timestamp() | on update current_timestamp() |
+    #     | creator_id      | int(11)      | NO   | MUL | NULL                |                               |
+    #     | title           | varchar(255) | NO   | MUL | NULL                |                               |
+    #     | moderation_time | timestamp    | YES  |     | NULL                |                               |
+    #     | moderator_id    | int(11)      | YES  | MUL | NULL                |                               |
+    #     | album_id        | int(11)      | YES  | MUL | NULL                |                               |
+    #     | artist_id       | int(11)      | YES  | MUL | NULL                |                               |
+    #     | license_id      | int(11)      | NO   | MUL | NULL                |                               |
+    #     +-----------------+--------------+------+-----+---------------------+-------------------------------+
+    #     """,
+    #     """
+    #     +-------------+------------+------+-----+---------+-------+
+    #     | Field       | Type       | Null | Key | Default | Extra |
+    #     +-------------+------------+------+-----+---------+-------+
+    #     | tone_id     | bigint(20) | NO   | PRI | NULL    |       |
+    #     | category_id | int(11)    | NO   | PRI | NULL    |       |
+    #     +-------------+------------+------+-----+---------+-------+
+    #     """,
+    #     """
+    #     +------------+---------------+------+-----+---------+----------------+
+    #     | Field      | Type          | Null | Key | Default | Extra          |
+    #     +------------+---------------+------+-----+---------+----------------+
+    #     | id         | int(11)       | NO   | PRI | NULL    | auto_increment |
+    #     | name       | varchar(255)  | NO   | UNI | NULL    |                |
+    #     | last_login | timestamp     | YES  |     | NULL    |                |
+    #     | is_blocked | bit(1)        | NO   |     | b'0'    |                |
+    #     | partner_id | bigint(20)    | YES  | MUL | NULL    |                |
+    #     | product_id | bigint(20)    | YES  |     | NULL    |                |
+    #     | ip_masks   | varchar(1024) | YES  |     | NULL    |                |
+    #     +------------+---------------+------+-----+---------+----------------+
+    #     """,
+    #     """
+    #     +--------------+---------+------+-----+---------+-------+
+    #     | Field        | Type    | Null | Key | Default | Extra |
+    #     +--------------+---------+------+-----+---------+-------+
+    #     | user_id      | int(11) | NO   | MUL | NULL    |       |
+    #     | moderator_id | int(11) | NO   | MUL | NULL    |       |
+    #     +--------------+---------+------+-----+---------+-------+
+    #     """,
+    #     """
+    #     +---------+---------+------+-----+---------+-------+
+    #     | Field   | Type    | Null | Key | Default | Extra |
+    #     +---------+---------+------+-----+---------+-------+
+    #     | user_id | int(11) | NO   | MUL | NULL    |       |
+    #     | role_id | int(11) | NO   | MUL | NULL    |       |
+    #     +---------+---------+------+-----+---------+-------+
+    #     """
+    # ]
+    # full_parse_db(item)
+    # tables = [
+    #     "album", "album_category", "app_settings", "artist", "audit", "category", "content_list",
+    #     "content_list_content", "license", "partner", "playlist", "playlist_content", "provided_content", "raw_album",
+    #     "raw_album_category", "raw_artist", "raw_custom_tone", "raw_license", "raw_partner", "raw_partner_service",
+    #     "raw_playlist", "raw_playlist_content", "raw_service_variant", "raw_tone", "raw_tone_category", "role", "tone",
+    #     "tone_category", "user", "user_moderator", "user_role"]
+    # for table in tables:
+    #     print(table)
+    # print(get_info_tables(tables, "select"))
+    # DpdpCore.print_questions()
+    DpdpRbt.get_dict_value()
 
 
 if __name__ == "__main__":
