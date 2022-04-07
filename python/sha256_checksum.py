@@ -110,7 +110,7 @@ def main():
     file_path = pathlib.Path(file_path_input).resolve()
 
     if not verify_path(file_path=file_path):
-        print('The path is not proper. THe program is terminated.')
+        print('The path is not proper. The program is terminated.')
         exit()
 
     sha256_checksum = get_sha256(file_path)
