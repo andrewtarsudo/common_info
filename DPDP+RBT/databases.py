@@ -465,43 +465,86 @@ def write_json_file(text: list[str], path: Union[str, pathlib.Path]):
 
 
 class RbtAPI:
+    full_list = [
+        """        
+    Album:
+    Album_ref:
+    App:
+    Artist:
+    Artist_ref:
+    Category:
+    Content:
+    Content_group:
+    Content_group_changes:
+    Content_group_data:
+    Content_group_identity:
+    Content_identity:
+    Content_ref:
+    Default_rule:
+    Default_rule_data:
+    Gallery:
+    Member:
+    Member_ref:
+    Playlist:
+    Price:
+    Rbt_addon:
+    Rbt_package:
+    Rbt_package_ref:
+    Ref:
+    Rule:
+    Rule_data:
+    Rule_full:
+    Schedule:
+    Schedule_data:
+    Schedule_range:
+    Search_result:
+    Search_result_item:
+    Session_app:
+    Subscriber:
+    Subscriber_caller_group_data:
+    Subscriber_custom_content:
+    Subscriber_data:
+    Subscriber_ref:
+    Tone:
+    """
+    ]
 
     addon: str = """
-        {
-          "id": 0,
-          "name": "string",
-          "price": 0,
-          "orderCode": 0,
-          "purchasedCount": 0,
-          "discountCount": 0,
-          "discountTime": 0,
-          "discountMultiplier": 0,
-          "discountCoefficient": 0,
-          "from": 0,
-          "till": 0,
-          "repeat": true,
-          "forNewSubscribers": true,
-          "period": 0,
-          "active": true
-        }
+{
+  "id": 0,
+  "name": "addonName",
+  "price": 0,
+  "orderCode": 0,
+  "purchasedCount": 0,
+  "discountCount": 0,
+  "discountTime": 0,
+  "discountMultiplier": 0,
+  "discountCoefficient": 0,
+  "from": 0,
+  "till": 0,
+  "repeat": true,
+  "forNewSubscribers": true,
+  "period": 0,
+  "active": true
+}
         """
 
     album: str = """
+{
+  "id": 0,
+  "name": "albumName",
+  "artist": {
+    "id": 0,
+    "name": "artistName"
+  },
+  "releaseYear": 0,
+  "categories": [
     {
       "id": 0,
-      "name": "albumName",
-      "artist": {
-        "id": 0,
-        "name": "artistName"
-      },
-      "releaseYear": 0,
-      "categories": [
-        {
-          "id": 0,
-          "name": "categoryName"
-        }
-      ]
+      "name": "categoryName"
     }
+  ]
+}
     """
 
     artist: str = """
@@ -544,33 +587,45 @@ class RbtAPI:
     }
     """
 
+    rbt_package: str = """
+{
+  "id": 0,
+  "name": "rbtPackageName",
+  "price": 0,
+  "daysPeriod": 0,
+  "antiRbt": true,
+  "channel": "IVR",
+  "isTrial": true
+}
+    """
+
     tone: str = """
+{
+  "id": 0,
+  "title": "toneName",
+  "artist": {
+    "id": 0,
+    "name": "artistName"
+  },
+  "album": {
+    "id": 0,
+    "name": "albumName",
+    "releaseYear": 0
+  },
+  "categories": [
     {
       "id": 0,
-      "title": "toneName",
-      "artist": {
-        "id": 0,
-        "name": "artistName"
-      },
-      "album": {
-        "id": 0,
-        "name": "albumName",
-        "releaseYear": 0
-      },
-      "categories": [
-        {
-          "id": 0,
-          "name": "categoryName"
-        }
-      ],
-      "thumbnail": "image",
-      "alreadyPurchased": true,
-      "canBeGifted": true,
-      "orderCode": 0,
-      "price": 0
+      "name": "categoryName"
     }
+  ],
+  "thumbnail": "image",
+  "alreadyPurchased": true,
+  "canBeGifted": true,
+  "orderCode": 0,
+  "price": 0
+}
     """
-    Artist_search: str = """
+    artist_search: str = """
     {
       "artists": [
         {
@@ -581,7 +636,7 @@ class RbtAPI:
       ]
     }
     """
-    Category_search: str = """
+    category_search: str = """
     {
       "categories": [
         {
@@ -592,18 +647,18 @@ class RbtAPI:
       ]
     }
     """
-    Album_search: str = """
+    album_search: str = """
+{
+  "albums": [
     {
-      "albums": [
-        {
-          "id": 0,
-          "name": "albumName",
-          "ownerName": "string",
-          "orderCode": 0,
-          "thumbnail": "data:image/jpeg;base64,..."
-        }
-      ]
+      "id": 0,
+      "name": "albumName",
+      "ownerName": "string",
+      "orderCode": 0,
+      "thumbnail": "data:image/jpeg;base64,..."
     }
+  ]
+}
     """
 
     schedule_data: str = """
@@ -627,6 +682,24 @@ class RbtAPI:
         }
       ]
     }
+    """
+
+    subscriber_custom_content: str = """
+{
+  "id": 0,
+  "title": "contentName",
+  "isWaitModeration": true
+}
+    """
+
+    subscriber_ref: str = """
+{
+  "subscriber": {
+    "id": 0,
+    "name": "subscriberName",
+    "isHidden": true
+  }
+}
     """
 
     schedule: str = """
@@ -654,18 +727,17 @@ class RbtAPI:
     """
 
     member: str = """
-    {
-      "msisdn": 0,
-      "name": "memberName",
-      "isPublic": true
-    }
+{
+  "msisdn": 0,
+  "name": "memberName",
+  "isPublic": true
+}
     """
 
     member_ref: str = """
     {
       "msisdn": 0,
-      "name": "memberName",
-      "isPublic": true
+      "name": "memberName"
     }
     """
 
@@ -742,20 +814,6 @@ class RbtAPI:
     }
     """
 
-    member_ref: str = """
-    {
-      "msisdn": 0,
-      "name": "memberName"
-    }
-    """
-
-    group_ref: str = """
-    {
-      "id": 0,
-      "name": "groupName"
-    }
-    """
-
     schedule_ref: str = """
     {
       "id": 0,
@@ -814,40 +872,110 @@ class RbtAPI:
     """
 
     Tone_search: str = """
+{
+  "tones": [
     {
-      "tones": [
-        {
-          "id": 0,
-          "name": "toneName",
-          "ownerName": "string",
-          "orderCode": 0,
-          "thumbnail": "data:image/jpeg;base64,..."
-        }
-      ]
+      "id": 0,
+      "name": "toneName",
+      "ownerName": "string",
+      "orderCode": 0,
+      "thumbnail": "data:image/jpeg;base64,..."
     }
+  ]
+}
     """
     Playlist_search: str = """
+{
+  "playlists": [
     {
-      "playlists": [
-        {
-          "id": 0,
-          "name": "playlistName",
-          "ownerName": "string",
-          "orderCode": 0,
-          "thumbnail": "data:image/jpeg;base64,..."
-        }
-      ]
+      "id": 0,
+      "name": "playlistName",
+      "ownerName": "string",
+      "orderCode": 0,
+      "thumbnail": "data:image/jpeg;base64,..."
     }
+  ]
+}
     """
     subscriber: str = """
-    {
-      "subscriber": {
-        "id": 0,
-        "name": "subscriberName",
-        "isHidden": true
-      }
-    }
+{
+  "subscriber": {
+    "id": 0,
+    "name": "subscriberName",
+    "isHidden": true
+  }
+}
     """
+
+    gallery: str = """
+{
+  "artists": [
+    {
+      "id": 0,
+      "name": "string",
+      "ownerName": "string",
+      "orderCode": 0,
+      "thumbnail": "data:image/jpeg;base64,..."
+    }
+  ],
+  "playlists": [
+    {
+      "id": 0,
+      "name": "string",
+      "ownerName": "string",
+      "orderCode": 0,
+      "thumbnail": "data:image/jpeg;base64,..."
+    }
+  ],
+  "albums": [
+    {
+      "id": 0,
+      "name": "string",
+      "ownerName": "string",
+      "orderCode": 0,
+      "thumbnail": "data:image/jpeg;base64,..."
+    }
+  ],
+  "tones": [
+    {
+      "id": 0,
+      "name": "string",
+      "ownerName": "string",
+      "orderCode": 0,
+      "thumbnail": "data:image/jpeg;base64,..."
+    }
+  ],
+  "categories": [
+    {
+      "id": 0,
+      "name": "string",
+      "ownerName": "string",
+      "orderCode": 0,
+      "thumbnail": "data:image/jpeg;base64,..."
+    }
+  ],
+  "subscriber": {
+    "id": 0,
+    "name": "string",
+    "isHidden": true
+  }
+}
+    """
+
+    @classmethod
+    def convert_all_to_word(cls):
+        attrs = [attr for attr in dir(RbtAPI) if not attr.startswith("_")]
+        values = [getattr(RbtAPI, attribute) for attribute in attrs]
+        return [convert_to_word(value) for value in values]
+
+
+def convert_to_word(text: str):
+    return "\n".join(line.strip().replace(r'"', r'\"') for line in text.split("\n"))
+    # return json_text.replace(r'"', r'\"')
+
+
+def get_json(text: str):
+    return json.loads(json.dumps(text, indent=2))
 
 
 def main():
@@ -861,19 +989,30 @@ def main():
     # text = convert_all_to_json()
     # print(text)
 
-    print(convert_list_to_json("list_state", DpdpRbt.list_state))
-    print(convert_dict_to_json("dict_rbt_dpdp", DpdpRbt.dict_rbt_dpdp))
-    res = []
-    for attr in attrs:
-        if isinstance(DpdpRbt.__getattribute__(DpdpRbt, attr), list):
-            res.append(convert_list_to_json(attr, DpdpRbt.__getattribute__(DpdpRbt, attr)))
-        elif isinstance(DpdpRbt.__getattribute__(DpdpRbt, attr), dict):
-            res.append(convert_dict_to_json(attr, DpdpRbt.__getattribute__(DpdpRbt, attr)))
-        else:
-            continue
+    # print(convert_list_to_json("list_state", DpdpRbt.list_state))
+    # print(convert_dict_to_json("dict_rbt_dpdp", DpdpRbt.dict_rbt_dpdp))
+    # res = []
+    # for attr in attrs:
+    #     if isinstance(DpdpRbt.__getattribute__(DpdpRbt, attr), list):
+    #         res.append(convert_list_to_json(attr, DpdpRbt.__getattribute__(DpdpRbt, attr)))
+    #     elif isinstance(DpdpRbt.__getattribute__(DpdpRbt, attr), dict):
+    #         res.append(convert_dict_to_json(attr, DpdpRbt.__getattribute__(DpdpRbt, attr)))
+    #     else:
+    #         continue
+    #
+    # path = "./db_params.json"
+    # write_json_file(res, path)
 
-    path = "./db_params.json"
-    write_json_file(res, path)
+    # res = get_json(convert_to_word(RbtAPI.artist))
+    # print(res)
+    #
+    # res_json = json.dumps(RbtAPI.artist, indent=2)
+    #
+    # with open("test.json", "w+") as f:
+    #     f.write(res_json)
+    attrs = [attr for attr in dir(RbtAPI) if not attr.startswith("_")]
+    pprint(attrs)
+    print(len(attrs))
 
 
 if __name__ == "__main__":
