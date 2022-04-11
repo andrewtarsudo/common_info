@@ -1,6 +1,8 @@
+import pathlib
 from pprint import pprint
 import re
-from typing import Optional
+from typing import Optional, Union
+import json
 
 __doc__ = """
     divide_item: divide the db item into strings;
@@ -26,7 +28,7 @@ class DpdpRbt:
     print_out: print the following
         ip server, command, login, password, db_password, dict_rbt_dpdp, list_questions, list_types
     print_questions: print the list_questions;
-    
+
     "command",
     "db_password",
     "dict_caller_group_type",
@@ -45,7 +47,7 @@ class DpdpRbt:
     "ip_server",
     "list_channels",
     "list_dpdp_core_questions",
-    "list_provider_type",
+    "list_partner_type",
     "list_questions",
     "list_rbt_web_questions",
     "list_state",
@@ -54,12 +56,14 @@ class DpdpRbt:
     "password",
     "web_port"
     """
-    ip_server = "192.168.125.148"
-    web_port = 8081
-    login = "root"
-    password = "elephant"
-    command = "mysql -uroot -p"
-    db_password = "elephant"
+    dict_common_params: dict = {
+        "ip_server": "192.168.125.148",
+        "web_port": 8081,
+        "login": "root",
+        "password": "elephant",
+        "command": "mysql -uroot -p",
+        "db_password": "elephant"
+    }
 
     dict_default_text = {
         "heading_name": "Table {table_name}",
@@ -132,8 +136,8 @@ class DpdpRbt:
     }
 
     dict_subscriber_type = {
-        "0": "subscriber",
-        "1": "corporate"
+        "0": "SUBSCRIBER",
+        "1": "CORPORATE"
     }
 
     dict_content_type = {
@@ -210,7 +214,14 @@ class DpdpRbt:
         'is_hlr_required': 'Flag to make the parameter hlr_id mandatory.\nDefault: false.',
         'increment': 'Step size.',
         'is_copied': 'Flag to indicate if the content has been copied from the other subscriber.',
-        'order_code': 'Code to purchase the content.'
+        'order_code': 'Code to purchase the content.',
+        'moderator_id': 'Moderator identifier.',
+        'moderation_time': 'Moderation completion date and time.',
+        'creation_time': '{} creation date and time.\nDefault: current_timestamp()',
+        'creator_id': '{} creator identifier.',
+        'name': '{} name.',
+        'update_time': '{} update date and time.',
+        'updater_id': 'Identifier of the user to modify the {}.'
     }
 
     dict_rbt_dpdp = {
@@ -234,11 +245,13 @@ class DpdpRbt:
 
     list_state = ["SUSPENDED", "INACTIVE", "PRE_ACTIVE", "ACTIVE", "GRACE", "PENDING"]
 
-    list_provider_type = ["CONTENT_PROVIDER", "SERVICE_PROVIDER", "BOTH"]
+    list_partner_type = ["CONTENT_PROVIDER", "SERVICE_PROVIDER", "BOTH"]
 
     list_channels = ["IVR", "SMS", "WEB", "USSD", "API", "OKP", "SERVICE", "RETAIL", "SYSTEM"]
 
     list_webhook_types = ["RBT_SUBSCRIPTION", "RBT_CONTENT", "SUBSCRIPTION"]
+
+    list_business_divisions = ["VAS_OPERATION", "DIGITAL_OPERATION", "B2B_OPERATION", "OTHERS"]
 
     list_dpdp_core_questions = (
         ("remove", "RepoMetadata.remove"),
@@ -256,7 +269,8 @@ class DpdpRbt:
         ("debt_only", "renewal_task.debt_only"),
         ("charging_metadata", "subscription.charging_metadata"),
         ("renewal_cycle_state", "subscription.renewal_cycle_state"),
-        ("next_debt_charging_date", "subscription.next_debt_charging_date")
+        ("next_debt_charging_date", "subscription.next_debt_charging_date"),
+        ("artist_id", "raw_custom_tone.artist_id")
     )
 
     list_rbt_web_questions = (
@@ -282,14 +296,9 @@ class DpdpRbt:
 
     @classmethod
     def print_out(cls):
-        print(f"ip server = {cls.ip_server}")
-        print(f"web interface port = {cls.web_port}")
-        print(f"command = {cls.command}")
-        print(f"login = {cls.login}")
-        print(f"password = {cls.password}")
-        print(f"db_password = {cls.db_password}")
+        pprint(cls.dict_common_params)
         print("dict:")
-        pprint(cls.dict_rbt_dpdp,)
+        pprint(cls.dict_rbt_dpdp)
         cls.print_questions()
         print(f"types = {cls.list_types}")
 
@@ -417,50 +426,454 @@ def get_unique_values(list_values: list):
     return list(set(list_values))
 
 
+def convert_list_to_json(attr_name: str, list_items: list[str]):
+    text = json.dumps(list_items, indent=2)
+    name = f"\"{attr_name}\""
+    return f"{name}: {text}"
+
+
+def convert_dict_to_json(attr_name: str, dict_items: dict):
+    text = json.dumps(dict_items, indent=2)
+    text.replace("'", '"')
+    name = f"\"{attr_name}\""
+    return f"{name}: {text}"
+
+
+def convert_to_json(name: str, obj):
+    string = " = ".join((f"{name}", f"{obj}"))
+    return json.dumps(string, indent=2, sort_keys=True, ensure_ascii=False)[1:-1]
+
+
+def convert_all_to_json():
+    return [convert_to_json(param, DpdpRbt.__getattribute__(DpdpRbt, param)) for param in dir(DpdpRbt)
+            if param.startswith(("dict", "list"))]
+
+
+def check_path(path: Union[str, pathlib.Path]):
+    path_file = pathlib.Path(path).resolve()
+    existence: bool = True if path_file.exists() else False
+    file: bool = True if path_file.is_file() else False
+    extension: bool = True if path_file.suffix == '.json' else False
+
+    return existence, file, extension
+
+
+def write_json_file(text: list[str], path: Union[str, pathlib.Path]):
+    with open(path, "w+") as f:
+        for line in text:
+            f.write(f"{line}\n")
+
+
+class RbtAPI:
+
+    addon: str = """
+        {
+          "id": 0,
+          "name": "string",
+          "price": 0,
+          "orderCode": 0,
+          "purchasedCount": 0,
+          "discountCount": 0,
+          "discountTime": 0,
+          "discountMultiplier": 0,
+          "discountCoefficient": 0,
+          "from": 0,
+          "till": 0,
+          "repeat": true,
+          "forNewSubscribers": true,
+          "period": 0,
+          "active": true
+        }
+        """
+
+    album: str = """
+    {
+      "id": 0,
+      "name": "albumName",
+      "artist": {
+        "id": 0,
+        "name": "artistName"
+      },
+      "releaseYear": 0,
+      "categories": [
+        {
+          "id": 0,
+          "name": "categoryName"
+        }
+      ]
+    }
+    """
+
+    artist: str = """
+    {
+      "id": 0,
+      "name": "artistName",
+      "thumbnail": "data:image/jpeg;base64,..."
+    }
+    """
+
+    artist_ref: str = """
+    {
+      "id": 0,
+      "name": "artistName"
+    }
+    """
+
+    category: str = """
+    {
+      "id": 0,
+      "name": "categoryName"
+    }
+    """
+
+    playlist: str = """
+    {
+      "id": 0,
+      "name": "playlistName",
+      "categories": [
+        {
+          "id": 0,
+          "name": "categoryName"
+        }
+      ],
+      "thumbnail": "image",
+      "alreadyPurchased": true,
+      "canBeGifted": true,
+      "orderCode": 0,
+      "price": 0
+    }
+    """
+
+    tone: str = """
+    {
+      "id": 0,
+      "title": "toneName",
+      "artist": {
+        "id": 0,
+        "name": "artistName"
+      },
+      "album": {
+        "id": 0,
+        "name": "albumName",
+        "releaseYear": 0
+      },
+      "categories": [
+        {
+          "id": 0,
+          "name": "categoryName"
+        }
+      ],
+      "thumbnail": "image",
+      "alreadyPurchased": true,
+      "canBeGifted": true,
+      "orderCode": 0,
+      "price": 0
+    }
+    """
+    Artist_search: str = """
+    {
+      "artists": [
+        {
+          "id": 0,
+          "name": "artistName",
+          "thumbnail": "data:image/jpeg;base64,..."
+        }
+      ]
+    }
+    """
+    Category_search: str = """
+    {
+      "categories": [
+        {
+          "id": 0,
+          "name": "categoryName",
+          "thumbnail": "data:image/jpeg;base64,..."
+        }
+      ]
+    }
+    """
+    Album_search: str = """
+    {
+      "albums": [
+        {
+          "id": 0,
+          "name": "albumName",
+          "ownerName": "string",
+          "orderCode": 0,
+          "thumbnail": "data:image/jpeg;base64,..."
+        }
+      ]
+    }
+    """
+
+    schedule_data: str = """
+    {
+      "name": "scheduleName",
+      "from": 0,
+      "till": 0,
+      "ranges": [
+        {
+          "from": "10:00",
+          "till": "10:00",
+          "weekDays": [
+            ["MO", "SU"]
+          ],
+          "monthDays": [
+            [1, 2, 3]
+          ],
+          "yearDays": [
+            ["10.01", "20.02"]
+          ]
+        }
+      ]
+    }
+    """
+
+    schedule: str = """
+    {
+      "id": 0,
+      "name": "scheduleName",
+      "from": 0,
+      "till": 0,
+      "ranges": [
+        {
+          "from": "10:00",
+          "till": "10:00",
+          "weekDays": [
+            ["MO", "SU"]
+          ],
+          "monthDays": [
+            [1, 2, 3]
+          ],
+          "yearDays": [
+            ["10.01", "20.02"]
+          ]
+        }
+      ]
+    }
+    """
+
+    member: str = """
+    {
+      "msisdn": 0,
+      "name": "memberName",
+      "isPublic": true
+    }
+    """
+
+    member_ref: str = """
+    {
+      "msisdn": 0,
+      "name": "memberName",
+      "isPublic": true
+    }
+    """
+
+    group: str = """
+    {
+      "name": "groupName",
+      "members": [ 0 ]
+    }
+    """
+
+    group_ref: str = """
+    {
+      "id": 0,
+      "name": "groupName"
+    }
+    """
+
+    default_rule_data: str = """
+    {
+      "mode": "RANDOM",
+      "contentsIds": [ 0 ]
+    }
+    """
+
+    default_rule: str = """
+    {
+      "mode": "RANDOM",
+      "contents": [
+        {
+          "id": 0,
+          "name": "toneName",
+          "type": "TONE",
+          "thumbnail": "data:image/jpeg;base64",
+          "orderCode": 0
+        }
+      ]
+    }
+    """
+
+    rule_full: str = """
+    {
+      "id": 0,
+      "order": 0,
+      "type": "GENERAL",
+      "mode": "RANDOM",
+      "name": "ruleName",
+      "members": [
+        {
+          "msisdn": 0,
+          "name": "memberName"
+        }
+      ],
+      "groups": [
+        {
+          "id": 0,
+          "name": "groupName"
+        }
+      ],
+      "schedules": [
+        {
+          "id": 0,
+          "name": "scheduleName"
+        }
+      ],
+      "contents": [
+        {
+          "id": 0,
+          "name": "contentName",
+          "type": "TONE",
+          "thumbnail": "data:image/jpeg;base64",
+          "orderCode": 0
+        }
+      ]
+    }
+    """
+
+    member_ref: str = """
+    {
+      "msisdn": 0,
+      "name": "memberName"
+    }
+    """
+
+    group_ref: str = """
+    {
+      "id": 0,
+      "name": "groupName"
+    }
+    """
+
+    schedule_ref: str = """
+    {
+      "id": 0,
+      "name": "scheduleName"
+    }
+    """
+
+    content: str = """
+    {
+      "id": 0,
+      "orderCode": 0
+    }
+    """
+
+    content_ref: str = """
+    {
+      "id": 0,
+      "name": "contentName",
+      "type": "TONE",
+      "thumbnail": "data:image/jpeg;base64",
+      "orderCode": 0
+    }
+    """
+
+    rule: str = """
+    {
+      "id": 0,
+      "order": 0,
+      "kind": "SCHEDULE",
+      "type": "GENERAL",
+      "mode": "RANDOM",
+      "name": "ruleName",
+      "groupsIds": [ 0 ],
+      "schedulesIds": [ 0 ],
+      "contents": [
+        {
+          "id": 0,
+          "orderCode": 0
+        }
+      ]
+    }
+    """
+
+    rule_data: str = """
+    {
+      "name": "ruleDataName",
+      "kind": "SCHEDULE",
+      "type": "GENERAL",
+      "order": 0,
+      "mode": "RANDOM",
+      "members": [ 0 ],
+      "groupsIds": [ 0 ],
+      "schedulesIds": [ 0 ],
+      "contentIds": [ 0 ]
+    }
+    """
+
+    Tone_search: str = """
+    {
+      "tones": [
+        {
+          "id": 0,
+          "name": "toneName",
+          "ownerName": "string",
+          "orderCode": 0,
+          "thumbnail": "data:image/jpeg;base64,..."
+        }
+      ]
+    }
+    """
+    Playlist_search: str = """
+    {
+      "playlists": [
+        {
+          "id": 0,
+          "name": "playlistName",
+          "ownerName": "string",
+          "orderCode": 0,
+          "thumbnail": "data:image/jpeg;base64,..."
+        }
+      ]
+    }
+    """
+    subscriber: str = """
+    {
+      "subscriber": {
+        "id": 0,
+        "name": "subscriberName",
+        "isHidden": true
+      }
+    }
+    """
+
+
 def main():
     # print(__doc__)
     # print(DpdpRbt.__doc__)
+    attrs = [attr for attr in dir(DpdpRbt) if attr.startswith(("dict", "list"))]
+    # pprint(attrs)
+    # pprint(convert_all_to_json())
+    # DpdpRbt.get_dict_value()
+    # DpdpRbt.print_default_text()
+    # text = convert_all_to_json()
+    # print(text)
 
-    DpdpRbt.get_dict_value()
-    DpdpRbt.print_default_text()
-    # DpdpRbt.print_questions()
-    # DpdpRbt.print_out()
-    # list_values = [
-    #     "bigint(M)", "bigint(M)", "varchar(M)", "varchar(M)", "bigint(M)", "varchar(M)", "varchar(M)", "datetime",
-    #     "varchar(M)", "varchar(M)", "bit(M)", "bit(M)", "text", "bigint(M)", "varchar(M)", "text", "bigint(M)",
-    #     "varchar(M)", "text", "varchar(M)", "varchar(M)", "text", "int(M)", "bit(M)", "datetime", "bit(M)", "datetime",
-    #     "varchar(M)", "varchar(M)", "varchar(M)", "varchar(M)", "datetime", "bigint(M)", "int(M)", "varchar(M)",
-    #     "bigint(M)", "int(M)", "varchar(M)", "bigint(M)", "bigint(M) U", "bigint(M) U", "bigint(M) U", "varchar(M)",
-    #     "bit(M)", "smallint(M) U", "longtext", "bigint(M) U", "bigint(M) U", "bigint(M) U", "datetime(M)", "varchar(M)",
-    #     "varchar(M)", "bit(M)", "datetime(M)", "bigint(M) U", "bigint(M) U", "bigint(M) U", "datetime(M)",
-    #     "bigint(M) U", "bigint(M) U", "bigint(M) U", "datetime(M)", "bigint(M)", "varchar(M)", "bit(M)", "varchar(M)",
-    #     "bigint(M) U", "bigint(M) U", "bigint(M) U", "bigint(M) U", "bigint(M) U", "varchar(M)", "bit(M)",
-    #     "datetime(M)", "bigint(M) U", "varchar(M)", "bit(M)", "bigint(M) U", "bigint(M) U", "bigint(M) U", "varchar(M)",
-    #     "text", "bigint(M) U", "varchar(M)", "varchar(M)", "bigint(M) U", "varchar(M)", "bigint(M) U", "bigint(M) U",
-    #     "bigint(M) U", "varchar(M)", "bigint(M)", "bigint(M)", "bigint(M) U", "datetime(M)", "longtext", "bigint(M) U",
-    #     "varchar(M)", "varchar(M)", "bigint(M) U", "bigint(M) U", "bigint(M) U", "datetime(M)", "datetime(M)",
-    #     "bigint(M) U", "smallint(M) U", "bigint(M) U", "bigint(M) U", "smallint(M) U", "bigint(M) U", "bigint(M) U",
-    #     "varchar(M)", "bigint(M) U", "datetime(M)", "bigint(M) U", "bit(M)", "bigint(M)", "bigint(M)", "bigint(M)",
-    #     "bigint(M)", "bigint(M)", "bigint(M) U", "tinyint(M) U", "bigint(M)", "bigint(M) U", "bigint(M) U",
-    #     "varchar(M)", "bit(M)", "bigint(M) U", "bit(M)", "datetime(M)", "bigint(M) U", "bigint(M) U", "bigint(M) U",
-    #     "varchar(M)", "bit(M)", "bigint(M) U", "bit(M)", "datetime(M)", "bigint(M) U", "varchar(M)", "bigint(M) U",
-    #     "bigint(M) U", "bigint(M) U", "varchar(M)", "varchar(M)", "datetime(M)", "bigint(M) U", "datetime(M)",
-    #     "datetime(M)", "datetime(M)", "datetime(M)", "longtext", "varchar(M)", "bigint(M) U", "bigint(M) U",
-    #     "bigint(M) U", "datetime(M)", "longtext", "datetime(M)", "varchar(M)", "bigint(M) U", "bigint(M) U",
-    #     "bigint(M) U", "bigint(M) U", "datetime(M)", "bigint(M)", "varchar(M)", "bigint(M) U", "varchar(M)",
-    #     "varchar(M)", "varchar(M)", "bit(M)", "varchar(M)", "varchar(M)", "bigint(M) U", "int(M)", "timestamp",
-    #     "int(M)", "varchar(M)", "int(M)", "bigint(M)", "int(M)", "int(M)", "longtext", "int(M)", "int(M)", "int(M)",
-    #     "varchar(M)", "int(M)", "int(M)", "int(M)", "int(M)", "int(M)", "varchar(M)", "bigint(M)", "int(M)", "int(M)",
-    #     "varchar(M)", "varchar(M)", "bigint(M)", "bigint(M)", "int(M)", "varchar(M)", "int(M)", "int(M)", "int(M)",
-    #     "int(M)", "int(M)", "int(M)", "int(M)", "int(M)", "int(M)", "int(M)", "int(M)", "int(M)", "int(M)",
-    #     "varchar(M)", "timestamp", "timestamp", "varchar(M)", "int(M)", "int(M)", "int(M)", "int(M)", "varchar(M)",
-    #     "bit(M)", "timestamp", "timestamp", "int(M)", "bit(M)", "int(M)", "int(M)", "timestamp", "timestamp", "bit(M)",
-    #     "int(M)", "int(M)", "bigint(M)", "int(M)", "bit(M)", "int(M)", "int(M)", "varchar(M)", "int(M)", "int(M)"
-    # ]
-    # unique_values = get_unique_values(list_values)
-    # unique_values.sort()
-    # pprint(unique_values)
-    print('"')
+    print(convert_list_to_json("list_state", DpdpRbt.list_state))
+    print(convert_dict_to_json("dict_rbt_dpdp", DpdpRbt.dict_rbt_dpdp))
+    res = []
+    for attr in attrs:
+        if isinstance(DpdpRbt.__getattribute__(DpdpRbt, attr), list):
+            res.append(convert_list_to_json(attr, DpdpRbt.__getattribute__(DpdpRbt, attr)))
+        elif isinstance(DpdpRbt.__getattribute__(DpdpRbt, attr), dict):
+            res.append(convert_dict_to_json(attr, DpdpRbt.__getattribute__(DpdpRbt, attr)))
+        else:
+            continue
+
+    path = "./db_params.json"
+    write_json_file(res, path)
 
 
 if __name__ == "__main__":
