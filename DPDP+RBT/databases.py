@@ -1,3 +1,4 @@
+import errno
 import pathlib
 from pprint import pprint
 import re
@@ -465,513 +466,291 @@ def write_json_file(text: list[str], path: Union[str, pathlib.Path]):
 
 
 class RbtAPI:
-    full_list = [
-        """        
-    Album:
-    Album_ref:
-    App:
-    Artist:
-    Artist_ref:
-    Category:
-    Content:
-    Content_group:
-    Content_group_changes:
-    Content_group_data:
-    Content_group_identity:
-    Content_identity:
-    Content_ref:
-    Default_rule:
-    Default_rule_data:
-    Gallery:
-    Member:
-    Member_ref:
-    Playlist:
-    Price:
-    Rbt_addon:
-    Rbt_package:
-    Rbt_package_ref:
-    Ref:
-    Rule:
-    Rule_data:
-    Rule_full:
-    Schedule:
-    Schedule_data:
-    Schedule_range:
-    Search_result:
-    Search_result_item:
-    Session_app:
-    Subscriber:
-    Subscriber_caller_group_data:
-    Subscriber_custom_content:
-    Subscriber_data:
-    Subscriber_ref:
-    Tone:
-    """
+    get_common_text = [
+        "Content thumbnail image with the sizes of 50 px. Type: binary. Format: image, jpeg, or base64."
     ]
 
-    addon: str = """
-{
-  "id": 0,
-  "name": "addonName",
-  "price": 0,
-  "orderCode": 0,
-  "purchasedCount": 0,
-  "discountCount": 0,
-  "discountTime": 0,
-  "discountMultiplier": 0,
-  "discountCoefficient": 0,
-  "from": 0,
-  "till": 0,
-  "repeat": true,
-  "forNewSubscribers": true,
-  "period": 0,
-  "active": true
-}
-        """
+    get_full_list = (
+        "Album", "Album_ref", "App", "Artist", "Artist_ref", "Category", "Content", "Content_group",
+        "Content_group_changes", "Content_group_data", "Content_group_identity", "Content_identity", "Content_ref",
+        "Default_rule", "Default_rule_data", "Gallery", "Member", "Member_ref", "Playlist", "Price", "Rbt_addon",
+        "Rbt_package", "Rbt_package_ref", "Ref", "Rule", "Rule_data", "Rule_full", "Schedule", "Schedule_data",
+        "Schedule_range", "Search_result", "Search_result_item", "Session_app", "Subscriber",
+        "Subscriber_caller_group_data", "Subscriber_custom_content", "Subscriber_data", "Subscriber_ref", "Tone"
+    )
 
-    album: str = """
-{
-  "id": 0,
-  "name": "albumName",
-  "artist": {
-    "id": 0,
-    "name": "artistName"
-  },
-  "releaseYear": 0,
-  "categories": [
-    {
-      "id": 0,
-      "name": "categoryName"
-    }
-  ]
-}
-    """
+    addon: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "addonName",', '  "price": 0,', '  "orderCode": 0,', '  "purchasedCount": 0,',
+        '  "discountCount": 0,', '  "discountTime": 0,', '  "discountMultiplier": 0,', '  "discountCoefficient": 0,',
+        '  "from": 0,', '  "till": 0,', '  "repeat": true,', '  "forNewSubscribers": true,', '  "period": 0,',
+        '  "active": true', '}',
+    )
 
-    artist: str = """
-    {
-      "id": 0,
-      "name": "artistName",
-      "thumbnail": "data:image/jpeg;base64,..."
-    }
-    """
+    album: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "albumName",', '  "artist": {', '    "id": 0,', '    "name": "artistName"',
+        '  },', '  "releaseYear": 0,', '  "categories": [', '    {', '      "id": 0,', '      "name": "categoryName"',
+        '    }', '  ]', '}',
+    )
 
-    artist_ref: str = """
-    {
-      "id": 0,
-      "name": "artistName"
-    }
-    """
+    artist: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "artistName",', '  "thumbnail": "data:image/jpeg;base64"', '}',
+    )
 
-    category: str = """
-    {
-      "id": 0,
-      "name": "categoryName"
-    }
-    """
+    artist_ref: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "artistName"', '}'
+    )
 
-    playlist: str = """
-    {
-      "id": 0,
-      "name": "playlistName",
-      "categories": [
-        {
-          "id": 0,
-          "name": "categoryName"
-        }
-      ],
-      "thumbnail": "image",
-      "alreadyPurchased": true,
-      "canBeGifted": true,
-      "orderCode": 0,
-      "price": 0
-    }
-    """
+    category: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "categoryName"', '}'
+    )
 
-    rbt_package: str = """
-{
-  "id": 0,
-  "name": "rbtPackageName",
-  "price": 0,
-  "daysPeriod": 0,
-  "antiRbt": true,
-  "channel": "IVR",
-  "isTrial": true
-}
-    """
+    playlist: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "playlistName",', '  "categories": [', '    {', '      "id": 0,',
+        '      "name": "categoryName"', '    }', '  ],', '  "thumbnail": "image",', '  "alreadyPurchased": true,',
+        '  "canBeGifted": true,', '  "orderCode": 0,', '  "price": 0', '}'
+    )
 
-    tone: str = """
-{
-  "id": 0,
-  "title": "toneName",
-  "artist": {
-    "id": 0,
-    "name": "artistName"
-  },
-  "album": {
-    "id": 0,
-    "name": "albumName",
-    "releaseYear": 0
-  },
-  "categories": [
-    {
-      "id": 0,
-      "name": "categoryName"
-    }
-  ],
-  "thumbnail": "image",
-  "alreadyPurchased": true,
-  "canBeGifted": true,
-  "orderCode": 0,
-  "price": 0
-}
-    """
-    artist_search: str = """
-    {
-      "artists": [
-        {
-          "id": 0,
-          "name": "artistName",
-          "thumbnail": "data:image/jpeg;base64,..."
-        }
-      ]
-    }
-    """
-    category_search: str = """
-    {
-      "categories": [
-        {
-          "id": 0,
-          "name": "categoryName",
-          "thumbnail": "data:image/jpeg;base64,..."
-        }
-      ]
-    }
-    """
-    album_search: str = """
-{
-  "albums": [
-    {
-      "id": 0,
-      "name": "albumName",
-      "ownerName": "string",
-      "orderCode": 0,
-      "thumbnail": "data:image/jpeg;base64,..."
-    }
-  ]
-}
-    """
+    rbt_package: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "rbtPackageName",', '  "price": 0,', '  "daysPeriod": 0,', '  "antiRbt": true,',
+        '  "channel": "IVR",', '  "isTrial": true', '}'
+    )
 
-    schedule_data: str = """
-    {
-      "name": "scheduleName",
-      "from": 0,
-      "till": 0,
-      "ranges": [
-        {
-          "from": "10:00",
-          "till": "10:00",
-          "weekDays": [
-            ["MO", "SU"]
-          ],
-          "monthDays": [
-            [1, 2, 3]
-          ],
-          "yearDays": [
-            ["10.01", "20.02"]
-          ]
-        }
-      ]
-    }
-    """
+    rbt_package_ref: tuple[str] = (
+        '{', '  \"id\": 0,', '  \"name\": \"rbtPackageName\"', '}'
+    )
 
-    subscriber_custom_content: str = """
-{
-  "id": 0,
-  "title": "contentName",
-  "isWaitModeration": true
-}
-    """
+    tone: tuple[str] = (
+        '{', '  "id": 0,', '  "title": "toneName",', '  "artist": {', '    "id": 0,', '    "name": "artistName"',
+        '  },', '  "album": {', '    "id": 0,', '    "name": "albumName",', '    "releaseYear": 0', '  },',
+        '  "categories": [', '    {', '      "id": 0,', '      "name": "categoryName"', '    }', '  ],',
+        '  "thumbnail": "image",', '  "alreadyPurchased": true,', '  "canBeGifted": true,', '  "orderCode": 0,',
+        '  "price": 0', '}'
+    )
 
-    subscriber_ref: str = """
-{
-  "subscriber": {
-    "id": 0,
-    "name": "subscriberName",
-    "isHidden": true
-  }
-}
-    """
+    schedule_data: tuple[str] = (
+        '{', '  "name": "scheduleName",', '  "from": 0,', '  "till": 0,', '  "ranges": [', '    {',
+        '      "from": "10:00",', '      "till": "10:00",', '      "weekDays": [', '        ["MO", "SU"]', '      ],',
+        '      "monthDays": [', '        [1, 2, 3]', '      ],', '      "yearDays": [', '        ["10.01", "20.02"]',
+        '      ]', '    }', '  ]', '}'
+    )
 
-    schedule: str = """
-    {
-      "id": 0,
-      "name": "scheduleName",
-      "from": 0,
-      "till": 0,
-      "ranges": [
-        {
-          "from": "10:00",
-          "till": "10:00",
-          "weekDays": [
-            ["MO", "SU"]
-          ],
-          "monthDays": [
-            [1, 2, 3]
-          ],
-          "yearDays": [
-            ["10.01", "20.02"]
-          ]
-        }
-      ]
-    }
-    """
+    subscriber_custom_content: tuple[str] = (
+        '{', '  "id": 0,', '  "title": "contentName",', '  "isWaitModeration": true', '}'
+    )
 
-    member: str = """
-{
-  "msisdn": 0,
-  "name": "memberName",
-  "isPublic": true
-}
-    """
+    subscriber_ref: tuple[str] = (
+        '{', '  "subscriber": {', '    "id": 0,', '    "name": "subscriberName",', '    "isHidden": true', '  }', '}'
+    )
 
-    member_ref: str = """
-    {
-      "msisdn": 0,
-      "name": "memberName"
-    }
-    """
+    subscriber_data: tuple[str] = (
+        '{', '  \"isRbtOverlay\": true,', '  \"isAntiRbtOverlay\": true,', '  \"isPrivate\": true', '}'
+    )
 
-    group: str = """
-    {
-      "name": "groupName",
-      "members": [ 0 ]
-    }
-    """
+    schedule: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "scheduleName",', '  "from": 0,', '  "till": 0,', '  "ranges": [', '    {',
+        '      "from": "10:00",', '      "till": "10:00",', '      "weekDays": [', '        ["MO", "SU"]', '      ],',
+        '      "monthDays": [', '        [1, 2, 3]', '      ],', '      "yearDays": [', '        ["10.01", "20.02"]',
+        '      ]', '    }', '  ]', '}'
+    )
 
-    group_ref: str = """
-    {
-      "id": 0,
-      "name": "groupName"
-    }
-    """
+    member: tuple[str] = (
+        '{', '  "msisdn": 0,', '  "name": "memberName",', '  "isPublic": true', '}'
+    )
 
-    default_rule_data: str = """
-    {
-      "mode": "RANDOM",
-      "contentsIds": [ 0 ]
-    }
-    """
+    member_ref: tuple[str] = (
+        '{', '  "msisdn": 0,', '  "name": "memberName"', '}'
+    )
 
-    default_rule: str = """
-    {
-      "mode": "RANDOM",
-      "contents": [
-        {
-          "id": 0,
-          "name": "toneName",
-          "type": "TONE",
-          "thumbnail": "data:image/jpeg;base64",
-          "orderCode": 0
-        }
-      ]
-    }
-    """
+    group: tuple[str] = (
+        '{', '  "name": "groupName",', '  "members": [ 0 ]', '}'
+    )
 
-    rule_full: str = """
-    {
-      "id": 0,
-      "order": 0,
-      "type": "GENERAL",
-      "mode": "RANDOM",
-      "name": "ruleName",
-      "members": [
-        {
-          "msisdn": 0,
-          "name": "memberName"
-        }
-      ],
-      "groups": [
-        {
-          "id": 0,
-          "name": "groupName"
-        }
-      ],
-      "schedules": [
-        {
-          "id": 0,
-          "name": "scheduleName"
-        }
-      ],
-      "contents": [
-        {
-          "id": 0,
-          "name": "contentName",
-          "type": "TONE",
-          "thumbnail": "data:image/jpeg;base64",
-          "orderCode": 0
-        }
-      ]
-    }
-    """
+    group_ref: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "groupName"', '}'
+    )
 
-    schedule_ref: str = """
-    {
-      "id": 0,
-      "name": "scheduleName"
-    }
-    """
+    default_rule_data: tuple[str] = (
+        '{', '  "mode": "RANDOM",', '  "contentsIds": [ 0 ]', '}'
+    )
 
-    content: str = """
-    {
-      "id": 0,
-      "orderCode": 0
-    }
-    """
+    default_rule: tuple[str] = (
+        '{', '  "mode": "RANDOM",', '  "contents": [', '    {', '      "id": 0,', '      "name": "toneName",',
+        '      "type": "TONE",', '      "thumbnail": "data:image/jpeg;base64",', '      "orderCode": 0', '    }', '  ]',
+        '}'
+    )
 
-    content_ref: str = """
-    {
-      "id": 0,
-      "name": "contentName",
-      "type": "TONE",
-      "thumbnail": "data:image/jpeg;base64",
-      "orderCode": 0
-    }
-    """
+    rule_data: tuple[str] = (
+        '{', '  \"name\": \"string\",', '  \"kind\": \"SCHEDULE\",', '  \"type\": \"GENERAL\",', '  \"order\": 0,',
+        '  \"mode\": \"RANDOM\",', '  \"members\": [ 0 ],', '  \"groupsIds\": [ 0 ],', '  \"schedulesIds\": [ 0 ],',
+        '  \"contentIds\": [ 0 ]', '}',
 
-    rule: str = """
-    {
-      "id": 0,
-      "order": 0,
-      "kind": "SCHEDULE",
-      "type": "GENERAL",
-      "mode": "RANDOM",
-      "name": "ruleName",
-      "groupsIds": [ 0 ],
-      "schedulesIds": [ 0 ],
-      "contents": [
-        {
-          "id": 0,
-          "orderCode": 0
-        }
-      ]
-    }
-    """
+    )
 
-    rule_data: str = """
-    {
-      "name": "ruleDataName",
-      "kind": "SCHEDULE",
-      "type": "GENERAL",
-      "order": 0,
-      "mode": "RANDOM",
-      "members": [ 0 ],
-      "groupsIds": [ 0 ],
-      "schedulesIds": [ 0 ],
-      "contentIds": [ 0 ]
-    }
-    """
+    subscriber_caller_group: tuple[str] = (
+        '{', '  \"name\": \"groupName\",', '  \"members\": [ 0 ]', '}'
+    )
 
-    Tone_search: str = """
-{
-  "tones": [
-    {
-      "id": 0,
-      "name": "toneName",
-      "ownerName": "string",
-      "orderCode": 0,
-      "thumbnail": "data:image/jpeg;base64,..."
-    }
-  ]
-}
-    """
-    Playlist_search: str = """
-{
-  "playlists": [
-    {
-      "id": 0,
-      "name": "playlistName",
-      "ownerName": "string",
-      "orderCode": 0,
-      "thumbnail": "data:image/jpeg;base64,..."
-    }
-  ]
-}
-    """
-    subscriber: str = """
-{
-  "subscriber": {
-    "id": 0,
-    "name": "subscriberName",
-    "isHidden": true
-  }
-}
-    """
+    subscriber_caller_group_ref: tuple[str] = (
+        '{', '  \"id\": 0,', '  \"name\": \"groupName\"', '}'
+    )
 
-    gallery: str = """
-{
-  "artists": [
-    {
-      "id": 0,
-      "name": "string",
-      "ownerName": "string",
-      "orderCode": 0,
-      "thumbnail": "data:image/jpeg;base64,..."
-    }
-  ],
-  "playlists": [
-    {
-      "id": 0,
-      "name": "string",
-      "ownerName": "string",
-      "orderCode": 0,
-      "thumbnail": "data:image/jpeg;base64,..."
-    }
-  ],
-  "albums": [
-    {
-      "id": 0,
-      "name": "string",
-      "ownerName": "string",
-      "orderCode": 0,
-      "thumbnail": "data:image/jpeg;base64,..."
-    }
-  ],
-  "tones": [
-    {
-      "id": 0,
-      "name": "string",
-      "ownerName": "string",
-      "orderCode": 0,
-      "thumbnail": "data:image/jpeg;base64,..."
-    }
-  ],
-  "categories": [
-    {
-      "id": 0,
-      "name": "string",
-      "ownerName": "string",
-      "orderCode": 0,
-      "thumbnail": "data:image/jpeg;base64,..."
-    }
-  ],
-  "subscriber": {
-    "id": 0,
-    "name": "string",
-    "isHidden": true
-  }
-}
-    """
+    schedule_range: tuple[str] = (
+        '{', '  \"from\": \"10:00\",', '  \"till\": \"10:00\",', '  \"weekDays\": [', '    [\"MO\", \"SU\"]', '  ],',
+        '  \"monthDays\": [', '    [1, 2, 3]', '  ],', '  \"yearDays\": [', '    [\"10.01\", \"20.02\"]', '  ]', '}'
+
+    )
+
+    search_result: tuple[str] = (
+        '{', '  \"artists\": [', '    {', '      \"id\": 0,', '      \"name\": \"artistName\",',
+        '      \"ownerName\": \"ownerName\",', '      \"orderCode\": 0,',
+        '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],', '  \"playlists\": [', '    {',
+        '      \"id\": 0,', '      \"name\": \"playlistName\",', '      \"ownerName\": \"ownerName\",',
+        '      \"orderCode\": 0,', '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],',
+        '  \"albums\": [', '    {', '      \"id\": 0,', '      \"name\": \"albumName\",',
+        '      \"ownerName\": \"ownerName\",', '      \"orderCode\": 0,',
+        '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],', '  \"tones\": [', '    {',
+        '      \"id\": 0,', '      \"name\": \"toneName\",', '      \"ownerName\": \"ownerName\",',
+        '      \"orderCode\": 0,', '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],',
+        '  \"categories\": [', '    {', '      \"id\": 0,', '      \"name\": \"categoryName\",',
+        '      \"ownerName\": \"ownerName\",', '      \"orderCode\": 0,',
+        '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],', '  \"subscriber\": {', '    \"id\": 0,',
+        '    \"name\": \"subscriberName\",', '    \"isHidden\": true', '  }', '}',
+
+    )
+
+    search_result_item: tuple[str] = (
+        '{', '  \"id\": 0,', '  \"name\": \"itemName\",', '  \"ownerName\": \"ownerName\",', '  \"orderCode\": 0,',
+        '  \"thumbnail\": \"data:image/jpeg;base64\"', '}'
+    )
+
+    rule_full: tuple[str] = (
+        '{', '  "id": 0,', '  "order": 0,', '  "type": "GENERAL",', '  "mode": "RANDOM",', '  "name": "ruleName",',
+        '  "members": [', '    {', '      "msisdn": 0,', '      "name": "memberName"', '    }', '  ],', '  "groups": [',
+        '    {', '      "id": 0,', '      "name": "groupName"', '    }', '  ],', '  "schedules": [', '    {',
+        '      "id": 0,', '      "name": "scheduleName"', '    }', '  ],', '  "contents": [', '    {', '      "id": 0,',
+        '      "name": "contentName",', '      "type": "TONE",', '      "thumbnail": "data:image/jpeg;base64",',
+        '      "orderCode": 0', '    }', '  ]', '}'
+    )
+
+    schedule_ref: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "scheduleName"', '}'
+    )
+
+    content: tuple[str] = (
+        '{', '  "id": 0,', '  "orderCode": 0', '}'
+    )
+
+    content_ref: tuple[str] = (
+        '{', '  "id": 0,', '  "name": "contentName",', '  "type": "TONE",', '  "thumbnail": "data:image/jpeg;base64",',
+        '  "orderCode": 0', '}'
+    )
+
+    rule: tuple[str] = (
+        '{', '  "id": 0,', '  "order": 0,', '  "kind": "SCHEDULE",', '  "type": "GENERAL",', '  "mode": "RANDOM",',
+        '  "name": "ruleName",', '  "groupsIds": [ 0 ],', '  "schedulesIds": [ 0 ],', '  "contents": [', '    {',
+        '      "id": 0,', '      "orderCode": 0', '    }', '  ]', '}'
+    )
+
+    rule_ref: tuple[str] = (
+        '{', '  "name": "ruleDataName",', '  "kind": "SCHEDULE",', '  "type": "GENERAL",', '  "order": 0,',
+        '  "mode": "RANDOM",', '  "members": [ 0 ],', '  "groupsIds": [ 0 ],', '  "schedulesIds": [ 0 ],',
+        '  "contentIds": [ 0 ]', '}'
+    )
+
+
+    subscriber_ref: tuple[str] = (
+        '{', '  "subscriber": {', '    "id": 0,', '    "name": "subscriberName",', '    "isHidden": true', '  }', '}'
+    )
+
+    gallery: tuple[str] = (
+        '{', '  "artists": [', '    {', '      "id": 0,', '      "name": "string",', '      "ownerName": "string",',
+        '      "orderCode": 0,', '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "playlists": [',
+        '    {', '      "id": 0,', '      "name": "string",', '      "ownerName": "string",', '      "orderCode": 0,',
+        '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "albums": [', '    {', '      "id": 0,',
+        '      "name": "string",', '      "ownerName": "string",', '      "orderCode": 0,',
+        '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "tones": [', '    {', '      "id": 0,',
+        '      "name": "string",', '      "ownerName": "string",', '      "orderCode": 0,',
+        '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "categories": [', '    {',
+        '      "id": 0,', '      "name": "string",', '      "ownerName": "string",', '      "orderCode": 0,',
+        '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "subscriber": {', '    "id": 0,',
+        '    "name": "string",', '    "isHidden": true', '  }', '}'
+    )
 
     @classmethod
     def convert_all_to_word(cls):
-        attrs = [attr for attr in dir(RbtAPI) if not attr.startswith("_")]
-        values = [getattr(RbtAPI, attribute) for attribute in attrs]
-        return [convert_to_word(value) for value in values]
+        return "\n".join(cls.convert_attr_to_word(attr) for attr in cls.get_all_attrs())
+
+    @classmethod
+    def convert_attr_to_word(cls, attr: str) -> Optional[str]:
+        if attr in cls.get_all_attrs():
+            value: tuple[str] = getattr(RbtAPI, attr)
+            new_value: str = "\n".join(convert_to_word(line) for line in value)
+            return f"{attr}\n{new_value}"
+        else:
+            return f"{attr}\nINCORRECT_ATTRIBUTE\n"
+
+    @classmethod
+    def get_all_attrs(cls) -> list[str]:
+        return [attr for attr in dir(RbtAPI) if not attr.startswith(("_", "get", "convert"))]
 
 
-def convert_to_word(text: str):
-    return "\n".join(line.strip().replace(r'"', r'\"') for line in text.split("\n"))
-    # return json_text.replace(r'"', r'\"')
+def write_to_file(file_name: str, text):
+    """
+    Writes the information to the file.\n
+    :param file_name: full file name
+    :param text:
+    :return:
+    """
+    if check_path_file(file_name):
+        with open(file_name, "w+", encoding="ascii") as file:
+            file.write(text)
+
+
+def check_path_file(path: Union[str, pathlib.Path]) -> bool:
+    """
+    Checks the path to the file.\n
+    :param path: path to the file, str or Path
+    :return: the path validity of the bool type.
+    """
+    flag = False
+    try:
+        with open(pathlib.Path(path).resolve(strict=True), "w+") as file:
+            file.close()
+    except FileNotFoundError as e:
+        print(f"FileNotFoundError {e.strerror}. The file is created.")
+        with open(pathlib.Path(path).resolve(), "x") as file:
+            file.close()
+        flag = True
+    except AttributeError:
+        print(f"AttributeError. Incorrect parameter input.")
+    except ValueError:
+        print(f"ValueError. Incorrect path input.")
+    except IsADirectoryError as e:
+        print(f"IsADirectoryError {e.strerror}. Path leads to not a file.")
+    except PermissionError as e:
+        print(f"PermissionError {e.strerror}. Not enough access rights.")
+    except OSError as e:
+        print(f"OSError {errno}, {e.strerror}.")
+    else:
+        flag = True
+    finally:
+        return flag
+
+
+def check_file_extension(path: Union[str, pathlib.Path], file_ext: str):
+    if check_path_file(path):
+        suffix = "".join((".", file_ext)) if not file_ext.startswith(".") else file_ext
+        if pathlib.Path(path).resolve().suffix == suffix:
+            return True
+        else:
+            print(f"File has an incorrect extension, {pathlib.Path(path).resolve().suffix}, instead of {suffix}.")
+            return False
+    else:
+        return check_path_file(path)
+
+
+def convert_to_word(line: str):
+    return line.replace(r'"', r'\"')
 
 
 def get_json(text: str):
@@ -981,7 +760,7 @@ def get_json(text: str):
 def main():
     # print(__doc__)
     # print(DpdpRbt.__doc__)
-    attrs = [attr for attr in dir(DpdpRbt) if attr.startswith(("dict", "list"))]
+    # attrs = [attr for attr in dir(DpdpRbt) if attr.startswith(("dict", "list"))]
     # pprint(attrs)
     # pprint(convert_all_to_json())
     # DpdpRbt.get_dict_value()
@@ -1010,9 +789,11 @@ def main():
     #
     # with open("test.json", "w+") as f:
     #     f.write(res_json)
-    attrs = [attr for attr in dir(RbtAPI) if not attr.startswith("_")]
-    pprint(attrs)
-    print(len(attrs))
+    # attrs = [attr for attr in dir(RbtAPI) if not attr.startswith("_")]
+    # pprint(attrs)
+    # print(len(attrs))
+    write_to_file("API entities.txt", RbtAPI.convert_all_to_word())
+    # print(OSError.errno)
 
 
 if __name__ == "__main__":
