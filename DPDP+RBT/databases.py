@@ -470,30 +470,29 @@ class RbtAPI:
         "Content thumbnail image with the sizes of 50 px. Type: binary. Format: image, jpeg, or base64."
     ]
 
-    get_full_list = (
-        "Album", "Album_ref", "App", "Artist", "Artist_ref", "Category", "Content", "Content_group",
-        "Content_group_changes", "Content_group_data", "Content_group_identity", "Content_identity", "Content_ref",
-        "Default_rule", "Default_rule_data", "Gallery", "Member", "Member_ref", "Playlist", "Price", "Rbt_addon",
-        "Rbt_package", "Rbt_package_ref", "Ref", "Rule", "Rule_data", "Rule_full", "Schedule", "Schedule_data",
-        "Schedule_range", "Search_result", "Search_result_item", "Session_app", "Subscriber",
-        "Subscriber_caller_group_data", "Subscriber_custom_content", "Subscriber_data", "Subscriber_ref", "Tone"
+    get_full_list: tuple[str] = (
+        "addon", "album", "album_ref", "artist", "artist_ref", "category", "content", "content_identity", "content_ref",
+        "default_rule", "default_rule_data", "gallery", "member", "member_ref", "playlist", "rbt_package",
+        "rbt_package_ref", "rule", "rule_ref", "rule_data", "rule_full", "schedule", "schedule_ref", "schedule_data",
+        "schedule_range", "search_result", "search_result_item", "subscriber", "subscriber_caller_group",
+        "subscriber_caller_group_ref", "subscriber_custom_content", "subscriber_data", "subscriber_ref", "tone"
     )
 
     addon: tuple[str] = (
         '{', '  "id": 0,', '  "name": "addonName",', '  "price": 0,', '  "orderCode": 0,', '  "purchasedCount": 0,',
         '  "discountCount": 0,', '  "discountTime": 0,', '  "discountMultiplier": 0,', '  "discountCoefficient": 0,',
         '  "from": 0,', '  "till": 0,', '  "repeat": true,', '  "forNewSubscribers": true,', '  "period": 0,',
-        '  "active": true', '}',
+        '  "active": true', '}'
     )
 
     album: tuple[str] = (
         '{', '  "id": 0,', '  "name": "albumName",', '  "artist": {', '    "id": 0,', '    "name": "artistName"',
         '  },', '  "releaseYear": 0,', '  "categories": [', '    {', '      "id": 0,', '      "name": "categoryName"',
-        '    }', '  ]', '}',
+        '    }', '  ]', '}'
     )
 
     artist: tuple[str] = (
-        '{', '  "id": 0,', '  "name": "artistName",', '  "thumbnail": "data:image/jpeg;base64"', '}',
+        '{', '  "id": 0,', '  "name": "artistName",', '  "thumbnail": "data:image/jpeg;base64"', '}'
     )
 
     artist_ref: tuple[str] = (
@@ -539,7 +538,7 @@ class RbtAPI:
     )
 
     subscriber_ref: tuple[str] = (
-        '{', '  "subscriber": {', '    "id": 0,', '    "name": "subscriberName",', '    "isHidden": true', '  }', '}'
+        '{', '  \"id\": 0,', '  \"name\": \"subscriberName\",', '  \"isHidden\": true', '}'
     )
 
     subscriber_data: tuple[str] = (
@@ -561,14 +560,6 @@ class RbtAPI:
         '{', '  "msisdn": 0,', '  "name": "memberName"', '}'
     )
 
-    group: tuple[str] = (
-        '{', '  "name": "groupName",', '  "members": [ 0 ]', '}'
-    )
-
-    group_ref: tuple[str] = (
-        '{', '  "id": 0,', '  "name": "groupName"', '}'
-    )
-
     default_rule_data: tuple[str] = (
         '{', '  "mode": "RANDOM",', '  "contentsIds": [ 0 ]', '}'
     )
@@ -582,8 +573,7 @@ class RbtAPI:
     rule_data: tuple[str] = (
         '{', '  \"name\": \"string\",', '  \"kind\": \"SCHEDULE\",', '  \"type\": \"GENERAL\",', '  \"order\": 0,',
         '  \"mode\": \"RANDOM\",', '  \"members\": [ 0 ],', '  \"groupsIds\": [ 0 ],', '  \"schedulesIds\": [ 0 ],',
-        '  \"contentIds\": [ 0 ]', '}',
-
+        '  \"contentIds\": [ 0 ]', '}'
     )
 
     subscriber_caller_group: tuple[str] = (
@@ -597,7 +587,6 @@ class RbtAPI:
     schedule_range: tuple[str] = (
         '{', '  \"from\": \"10:00\",', '  \"till\": \"10:00\",', '  \"weekDays\": [', '    [\"MO\", \"SU\"]', '  ],',
         '  \"monthDays\": [', '    [1, 2, 3]', '  ],', '  \"yearDays\": [', '    [\"10.01\", \"20.02\"]', '  ]', '}'
-
     )
 
     search_result: tuple[str] = (
@@ -614,8 +603,7 @@ class RbtAPI:
         '  \"categories\": [', '    {', '      \"id\": 0,', '      \"name\": \"categoryName\",',
         '      \"ownerName\": \"ownerName\",', '      \"orderCode\": 0,',
         '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],', '  \"subscriber\": {', '    \"id\": 0,',
-        '    \"name\": \"subscriberName\",', '    \"isHidden\": true', '  }', '}',
-
+        '    \"name\": \"subscriberName\",', '    \"isHidden\": true', '  }', '}'
     )
 
     search_result_item: tuple[str] = (
@@ -624,51 +612,67 @@ class RbtAPI:
     )
 
     rule_full: tuple[str] = (
-        '{', '  "id": 0,', '  "order": 0,', '  "type": "GENERAL",', '  "mode": "RANDOM",', '  "name": "ruleName",',
-        '  "members": [', '    {', '      "msisdn": 0,', '      "name": "memberName"', '    }', '  ],', '  "groups": [',
-        '    {', '      "id": 0,', '      "name": "groupName"', '    }', '  ],', '  "schedules": [', '    {',
-        '      "id": 0,', '      "name": "scheduleName"', '    }', '  ],', '  "contents": [', '    {', '      "id": 0,',
-        '      "name": "contentName",', '      "type": "TONE",', '      "thumbnail": "data:image/jpeg;base64",',
-        '      "orderCode": 0', '    }', '  ]', '}'
+        '{', '  \"id\": 0,', '  \"order\": 0,', '  \"type\": \"GENERAL\",', '  \"mode\": \"RANDOM\",',
+        '  \"name\": \"ruleName\",', '  \"members\": [', '    {', '      \"msisdn\": 0,',
+        '      \"name\": \"memberName\"', '    }', '  ],', '  \"groups\": [', '    {', '      \"id\": 0,',
+        '      \"name\": \"groupName\"', '    }', '  ],', '  \"schedules\": [', '    {', '      \"id\": 0,',
+        '      \"name\": \"scheduleName\"', '    }', '  ],', '  \"contents\": [', '    {', '      \"id\": 0,',
+        '      \"name\": \"contentName\",', '      \"type\": \"TONE\",',
+        '      \"thumbnail\": \"data:image/jpeg;base64\",', '      \"orderCode\": 0', '    }', '  ]', '}'
     )
 
     schedule_ref: tuple[str] = (
-        '{', '  "id": 0,', '  "name": "scheduleName"', '}'
+        '{', '  \"id\": 0,', '  \"name\": \"scheduleName\"', '}'
     )
 
     content: tuple[str] = (
-        '{', '  "id": 0,', '  "orderCode": 0', '}'
+        '{', '  \"id\": 0,', '  \"orderCode\": 0', '}'
     )
 
     content_ref: tuple[str] = (
-        '{', '  "id": 0,', '  "name": "contentName",', '  "type": "TONE",', '  "thumbnail": "data:image/jpeg;base64",',
-        '  "orderCode": 0', '}'
+        '{', '  \"id\": 0,', '  \"name\": \"contentName\",', '  \"type\": \"TONE\",',
+        '  \"thumbnail\": \"data:image/jpeg;base64\",', '  \"orderCode\": 0', '}'
     )
 
     rule: tuple[str] = (
-        '{', '  "id": 0,', '  "order": 0,', '  "kind": "SCHEDULE",', '  "type": "GENERAL",', '  "mode": "RANDOM",',
-        '  "name": "ruleName",', '  "groupsIds": [ 0 ],', '  "schedulesIds": [ 0 ],', '  "contents": [', '    {',
-        '      "id": 0,', '      "orderCode": 0', '    }', '  ]', '}'
+        '{', '  \"id\": 0,', '  \"order\": 0,', '  \"kind\": \"SCHEDULE\",', '  \"type\": \"GENERAL\",',
+        '  \"mode\": \"RANDOM\",', '  \"name\": \"ruleName\",', '  \"groupsIds\": [ 0 ],', '  \"schedulesIds\": [ 0 ',
+        '],', '  \"contents\": [', '    {', '      \"id\": 0,', '      \"orderCode\": 0', '    }', '  ]', '}'
+    )
+
+    content_identity: tuple[str] = (
+        '{', '  \"id\": 0,', '  \"orderCode\": 0', '}'
+    )
+
+    subscriber: tuple[str] = (
+        '{', '  \"msisdn\": 0,', '  \"isRbtOverlay\": true,', '  \"isAntiRbtOverlay\": true,', '  \"isPublic\": true,',
+        '  \"activeRbtPackId\": 0,', '  \"activeAntiRbtPackId\": 0,', '  \"isActiveRbt\": true,',
+        '  \"isActiveAntiRbt\": true,', '  \"operatorName\": \"operName\"', '}'
+    )
+
+    album_ref: tuple[str] = (
+        '{', '  \"id\": 0,', '  \"name\": \"albumName\",', '  \"releaseYear\": 0', '}'
     )
 
     rule_ref: tuple[str] = (
-        '{', '  "name": "ruleDataName",', '  "kind": "SCHEDULE",', '  "type": "GENERAL",', '  "order": 0,',
-        '  "mode": "RANDOM",', '  "members": [ 0 ],', '  "groupsIds": [ 0 ],', '  "schedulesIds": [ 0 ],',
-        '  "contentIds": [ 0 ]', '}'
+        '{', '  \"name\": \"ruleDataName\",', '  \"kind\": \"SCHEDULE\",', '  \"type\": \"GENERAL\",',
+        '  \"order\": 0,', '  \"mode\": \"RANDOM\",', '  \"members\": [ 0 ],', '  \"groupsIds\": [ 0 ],',
+        '  \"schedulesIds\": [ 0 ],', '  \"contentIds\": [ 0 ]', '}'
     )
 
     gallery: tuple[str] = (
-        '{', '  "artists": [', '    {', '      "id": 0,', '      "name": "string",', '      "ownerName": "string",',
-        '      "orderCode": 0,', '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "playlists": [',
-        '    {', '      "id": 0,', '      "name": "string",', '      "ownerName": "string",', '      "orderCode": 0,',
-        '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "albums": [', '    {', '      "id": 0,',
-        '      "name": "string",', '      "ownerName": "string",', '      "orderCode": 0,',
-        '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "tones": [', '    {', '      "id": 0,',
-        '      "name": "string",', '      "ownerName": "string",', '      "orderCode": 0,',
-        '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "categories": [', '    {',
-        '      "id": 0,', '      "name": "string",', '      "ownerName": "string",', '      "orderCode": 0,',
-        '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "subscriber": {', '    "id": 0,',
-        '    "name": "string",', '    "isHidden": true', '  }', '}'
+        '{', '  \"artists\": [', '    {', '      \"id\": 0,', '      \"name\": \"string\",',
+        '      \"ownerName\": \"string\",',
+        '      \"orderCode\": 0,', '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],',
+        '  \"playlists\": [', '    {', '      \"id\": 0,', '      \"name\": \"string\",', '      \"ownerName\": '
+        '\"string\",', '      \"orderCode\": 0,', '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],',
+        '  \"albums\": [', '    {', '      \"id\": 0,', '      \"name\": \"string\",', '      \"ownerName\": '
+        '\"string\",', '      \"orderCode\": 0,', '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],',
+        '  \"tones\": [', '    {', '      \"id\": 0,', '      \"name\": \"string\",', '      \"ownerName\": '
+        '\"string\",', '      \"orderCode\": 0,', '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],',
+        '  \"categories\": [', '    {', '      \"id\": 0,', '      \"name\": \"string\",', '      \"ownerName\": '
+        '\"string\",', '      \"orderCode\": 0,', '      \"thumbnail\": \"data:image/jpeg;base64\"', '    }', '  ],',
+        '  \"subscriber\": {', '    \"id\": 0,', '    \"name\": \"string\",', '    \"isHidden\": true', '  }', '}'
     )
 
     @classmethod
@@ -685,8 +689,20 @@ class RbtAPI:
             return f"{attr}\nINCORRECT_ATTRIBUTE\n"
 
     @classmethod
-    def get_all_attrs(cls) -> list[str]:
-        return [attr for attr in dir(RbtAPI) if not attr.startswith(("_", "get", "convert"))]
+    def get_all_attrs(cls) -> tuple[str]:
+        return tuple(attr for attr in dir(RbtAPI) if not attr.startswith(("_", "get", "convert", "check")))
+
+    @classmethod
+    def check_all_attrs(cls):
+        return sorted(cls.get_all_attrs()) == sorted(cls.get_full_list)
+
+    @classmethod
+    def get_check_diff(cls):
+        if not cls.check_all_attrs():
+            return set(cls.get_all_attrs()).difference(set(cls.get_full_list)), \
+                   set(cls.get_full_list).difference(set(cls.get_all_attrs()))
+        else:
+            return None, None
 
 
 def write_to_file(file_name: str, text):
@@ -788,6 +804,9 @@ def main():
     # pprint(attrs)
     # print(len(attrs))
     write_to_file("API entities.txt", RbtAPI.convert_all_to_word())
+    print(RbtAPI.check_all_attrs())
+    not_in_full_list, not_in_file = RbtAPI.get_check_diff()
+    print(f"not in full list = {not_in_full_list}, not in file = {not_in_file}")
     # print(OSError.errno)
 
 
