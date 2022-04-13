@@ -3,6 +3,8 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|OBD|Outbound Dialer, абонент, оформивший подписку во время массового оповещения пользователей| 
+|CCD|Call Center Dialer, абонент, оформивший подписку с помощью оператора поддержки пользователей|
 |SLA|Service Level Agreement, соглашение о качестве предоставляемых услуг|
 |MCA|Mobile Communication on Aircraft|
 |APM|Application Transport Mechanism|
