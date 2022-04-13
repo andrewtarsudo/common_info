@@ -657,11 +657,6 @@ class RbtAPI:
         '  "contentIds": [ 0 ]', '}'
     )
 
-
-    subscriber_ref: tuple[str] = (
-        '{', '  "subscriber": {', '    "id": 0,', '    "name": "subscriberName",', '    "isHidden": true', '  }', '}'
-    )
-
     gallery: tuple[str] = (
         '{', '  "artists": [', '    {', '      "id": 0,', '      "name": "string",', '      "ownerName": "string",',
         '      "orderCode": 0,', '      "thumbnail": "data:image/jpeg;base64"', '    }', '  ],', '  "playlists": [',
