@@ -14,6 +14,20 @@ common_chars = [item for item in dict_io if dict_io[item] == item]
 error_pattern = re.compile(r".*\s\*!\s.*")
 
 
+class _KeyboardSettings:
+    # keyboard_event = keyboard.KeyboardEvent()
+    wait_hotkey = "ctrl+shift+/"
+
+    # keyboard.add_hotkey(wait_hotkey, print("Hi"))
+    # keyboard.wait()
+
+
+
+def user_input():
+
+    pass
+
+
 def convert_text_char(text: str) -> tuple[str, bool]:
     new_chars: list = list()
     error: bool = False
@@ -27,7 +41,7 @@ def convert_text_char(text: str) -> tuple[str, bool]:
     return "".join(new_chars), error
 
 
-def main():
+def convert():
     for text_i in iter(input()):
         if re.match(error_pattern, text_i) is not None:
             output_line, error = convert_text_char
@@ -43,6 +57,18 @@ def main():
                 return
 
         print(output_line)
+
+
+def main():
+    # print(keyboard.get_hotkey_name(["left ctrl", "shift", "?"]))
+    # print(keyboard.key_to_scan_codes(wait_hotkey))
+    # print(keyboard.read_hotkey())
+    # print(keyboard.stash_state())
+    wait_hotkey = "ctrl+shift+/"
+    keyboard.read_hotkey()
+    hk = keyboard.add_hotkey("a", print("Hi"))
+    # print(keyboard._canonical_names.canonical_names)
+    # keyboard.wait(hk)
 
 
 if __name__ == "__main__":
