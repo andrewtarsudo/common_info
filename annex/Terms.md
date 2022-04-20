@@ -6,13 +6,12 @@
 |TDMA|Time Division Multiple Access|
 |WCDMA|Wideband Code Division Multiple Access|
 |OFDMA|Orthogonal Frequency Division Multiple Access|
-|TTI|Transmission Time Interval|
-|HSPA|High Speed Packet Data Access|
+|TTI|Transmission Time Interval, время передачи|
 |HSDPA|High Speed Downlink Packet Data Access|
 |HSUPA|High Speed Uplink Packet Data Access|
-|CQI|Channel Quality Information|
+|CQI|Channel Quality Information, информация о качестве работы канала|
 |HS-DSCH|High Speed Downlink Shared Channel|
-|E-DCH|Enhanced Dedicated Channel|
+|E-DCH|Enhanced Dedicated Channel, усовершенствованный выделенный канал|
 |TDD|Time Division Duplex|
 |FDD|Frequency Division Duplex|
 |MBMS|Multimedia Broadcast Multicast Service|
@@ -315,7 +314,7 @@
 |HPLMN|Home PLMN, домашняя сеть PLMN|
 |HSL|High-Speed Link, высокоскоростное соединение|
 |HSM|Hardware Security Module, модуль аппаратной защиты|
-|HSPA|High-Speed Packet Access, высокоскоростная пакетная передача данных|
+|HSPA|High-Speed Packet Data Access, высокоскоростная пакетная передача данных|
 |HSS|Home Subscriber Server, база данных абонентов собственной сети LTE|
 |HUP|Handover User Part, абонентская подсистема хэндовера|
 |I–CSCF|Interrogating CSCF, узел взаимодействия с внешними сетями IMS|
