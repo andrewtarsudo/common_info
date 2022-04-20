@@ -1,621 +1,585 @@
-import pathlib
-import re
-from typing import Union, Optional
-import numpy
-import requests
-import json
+import calendar
 import datetime
+import pathlib
+from copy import copy
+from typing import Optional, Any, Union
+from openpyxl.styles.alignment import Alignment
+from openpyxl.styles.borders import Border, Side, BORDER_THIN, BORDER_THICK
+from openpyxl.styles.colors import Color, BLACK, WHITE
+from openpyxl.styles.fills import PatternFill, FILL_SOLID
+from openpyxl.styles.fonts import Font
+from openpyxl.styles.numbers import FORMAT_TEXT, FORMAT_NUMBER_00, FORMAT_DATE_XLSX14, FORMAT_GENERAL
+from openpyxl.styles.protection import Protection
+from openpyxl.utils.cell import coordinate_from_string, column_index_from_string, get_column_letter, coordinate_to_tuple
+from openpyxl.worksheet.worksheet import Worksheet
 
 
-class ConstYT:
-    dict_issue = dict()
-    dict_issue_work_item = dict()
-
-    dict_issue_name = {
-        "ARCH_ST": ('139-1028', '67-2494'),
-        "DOC_ST": ('139-595', '67-1426'),
-        "ARCH": ('139-1027', '67-2487'),
-        "DOC": ('139-339', '67-1127'),
-        "VCST": ('139-77', '67-353')
+class ConstStyleCell:
+    """Defines the class that contains constant values and styles."""
+    # for set_fill_color:
+    # type_fill: str, fill_color: str, tint: float, theme: int
+    dict_states_colors: dict[str, tuple[str, str, float, int]] = {
+        "weekend": ('tmp', 'FFFD5635', None, None), "deadline": ('tmp', 'FFFF0D0D', None, None),
+        "done": ('tint', None, 0.0, 9), "active": ('tint', None, 0.3999755851924192, 9),
+        "test": ('tmp', 'FF117D68', None, None), "going_start": ('tmp', 'FF00B0F0', None, None),
+        "paused": ('tint', None, -0.499984740745262, 0), "verified_closed": ('tint', None, 0.249977111117893, 1),
+        "going_finish": ('tint', None, -0.249977111117893, 4,), "sick": ('tint', None, -0.249977111117893, 7),
+        "vacation": ('tmp', 'FFFFFF00', None, None)
     }
-    # the dict of the deadline, state identifier in the query
-    terminate_commands = ('__exit__', '"__exit__"', "'__exit__'")
-
-
-def convert_date_iso(input_date: str) -> Optional[datetime.date]:
-    """
-    Converts different date formats to the ISO standard.\n
-    :param input_date: the date to convert, str
-    :return: the modified date of the str type.
-    """
-    date_conversion_rules = (
-        (re.compile(r'(\d{4}).(\d{1,2}).(\d{1,2})'), (1, 2, 3)),
-        (re.compile(r'(\d{1,2}).(\d{1,2}).(\d{4})'), (3, 2, 1))
-    )
-    print(f'input_date = {input_date}')
-    # if the date format is not specified
-    if not any(re.match(pattern, input_date) for pattern, match in date_conversion_rules):
-        return None
-
-    for pattern, group_match in date_conversion_rules:
-        match = re.match(pattern, input_date)
-        # find the pattern to convert
-        if match:
-            i_1, i_2, i_3 = group_match
-            date_iso = f'{match.group(i_1)}-{match.group(i_2)}-{match.group(i_3)}'
-            return datetime.date.fromisoformat(date_string=date_iso)
-
-
-def convert_spent_time(spent_time: int) -> Union[int, float]:
-    """
-    Converts the spent time in minutes to hours.\n
-    :param spent_time: the spent time in minutes, int
-    :return: the converted spent time of the Union[int, Decimal] type.
-    """
-    return numpy.divide(spent_time, 60)
-
-
-def convert_issue_state(state: str) -> str:
-    """
-    Converts the state to the table headers.\n
-    :param state: the issue state, str
-    :return: the modified state of the str type.
-    """
-    # the issues to convert to the New/Paused
-    to_new_paused = ('New', 'Paused', 'Canceled', 'Discuss', '', 'New/Paused')
-    # the issues to convert to the Done/Test
-    to_done_test = ('Done', 'Test', 'Review', 'Done/Test')
-    # the issues to convert to the Verified
-    to_verified = ('Closed',)
-
-    if state in to_new_paused:
-        modified_state = 'New/Paused'
-    elif state in to_done_test:
-        modified_state = 'Done/Test'
-    elif state in to_verified:
-        modified_state = 'Verified'
-    else:
-        modified_state = state
-
-    return modified_state
-
-
-def check_terminate_script(prompt: str) -> str:
-    """
-    Check the input to terminate the program.\n
-    :param prompt: the text to display, str
-    :return: either exit() or modified command of the str type.
-    """
-    user_input = input(prompt)
-    # delete trailing zeros and lower case
-    user_command = user_input.lower().strip()
-
-    if user_command in ConstYT.terminate_commands:
-        print('Работа прервана. Программа закрывается.')
-        exit()
-    else:
-        return user_command
-
-
-def convert_datetime_long(value: datetime.date):
-    """Converts the date value to the long."""
-    date_and_time = datetime.datetime.combine(value, datetime.time.min)
-    timestamp = datetime.datetime.timestamp(date_and_time)
-    return int(timestamp)
-
-
-def define_deadline_state(issue_name: str, res: str) -> Optional[str]:
-    """
-    Defines the deadline and state identifier in the query based on the issue name.\n
-    :param issue_name: the name of the issue, str
-    :param res: the required identifier, str
-    :return: the parameter identifier of the str type.
-    """
-    if issue_name.startswith('ARCH_ST'):
-        key = 'ARCH_ST'
-    elif issue_name.startswith('DOC_ST'):
-        key = 'DOC_ST'
-    elif issue_name.startswith('ARCH'):
-        key = 'ARCH'
-    elif issue_name.startswith('DOC'):
-        key = 'DOC'
-    elif issue_name.startswith('VCST'):
-        key = 'VCST'
-    else:
-        key = None
-
-    if key is not None:
-        if res == 'deadline':
-            return ConstYT.dict_issue_name[key][0]
-        elif res == 'state':
-            return ConstYT.dict_issue_name[key][1]
-    else:
-        return None
-
-
-class User:
-    __headers_yt = {
-        'Authorization': 'Bearer perm:dGFyYXNvdi1h.NjEtMTQw.1udDlV6zaAitHIgvw2eNQvF1sZ9JTZ',
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-    }
-
-    __dict_convert_logins: dict[str, str] = {'mozglyakova': 'matyushina'}
-
-    default_format = "%Y-%m-%d"
-    default_timestamp: str = datetime.date(year=datetime.date.today().year, month=1, day=1).strftime(default_format)
-    default_period: str = f"{default_timestamp} .. Today"
-
-    def __init__(self, timestamp: datetime.date = default_timestamp):
-        self.timestamp = timestamp
-
-    def __str__(self):
-        return f"User: login = {self.login}, timestamp = {self.timestamp}"
-
-    def __repr__(self):
-        return f"User(login={self.login}, timestamp={self.timestamp})"
-
-    def __key(self):
-        return self.login, self.timestamp
-
-    def __eq__(self, other):
-        if isinstance(other, User):
-            return self.__key() == other.__key()
-        else:
-            return NotImplemented
-
-    def __ne__(self, other):
-        if isinstance(other, User):
-            return self.__key() == other.__key()
-        else:
-            return NotImplemented
-
-    def __hash__(self):
-        return hash((self.login, self.timestamp))
-
-    @property
-    def login(self):
-        _sys_login: str = pathlib.Path.home().stem
-        login = User.__dict_convert_logins[_sys_login] if _sys_login in User.__dict_convert_logins else _sys_login
-
-        url = f"https://youtrack.protei.ru/api/users/{login}"
-        params = (('fields', 'login'),)
-
-        if requests.get(url=url, headers=User.__headers_yt, params=params).ok:
-            return login
-        else:
-            return None
-
-    @property
-    def verify_login(self) -> bool:
-        """
-        Verifies the login.\n
-        :return: the response of the attempt request of the bool type.
-        """
-        if self.login is not None:
-            url = f"https://youtrack.protei.ru/api/users/{self.login}"
-            params = (('fields', 'login'),)
-            try:
-                requests.get(url=url, headers=User.__headers_yt, params=params).raise_for_status()
-            except requests.HTTPError:
-                return False
-            except OSError as e:
-                print(f'Получена ошибка {e.errno}, {e.strerror}. Логин некорректен.')
-                return False
-            else:
-                return True
-        else:
-            return False
-
-    def get_issues(self, date_period: str = default_period) -> dict[str, list[str, str, str, datetime.date, str]]:
-        """
-        Defines the dict of the issues parameters: parent, name, summary, deadline, state, work_items.\n
-        :param date_period: the update period of the issue, YYYY-MM-DD/YYYY-MM, str
-        :return: the issue parameters of the dict[str, list[str, str, str, date, str, list]] type.
-        """
-        dict_issues = dict()
-        # define the parameters of the request
-        url = 'https://youtrack.protei.ru/api/issues'
-        parameters_fields = ','.join(('idReadable', 'summary', 'parent(issues(idReadable))'))
-        parameters_query = ' '.join((f'assignee: {self.login}', f'updated: {date_period}'))
-        params = (
-            ('fields', parameters_fields),
-            ('query', parameters_query),
-        )
-        # get the response in the JSON format
-        parsed_response = json.loads(get_request(url=url, headers=User.__headers_yt, params=params))
-        # define the parameters of the issue
-        for item in parsed_response:
-            name, parent, summary, deadline, state = self.parse_response_issue(item)
-            dict_issues[name] = [parent, name, summary, deadline, state]
-
-        return dict_issues
-
-    def get_issue_deadline(self, issue_name: str) -> datetime.date:
-        """
-        Defines the deadline of the issue from the YouTrack.\n
-        :param issue_name: the issue identifier, idReadable, str
-        :return: the issue deadline of the date type.
-        """
-        deadline_identifier = define_deadline_state(issue_name, 'deadline')
-        deadline: datetime.date = datetime.date(1, 1, 1)
-
-        if deadline_identifier != 'None':
-            # define the parameters of the request
-            url = f'https://youtrack.protei.ru/api/issues/{issue_name}/customFields/{deadline_identifier}'
-            params = (('fields', 'value(name)'),)
-            # get the response in the JSON format
-            parsed_response: dict = json.loads(get_request(url=url, headers=self.__headers_yt, params=params))
-
-            if "value" in parsed_response.keys():
-                deadline = convert_long_datetime(parsed_response['value'])
-
-        return deadline
-
-    def get_issue_state(self, issue_name: str) -> str:
-        """
-        Defines the state of the issue from the YouTrack.\n
-        :param issue_name: the issue identifier, idReadable, str
-        :return: the issue state of the str type.
-        """
-        state_identifier = define_deadline_state(issue_name, 'state')
-        state = ''
-
-        if state_identifier != 'None':
-            # define the parameters of the request
-            url = f'https://youtrack.protei.ru/api/issues/{issue_name}/customFields/{state_identifier}'
-            params = (('fields', 'value(name)'),)
-            # get the response in the JSON format
-            parsed_response = json.loads(get_request(url=url, headers=self.__headers_yt, params=params))
-
-            if "value" in parsed_response.keys() and "name" in parsed_response["value"].keys():
-                state = convert_issue_state(parsed_response['value']['name'])
-
-        return state
-
-    def get_issue_work_items(self, date_period: str) -> \
-            dict[str, list[tuple[str, datetime.date, Union[int, float]]]]:
-        """
-        Defines the dict of the work issue parameters: name, date, spent_time.\n
-        :param date_period: the period of creating the work issue item, YYYY-MM-DD/YYYY-MM, str
-        :return: the dict of the work issues of the dict[str, list[tuple[str, date, Union[int, decimal]]]] type.
-        """
-        dict_work_items: dict[str, list[tuple[str, datetime.date, Union[int, float]]]] = dict()
-        # define the parameters of the request
-        url = 'https://youtrack.protei.ru/api/workItems'
-        parameters_fields = ','.join(('duration(minutes)', 'date', 'issue(idReadable)'))
-        parameters_query = ' '.join((f'work author: {self.login}', f'work date: {date_period}'))
-        params = (
-            ('fields', parameters_fields),
-            ('query', parameters_query),
-        )
-        # get the response in the JSON format
-        parsed_response = json.loads(get_request(url=url, headers=self.__headers_yt, params=params))
-
-        for item in parsed_response:
-            issue_name, date, modified_spent_time = self.parse_response_work_item(item)
-            dict_work_items[issue_name].append((issue_name, date, modified_spent_time))
-
-        return dict_work_items
+    # Cell.alignment
+    TMP_ALIGNMENT = Alignment(horizontal='left', vertical='center', wrap_text=True)
+    CENTER_ALIGNMENT = Alignment(horizontal='center', vertical='center', wrap_text=True)
+    ROTATE_ALIGNMENT = Alignment(horizontal='center', vertical='center', wrap_text=True, text_rotation=90)
+    # Cell.border
+    TMP_BORDER = Border(outline=False, left=Side(), right=Side(), top=Side(), bottom=Side())
+    THIN_BORDER = Border(
+        outline=True, left=Side(style=BORDER_THIN), right=Side(style=BORDER_THIN), top=Side(style=BORDER_THIN),
+        bottom=Side(style=BORDER_THIN))
+    THICK_BORDER = Border(
+        outline=True, left=Side(style=BORDER_THICK), right=Side(style=BORDER_THICK), top=Side(style=BORDER_THICK),
+        bottom=Side(style=BORDER_THICK))
+    TOP_BOTTOM_BORDER = Border(
+        outline=True, left=Side(style=BORDER_THIN), right=Side(style=BORDER_THIN), top=Side(style=BORDER_THICK),
+        bottom=Side(style=BORDER_THICK))
+    # Cell.fill
+    TMP_FILL = PatternFill(
+        fill_type=FILL_SOLID, fgColor=Color(rgb=WHITE, type='rgb'), bgColor=Color(rgb=WHITE, type='rgb'))
+    INDEXED_FILL = PatternFill(
+        fill_type=FILL_SOLID, fgColor=Color(rgb=WHITE, type='rgb'), bgColor=Color(indexed=64, type='indexed'))
+    TINT_FILL = PatternFill(
+        fill_type=FILL_SOLID, fgColor=Color(theme=0, tint=0.0, type='theme'), bgColor=Color(indexed=64, type='indexed'))
+    # Cell.font
+    TMP_FONT = Font(name='Calibri', charset=204, family=2, color=Color(rgb=BLACK, type='rgb'), size=11)
+    THEME_FONT = Font(name='Calibri', charset=204, family=2, color=Color(theme=1, type='theme'), size=11)
+    # Cell.protection
+    TMP_PROTECTION = Protection(locked=False, hidden=False)
 
     @staticmethod
-    def parse_response_work_item(item: dict):
-        # define the issue name of the work item
-        issue_name = item['issue']['idReadable']
-        # define the date of the work item
-        date = convert_long_datetime(item['date'])
-        # define the spent time of the work item
-        spent_time = item['duration']['minutes']
-        # convert to the hours
-        modified_spent_time = convert_spent_time(spent_time)
-        return issue_name, date, modified_spent_time
-
-    def get_issue_id(self, issue_name: str) -> tuple[str, str, str, datetime.date, str]:
+    def set_number_format(format_type: str = None) -> str:
         """
-        Defines the dict of the issue parameters: parent, name, summary, deadline, state, work_items.\n
-        :param issue_name: the issue name, str
-        :return: the issue parameters of the dict[str, list[str, str, str, date, str]] type.
+        Specifies the cell number format.\n
+        text: FORMAT_TEXT (@)\n
+        number: FORMAT_NUMBER_00 (0,00)\n
+        date: FORMAT_DATE_XLSX14 (%d-%m-%Y)\n
+        default: FORMAT_GENERAL (General)\n
+        :param format_type: the cell value type, str
+        :return: the number format of the str type.
         """
-        # define the parameters of the request
-        url = f'https://youtrack.protei.ru/api/issues/{issue_name}'
-        parameters_fields = ','.join(('idReadable', 'summary', 'parent(issues(idReadable))'))
-        params = (('fields', parameters_fields),)
-        # get the response in the JSON format
-        parsed_response = json.loads(get_request(url=url, headers=self.__headers_yt, params=params))
-        return self.parse_response_issue(parsed_response)
+        if format_type is None:
+            return FORMAT_GENERAL
 
-    def parse_response_issue(self, item: dict):
-        # define the issue name
-        name: str = item['idReadable']
-        # define the parent issue name
-        parent_issues = item['parent']['issues']
-        # check if the parent issue exists
-        if len(parent_issues):
-            parent: Optional[str] = parent_issues[0]['idReadable']
+        if format_type == 'text':
+            return FORMAT_TEXT
+        elif format_type == 'number':
+            return FORMAT_NUMBER_00
+        elif format_type == 'date':
+            return FORMAT_DATE_XLSX14
         else:
-            parent = None
-        # define the issue summary
-        summary: str = item['summary']
-        # define the issue deadline
-        deadline = self.get_issue_deadline(name)
-        # define the issue state
-        state = self.get_issue_state(name)
-        # define the dictionary of the issue
-        return name, parent, summary, deadline, state
+            return FORMAT_GENERAL
 
+    def set_alignment(self, type_align: str = None) -> Alignment:
+        """
+        Specifies the cell alignment.\n
+        center: CENTER_ALIGNMENT (hor = centered, vert = centered)\n
+        rotate: ROTATE_ALIGNMENT (hor = centered, vert = centered, text_rot = 90)\n
+        default: TMP_ALIGNMENT (hor = left, vert = centered)\n
+        :param type_align: the alignment type, str
+        :return: the cell alignment of the Alignment() type.
+        """
+        if type_align is None:
+            return self.TMP_ALIGNMENT
 
-class Issue:
-    """Displays parameters of the issue in the YouTrack."""
-    index = 0
-
-    __slots__ = ("identifier", "name", "state", "summary", "parent", "deadline", "commentary")
-
-    def __init__(self,
-                 name: str, *,
-                 state: str = None,
-                 summary: str = None,
-                 parent: str = None,
-                 deadline: datetime.date = None,
-                 commentary: str = None):
-        self.identifier = Issue.index
-        self.name = name
-        self.state = state
-        self.summary = summary
-        self.parent = parent
-        self.deadline = deadline
-        self.commentary = commentary
-
-        ConstYT.dict_issue[self.identifier] = self
-        Issue.index += 1
-
-    def __str__(self):
-        return f"id = {self.identifier}, name = {self.name}, state = {self.state}, summary = {self.summary}," \
-               f"parent = {self.parent}, deadline = {self.deadline}"
-
-    def __repr__(self):
-        return f"Issue(name = {self.name}, state = {self.state}, summary = {self.summary}, parent = {self.parent}, " \
-               f"deadline = {self.deadline}, commentary={self.commentary}), id={self.identifier}"
-
-    def __key(self):
-        return self.index, self.name
-
-    def __eq__(self, other):
-        if isinstance(other, Issue):
-            return self.__key() == other.__key()
+        if type_align.lower().strip() == 'center':
+            return self.CENTER_ALIGNMENT
+        elif type_align.lower().strip() == 'rotate':
+            return self.ROTATE_ALIGNMENT
         else:
-            return NotImplemented
+            return self.TMP_ALIGNMENT
 
-    def __ne__(self, other):
-        if isinstance(other, Issue):
-            return self.__key() != other.__key()
+    def set_fill_color(
+            self, type_fill: str = None, fill_color: str = None, tint: float = None, theme: int = None) -> PatternFill:
+        """
+        Specifies the cell fill.\n
+        tmp: TMP_FILL = (type_fill='rgb', fill_color=Color(), tint=None, theme=None)\n
+        tint: TINT_FILL = (type_fill='theme', fill_color=None, tint=tint, theme=theme)\n
+        indexed: INDEXED_FILL = (type_fill='indexed', fill_color=Color(), tint=None, theme=theme)\n
+        :param type_fill: the fill type, str
+        :param fill_color: the RGB cell fill color, str
+        :param tint: the tint value, float
+        :param theme: the cell theme to apply, int
+        :return: the cell fill of the PatternFill type.
+        """
+        if all(attribute is None for attribute in (type_fill, fill_color, tint, theme)):
+            return self.TMP_FILL
+
+        if type_fill.lower().strip() == 'tmp':
+            res_fill: PatternFill = copy(self.TMP_FILL)
+            if fill_color is not None:
+                res_fill.fgColor.rgb = fill_color
+
+        elif type_fill.lower().strip() == 'tint':
+            res_fill: PatternFill = copy(self.TINT_FILL)
+            res_fill.fill_type = 'theme'
+
+            if tint is not None:
+                res_fill.fgColor.tint = tint
+            if theme is not None:
+                res_fill.fgColor.theme = theme
+
+        elif type_fill.lower().strip() == 'indexed':
+            res_fill: PatternFill = copy(self.INDEXED_FILL)
+            res_fill.fill_type = 'indexed'
+
+            if fill_color is not None:
+                res_fill.fgColor.rgb = fill_color
+
         else:
-            return NotImplemented
+            res_fill: PatternFill = copy(self.TMP_FILL)
 
-    def __hash__(self):
-        return hash((self.identifier, self.name, self.state, self.summary, self.parent, self.deadline, self.commentary))
+        return res_fill
 
+    def set_border(self, type_border: str = None) -> Border:
+        """
+        Specifies the cell borders.\n
+        thin: THIN_BORDER (all = THIN)\n
+        thick: THICK_BORDER (all = THICK)\n
+        top_bottom: TOP_BOTTOM_BORDER (left + right = THIN, top + bottom = THICK)\n
+        :param type_border: the border type, str
+        :return: the cell border of the Border() type.
+        """
+        if type_border is None:
+            return self.TMP_BORDER
 
-class IssueWorkItem:
-    index = 0
-
-    __slots__ = ("identifier", "name", "date", "spent_time")
-
-    def __init__(self, name: str, date: datetime.date, spent_time: int):
-        self.identifier = IssueWorkItem.index
-        self.name = name
-        self.date = date
-        self.spent_time = spent_time
-
-        ConstYT.dict_issue_work_item[self.identifier] = self
-        IssueWorkItem.index += 1
-
-    def __str__(self):
-        return f"IssueWorkItem: name = {self.name}, date = {self.date}, spent_time = {self.spent_time}, " \
-               f"id: {self.identifier}"
-
-    def __repr__(self):
-        return f"IssueWorkItem(name = {self.name}, date = {self.date}, spent_time = {self.spent_time}), " \
-               f"identifier={self.identifier}"
-
-    def __key(self):
-        return self.name, self.date
-
-    def __hash__(self):
-        return hash((self.identifier, self.name, self.date, self.spent_time))
-
-    def __eq__(self, other):
-        if isinstance(other, IssueWorkItem):
-            return self.__key() == other.__key()
+        if type_border.lower().strip() == 'thin':
+            return self.THIN_BORDER
+        elif type_border.lower().strip() == 'thick':
+            return self.THICK_BORDER
+        elif type_border.lower().strip() == 'top_bottom':
+            return self.TOP_BOTTOM_BORDER
         else:
-            return NotImplemented
+            return self.TMP_BORDER
 
-    def __ne__(self, other):
-        if isinstance(other, IssueWorkItem):
-            return self.__key() != other.__key()
+    def set_font(self, type_font: str = None) -> Font:
+        """
+        Specifies the cell font.\n
+        theme: THEME_FONT (Color(type="theme", theme=1))\n
+        tmp: TMP_FONT (Color(type="rgb", rgb=BLACK))\n
+        :param type_font: the font type, str
+        :return: the cell font of the Font() type.
+        """
+        if type_font is None:
+            return self.TMP_FONT
+
+        if type_font.lower().strip() == 'tmp':
+            return self.TMP_FONT
+        elif type_font.lower().strip() == 'theme':
+            return self.THEME_FONT
         else:
-            return NotImplemented
+            return self.TMP_FONT
 
-    def __combine(self, other) -> Optional[int]:
-        if self == other:
-            self.spent_time += other.spent_time
-            del other.spent_time
-            return self.identifier
+    @property
+    def set_protection(self) -> Protection:
+        """
+        Specifies the cell protection.\n
+        TMP_PROTECTION(locked=False, hidden=False)\n
+        :return: the Protection() type.
+        """
+        return self.TMP_PROTECTION
+
+    @property
+    def month_title_styles(self) -> list[tuple[str, str, Alignment, Border, PatternFill, Font, Protection]]:
+        """Specifies the styles of the month titles."""
+        month_title_styles: list[tuple[str, str, Alignment, Border, PatternFill, Font, Protection]] = []
+
+        for name, month_params in ConstDefault.dict_months_colors.items():
+            type_fill, fill_color, tint, theme = month_params
+            # specify cell parameters
+            number_format = self.set_number_format(format_type="text")
+            alignment = self.set_alignment(type_align='rotate')
+            border = self.set_border(type_border='top_bottom')
+            fill = self.set_fill_color(type_fill=type_fill, fill_color=fill_color, tint=tint, theme=theme)
+            font = self.set_font(type_font='theme')
+            protection = self.set_protection
+
+            month_title_styles.append((name, number_format, alignment, border, fill, font, protection))
+
+        return month_title_styles
+
+    @property
+    def month_header_styles(self) -> list[tuple[str, str, Alignment, Border, PatternFill, Font, Protection]]:
+        """Specifies the styles of the month headers."""
+        month_header_styles: list[tuple[str, str, Alignment, Border, PatternFill, Font, Protection]] = []
+
+        for index, month_title_style in enumerate(self.month_title_styles):
+            # specify cell parameters
+            name, number_format, alignment, border, fill, font, protection = copy(self.month_title_styles[index])
+            # the only difference is rotation
+            alignment = self.set_alignment(type_align='center')
+            month_header_styles.append((name, number_format, alignment, border, fill, font, protection))
+
+        return month_header_styles
+
+    @property
+    def state_styles(self) -> list[tuple[str, str, Alignment, Border, PatternFill, Font, Protection]]:
+        """Specifies the styles of the states."""
+        state_styles: list[tuple[str, str, Alignment, Border, PatternFill, Font, Protection]] = []
+
+        for name, item in self.dict_states_colors.items():
+            type_fill, fill_color, tint, theme = item
+            # specify cell parameters
+            number_format = self.set_number_format(format_type="text")
+            alignment = self.set_alignment(type_align='center')
+            border = self.set_border(type_border='thick')
+            fill = self.set_fill_color(type_fill=type_fill, fill_color=fill_color, tint=tint, theme=theme)
+            font = self.set_font(type_font='theme')
+            protection = self.set_protection
+            state_styles.append((name, number_format, alignment, border, fill, font, protection))
+
+        return state_styles
+
+    @property
+    def header_style(self) -> tuple[str, str, Alignment, Border, PatternFill, Font, Protection]:
+        """Specifies the style of the headers."""
+        # set default values for headers
+        name: str = 'headers'
+        theme: int = 3
+        tint: float = 0.5999938962981048
+        # specify cell parameters
+        number_format = self.set_number_format(format_type="text")
+        alignment = self.set_alignment(type_align='center')
+        border = self.set_border(type_border='top_bottom')
+        fill = self.set_fill_color(type_fill='tint', tint=tint, theme=theme)
+        font = self.set_font(type_font='theme')
+        protection = self.set_protection
+
+        return name, number_format, alignment, border, fill, font, protection
+
+    @property
+    def title_style(self) -> tuple[str, str, Alignment, Border, PatternFill, Font, Protection]:
+        """Specifies the style of the title."""
+        # set default values for titles
+        name: str = 'title'
+        theme: int = 4
+        tint: float = -0.249977111117893
+        # specify cell parameters
+        number_format = self.set_number_format(format_type="text")
+        alignment = self.set_alignment(type_align='center')
+        border = self.set_border(type_border='top_bottom')
+        fill = self.set_fill_color(type_fill='tint', tint=tint, theme=theme)
+        font = self.set_font(type_font='theme')
+        protection = self.set_protection
+
+        return name, number_format, alignment, border, fill, font, protection
+
+    @property
+    def date_style(self):
+        """Specifies the style of the dates."""
+        # set default values for dates
+        name: str = 'date'
+        # specify cell parameters
+        number_format = self.set_number_format(format_type="date")
+        alignment = self.set_alignment(type_align='center')
+        border = self.set_border(type_border='top_bottom')
+        fill = self.set_fill_color(type_fill='rgb', fill_color=WHITE, tint=None, theme=None)
+        font = self.set_font(type_font='tmp')
+        protection = self.set_protection
+
+        return name, number_format, alignment, border, fill, font, protection
+
+    @property
+    def basic_style(self):
+        """Specifies the basic style."""
+        # set default values for dates
+        name: str = 'basic'
+        # specify cell parameters
+        number_format = self.set_number_format(format_type="default")
+        alignment = self.set_alignment(type_align=None)
+        border = self.set_border(type_border=None)
+        fill = self.set_fill_color(type_fill=None, fill_color=None, tint=None, theme=None)
+        font = self.set_font(type_font=None)
+        protection = self.set_protection
+
+        return name, number_format, alignment, border, fill, font, protection
+
+    @property
+    def list_all_styles(self):
+        """Specifies the list of all styles."""
+        all_styles = [*self.all_named_styles, *self.all_cell_styles]
+        return *all_styles,
+
+    @property
+    def all_style_names(self):
+        """Specifies the list of all style names."""
+        return [name for style in self.list_all_styles for name, _, _, _, _, _, _ in style]
+
+    @property
+    def all_named_styles(self) -> tuple[tuple[str, str, Alignment, Border, PatternFill, Font, Protection]]:
+        """Specifies the tuple of all named styles."""
+        named_styles = [*self.state_styles, self.header_style, self.basic_style]
+        return *named_styles,
+
+    @property
+    def named_styles_name(self) -> list[str]:
+        """Specifies the names of MamedStyle."""
+        return [name for named_style in self.all_named_styles for name, _, _, _, _, _, _ in named_style]
+
+    @property
+    def all_cell_styles(self) -> tuple[tuple[str, str, Alignment, Border, PatternFill, Font, Protection]]:
+        """Specifies the tuple of all not named styles."""
+        cell_styles = [*self.month_title_styles, *self.month_header_styles, self.title_style, self.date_style]
+        return *cell_styles,
+
+    @property
+    def cell_styles_name(self) -> list[str]:
+        """Specifies the names of StyleCell."""
+        return [name for cell_style in self.all_cell_styles for name, _, _, _, _, _, _ in cell_style]
+
+
+class ConstDefault:
+    # style_name: (rus_name, cell_style_coordinate, cell_legend_coordinate
+    dict_legend = {
+        'weekend': ('выходные', 'B21', 'C21'), 'deadline': ('дедлайн', 'B22', 'C22'), 'done': ('done', 'B23', 'C23'),
+        'active': ('active', 'B24', 'C24'), 'test': ('test', 'B25', 'C25'),
+        'going_start': ('планирую начать', 'B26', 'C26'), 'paused': ('paused', 'B27', 'C27'),
+        'verified_closed': ('verified, closed', 'B28', 'C28'), 'going_finish': ('планирую завершить', 'B29', 'C29'),
+        'sick': ('больничный', 'B30', 'C30'), 'vacation': ('отпуск', 'B31', 'C31')
+    }
+    # title_name: (rus_name, cell_title_coordinate)
+    dict_titles = {
+        'parent': ('РОД. ЗАДАЧА', 'B2'), 'name': ('ЗАДАЧА', 'C2'), 'summary': ('ОПИСАНИЕ', 'D2'),
+        'deadline': ('DEADLINE', 'E2'), 'sum': ('Σ', 'NS2'), 'commentary': ('ПРИМЕЧАНИЕ', 'NT2')
+    }
+    # month_name: (rus_name, cell_title_coordinate, num_days)
+    dict_month_ranges: dict[str, tuple[str, str, int]] = {
+        'january': ('ЯНВАРЬ', 'F1', 31), 'february': ('ФЕВРАЛЬ', 'AL1', 28), 'march': ('МАРТ', 'BO1', 31),
+        'april': ('АПРЕЛЬ', 'CU1', 30), 'may': ('МАЙ', 'DZ1', 31), 'june': ('ИЮНЬ', 'FF1', 30),
+        'july': ('ИЮЛЬ', 'GK1', 31), 'august': ('АВГУСТ', 'HQ1', 31), 'september': ('СЕНТЯБРЬ', 'IW1', 30),
+        'october': ('ОКТЯБРЬ', 'KB1', 31), 'november': ('НОЯБРЬ', 'LH1', 30), 'december': ('ДЕКАБРЬ', 'MM1', 31)
+    }
+
+    cells_headers: tuple[tuple[int, str]] = ((3, 'Active'), (7, 'New/Paused'), (11, 'Active/Done'), (15, 'Verified'))
+    # holidays
+    yy: int = datetime.date.today().year
+    holidays = (
+        datetime.date(yy, 1, 1), datetime.date(yy, 1, 2), datetime.date(yy, 1, 3), datetime.date(yy, 1, 4),
+        datetime.date(yy, 1, 5), datetime.date(yy, 1, 6), datetime.date(yy, 1, 7), datetime.date(yy, 2, 23),
+        datetime.date(yy, 3, 7), datetime.date(yy, 3, 8), datetime.date(yy, 5, 1), datetime.date(yy, 5, 2),
+        datetime.date(yy, 5, 3), datetime.date(yy, 5, 8), datetime.date(yy, 5, 9), datetime.date(yy, 5, 10),
+        datetime.date(yy, 6, 12), datetime.date(yy, 6, 13), datetime.date(yy, 11, 4), datetime.date(yy, 12, 31)
+    )
+    # for set_fill_color:
+    # type_fill: str, fill_color: str, tint: float = None, theme: int = None
+    dict_months_colors = {
+        'january': ('tmp', 'FF0297CC', None, None), 'february': ('tmp', 'FF0BA6B6', None, None),
+        'march': ('tmp', 'FF3AAA66', None, None), 'april': ('tmp', 'FF8BBD36', None, None),
+        'may': ('tmp', 'FFD0CA04', None, None), 'june': ('tmp', 'FFF9AD01', None, None),
+        'july': ('tmp', 'FFF08002', None, None), 'august': ('tmp', 'FFE94442', None, None),
+        'september': ('tmp', 'FFCF687D', None, None), 'october': ('tmp', 'FF98668B', None, None),
+        'november': ('tmp', 'FF697FB9', None, None), 'december': ('tmp', 'FF0078A9', None, None)
+    }
+    # month title StyleCell values
+    # ['january', 'february', 'march', 'april', 'may', 'june', 'july',
+    # 'august', 'september', 'october', 'november', 'december']
+    dict_month_title_styles: dict[str, tuple] = dict()
+    # month header StyleCell values
+    dict_month_header_styles: dict[str, tuple] = dict()
+    # StyleCell values
+    dict_style_cells: dict[str, tuple] = dict()
+
+
+class Const:
+    @staticmethod
+    def cell_column(coord: str) -> str:
+        """
+        Gets the cell column.\n
+        :param coord: the cell coordinate, str
+        :return: the column of the str type.
+        """
+        return coordinate_from_string(coord)[0]
+
+    @staticmethod
+    def cell_row(coord: str) -> int:
+        """
+        Gets the cell row.\n
+        :param coord: the cell coordinate, str
+        :return: the row of the int type.
+        """
+        return coordinate_from_string(coord)[1]
+
+    @staticmethod
+    def add_column(coord: str, add_value: int):
+        """
+        Finds the cell in the row that is N columns to the left/right.\n
+        :param coord: the base cell coordinate, str
+        :param add_value: the number of columns with the sign, int
+        :return: the new cell coordinate of the str value.
+        """
+        column, row = coordinate_from_string(coord)
+        col_idx = column_index_from_string(column)
+        if add_value < 0 and col_idx + add_value < 1:
+            print('The incorrect work of the add_column method.')
+            return coord
+        add_col_idx = col_idx + add_value
+        add_column = get_column_letter(add_col_idx).upper()
+        return f'{add_column}{row}'
+
+    @staticmethod
+    def cell_in_range(start_coord: str, end_coord: str):
+        """
+        Converts the cell range to the cell generator in the range.\n
+        :param start_coord: the start cell coordinate, str
+        :param end_coord: the end cell coordinate, str
+        :return: the generator of cells in the cell range.
+        """
+        if Const.check_coord(coord=start_coord) and Const.check_coord(coord=end_coord):
+            min_row, max_row, min_col, max_col = Const.range_coord(start_coord=start_coord, end_coord=end_coord)
+            for row in range(min_row, max_row + 1):
+                for col in range(min_col, max_col + 1):
+                    yield f'{get_column_letter(col)}{row}'
+
+    @staticmethod
+    def check_coord(coord: str) -> bool:
+        """
+        Verifies the cell coordinate.\n
+        :param coord: the cell coordinate, str
+        :return: the verification flag of the bool type.
+        """
+        flag = False
+        try:
+            coordinate_to_tuple(coord)
+        except TypeError as e:
+            print(f'TypeError occurred. Error in line {e.__traceback__.tb_lineno}. Incorrect value type.\n')
+            print(f'coordinate = {coord}')
+        except ValueError as e:
+            print(f'ValueError occurred. Error in line {e.__traceback__.tb_lineno}. Incorrect value.\n')
+            print(f'coordinate = {coord}')
+        except OSError as e:
+            print(f'OSError occurred. Error {e.errno} in line {e.__traceback__.tb_lineno}.\n')
+            print(f'coordinate = {coord}')
+        else:
+            flag = True
+        finally:
+            return flag
+
+    @staticmethod
+    def range_coord(start_coord: str, end_coord: str):
+        """
+        Convert the range string with the start and end coordinates to the tuple:\n
+        (min_row, min_col, max_row, max_col)\n
+        :param start_coord: the start cell coordinate, str
+        :param end_coord: the end cell coordinate, str
+        :return: the values for iteration of the tuple[int, int, int, int] type.
+        """
+        # convert start coordinate
+        start_row, start_column = coordinate_to_tuple(start_coord)
+        # start_col_idx = column_index_from_string(start_column)
+        # convert end coordinate
+        end_row, end_column = coordinate_to_tuple(end_coord)
+        # end_col_idx = column_index_from_string(end_column)
+        # find min and max values
+        min_row = min(start_row, end_row)
+        max_row = max(start_row, end_row)
+        # min_col = min(start_col_idx, end_col_idx)
+        # max_col = max(start_col_idx, end_col_idx)
+        min_col = min(start_column, end_column)
+        max_col = max(start_column, end_column)
+
+        return min_row, max_row, min_col, max_col
+
+    @staticmethod
+    def convert_datetime_date(value: Any) -> Optional[datetime.date]:
+        """
+        Converts the datetime or None to the date.\n
+        :param value: the value to convert, Any
+        :return: the converted value or None of the date type.
+        """
+        if isinstance(value, datetime.date):
+            return value
+        elif isinstance(value, datetime.datetime):
+            return value.date()
         else:
             return None
 
-    def __lt__(self, other):
-        if isinstance(other, IssueWorkItem):
-            return self.date < other.date
+    @classmethod
+    def set_cells_weekend(cls, ws: Worksheet) -> tuple[str]:
+        """
+        Specifies the coordinates to set the weekend style.
+        :param ws: the current worksheet, Worksheet
+        :return: the number of
+        """
+        holidays_coord = set()
+        for coord in cls.cell_in_range(start_coord='G1', end_coord='NR1'):
+            cell_value: Optional[datetime.date] = cls.convert_datetime_date(ws[f'{coord}'].value)
+            year, month, day = (cell_value.year, cell_value.month, cell_value.day)
+            if cell_value is not None:
+                if calendar.weekday(year=year, month=month, day=day) in (5, 6) or cell_value in ConstDefault.holidays:
+                    holidays_coord.add(coord)
+        return *holidays_coord,
+
+    @staticmethod
+    def check_terminate_script(prompt: str) -> str:
+        """
+        Check the input to terminate the program.\n
+        :param prompt: the text to display, str
+        :return: either exit() or modified command of the str type.
+        """
+        terminate_commands = ("__exit__", "'__exit__'", '"__exit__"')
+        user_input = input(prompt)
+        # delete trailing zeros and lower case
+        user_command = user_input.lower().strip()
+
+        if user_command in terminate_commands:
+            print('Работа прервана. Программа закрывается.')
+            exit()
         else:
-            return NotImplemented
+            return user_command
 
-    def __gt__(self, other):
-        if isinstance(other, IssueWorkItem):
-            return self.date > other.date
+    @staticmethod
+    def set_path_file(path: Union[str, pathlib.Path]) -> bool:
+        """
+        Defines the path of the file to save the results.\n
+        :return: the name of the file and the absolute path of the tuple[str, Path] type.
+        """
+        try:
+            with open(path, 'w+') as file:
+                file.read()
+        except FileNotFoundError:
+            print('Такого пути не существует.')
+            return False
+        except RuntimeError:
+            print('Указанный путь некорректен.')
+            return False
+        except OSError as e:
+            print(f'Произошла ошибка {e.__class__.__name__}. Сообщите об ошибке. Спасибо.')
+            return False
         else:
-            return NotImplemented
+            return True
 
-    def __le__(self, other):
-        if isinstance(other, IssueWorkItem):
-            return self.date <= other.date
-        else:
-            return NotImplemented
+    @staticmethod
+    def merge_cells(ws: Worksheet, row: int):
+        ws.merge_cells(f'B{row}:E{row}')
 
-    def __ge__(self, other):
-        if isinstance(other, IssueWorkItem):
-            return self.date >= other.date
-        else:
-            return NotImplemented
+    @staticmethod
+    def unmerge_cells(ws: Worksheet, row: int):
+        ws.unmerge_cells(f'B{row}:E{row}')
 
+    @classmethod
+    def month_cell_periods(cls):
+        """Merges cells for the month title."""
+        start_cells = [Const.add_column(month_coord, 1) for month_params in ConstDefault.dict_month_ranges.values()
+                       for _, month_coord, _ in month_params]
+        end_cells = [Const.add_column(month_coord, num_days) for month_params in ConstDefault.dict_month_ranges.values()
+                     for _, month_coord, num_days in month_params]
+        return [f"{start_cell}:{end_cell}" for start_cell, end_cell in zip(start_cells, end_cells)]
 
-class _IssueMerged:
-    __slots__ = ("issue_name",)
-
-    def __init__(self, issue_name: str):
-        self.issue_name = issue_name
-
-    @property
-    def issue(self) -> int:
-        issue: Issue
-        for issue_id, issue in ConstYT.dict_issue.items():
-            if self.issue_name == issue.name:
-                return issue_id
-
-    @property
-    def work_items(self) -> list[int]:
-        work_item: IssueWorkItem
-        return [work_item_id for work_item_id, work_item in ConstYT.dict_issue_work_item.items()
-                if self.issue_name == work_item.name]
-
-    def __hash__(self):
-        return hash(self.issue_name)
-
-    def __eq__(self, other):
-        if isinstance(other, _IssueMerged):
-            return self.issue_name == other.issue_name
-        else:
-            return NotImplemented
-
-    def __ne__(self, other):
-        if isinstance(other, _IssueMerged):
-            return self.issue_name != other.issue_name
-        else:
-            return NotImplemented
-
-    def __contains__(self, item):
-        if isinstance(item, Issue):
-            return self.issue == item.identifier
-        elif isinstance(item, IssueWorkItem):
-            return item.identifier in self.work_items
-        else:
-            return NotImplemented
-
-    def __iter__(self):
-        for item in self.work_items:
-            yield self.__getitem_id(item)
-
-    def __getattribute__(self, item):
-        if item in self.__slots__:
-            return object.__getattribute__(self, item)
-        return None
-
-    def __setattr__(self, key, value):
-        if key in self.__slots__:
-            object.__setattr__(self, key, value)
-        else:
-            raise AttributeError(f"Incorrect attribute. Only {self.__slots__} are allowed.")
-
-    def __getitem__(self, item):
-        if item in self.work_items:
-            return self.work_items[item]
-        return None
-
-    def __setitem__(self, key, value):
-        self.work_items[key] = value
-
-    @property
-    def __get_issue(self) -> Issue:
-        return ConstYT.dict_issue[self.issue]
-
-    @property
-    def state(self):
-        return self.__get_issue.state
-
-    @property
-    def parent(self):
-        return self.__get_issue.parent
-
-    @property
-    def summary(self):
-        return self.__get_issue.summary
-
-    @property
-    def deadline(self):
-        return self.__get_issue.deadline
-
-    @property
-    def commentary(self):
-        return self.__get_issue.commentary
-
-    @property
-    def dates(self):
-        return [self.__getitem_id(identifier).date for identifier in self.work_items]
-
-    def __getitem_id(self, identifier: int) -> Optional[IssueWorkItem]:
-        if identifier in self.work_items:
-            return ConstYT.dict_issue_work_item[identifier]
-        else:
-            return None
-
-
-def get_request(url: str, headers: dict, params: tuple) -> str:
-    """
-    Defines the GET request.\n
-    If the initial input parameters are invalid, the exception is raised.\n
-    :param url: URL to send the request, str
-    :param headers: request headers, dict
-    :param params: request parameters, tuple
-    :return: the response text of the str type. If the exception is raised, the empty string is returned.
-    """
-    try:
-        response = requests.get(url=url, headers=headers, params=params)
-        response.raise_for_status()
-        return response.text
-    except Exception as e:
-        print(e.__class__)
-        print('The request demands on the proper URL, headers, and params.')
-        return '{}'
-
-
-def post_request(url: str, headers: dict, params: tuple) -> str:
-    """
-    Defines the POST request.\n
-    If the initial input parameters are invalid, the exception is raised.\n
-    :param url: URL to send the request, str
-    :param headers: request headers, dict
-    :param params: request parameters, tuple
-    :return: the response text of the str type. If the exception is raised, the empty string is returned.
-    """
-    try:
-        response = requests.post(url=url, headers=headers, params=params)
-        response.raise_for_status()
-        return response.text
-    except Exception as e:
-        print(f'The exception is {e.__class__}.')
-        print('The request demands on the proper URL, headers, and params.')
-        return '{}'
-
-
-def convert_long_datetime(long) -> Optional[datetime.date]:
-    """Converts the long value to the datetime.date."""
-    if long is None:
-        return None
-    else:
-        return datetime.date.fromtimestamp(numpy.divide(long, 1000))
+    @classmethod
+    def month_cell_periods_start(cls):
+        return [Const.add_column(month_coord, 1) for month_params in ConstDefault.dict_month_ranges.values()
+                for _, month_coord, _ in month_params]
 
 
 def main():
-    pass
+    print(ConstDefault.dict_legend.keys())
 
 
 if __name__ == '__main__':
