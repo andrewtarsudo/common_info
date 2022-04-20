@@ -3,6 +3,19 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|TDMA|Time Division Multiple Access|
+|WCDMA|Wideband Code Division Multiple Access|
+|OFDMA|Orthogonal Frequency Division Multiple Access|
+|TTI|Transmission Time Interval|
+|HSPA|High Speed Packet Data Access|
+|HSDPA|High Speed Downlink Packet Data Access|
+|HSUPA|High Speed Uplink Packet Data Access|
+|CQI|Channel Quality Information|
+|HS-DSCH|High Speed Downlink Shared Channel|
+|E-DCH|Enhanced Dedicated Channel|
+|TDD|Time Division Duplex|
+|FDD|Frequency Division Duplex|
+|MBMS|Multimedia Broadcast Multicast Service|
 |OBD|Outbound Dialer, абонент, оформивший подписку во время массового оповещения пользователей| 
 |CCD|Call Center Dialer, абонент, оформивший подписку с помощью оператора поддержки пользователей|
 |SLA|Service Level Agreement, соглашение о качестве предоставляемых услуг|
