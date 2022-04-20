@@ -1,11 +1,10 @@
 import calendar
 import datetime
-import os
 import pathlib
 import re
 from copy import copy
-from decimal import Decimal
 from typing import Optional, Any, Union
+import numpy
 from openpyxl.styles.alignment import Alignment
 from openpyxl.styles.borders import Border, Side, BORDER_THIN, BORDER_THICK
 from openpyxl.styles.colors import Color, BLACK, WHITE
@@ -15,7 +14,6 @@ from openpyxl.styles.numbers import FORMAT_TEXT, FORMAT_NUMBER_00, FORMAT_DATE_X
 from openpyxl.styles.protection import Protection
 from openpyxl.utils.cell import coordinate_from_string, column_index_from_string, get_column_letter, coordinate_to_tuple
 from openpyxl.worksheet.worksheet import Worksheet
-import platform
 
 
 class ConstExcel:
@@ -30,19 +28,6 @@ class ConstYT:
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     }
-
-    os_name = platform.system()
-
-    start_date_default: datetime.date = datetime.date.today() - datetime.timedelta(days=7)
-
-    @classmethod
-    def get_user_name(cls):
-        if ConstYT.os_name == "Windows":
-            param = "USERNAME"
-        else:
-            param = "USER"
-
-        return os.environ.get(f"{param}")
 
     @staticmethod
     def convert_date_iso(input_date: str) -> Optional[datetime.date]:
@@ -66,20 +51,16 @@ class ConstYT:
             if match:
                 i_1, i_2, i_3 = group_match
                 date_iso = f'{match.group(i_1)}-{match.group(i_2)}-{match.group(i_3)}'
-                return datetime.date.fromisoformat(date_string=date_iso)
+                return datetime.date.fromisoformat(date_iso)
 
     @staticmethod
-    def convert_spent_time(spent_time: int) -> Union[int, Decimal]:
+    def convert_spent_time(spent_time: int) -> Union[int, float]:
         """
-        Converts the spent time in minutes to hours.
-
+        Converts the spent time in minutes to hours.\n
         :param spent_time: the spent time in minutes, int
         :return: the converted spent time of the Union[int, Decimal] type.
         """
-        if spent_time % 60 == 0:
-            return spent_time // 60
-        else:
-            return Decimal(spent_time / 60).normalize()
+        return float(numpy.divide(spent_time, 60))
 
 
 class ConstStyleCell:
