@@ -276,7 +276,7 @@ class User:
     def get_issue_work_items(self, date_period: str) -> \
             dict[str, list[tuple[str, datetime.date, Union[int, float]]]]:
         """
-        Defines the dict of the work issue parameters: issue_name, date, spent_time.\n
+        Defines the dict of the work issue parameters: name, date, spent_time.\n
         :param date_period: the period of creating the work issue item, YYYY-MM-DD/YYYY-MM, str
         :return: the dict of the work issues of the dict[str, list[tuple[str, date, Union[int, decimal]]]] type.
         """
@@ -346,7 +346,9 @@ class User:
 
 class Issue:
     """Displays parameters of the issue in the YouTrack."""
-    identifier = 0
+    index = 0
+
+    __slots__ = ("identifier", "name", "state", "summary", "parent", "deadline", "commentary")
 
     def __init__(self,
                  name: str, *,
@@ -355,7 +357,7 @@ class Issue:
                  parent: str = None,
                  deadline: datetime.date = None,
                  commentary: str = None):
-        self.identifier = Issue.identifier
+        self.identifier = Issue.index
         self.name = name
         self.state = state
         self.summary = summary
@@ -364,7 +366,7 @@ class Issue:
         self.commentary = commentary
 
         ConstYT.dict_issue[self.identifier] = self
-        Issue.identifier += 1
+        Issue.index += 1
 
     def __str__(self):
         return f"id = {self.identifier}, name = {self.name}, state = {self.state}, summary = {self.summary}," \
@@ -375,7 +377,7 @@ class Issue:
                f"deadline = {self.deadline}, commentary={self.commentary}), id={self.identifier}"
 
     def __key(self):
-        return self.identifier, self.name
+        return self.index, self.name
 
     def __eq__(self, other):
         if isinstance(other, Issue):
@@ -396,11 +398,11 @@ class Issue:
 class IssueWorkItem:
     index = 0
 
-    __slots__ = ("identifier", "issue_name", "date", "spent_time")
+    __slots__ = ("identifier", "name", "date", "spent_time")
 
-    def __init__(self, issue_name: str, date: datetime.date, spent_time: int):
+    def __init__(self, name: str, date: datetime.date, spent_time: int):
         self.identifier = IssueWorkItem.index
-        self.issue_name = issue_name
+        self.name = name
         self.date = date
         self.spent_time = spent_time
 
@@ -408,18 +410,18 @@ class IssueWorkItem:
         IssueWorkItem.index += 1
 
     def __str__(self):
-        return f"IssueWorkItem: issue_name = {self.issue_name}, date = {self.date}, spent_time = {self.spent_time}, " \
+        return f"IssueWorkItem: name = {self.name}, date = {self.date}, spent_time = {self.spent_time}, " \
                f"id: {self.identifier}"
 
     def __repr__(self):
-        return f"IssueWorkItem(issue_name = {self.issue_name}, date = {self.date}, spent_time = {self.spent_time}), " \
+        return f"IssueWorkItem(name = {self.name}, date = {self.date}, spent_time = {self.spent_time}), " \
                f"identifier={self.identifier}"
 
     def __key(self):
-        return self.identifier, self.issue_name, self.date, self.spent_time
+        return self.name, self.date
 
     def __hash__(self):
-        return hash((self.identifier, self.issue_name, self.date, self.spent_time))
+        return hash((self.identifier, self.name, self.date, self.spent_time))
 
     def __eq__(self, other):
         if isinstance(other, IssueWorkItem):
@@ -433,17 +435,57 @@ class IssueWorkItem:
         else:
             return NotImplemented
 
+    def __combine(self, other) -> Optional[int]:
+        if self == other:
+            self.spent_time += other.spent_time
+            del other.spent_time
+            return self.identifier
+        else:
+            return None
+
+    def __lt__(self, other):
+        if isinstance(other, IssueWorkItem):
+            return self.date < other.date
+        else:
+            return NotImplemented
+
+    def __gt__(self, other):
+        if isinstance(other, IssueWorkItem):
+            return self.date > other.date
+        else:
+            return NotImplemented
+
+    def __le__(self, other):
+        if isinstance(other, IssueWorkItem):
+            return self.date <= other.date
+        else:
+            return NotImplemented
+
+    def __ge__(self, other):
+        if isinstance(other, IssueWorkItem):
+            return self.date >= other.date
+        else:
+            return NotImplemented
+
 
 class _IssueMerged:
-    __slots__ = ("issue_name", "issue", "work_items")
+    __slots__ = ("issue_name",)
 
-    def __init__(self, issue_name: str, issue: Issue = None, work_items: list[IssueWorkItem] = None):
-        if work_items is None:
-            work_items = []
-
+    def __init__(self, issue_name: str):
         self.issue_name = issue_name
-        self.issue = issue
-        self.work_items = work_items
+
+    @property
+    def issue(self) -> int:
+        issue: Issue
+        for issue_id, issue in ConstYT.dict_issue.items():
+            if self.issue_name == issue.name:
+                return issue_id
+
+    @property
+    def work_items(self) -> list[int]:
+        work_item: IssueWorkItem
+        return [work_item_id for work_item_id, work_item in ConstYT.dict_issue_work_item.items()
+                if self.issue_name == work_item.name]
 
     def __hash__(self):
         return hash(self.issue_name)
@@ -462,15 +504,15 @@ class _IssueMerged:
 
     def __contains__(self, item):
         if isinstance(item, Issue):
-            return self.issue == item
+            return self.issue == item.identifier
         elif isinstance(item, IssueWorkItem):
-            return item in self.work_items
+            return item.identifier in self.work_items
         else:
             return NotImplemented
 
     def __iter__(self):
         for item in self.work_items:
-            yield item
+            yield self.__getitem_id(item)
 
     def __getattribute__(self, item):
         if item in self.__slots__:
@@ -484,17 +526,43 @@ class _IssueMerged:
             raise AttributeError(f"Incorrect attribute. Only {self.__slots__} are allowed.")
 
     def __getitem__(self, item):
-        return self.work_items[item]
+        if item in self.work_items:
+            return self.work_items[item]
+        return None
 
     def __setitem__(self, key, value):
         self.work_items[key] = value
 
     @property
-    def list_id(self) -> list[int]:
-        return [work_item.identifier for work_item in self.work_items]
+    def __get_issue(self) -> Issue:
+        return ConstYT.dict_issue[self.issue]
+
+    @property
+    def state(self):
+        return self.__get_issue.state
+
+    @property
+    def parent(self):
+        return self.__get_issue.parent
+
+    @property
+    def summary(self):
+        return self.__get_issue.summary
+
+    @property
+    def deadline(self):
+        return self.__get_issue.deadline
+
+    @property
+    def commentary(self):
+        return self.__get_issue.commentary
+
+    @property
+    def dates(self):
+        return [self.__getitem_id(identifier).date for identifier in self.work_items]
 
     def __getitem_id(self, identifier: int) -> Optional[IssueWorkItem]:
-        if identifier in self.list_id:
+        if identifier in self.work_items:
             return ConstYT.dict_issue_work_item[identifier]
         else:
             return None
