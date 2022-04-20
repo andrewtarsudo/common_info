@@ -9,17 +9,17 @@ from _style_work_item import _StyleWorkItem, _StyleWorkItemList
 from openpyxl.styles.cell_style import CellStyle
 
 
-class ConstXL:
-    dict_excel_prop = dict()
-    dict_pyxl_row = dict()
-    dict_pyxl_work_item = dict()
-
-
 def reverse_dict(dict_init: dict):
     dict_reverse = dict()
     for key, value in dict_init.items():
         dict_reverse[value] = key
     return dict_reverse
+
+
+class ConstXL:
+    dict_excel_prop = dict()
+    dict_pyxl_row = dict()
+    dict_pyxl_work_item = dict()
 
 
 class ExcelProp:
@@ -103,17 +103,7 @@ class ExcelProp:
         """"""
         return [header.row for header in self.headers]
 
-    @staticmethod
-    def column_coord(coord: str) -> str:
-        """"""
-        return coordinate_from_string(coord)[0]
-
-    @staticmethod
-    def row_coord(coord: str) -> int:
-        """"""
-        return coordinate_from_string(coord)[1]
-
-    def check_empty(self, item: Union[int, str, Cell]):
+    def check_empty(self, item: Union[int, str, Cell]) -> bool:
         """
         Checks if the cell is empty. The item may be:\n
         the cell, Cell;\n
@@ -218,7 +208,7 @@ def check_coord(coord: str) -> bool:
         return flag
 
 
-def range_coord(start_coord: str, end_coord: str):
+def range_coord(start_coord: str, end_coord: str) -> tuple[int, int, int, int]:
     """
     Convert the range string with the start and end coordinates to the tuple:\n
     (min_row, min_col, max_row, max_col)\n
