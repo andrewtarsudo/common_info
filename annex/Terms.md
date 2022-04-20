@@ -3,6 +3,10 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|PAPR|Peak-to-Average Power Ratio|
+|SC-FDMA|Single Carrier - Frequency Division Multiple Access|
+|HARQ|Hybrid Automatic Repeat Request|
+|MCE|Multicell/Multicast Coordination Entity|
 |TDMA|Time Division Multiple Access|
 |WCDMA|Wideband Code Division Multiple Access|
 |OFDMA|Orthogonal Frequency Division Multiple Access|
