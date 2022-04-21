@@ -268,6 +268,32 @@ def main():
 
     table_dict = dict(zip(list_tables, list_attrs))
     print(table_dict)
+    """
+    gift(content_purchase_id) == content_purchase(id)
+    gift(content_id) == content(id)
+    gift(from_subscriber_id) == subscriber(id)
+    gift(to_subscriber_id) == subscriber(id)
+    renewal_task(subscriber_id) == subscriber(id)
+    renewal_task(subscription_id) == subscription(id)
+    subscription_purchase(subscriber_id) == subscriber(id)
+    subscription_purchase(service_variant_id) == service_variant(id)
+    subscription_purchase(subscription_id) == subscription(id)
+    reminder(subscription_id) == subscription(id)
+    RepoLink(content_id) == RepoMetadata(id)
+    RepoLink(content_id) == content(id)
+    TaskQueue(content_id) == content(id)
+    content_purchase(content_id) == content(id)
+    content_purchase(subscriber_id) == subscriber(id)
+    content_ownership(content_id) == content(id)
+    content_ownership(subscriber_id) == subscriber(id)
+    subscription(subscriber_id) == subscriber(id)
+    subscription(service_variant_id) == service_variant(id)
+    subscription(service_id) == service(id)
+
+    notification_template(event_id) == notification_event(id)
+    notification_template(service_id) == service(id)
+    notification_webhook(product_id) == product(id)
+    """
 
 
 if __name__ == "__main__":
