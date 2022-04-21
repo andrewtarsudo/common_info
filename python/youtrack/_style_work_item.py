@@ -348,8 +348,7 @@ class _StyleWorkItemList(_StyleWorkItem):
         self.styles[key] = value
 
     def __iter__(self):
-        for item in self.styles:
-            yield item
+        return (item for item in self.styles)
 
     @classmethod
     def get_style(cls, style_name: str):
