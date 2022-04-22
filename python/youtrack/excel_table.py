@@ -9,13 +9,6 @@ from _style_work_item import _StyleWorkItem, _StyleWorkItemList
 from openpyxl.styles.cell_style import CellStyle
 
 
-def reverse_dict(dict_init: dict):
-    dict_reverse = dict()
-    for key, value in dict_init.items():
-        dict_reverse[value] = key
-    return dict_reverse
-
-
 class ConstXL:
     dict_excel_prop = dict()
     dict_pyxl_row = dict()
@@ -103,7 +96,17 @@ class ExcelProp:
         """"""
         return [header.row for header in self.headers]
 
-    def check_empty(self, item: Union[int, str, Cell]) -> bool:
+    @staticmethod
+    def column_coord(coord: str) -> str:
+        """"""
+        return coordinate_from_string(coord)[0]
+
+    @staticmethod
+    def row_coord(coord: str) -> int:
+        """"""
+        return coordinate_from_string(coord)[1]
+
+    def check_empty(self, item: Union[int, str, Cell]):
         """
         Checks if the cell is empty. The item may be:\n
         the cell, Cell;\n
@@ -208,7 +211,7 @@ def check_coord(coord: str) -> bool:
         return flag
 
 
-def range_coord(start_coord: str, end_coord: str) -> tuple[int, int, int, int]:
+def range_coord(start_coord: str, end_coord: str):
     """
     Convert the range string with the start and end coordinates to the tuple:\n
     (min_row, min_col, max_row, max_col)\n
@@ -239,6 +242,11 @@ def convert_spent_time(spent_time: Any) -> Union[int, Decimal]:
 
 def converter_work_items(
         work_items: list[tuple[Any, Any, str, str]]) -> list[tuple[datetime.date, Union[int, Decimal], str, str]]:
+    """
+
+    :param work_items:
+    :return:
+    """
     work_items_final: list[tuple[datetime.date, Union[int, Decimal], str, str]] = []
     for work_item in work_items:
         date_init, spent_time_init, coord, style_name = work_item
@@ -514,9 +522,9 @@ class PyXLWorkItem:
         :return: None
         """
         if style_name not in _StyleWorkItemList.style_names:
-            self.cell._style = copy(_StyleWorkItemList.basic())
+            self.cell._style = copy(_StyleWorkItem.basic())
         else:
-            self.cell._style = copy(_StyleWorkItemList.get_style(style_name))
+            self.cell._style = copy(_StyleWorkItem.get_style(style_name))
 
     @property
     def cell_style_params(self):
@@ -581,8 +589,7 @@ class _PyXLMerged:
         return hash(self.__coord)
 
     def __iter__(self):
-        for work_item in self.work_items:
-            yield self.__getitem_id(work_item)
+        return (self.__getitem_id(work_item) for work_item in self.work_items)
 
     def __getitem_id(self, identifier: int) -> Optional[PyXLWorkItem]:
         """
