@@ -1,7 +1,6 @@
 import datetime
 from copy import copy
 from openpyxl.styles.cell_style import CellStyle
-from const import
 from openpyxl.workbook.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
@@ -95,6 +94,12 @@ class WorksheetDefault:
         self.ws = ws
         self.styles = styles
 
+    def __str__(self):
+        return f"Workbook: {self.wb}, Worksheet: {self.ws}"
+
+    def __repr__(self):
+        return f"Work"
+
 
     def __hash__(self):
         return hash((self.wb.properties.name, self.ws.title))
@@ -121,7 +126,7 @@ class WorksheetDefault:
 
     def set_style_cell(self, coord: str, style_name: str):
         """Alias for the self.const.set_style_cell."""
-        style = self.styles.return_style(style_name=style_name)
+        style = self.styles.get_style(style_name)
         self.ws[f'{coord}']._style = copy(style)
         return style
 
@@ -143,7 +148,7 @@ class WorksheetDefault:
         for month, month_params in ConstDefaultWs.dict_month_ranges.items():
             rus_name, coord, _ = month_params
             self.ws[f'{coord}'].value = rus_name
-            self.ws[f'{coord}']._style = self.styles.return_style(month)
+            self.ws[f'{coord}']._style = self.set_style_cell(coord, month)
 
     def month_cell_merge(self):
         """Merges cells for the month title."""
@@ -152,7 +157,7 @@ class WorksheetDefault:
 
     def set_month_title(self):
         """Defines the month titles."""
-        for index, coord in enumerate(Const.month_cell_periods_start()):
+        for index, coord in enumerate(ConstDefaultWs.month_cell_periods_start()):
             self.ws[f'{coord}'].value = self.cells_month[index]
             self.ws[f'{coord}']._style = self.set_style_cell(coord, ConstDefaultWs.dict_month_title_styles[index].name)
 
@@ -161,7 +166,7 @@ class WorksheetDefault:
         for row in rows_from_range(f'A1:NT18'):
             for coord in row:
                 cell: Cell = self.ws[f'{coord}']
-                cell._style = self.set_style_cell(coord=coord, style_name='basic')
+                cell._style = self.set_style_cell(coord, 'basic')
 
     def set_weekends(self):
         """Applies the weekend style."""
@@ -173,23 +178,23 @@ class WorksheetDefault:
 
     def set_headers(self):
         """Applies the headers."""
-        for row, value in self.cells_headers:
+        for row, value in ConstDefaultWs.cells_headers:
             # merge the cells
             self.ws.merge_cells(f'B{row}:E{row}')
 
             cell: Cell = self.ws[f'B{row}']
             cell.value = value
-            cell._style = self.set_style_cell(coord=cell.coordinate, style_name='headers')
+            cell._style = self.set_style_cell(cell.coordinate, 'headers')
 
     def set_headers_row(self):
         """Applies the headers row."""
-        for row, value in self.cells_headers:
+        for row, value in ConstDefaultWs.cells_headers:
             cell_range: tuple[Cell] = self.ws[f'F{row}:NT{row}']
             row_range: tuple[Cell]
             cell: Cell
             for row_range in cell_range:
                 for cell in row_range:
-                    cell._style = self.set_style_cell(coord=cell.coordinate, style_name='headers')
+                    cell._style = self.set_style_cell(cell.coordinate, 'headers')
 
     def set_title(self):
         """Defines the title row."""
@@ -238,63 +243,8 @@ class WorksheetDefault:
     }
     """
 
-
-def save_workbook(wb: Workbook, const: Const, filename: str):
-    """
-    Save the workbook to the file.\n
-    :param wb: the workbook, Workbook
-    :param const: the Const entity, Const
-    :param filename: the name of file to save, str
-    """
-    named_style_list = const.named_style_list
-    wb._named_styles = named_style_list
-    wb.save(filename=filename)
-
-
-def set_workbook():
-    wb = Workbook()
-    wb.create_sheet(title='Итог', index=0)
-    wb.create_sheet(title='12 мес.', index=1)
-    const = Const()
-    ws: Worksheet = wb['12 мес.']
-    ws_default = WorksheetDefault(wb=wb, ws=ws, const=const)
-    # set default
-    ws_default.set_default()
-    print('ws_default.set_default()')
-    # set dates
-    ws_default.set_dates()
-    print('ws_default.set_dates()')
-    # set month titles
-    ws_default.set_month_title()
-    print('ws_default.set_month_title()')
-    # set month headers
-    ws_default.set_headers()
-    print('ws_default.set_headers()')
-    # set headers row
-    ws_default.set_headers_row()
-    print('ws_default.set_headers_row()')
-    # set table
-    ws_default.set_table()
-    print('ws_default.set_table()')
-    # set weekend
-    ws_default.set_weekends()
-    print('ws_default.set_weekends()')
-    # set legend
-    ws_default.set_legend()
-    print('ws_default.set_legend()')
-
-    named_style_list = [*const.named_style_list]
-    # style_array = [named_style.as_tuple() for named_style in named_style_list]
-    wb._named_styles = []
-    for named_style in named_style_list:
-        if named_style not in wb._named_styles:
-            wb.add_named_style(named_style)
-    # wb._named_styles = named_style_list
-    wb.save('test_xlsx.xlsx')
-
-
 def main():
-    set_workbook()
+    pass
 
 
 if __name__ == '__main__':
