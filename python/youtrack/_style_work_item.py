@@ -305,11 +305,13 @@ def generate_from_style(name: str, base_style: _StyleWorkItem, attrs: list = Non
         return style
 
 
-class _StyleWorkItemList(_StyleWorkItem):
+class _StyleWorkItemList:
     __doc__ = """"""
     list_states = (
         "weekend", "deadline", "done", "active", "test", "going_start", "paused",
         "verified_closed", "going_finish", "sick", "vacation")
+
+    __slots__ = ("name", "styles")
 
     def __init__(self, name: str, styles: list[_StyleWorkItem] = None):
         """
@@ -350,14 +352,19 @@ class _StyleWorkItemList(_StyleWorkItem):
     def __iter__(self):
         return (item for item in self.styles)
 
-    @classmethod
-    def get_style(cls, style_name: str):
+
+    def get_style(self, style_name: str):
+        """
+
+        :param style_name:
+        :return:
+        """
         if style_name == "basic":
-            return cls.basic()
+            return _StyleWorkItem.basic()
         elif style_name in _StyleWorkItemList.list_states:
-            for style in cls.styles:
+            for style in self.styles:
                 if style.name == style_name:
-                    return _StyleWorkItemList[style]
+                    return self[style]
 
     @property
     def style_names(self):
