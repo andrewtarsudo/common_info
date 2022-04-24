@@ -352,7 +352,6 @@ class _StyleWorkItemList:
     def __iter__(self):
         return (item for item in self.styles)
 
-
     def get_style(self, style_name: str):
         """
 
