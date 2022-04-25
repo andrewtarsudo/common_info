@@ -343,6 +343,7 @@ user_role.role_id -> role.id
 user_role.user_id -> user.id
 
 """
+from pprint import pprint
 
 
 class Const:
@@ -496,7 +497,7 @@ class Connection:
                  table_to: str,
                  param_from: str,
                  param_to: str,
-                 table_type: str = "dpdp_web"):
+                 table_type: str):
         self.table_from = table_from
         self.table_to = table_to
         self.param_from = param_from
@@ -618,21 +619,53 @@ class ConnectionList:
             list_final.append(line)
         return "\n".join(list_final)
 
-
-def get_connections(list_connections: list[tuple[str, str, str, str]]):
-    return [Connection(table_from=table_from, table_to=table_to, param_from=param_from, param_to=param_to) for
-            table_from, table_to, param_from, param_to in list_connections]
+    def num_connections(self, table_name):
+        return len(self.get_from_to(table_name).split("\n")) - 1
 
 
-def get_result(list_connections):
-    connections = get_connections(list_connections)
+def get_connections(list_connections: list[tuple[str, str, str, str]], table_type):
+    return [Connection(table_from=table_from, table_to=table_to, param_from=param_from, param_to=param_to,
+                       table_type=table_type) for table_from, table_to, param_from, param_to in list_connections]
+
+
+def get_attrs(list_connections, table_type):
+    connections = get_connections(list_connections, table_type)
     connection_list = ConnectionList("connection_list", connections)
+    const_dict = Const.dict_types[table_type]
+
+    to_values = [(connection.table_to, connection.param_to) for connection in connections]
+    from_values = [(connection.table_from, connection.param_from) for connection in connections]
+    res = [*to_values, *from_values]
+    res.sort()
+    return set(res)
+
+
+def get_result(list_connections, table_type):
+    connections = get_connections(list_connections, table_type)
+    connection_list = ConnectionList("connection_list", connections)
+    const_dict = Const.dict_types[table_type]
 
     if connection_list.verify_from and connection_list.verify_to:
-        for item in Const.dict_dpdp_web.keys():
+        for item in const_dict.keys():
             print("----------")
+            print(connection_list.num_connections(item))
             print(connection_list.get_from_to(item))
 
+
+def get_not_null(list_connections, table_type):
+    connections = get_connections(list_connections, table_type)
+    connection_list = ConnectionList("connection_list", connections)
+    const_dict = Const.dict_types[table_type]
+    items = [item for item in const_dict.keys() if connection_list.num_connections(item)]
+    return items, len(items)
+
+
+def num_tables(dict_type: str):
+    if dict_type in Const.dict_types.keys():
+        return len(Const.dict_types[dict_type])
+    else:
+        print("KeyError")
+        return -1
 
 def main():
     list_connections_dpdp_core: list[tuple[str, str, str, str]] = [
@@ -760,7 +793,40 @@ def main():
         ("category", "user", "updater_id", "id")
     ]
 
-    get_result(list_connections_dpdp_web)
+    merged_dict_type: list[tuple] = [(list_connections_dpdp_core, "dpdp_core"), (list_connections_rbt_web, "rbt_web"),
+                                     (list_connections_dpdp_web, "dpdp_web")]
+    for connections, dict_type in merged_dict_type:
+        if dict_type == "dpdp_web":
+            print("----------")
+            print("----------")
+            print(dict_type)
+            print("----------")
+            print("----------")
+            get_result(connections, dict_type)
+
+    print("----------")
+    #
+    # for connections, dict_type in merged_dict_type:
+    #     print(get_not_null(connections, dict_type))
+
+    # for connections, dict_type in merged_dict_type:
+    #     if dict_type == "dpdp_core":
+    #         pprint(get_attrs(connections, dict_type))
+    #         print(len(get_attrs(connections, dict_type)))
+    dict_table: dict[str, list[str]] = dict()
+    for key in Const.dict_types["dpdp_web"].keys():
+        dict_table[key] = list()
+    for connections, dict_type in merged_dict_type:
+        if dict_type == "dpdp_web":
+            for table, attr in get_attrs(connections, dict_type):
+                dict_table[table].append(attr)
+
+    pprint(dict_table)
+
+
+    # for _, dict_type in merged_dict_type:
+    #     print(f"{dict_type}: {num_tables(dict_type)}")
+
 
 
 if __name__ == "__main__":
