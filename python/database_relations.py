@@ -1,4 +1,24 @@
 """
+caller_group_member(group_id) == caller_group(id)
+caller_group_member(member_id) == member(id)
+rule_caller_group(rule_id) == rule(id)
+rule_caller_group(caller_group_id) == caller_group(id)
+rule_schedule(rule_id) == rule(id)
+rule_schedule(schedule_id) == schedule(id)
+rule_content(rule_id) == rule(id)
+rule_content(subscriber_content_id) == subscriber_content(id)
+subscriber_content_list_item(subscriber_content_list_id) == subscriber_content_list(id)
+subscriber_content_list_item(subscriber_content_id) == subscriber_content(id)
+member(subscriber_id) == subscriber(id)
+corporate_member(subscriber_id) == subscriber(id)
+caller_group(subscriber_id) == subscriber(id)
+rule(subscriber_id) == subscriber(id)
+schedule(subscriber_id) == subscriber(id)
+subscriber_content(subscriber_id) == subscriber(id)
+subscriber_content_list(subscriber_id) == subscriber(id)
+
+
+
 notification_template
 notification_template.event_id -> notification_event.id
 notification_template.service_id -> service.id
@@ -645,11 +665,17 @@ def get_result(list_connections, table_type):
     connection_list = ConnectionList("connection_list", connections)
     const_dict = Const.dict_types[table_type]
 
-    if connection_list.verify_from and connection_list.verify_to:
-        for item in const_dict.keys():
-            print("----------")
-            print(connection_list.num_connections(item))
-            print(connection_list.get_from_to(item))
+    return [(connection_list.num_connections(item), connection_list.get_from_to(item)) for item in const_dict.keys()]
+
+
+def get_result_with_ignore(list_connections, table_type, ignore: str = None):
+    if ignore is None:
+        connections = get_connections(list_connections, table_type)
+        proper_connections = [connection for connection in connections if connection.table_to != ignore]
+        connection_list = ConnectionList("connection_list", proper_connections)
+        const_dict = Const.dict_types[table_type]
+        return [(connection_list.num_connections(item), connection_list.get_from_to(item))
+                for item in const_dict.keys()]
 
 
 def get_not_null(list_connections, table_type):
@@ -666,6 +692,29 @@ def num_tables(dict_type: str):
     else:
         print("KeyError")
         return -1
+
+
+def print_all(connections, dict_type, ignore: str = None):
+    print("----------")
+    print("----------")
+    print(dict_type)
+    print("----------")
+    print("----------")
+    pprint(get_result_with_ignore(connections, dict_type, ignore))
+    print("----------")
+
+
+def print_item(connections, dict_type, name, ignore: str = None):
+    proper_connections = [(table_from, table_to, *_) for (table_from, table_to, *_) in connections
+                          if table_from == name or table_to == name]
+    print("----------")
+    print("----------")
+    print(dict_type)
+    print("----------")
+    print("----------")
+    pprint(get_result_with_ignore(proper_connections, dict_type, ignore))
+    print("----------")
+
 
 def main():
     list_connections_dpdp_core: list[tuple[str, str, str, str]] = [
@@ -795,16 +844,15 @@ def main():
 
     merged_dict_type: list[tuple] = [(list_connections_dpdp_core, "dpdp_core"), (list_connections_rbt_web, "rbt_web"),
                                      (list_connections_dpdp_web, "dpdp_web")]
-    for connections, dict_type in merged_dict_type:
-        if dict_type == "dpdp_web":
-            print("----------")
-            print("----------")
-            print(dict_type)
-            print("----------")
-            print("----------")
-            get_result(connections, dict_type)
+    dict_type = "rbt_web"
+    print("print_all")
+    print_all(list_connections_dpdp_core, dict_type)
 
-    print("----------")
+    # item = "subscriber"
+    # print_item(list_connections_dpdp_core, dict_type, item)
+
+    pprint(get_result(list_connections_dpdp_core, dict_type))
+    pprint(get_result_with_ignore(list_connections_dpdp_core, dict_type))
     #
     # for connections, dict_type in merged_dict_type:
     #     print(get_not_null(connections, dict_type))
@@ -813,15 +861,15 @@ def main():
     #     if dict_type == "dpdp_core":
     #         pprint(get_attrs(connections, dict_type))
     #         print(len(get_attrs(connections, dict_type)))
-    dict_table: dict[str, list[str]] = dict()
-    for key in Const.dict_types["dpdp_web"].keys():
-        dict_table[key] = list()
-    for connections, dict_type in merged_dict_type:
-        if dict_type == "dpdp_web":
-            for table, attr in get_attrs(connections, dict_type):
-                dict_table[table].append(attr)
-
-    pprint(dict_table)
+    # dict_table: dict[str, list[str]] = dict()
+    # for key in Const.dict_types["dpdp_web"].keys():
+    #     dict_table[key] = list()
+    # for connections, dict_type in merged_dict_type:
+    #     if dict_type == "dpdp_web":
+    #         for table, attr in get_attrs(connections, dict_type):
+    #             dict_table[table].append(attr)
+    #
+    # pprint(dict_table)
 
 
     # for _, dict_type in merged_dict_type:
