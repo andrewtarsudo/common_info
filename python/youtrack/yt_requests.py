@@ -566,6 +566,66 @@ class IssueWorkItem:
             return NotImplemented
 
 
+class _IssueMerged:
+    index = 0
+
+    def __init__(self, issue_name: str):
+        self.issue_name = issue_name
+
+    def __hash__(self):
+        return hash(self.issue_name)
+
+    def __key(self):
+        return self.issue_name, self.issue_item, self.work_items
+
+    def __eq__(self, other):
+        if isinstance(other, _IssueMerged):
+            return self.issue_name == other.issue_name
+        else:
+            return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, _IssueMerged):
+            return self.__key() != other.issue_name
+        else:
+            return NotImplemented
+
+    def __len__(self):
+        return len(self.work_items)
+
+    def __contains__(self, item):
+        if isinstance(item, Issue):
+            return self.issue_item == item
+        elif isinstance(item, IssueWorkItem):
+            return item in self.work_items
+        else:
+            return NotImplemented
+
+    def __getitem__(self, item):
+        if item < len(self.work_items):
+            return self.work_items[item]
+        else:
+            return None
+
+    def __setitem__(self, key, value):
+        self.work_items[key] = value
+
+    def __iter__(self):
+        return (work_item for work_item in self.work_items)
+
+    @property
+    def issue_item(self):
+        issue: Issue
+        for issue in ConstYT.dict_issue.values():
+            if issue.issue == self.issue_name:
+                return issue
+
+    @property
+    def work_items(self):
+        work_item: IssueWorkItem
+        return [work_item for work_item in ConstYT.dict_issue_work_item.values() if work_item.issue == self.issue_name]
+
+
 def main():
     path = pathlib.Path("./youtrack.json")
     user_config = UserConfig.set_config_file(path)
