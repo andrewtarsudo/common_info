@@ -11,9 +11,12 @@ from yt_config import UserConfig
 
 
 class ConstYT:
+    """
+
+    """
     dict_issue = dict()
     dict_issue_work_item = dict()
-
+    # state and deadline identifiers
     dict_issue_name = {
         "ARCH_ST": ('139-1028', '67-2494'),
         "DOC_ST": ('139-595', '67-1426'),
@@ -21,7 +24,7 @@ class ConstYT:
         "DOC": ('139-339', '67-1127'),
         "VCST": ('139-77', '67-353')
     }
-
+    # patterns to parse user-defined period dates
     date_conversion_rules = (
         (re.compile(r'(\d{4}).(\d{1,2}).(\d{1,2})'), (1, 2, 3)),
         (re.compile(r'(\d{1,2}).(\d{1,2}).(\d{4})'), (3, 2, 1))
@@ -142,6 +145,32 @@ def define_deadline_state(issue_name: str, res: str) -> Optional[str]:
 
 
 class User:
+    """
+    Define the User entity to send the YouTrack requests.
+
+    Params:
+        user_config --- the UserConfig item
+
+    Properties:
+        login --- get the login;\n
+        period_start --- shorten the period_start call;\n
+        period_end --- shorten the period_end call;\n
+        auth_token --- shorten the auth_token call;\n
+        get_login --- get the login to authorize in the YouTrack;\n
+        __headers_yt --- set the headers for requests;\n
+        __login_input --- get the login from the user input;\n
+        period --- set the period to get the issues and work items;\n
+
+    Functions:
+        request(url, params, method) --- shorten the request sending;\n
+        _verify_login(login_option) --- check if the login_option is a proper login;\n
+        get_issue_work_items() --- get IssueWorkItem instances;\n
+        get_issues() -- get Issue instances;\n
+        get_issue_state(issue) --- define the state of the issue from the YouTrack;\n
+        get_issue_deadline(issue) --- define the deadline of the issue from the YouTrack;\n
+        get_issue_id(issue) --- get the Issue instance from the YouTrack by the issue name;\n
+        parse_response_issue(response_item) --- parse the response in the dict format to get Issue;\n
+    """
     __slots__ = "user_config"
 
     def __init__(self, user_config: UserConfig):
@@ -154,28 +183,53 @@ class User:
         return f"User(user_config={self.user_config})"
 
     @property
-    def login(self):
-        """Shorten the login call."""
+    def login(self) -> str:
+        """
+        Shorten the login call.
+        
+        :return: the login.
+        :rtype: str
+        """
         return self.user_config.get_json_attr("login")
 
     @property
-    def period_start(self):
-        """Shorten the period_start call."""
+    def period_start(self) -> str:
+        """
+        Shorten the period_start call.
+        
+        :return: the period_start.
+        :rtype: str
+        """
         return self.user_config.get_json_attr("period_start")
 
     @property
-    def period_end(self):
-        """Shorten the period_end call."""
+    def period_end(self) -> str:
+        """
+        Shorten the period_end call.
+        
+        :return: the period_end.
+        :rtype: str
+        """
         return self.user_config.get_json_attr("period_end")
 
     @property
-    def auth_token(self):
-        """Shorten the auth_token call."""
+    def auth_token(self) -> str:
+        """
+        Shorten the auth_token call.
+        
+        :return: the auth_token.
+        :rtype: str
+        """
         return self.user_config.get_json_attr("auth_token")
 
     @property
     def get_login(self) -> str:
-        """Get the login to authorize in the YouTrack."""
+        """
+        Get the login to authorize in the YouTrack.
+        
+        :return: the login.
+        :rtype: str
+        """
         if not self._verify_login(self.login):
             login = self.__login_input
             self.user_config.update_json_item(UserConfig.path, "login", login)
@@ -183,7 +237,12 @@ class User:
 
     @property
     def __headers_yt(self) -> dict[str, str]:
-        """Set the headers for requests."""
+        """
+        Set the headers for requests.
+        
+        :return: the headers.
+        :rtype: dict[str, str]
+        """
         bearer = " ".join(("Bearer", self.auth_token))
         return {
             "Authorization": bearer,
@@ -208,8 +267,13 @@ class User:
         return "error" not in self.request(url, params).keys()
 
     @property
-    def __login_input(self):
-        """Get the login from the user input."""
+    def __login_input(self) -> str:
+        """
+        Get the login from the user input.
+        
+        :return: the user input.
+        :rtype: str
+        """
         # if the login is correct
         if self._verify_login(self.login):
             return self.login
@@ -224,7 +288,12 @@ class User:
 
     @property
     def period(self) -> str:
-        """Set the period to get the issues and work items."""
+        """
+        Set the period to get the issues and work items.
+        
+        :return: the period.
+        :rtype: str
+        """
         # convert the date inputs
         start = convert_date_iso(self.period_start)
         end = convert_date_iso(self.period_end)
@@ -234,7 +303,7 @@ class User:
         return " .. ".join((start_period, end_period))
 
     def get_issue_work_items(self):
-        """Gets the work issues: name, date, spent_time."""
+        """Get IssueWorkItem instances. name, date, spent_time."""
         # define the parameters of the request
         url = 'https://youtrack.protei.ru/api/workItems'
         parameters_fields = ','.join(('duration(minutes)', 'date', 'issue(idReadable)'))
@@ -250,7 +319,7 @@ class User:
             IssueWorkItem(issue, date, modified_spent_time)
 
     def get_issues(self):
-        """Get issues with the period defined."""
+        """Get Issue instances. issue, state, summary, parent, deadline."""
         # define the parameters of the request
         states_period = "state: Done, Test, Verified, Closed, Canceled, Review"
         states_no_period = "state: New, Active, Paused, Discuss"
@@ -276,12 +345,13 @@ class User:
 
     def get_issue_state(self, issue: str) -> Optional[str]:
         """
-        Defines the state of the issue from the YouTrack.\n
-        :param issue: the issue identifier, idReadable, str
-        :return: the issue state of the str type.
+        Define the state of the issue from the YouTrack.
+
+        :param str issue: the issue identifier, idReadable
+        :return: the issue state.
+        :rtype: str or None
         """
         state_identifier = define_deadline_state(issue, 'state')
-
         if state_identifier is None:
             return None
         else:
@@ -290,38 +360,37 @@ class User:
             params = (('fields', 'value(name)'),)
             # get the response in the JSON format
             parsed_response = self.request(url, params)
-
             if "value" in parsed_response.keys() and "name" in parsed_response["value"].keys():
                 return convert_issue_state(parsed_response['value']['name'])
-            else:
-                return None
+            return None
 
-    def get_issue_deadline(self, issue: str) -> datetime.date:
+    def get_issue_deadline(self, issue: str) -> Optional[datetime.date]:
         """
-        Defines the deadline of the issue from the YouTrack.
+        Define the deadline of the issue from the YouTrack.
 
         :param str issue: the issue identifier, idReadable
         :return: the issue deadline.
-        :rtype: date
+        :rtype: date or None
         """
         deadline_identifier = define_deadline_state(issue, 'deadline')
-        deadline: datetime.date = datetime.date(1, 1, 1)
-        if deadline_identifier != 'None':
+        if deadline_identifier is None:
+            return None
+        else:
             # define the parameters of the request
             url = f'https://youtrack.protei.ru/api/issues/{issue}/customFields/{deadline_identifier}'
             params = (('fields', 'value(name)'),)
             # get the response in the JSON format
             parsed_response = self.request(url, params)
-
             if "value" in parsed_response.keys():
-                deadline = convert_long_date(parsed_response['value'])
-        return deadline
+                return convert_long_date(parsed_response['value'])
+            return None
 
     def get_issue_id(self, issue: str):
         """
-        Defines the dict of the issue parameters: parent, name, summary, deadline, state, work_items.
+        Get the Issue instance from the YouTrack by the issue name.
 
-        :param str issue: the issue name, str
+        :param str issue: the issue name
+        :return: None.
         """
         # define the parameters of the request
         url = f'https://youtrack.protei.ru/api/issues/{issue}'
@@ -333,9 +402,10 @@ class User:
 
     def parse_response_issue(self, response_item: dict):
         """
+        Parse the response in the dict format to get Issue.
 
-        :param response_item:
-        :return:
+        :param dict[str, Union[str, dict]] response_item: the response to parse
+        :return: None.
         """
         # define the issue name
         issue: str = response_item['idReadable']
@@ -381,13 +451,13 @@ def convert_spent_time(spent_time: int) -> Union[int, float]:
     return numpy.divide(spent_time, 60)
 
 
-def parse_response_work_item(response_item: dict):
+def parse_response_work_item(response_item: dict) -> tuple[str, datetime.date, Union[int, float]]:
     """
     Get the parameters from the response item.
 
     :param dict response_item: the item from the response
     :return: the issue name, date, and modified spent time.
-    :rtype: tuple[str, datetime.date, Union[int, float]]
+    :rtype: tuple[str, date, (int or float)]
     """
     # define the issue name of the work item
     issue: str = response_item['issue']['idReadable']
@@ -402,9 +472,11 @@ def parse_response_work_item(response_item: dict):
 
 def convert_issue_state(state: str) -> str:
     """
-    Converts the state to the table headers.\n
-    :param state: the issue state, str
-    :return: the modified state of the str type.
+    Converts the state to the table headers.
+
+    :param str state: the issue state
+    :return: the modified state.
+    :rtype: str
     """
     # the issues to convert to the New/Paused
     to_new_paused = ('New', 'Paused', 'Canceled', 'Discuss')
@@ -426,7 +498,8 @@ def convert_issue_state(state: str) -> str:
 
 
 class Issue:
-    """Define the Issue entity from the YouTrack.
+    """
+    Define the Issue entity from the YouTrack.
 
     Params:
         index --- the unique issue identifier, 0-based\n
@@ -449,6 +522,7 @@ class Issue:
             summary: str,
             parent: str = None,
             deadline: datetime.date = None):
+
         self.identifier = Issue.index
         self.issue = issue
         self.state = state
@@ -493,6 +567,20 @@ class Issue:
 
 
 class IssueWorkItem:
+    """
+    Define the IssueWorkItem entity from the YouTrack.
+
+    Params:
+        index --- the unique item identifier, 0-based\n
+        issue --- the issue name, idReadable, {project}-{id}\n
+        date --- the issue work item date, date
+        spent_time -- the issue work item recorded time in minutes, int
+
+    state values: Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
+
+    Functions:
+        __join_items(other) --- combine two instances with the same date;
+    """
     index = 0
 
     __slots__ = ("identifier", "issue", "date", "spent_time")
@@ -534,7 +622,12 @@ class IssueWorkItem:
         return self.issue, self.date
 
     def __join_items(self, other):
-        """Combines the work items with the same issue and date into the single one."""
+        """
+        Combines the work items with the same issue and date into the single one.
+
+        :param other: the issue work item
+        :return: None.
+        """
         if isinstance(other, IssueWorkItem):
             if self.__key_order() == other.__key_order() and self.spent_time != other.spent_time:
                 IssueWorkItem(self.issue, self.date, self.spent_time + other.spent_time)
@@ -567,7 +660,35 @@ class IssueWorkItem:
 
 
 class _IssueMerged:
+    """
+    Define the merged Issue and IssueWorkItem instances.
+
+    Constants:
+        issue_attrs --- the issue attributes:
+            "state", "summary", "parent", "deadline"
+        work_item_attrs --- the issue work item attributes:
+            "date", "spent_time"
+
+    Params:
+        index --- the unique item identifier,
+            0-based\n
+        issue_name --- the issue name, idReadable,
+            {project}-{id}\n
+
+    Properties:
+        issue_item --- the Issue item;\n
+        work_items --- the IssueWorkItem items;\n
+        items_id --- the IssueWorkItem item identifiers;\n
+
+    Functions:
+        _get_work_attr(work_item_id, attr) --- get the attribute of the IssueWorkItem item.
+    """
+
     index = 0
+    issue_attrs = ("state", "summary", "parent", "deadline")
+    work_item_attrs = ("date", "spent_time")
+
+    __slots__ = "issue_name"
 
     def __init__(self, issue_name: str):
         self.issue_name = issue_name
@@ -614,16 +735,54 @@ class _IssueMerged:
         return (work_item for work_item in self.work_items)
 
     @property
-    def issue_item(self):
+    def issue_item(self) -> Issue:
+        """
+        Get the issue.
+
+        :return: the issue.
+        :rtype: Issue
+        """
         issue: Issue
         for issue in ConstYT.dict_issue.values():
             if issue.issue == self.issue_name:
                 return issue
 
     @property
-    def work_items(self):
+    def work_items(self) -> list[IssueWorkItem]:
+        """
+        Get the work items.
+
+        :return: the work items.
+        :rtype: list[IssueWorkItem]
+        """
         work_item: IssueWorkItem
         return [work_item for work_item in ConstYT.dict_issue_work_item.values() if work_item.issue == self.issue_name]
+
+    @property
+    def items_id(self) -> list[int]:
+        """
+        Get the work item identifiers.
+
+        :return: the identifiers.
+        :rtype: list[int]
+        """
+        return [work_item.identifier for work_item in self.work_items]
+
+    def _get_work_attr(self, work_item_id: int, attr: str):
+        """
+        Get work item attribute.
+
+        :param int work_item_id: the work item identifier
+        :param str attr: the attribute name
+        :return: the attribute value
+        """
+        if attr in _IssueMerged.work_item_attrs:
+            index = self.items_id.index(work_item_id)
+            return getattr(self.work_items[index], attr, None)
+        elif attr in _IssueMerged.issue_attrs:
+            return getattr(self.issue_item, attr, None)
+        else:
+            return None
 
 
 def main():
