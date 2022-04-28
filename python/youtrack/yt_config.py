@@ -64,12 +64,23 @@ class UserConfig:
 
     @staticmethod
     def check_json(file_path: pathlib.Path) -> bool:
-        """Verify if the file exists."""
+        """
+        Verify if the file exists.
+        
+        :param pathlib.Path file_path: the path to the file
+        :return: the validation result.
+        :rtype: bool
+        """
         return file_path.exists()
 
     @staticmethod
     def generate_json(file_path: pathlib.Path):
-        """Create the file if it does not exist."""
+        """
+        Create the file if it does not exist.
+        
+        :param pathlib.Path file_path: the path to the file
+        :return: None.
+        """
         with open(file_path, "w") as json_file:
             json.dump(UserConfig.default_conf, json_file)
 
@@ -100,7 +111,7 @@ class UserConfig:
         if key in UserConfig.conf_values:
             return UserConfig.conf_values[key]
         else:
-            print("AttributeError, no such attribute.")
+            print(f"AttributeError, the attribute {key} is not specified.")
             return None
 
     @staticmethod
