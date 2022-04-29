@@ -43,7 +43,8 @@ class ExcelProp:
         check_empty(item) -> bool --- get the cell emptiness flag;\n
         list_state_item(state) -> list[int] --- get the non-empty rows with issues of the state;\n
         get_work_items(row) -> list[tuple[datetime.date, Union[int, Decimal], str, str]] ---
-            get the PyXLWorkItem instances in the row
+            get the PyXLWorkItem instances in the row;\n
+        get_column_date(date) -> str --- get the column letter for the specified date;\n
     """
 
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
@@ -75,6 +76,19 @@ class ExcelProp:
             return (self.ws != other.ws) and (self.name != other.name)
         else:
             return NotImplemented
+
+    def get_column_date(self, date: datetime.date) -> str:
+        """
+        Get the column letter for the specified date.
+
+        :param datetime.date date: the date
+        :return: the column_letter
+        :rtype: str
+        """
+        cell: Cell
+        for cell in self.cell_in_range("G1", "NR1"):
+            if convert_datetime_date(cell.value) == date:
+                return cell.column_letter
 
     @property
     def bottom_right(self) -> Cell:
