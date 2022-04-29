@@ -186,7 +186,7 @@ class User:
     def login(self) -> str:
         """
         Shorten the login call.
-        
+
         :return: the login.
         :rtype: str
         """
@@ -196,7 +196,7 @@ class User:
     def period_start(self) -> str:
         """
         Shorten the period_start call.
-        
+
         :return: the period_start.
         :rtype: str
         """
@@ -206,7 +206,7 @@ class User:
     def period_end(self) -> str:
         """
         Shorten the period_end call.
-        
+
         :return: the period_end.
         :rtype: str
         """
@@ -216,7 +216,7 @@ class User:
     def auth_token(self) -> str:
         """
         Shorten the auth_token call.
-        
+
         :return: the auth_token.
         :rtype: str
         """
@@ -226,7 +226,7 @@ class User:
     def get_login(self) -> str:
         """
         Get the login to authorize in the YouTrack.
-        
+
         :return: the login.
         :rtype: str
         """
@@ -239,7 +239,7 @@ class User:
     def __headers_yt(self) -> dict[str, str]:
         """
         Set the headers for requests.
-        
+
         :return: the headers.
         :rtype: dict[str, str]
         """
@@ -270,7 +270,7 @@ class User:
     def __login_input(self) -> str:
         """
         Get the login from the user input.
-        
+
         :return: the user input.
         :rtype: str
         """
@@ -290,7 +290,7 @@ class User:
     def period(self) -> str:
         """
         Set the period to get the issues and work items.
-        
+
         :return: the period.
         :rtype: str
         """
