@@ -250,6 +250,15 @@ class ExcelProp:
         """
         return [PyXLRow.get_pyxl_row(self.name, f"C{row}") for list_state in self.list_state_row for row in list_state]
 
+    def pyxl_row_names(self):
+        """
+        Get the pyxl_row issue names.
+
+        :return: the list of issue names.
+        :rtype: list[str]
+        """
+        return [task.issue for task in self.tasks]
+
     def get_work_items(self, row: int) -> list[tuple[datetime.date, Union[int, Decimal], str, str]]:
         """
         Get the work items.
@@ -324,6 +333,13 @@ def range_coord(start_coord: str, end_coord: str):
     return min_row, max_row, min_col, max_col
 
 
+def get_pyxl_row_name(name: str):
+    pyxl_row: PyXLRow
+    for pyxl_row in ConstXL.dict_pyxl_row:
+        if pyxl_row.issue == name:
+            return pyxl_row
+
+
 def convert_spent_time(spent_time: Any) -> Union[int, Decimal]:
     """Converts the spent time to the specified format."""
     return spent_time if isinstance(spent_time, int) else Decimal(spent_time).normalize()
@@ -360,6 +376,9 @@ def convert_datetime_date(value: Any) -> Optional[datetime.date]:
 
 
 class PyXLRow:
+    """
+
+    """
     index = 0
     __slots__ = ("excel_prop_name", "issue", "identifier")
 
@@ -434,47 +453,47 @@ class PyXLRow:
         return cls(excel_prop_name, excel_prop.ws[f"{coord}"])
 
     @property
-    def excel_prop(self):
+    def excel_prop(self) -> ExcelProp:
         """Returns the ExcelProp instance."""
         return ConstXL.dict_excel_prop[self.excel_prop_name]
 
     @property
-    def ws(self):
+    def ws(self) -> Worksheet:
         """Returns the Worksheet instance."""
         return self.excel_prop.ws
 
     @property
-    def coord(self):
+    def coord(self) -> str:
         """Returns the cell coordinate."""
         return self.issue.coordinate
 
     @property
-    def row(self):
+    def row(self) -> int:
         """Returns the cell row."""
         return self.issue.row
 
     @property
-    def parent(self):
+    def parent(self) -> Optional[str]:
         """Get the parent issue name."""
         return self.ws[f"B{self.row}"].value
 
     @property
-    def issue_name(self):
+    def issue_name(self) -> str:
         """Get the issue name."""
         return self.ws[f"C{self.row}"].value
 
     @property
-    def summary(self):
+    def summary(self) -> str:
         """Get the issue summary."""
         return self.ws[f"D{self.row}"].value
 
     @property
-    def deadline(self):
+    def deadline(self) -> Optional[datetime.date]:
         """Get the issue deadline."""
-        return self.ws[f"E{self.row}"].value
+        return convert_datetime_date(self.ws[f"E{self.row}"].value)
 
     @property
-    def commentary(self):
+    def commentary(self) -> Optional[str]:
         """Get the issue commentary."""
         return self.ws[f"NS{self.row}"].value
 
@@ -500,6 +519,9 @@ class PyXLWorkItem:
     """
     Define the work items in the table.
 
+    Params:
+        excel_prop_name --- the ExcelProp instance name;\n
+        cell --- the cell in the table;\n
     """
 
     index = 0
