@@ -149,7 +149,7 @@ class User:
     Define the User entity to send the YouTrack requests.
 
     Params:
-        user_config --- the UserConfig item
+        user_config --- the UserConfig item;\n
 
     Properties:
         login --- get the login;\n
@@ -502,12 +502,12 @@ class Issue:
     Define the Issue entity from the YouTrack.
 
     Params:
-        index --- the unique issue identifier, 0-based\n
-        issue --- the issue name, idReadable, {project}-{id}\n
-        state --- the issue state, state
-        summary -- the issue short description, summary
-        parent --- the parent issue name, parent
-        deadline --- the issue deadline, deadline
+        index --- the unique issue identifier, 0-based;\n
+        issue --- the issue name, idReadable, {project}-{id};\n
+        state --- the issue state, state;\n
+        summary -- the issue short description, summary;\n
+        parent --- the parent issue name, parent;\n
+        deadline --- the issue deadline, deadline;\n
 
     state values: Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
     """
@@ -571,10 +571,10 @@ class IssueWorkItem:
     Define the IssueWorkItem entity from the YouTrack.
 
     Params:
-        index --- the unique item identifier, 0-based\n
-        issue --- the issue name, idReadable, {project}-{id}\n
-        date --- the issue work item date, date
-        spent_time -- the issue work item recorded time in minutes, int
+        index --- the unique item identifier, 0-based;\n
+        issue --- the issue name, idReadable, {project}-{id};\n
+        date --- the issue work item date, date;\n
+        spent_time -- the issue work item recorded time in minutes, int;\n
 
     state values: Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
 
@@ -665,15 +665,15 @@ class _IssueMerged:
 
     Constants:
         issue_attrs --- the issue attributes:
-            "state", "summary", "parent", "deadline"
+            "state", "summary", "parent", "deadline";\n
         work_item_attrs --- the issue work item attributes:
-            "date", "spent_time"
+            "date", "spent_time";\n
 
     Params:
         index --- the unique item identifier,
-            0-based\n
+            0-based;\n
         issue_name --- the issue name, idReadable,
-            {project}-{id}\n
+            {project}-{id};\n
 
     Properties:
         issue_item --- the Issue item;\n
@@ -681,7 +681,7 @@ class _IssueMerged:
         items_id --- the IssueWorkItem item identifiers;\n
 
     Functions:
-        _get_work_attr(work_item_id, attr) --- get the attribute of the IssueWorkItem item.
+        _get_work_attr(work_item_id, attr) --- get the attribute of the IssueWorkItem item;\n
     """
 
     index = 0
