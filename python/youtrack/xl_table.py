@@ -16,6 +16,36 @@ class ConstXL:
 
 
 class ExcelProp:
+    """
+    Define the Excel Worksheet properties.
+
+    Constants:
+        dict_headers --- mapping states and indexes;\n
+        dict_headers_short --- mapping issue states and indexes;\n
+
+    Properties:
+        ws --- the worksheet;\n
+        name --- the instance name;\n
+        bottom_right --- the bottom-right cell;\n
+        max_column --- the max column index;\n
+        max_column_letter --- the max column letter;\n
+        max_row --- the max row value;\n
+        cell_from_coord --- the cell from its coord;\n
+        headers --- the header cells;\n
+        headers_row --- the header rows;\n
+        column_letter --- column letter from the coordinate;\n
+        row_coord --- row value from the coordinate;\n
+        list_state_row --- get the non-empty rows in the table;\n
+        tasks --- get the PyXLRow instances;\n
+
+    Functions:
+        cell_in_range(start_coord, end_coord) -> Generator --- generate the cell from range;\n
+        check_empty(item) -> bool --- get the cell emptiness flag;\n
+        list_state_item(state) -> list[int] --- get the non-empty rows with issues of the state;\n
+        get_work_items(row) -> list[tuple[datetime.date, Union[int, Decimal], str, str]] ---
+            get the PyXLWorkItem instances in the row
+    """
+
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
     dict_headers_short = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3}
 
@@ -128,9 +158,9 @@ class ExcelProp:
     def headers_row(self) -> list[int]:
         """
         Get the header row values.
-        
+
         :return: the list of header rows.
-        :rtype: list[int] 
+        :rtype: list[int]
         """
         return [header.row for header in self.headers]
 
@@ -138,7 +168,7 @@ class ExcelProp:
     def column_coord(coord: str) -> str:
         """
         Get the column letter from the cell coordinate.
-        
+
         :param str coord: the cell coordinate
         :return: the column letter.
         :rtype: str
@@ -149,17 +179,17 @@ class ExcelProp:
     def row_coord(coord: str) -> int:
         """
         Get the row number from the cell coordinate.
-        
+
         :param str coord: the cell coordinate
         :return: the row number.
-        :rtype: int 
+        :rtype: int
         """
         return coordinate_from_string(coord)[1]
 
     def check_empty(self, item: Union[int, str, Cell]) -> bool:
         """
         Check if the cell is empty.
-        
+
         :param item: the cell value
         :type item: int or str or Cell
         :return: the flag if the cell is empty.
@@ -177,26 +207,39 @@ class ExcelProp:
 
     def list_state_item(self, state: str) -> list[int]:
         """
+        Get the non-empty rows with issues of the state.
 
-        :param state:
-        :return:
+        :param str state: the state
+        :return: the non-empty rows with the state.
+        :rtype: list[int]
         """
         index = self.dict_headers_short[state]
         return [row for row in range(self.headers_row[index], self.headers_row[index + 1]) if not self.check_empty(row)]
 
     @property
     def list_state_row(self) -> list[list[int]]:
-        """"""
+        """
+        Get the non-empty rows with issues for all states.
+
+        :return: the non-empty rows.
+        :rtype: list[list[int]]
+        """
         return [self.list_state_item(state) for state, index in self.dict_headers_short.items()]
 
     @property
     def tasks(self):
-        """"""
+        """
+        Set the PyXLRow instances from the table.
+
+        :return: the PyXLRow instances.
+        :rtype: list[PyXLRow]
+        """
         return [PyXLRow.get_pyxl_row(self.name, f"C{row}") for list_state in self.list_state_row for row in list_state]
 
     def get_work_items(self, row: int) -> list[tuple[datetime.date, Union[int, Decimal], str, str]]:
         """
-        Get the work items.\n
+        Get the work items.
+
         :param row: the table row, int
         :return: the list of work items of the tuple[date, Union[int, Decimal], str, str] type.
         """
@@ -440,7 +483,13 @@ class PyXLRow:
 
 
 class PyXLWorkItem:
+    """
+    Define the work items in the table.
+
+    """
+
     index = 0
+
     attrs = ("number_format", "alignment", "border", "fill", "font", "protection", "data_type")
 
     __slots__ = ("excel_prop_name", "cell", "identifier")
@@ -535,7 +584,12 @@ class PyXLWorkItem:
 
     @property
     def _get_cell_style(self) -> Optional[str]:
-        """Get the cell style."""
+        """
+        Get the cell style if exists.
+
+        :return: the cell style.
+        :rtype: str or None
+        """
         if not self.cell.has_style:
             return None
         else:
@@ -549,7 +603,8 @@ class PyXLWorkItem:
 
     def set_style(self, style_name: str):
         """
-        Sets the cell style.\n
+        Set the cell style.
+
         :param style_name: the style name, str
         :return: None
         """
@@ -560,20 +615,28 @@ class PyXLWorkItem:
 
     @property
     def cell_style_params(self):
-        """Get the cell attributes."""
-        return [self.cell.__getattribute__(attr) for attr in PyXLWorkItem.attrs if attr in PyXLWorkItem.attrs]
-
-    def _set_cell_attr(self, attr: str, value):
         """
-        Sets the cell attributes.\n
-        :param attr: the cell attribute, str
-        :param value: the attribute value, Any
+        Get the cell attributes.\n
+        {number_format, Alignment, Border, PatternFill, Font, Protection}
+
+        :return: the cell parameters.
+        :rtype: tuple
+        """
+        return tuple(self.cell.__getattribute__(attr) for attr in PyXLWorkItem.attrs if attr in PyXLWorkItem.attrs)
+
+    def _set_cell_attr(self, key: str, value):
+        """
+        Set the cell attributes.\n
+        {number_format, Alignment, Border, PatternFill, Font, Protection}
+
+        :param str key: the cell attribute
+        :param value: the attribute value
         :return: None.
         """
-        if attr in PyXLWorkItem.attrs:
-            self.cell.__setattr__(attr, value)
+        if key in PyXLWorkItem.attrs:
+            self.cell.__setattr__(key, value)
         else:
-            print(f"Attribute {attr} is not defined.")
+            print(f"AttributeError, {key} in not a valid attribute.")
 
 
 class _PyXLMerged:
@@ -626,7 +689,7 @@ class _PyXLMerged:
     def __getitem_id(self, identifier: int) -> Optional[PyXLWorkItem]:
         """
         Get the PyXLWorkItem instance.
-        
+
         :param identifier: the instance identifier, int
         :return: the instance of the PyXLWorkItem type.
         """
@@ -680,12 +743,13 @@ class _PyXLMerged:
         if key in self.__slots__:
             object.__setattr__(self, key, value)
         else:
-            raise AttributeError(f"Incorrect attribute. Only {self.__slots__} are allowed.")
+            print(f"AttributeError, {key} in not a valid attribute.")
 
     def __getitem__(self, item):
         if item in self.work_items:
             return self.work_items[item]
-        return None
+        else:
+            return None
 
     def __setitem__(self, key, value):
         self.work_items[key] = value
@@ -700,42 +764,80 @@ class _PyXLMerged:
 
     @property
     def __get_pyxl_row(self) -> PyXLRow:
-        """Get the PyXLRow instance."""
+        """
+        Get the PyXLRow instance.
+
+        :return: the PyXLRow instance.
+        :rtype: PyXLRow
+        """
         return ConstXL.dict_pyxl_row[self.pyxl_row]
 
     @property
     def parent(self) -> Optional[str]:
-        """Get the parent issue name."""
+        """
+        Get the parent issue name if exists.
+
+        :return: the parent issue name.
+        :rtype: str or None
+        """
         return self.__get_pyxl_row.parent
 
     @property
-    def issue_name(self) -> Optional[str]:
-        """Get the issue name."""
+    def issue_name(self) -> str:
+        """
+        Get the issue name.
+
+        :return: the issue name.
+        :rtype: str
+        """
         return self.__get_pyxl_row.issue_name
 
     @property
-    def summary(self) -> Optional[str]:
-        """Get the issue summary."""
+    def summary(self) -> str:
+        """
+        Get the issue summary.
+
+        :return: the issue summary.
+        :rtype: str
+        """
         return self.__get_pyxl_row.summary
 
     @property
     def deadline(self) -> Optional[datetime.date]:
-        """Get the issue deadline."""
+        """
+        Get the issue deadline if exists.
+
+        :return: the issue deadline.
+        :rtype: date
+        """
         return self.__get_pyxl_row.deadline
 
     @property
     def commentary(self) -> Optional[str]:
-        """Get the issue commentary."""
+        """
+        Get the issue commentary if exists.
+
+        :return: the issue commentary.
+        :rtype: str or None
+        """
         return self.__get_pyxl_row.commentary
 
     @property
-    def item_params(self):
-        """Get the work item parameters to compare."""
-        return zip(self.date, self.spent_time)
+    def item_params(self) -> tuple[tuple[datetime.date, Union[int, Decimal]]]:
+        """
+        Get the work item parameters to compare.
+
+        :return: the zipped dates and spent_time values.
+        :rtype: tuple[tuple[date, int or Decimal]]
+        """
+        return tuple(zip(self.date, self.spent_time))
 
     @property
     def full_params(self):
-        """Get the work item parameters."""
+        """
+        Get the work item parameters.
+
+        """
         return zip(self.date, self.spent_time, self.coord, self.style)
 
     @property
@@ -761,6 +863,10 @@ class _PyXLMerged:
     def __get_item_attr(self, item: int, attr: str):
         """
         Get the work item attribute.
+
+        :param int item: the work item index
+        :param str attr: the work item attribute name
+        :return: the attribute value.
         """
         list_attr = ("date", "spent_time", "coord", "style")
         if attr not in list_attr:
