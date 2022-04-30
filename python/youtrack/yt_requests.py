@@ -1,5 +1,4 @@
 import pathlib
-import pprint
 from json.decoder import JSONDecodeError
 from typing import Union, Optional
 import numpy
@@ -12,7 +11,13 @@ from yt_config import UserConfig
 
 class ConstYT:
     """
+    Contain the constants.
 
+    Constants:\n
+        dict_issue --- the dictionary of Issue instances and identifiers;\n
+        dict_issue_work_item --- the dictionary of IssueWorkItem instances and identifiers;\n
+        dict_issue_name --- the dictionary of Projects and state and deadline identifiers;\n
+        date_conversion_rules --- the rules to convert the user input dates;
     """
     dict_issue = dict()
     dict_issue_work_item = dict()
@@ -53,8 +58,8 @@ def check_terminate_script(prompt: str) -> str:
 
 def make_request(method: str, url: str, headers, params) -> Union[list, Optional[dict]]:
     """
-    Combines and sends the request.\n
-    If the request is improper, prints the error.\n
+    Combine and send the request.\n
+    If the request is improper, print the error.\n
     Method values: GET/POST/PUT/DELETE/HEAD/OPTIONS
 
     :param str method: the HTTP request type
@@ -94,12 +99,11 @@ def make_request(method: str, url: str, headers, params) -> Union[list, Optional
 
 def convert_date_iso(input_date: str) -> Optional[datetime.date]:
     """
-    Converts different date formats to the ISO standard.
+    Convert different date formats to the ISO standard.
 
     :param str input_date: the date to convert
     :return: the modified date of the str type.
     """
-
     for pattern, group_match in ConstYT.date_conversion_rules:
         match = re.match(pattern, input_date)
         # find the pattern to convert
@@ -135,13 +139,13 @@ def define_deadline_state(issue_name: str, res: str) -> Optional[str]:
     else:
         key = None
 
-    if key is not None:
+    if key is None:
+        return None
+    else:
         if res == 'deadline':
             return ConstYT.dict_issue_name[key][0]
         elif res == 'state':
             return ConstYT.dict_issue_name[key][1]
-    else:
-        return None
 
 
 class User:
@@ -153,15 +157,14 @@ class User:
 
     Properties:
         login --- get the login;\n
-        period_start --- shorten the period_start call;\n
-        period_end --- shorten the period_end call;\n
         auth_token --- shorten the auth_token call;\n
-        get_login --- get the login to authorize in the YouTrack;\n
         __headers_yt --- set the headers for requests;\n
-        __login_input --- get the login from the user input;\n
         period --- set the period to get the issues and work items;\n
 
     Functions:
+        period_start() --- shorten the period_start call;\n
+        period_end() --- shorten the period_end call;\n
+        __login_input() --- get the login from the user input;\n
         request(url, params, method) --- shorten the request sending;\n
         _verify_login(login_option) --- check if the login_option is a proper login;\n
         get_issue_work_items() --- get IssueWorkItem instances;\n
@@ -180,7 +183,7 @@ class User:
         return f"User: config file {self.user_config.path}"
 
     def __repr__(self):
-        return f"User(user_config={self.user_config})"
+        return f"User(user_config={self.user_config.conf_values})"
 
     @property
     def login(self) -> str:
@@ -192,7 +195,6 @@ class User:
         """
         return self.user_config.get_json_attr("login")
 
-    @property
     def period_start(self) -> str:
         """
         Shorten the period_start call.
@@ -202,7 +204,6 @@ class User:
         """
         return self.user_config.get_json_attr("period_start")
 
-    @property
     def period_end(self) -> str:
         """
         Shorten the period_end call.
@@ -212,7 +213,6 @@ class User:
         """
         return self.user_config.get_json_attr("period_end")
 
-    @property
     def auth_token(self) -> str:
         """
         Shorten the auth_token call.
@@ -221,19 +221,6 @@ class User:
         :rtype: str
         """
         return self.user_config.get_json_attr("auth_token")
-
-    @property
-    def get_login(self) -> str:
-        """
-        Get the login to authorize in the YouTrack.
-
-        :return: the login.
-        :rtype: str
-        """
-        if not self._verify_login(self.login):
-            login = self.__login_input
-            self.user_config.update_json_item(UserConfig.path, "login", login)
-        return self.login
 
     @property
     def __headers_yt(self) -> dict[str, str]:
@@ -251,7 +238,14 @@ class User:
         }
 
     def request(self, url: str, params: tuple, method: str = "get"):
-        """Shorten the request sending."""
+        """
+        Shorten the request sending.
+
+        :param str url: the request URL
+        :param tuple params: the HTTP request parameters
+        :param str method: the HTTP method, default "get"
+        :return: the request response.
+        """
         return make_request(method, url, self.__headers_yt, params)
 
     def _verify_login(self, login_option: str) -> bool:
@@ -266,7 +260,6 @@ class User:
         params = (('fields', 'login'),)
         return "error" not in self.request(url, params).keys()
 
-    @property
     def __login_input(self) -> str:
         """
         Get the login from the user input.
@@ -295,8 +288,8 @@ class User:
         :rtype: str
         """
         # convert the date inputs
-        start = convert_date_iso(self.period_start)
-        end = convert_date_iso(self.period_end)
+        start = convert_date_iso(self.period_start())
+        end = convert_date_iso(self.period_end())
         # convert the start and end dates to the period string
         start_period = start.strftime("%Y-%m-%d")
         end_period = end.strftime("%Y-%m-%d")
@@ -511,6 +504,7 @@ class Issue:
 
     state values: Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
     """
+
     index = 0
 
     __slots__ = ("identifier", "issue", "state", "summary", "parent", "deadline")
@@ -581,6 +575,7 @@ class IssueWorkItem:
     Functions:
         __join_items(other) --- combine two instances with the same date;
     """
+
     index = 0
 
     __slots__ = ("identifier", "issue", "date", "spent_time")
@@ -682,6 +677,8 @@ class _IssueMerged:
 
     Functions:
         _get_work_attr(work_item_id, attr) --- get the attribute of the IssueWorkItem item;\n
+        issue_to_tuple() --- convert the Issue to the tuple;\n
+        work_items_to_tuple() --- convert the IssueWorkItem to the list of tuples;\n
     """
 
     index = 0
@@ -784,22 +781,22 @@ class _IssueMerged:
         else:
             return None
 
+    def issue_to_tuple(self):
+        """Represent the instance issue as a tuple."""
+        attrs = ("state", "parent", "issue", "summary", "deadline")
+        return tuple(getattr(self.issue_item, attr) for attr in attrs)
+
+    def work_items_to_tuple(self):
+        """Represent the instance work items as a list of tuples."""
+        attrs = ("issue", "date", "spent_time")
+        return [tuple(getattr(work_item, attr) for attr in attrs) for work_item in self.work_items]
+
 
 def main():
-    path = pathlib.Path("./youtrack.json")
-    user_config = UserConfig.set_config_file(path)
+    user_config = UserConfig.set_config_file(pathlib.Path("./youtrack.json"))
     user = User(user_config)
-    url = 'https://youtrack.protei.ru/api/issues'
-    parameters_fields = ','.join(('project', 'id', 'idReadable'))
-    parameters_query = ' '.join((f'updater: {user.login}', f'assignee: {user.login}'))
-    params = (
-        ('fields', parameters_fields),
-        ('query', parameters_query),
-    )
-    response = user.request(url, params)
-    pprint.pprint(response)
-    print(len(response))
-    print(type(response))
+
+    pass
 
 
 if __name__ == "__main__":
