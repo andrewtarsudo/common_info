@@ -1,6 +1,5 @@
 from copy import copy
-from typing import Optional, Union
-
+from typing import Union
 from openpyxl.styles.numbers import FORMAT_GENERAL, FORMAT_TEXT, FORMAT_NUMBER_00, FORMAT_DATE_XLSX14
 from openpyxl.styles.alignment import Alignment
 from openpyxl.styles.borders import Border, Side, BORDER_THIN, BORDER_THICK
@@ -20,12 +19,14 @@ class ConstStyle:
         TMP_ALIGNMENT --- left, center, True\n
         CENTER_ALIGNMENT --- center, center, True\n
         ROTATE_ALIGNMENT --- center, center, True, 90\n
+
     Border(outline, left, right, top, bottom, diagonal):
         TMP_BORDER --- False, Side(), Side(), Side(), Side(), Side()\n
         THIN_BORDER --- True, Side(style=BORDER_THIN)\n
         THICK_BORDER --- True, Side(style=BORDER_THICK)\n
         TOP_BOTTOM_BORDER --- True, Side(style=BORDER_THIN),
             Side(BORDER_THICK)\n
+
     PatternFill(fill_type, fgColor, bgColor):
         TMP_FILL --- FILL_SOLID, Color(rgb=WHITE, type='rgb'),
             Color(rgb=WHITE, type='rgb')\n
@@ -33,18 +34,20 @@ class ConstStyle:
             Color(indexed=64, type='indexed')\n
         TINT_FILL --- FILL_SOLID, Color(theme=0, tint=0.0, type='theme'),
             Color(indexed=64, type='indexed')\n
+
     Font(name, charset, family, color, size):
         TMP_FONT --- 'Calibri', 204, 2, Color(rgb=BLACK, type='rgb'), 11\n
         THEME_FONT --- 'Calibri', 204, 2, Color(theme=1, type='theme'), 11\n
+
     Protection(locked, hidden):
         TMP_PROTECTION --- False, False\n
 
     dict_states_color --- dict of states, PatternFill values
         "weekend", "deadline", "done", "active", "test", "going_start", "paused",
-        "verified_closed", "going_finish", "sick", "vacation"
+        "verified_closed", "going_finish", "sick", "vacation"\n
     dict_months_color --- dict of months, PatternFill values
         "january", "february", "march", "april", "may", "june",\n
-        "july", "august", "september", "october", "november", "december"
+        "july", "august", "september", "october", "november", "december"\n
     """
     # Cell.alignment
     TMP_ALIGNMENT = Alignment(horizontal='left', vertical='center', wrap_text=True)
@@ -268,7 +271,6 @@ class _StyleWorkItem:
         else:
             return None
 
-    @property
     def _get_named(self):
         """
         Convert the _StyleWorkItem instance to the NamedStyle one.
@@ -431,7 +433,7 @@ def generate_from_style(name: str, base_style: _StyleWorkItem, attrs: list = Non
 class _StyleWorkItemList:
     """
     Define the style list.
-    
+
     Constants:
         list_states --- the states:
             "weekend", "deadline", "done",\n
@@ -439,11 +441,11 @@ class _StyleWorkItemList:
             "paused", "verified_closed",\n
             "going_finish", "sick",\n
             "vacation"
-    
+
     Properties:
         style_names -> list[str] --- get the style names;\n
         _get_styles -> list[Union[NamedStyle, _StyleWorkItem]] --- get the styles;
-    
+
     Functions:
         get_style(style_name) -> _StyleWorkItem --- get the style by name;\n
         set_list(name, style_names) --- set the style list;
@@ -454,21 +456,21 @@ class _StyleWorkItemList:
 
     __slots__ = ("name", "styles")
 
-    def __init__(self, 
-                 name: str, 
+    def __init__(self,
+                 name: str,
                  styles: list[_StyleWorkItem] = None):
-        
+
         if styles is None:
             styles = []
-        
+
         self.name = name
         self.styles = styles
-    
+
     def __str__(self):
         str_styles = [style.name for style in self.styles]
         unified_str_styles = ", ".join(str_styles)
         return f"_StyleWorkItemList: name = {self.name}, styles: {unified_str_styles}"
-    
+
     def __repr__(self):
         repr_styles = [repr(style) for style in self.styles]
         unified_repr_styles = ",".join(repr_styles)
@@ -504,7 +506,7 @@ class _StyleWorkItemList:
     def get_style(self, style_name: str) -> _StyleWorkItem:
         """
         Get the style from the list by name.
-        
+
         :param str style_name: the style name
         :return: the style.
         :rtype: _StyleWorkItem
@@ -520,7 +522,7 @@ class _StyleWorkItemList:
     def style_names(self) -> list[str]:
         """
         Get the style names.
-        
+
         :return: the names of the styles.
         :rtype: list[str]
         """
@@ -530,22 +532,22 @@ class _StyleWorkItemList:
     def _get_styles(self) -> list[Union[NamedStyle, _StyleWorkItem]]:
         """
         Get all styles in the list.
-        
+
         :return: the styles.
-        :rtype: list[NamedStyle and _StyleWorkItem] 
+        :rtype: list[NamedStyle and _StyleWorkItem]
         """
         style: _StyleWorkItem
         for name, style in ConstStyle.dict_style_work_item.items():
             if name not in self.style_names:
-                self.styles.append(style._get_named)
+                self.styles.append(style._get_named())
         return self.styles
 
     @classmethod
     def set_list(cls, name: str, style_names: list[str] = None):
         """
         Define the style list.
-        
-        :param str name: the list name 
+
+        :param str name: the list name
         :param style_names: the names of the styles
         :type: list[str] or None
         :return: the style list.
