@@ -39,12 +39,11 @@ class ExcelProp:
         tasks --- get the PyXLRow instances;\n
 
     Functions:
-        cell_in_range(start_coord, end_coord) -> Generator --- generate the cell from range;\n
-        check_empty(item) -> bool --- get the cell emptiness flag;\n
-        list_state_item(state) -> list[int] --- get the non-empty rows with issues of the state;\n
-        get_work_items(row) -> list[tuple[datetime.date, Union[int, Decimal], str, str]] ---
-            get the PyXLWorkItem instances in the row;\n
-        get_column_date(date) -> str --- get the column letter for the specified date;\n
+        cell_in_range(start_coord, end_coord) --- generate the cell from range;\n
+        check_empty(item) --- get the cell emptiness flag;\n
+        list_state_item(state) --- get the non-empty rows with issues of the state;\n
+        get_work_items(row) --- get the PyXLWorkItem instances in the row;\n
+        get_column_date(date) --- get the column letter for the specified date;\n
     """
 
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
@@ -287,7 +286,8 @@ class ExcelProp:
 
 def check_coord(coord: str) -> bool:
     """
-    Verifies the cell coordinate.\n
+    Verify the cell coordinate.
+
     :param coord: the cell coordinate, str
     :return: the verification flag of the bool type.
     """
@@ -313,21 +313,19 @@ def range_coord(start_coord: str, end_coord: str):
     """
     Convert the range string with the start and end coordinates to the tuple:\n
     (min_row, min_col, max_row, max_col)\n
+
     :param start_coord: the start cell coordinate, str
     :param end_coord: the end cell coordinate, str
     :return: the values for iteration of the tuple[int, int, int, int] type.
     """
     # convert start coordinate
     start_row, start_column = coordinate_to_tuple(start_coord)
-    # start_col_idx = column_index_from_string(start_column)
     # convert end coordinate
     end_row, end_column = coordinate_to_tuple(end_coord)
-    # end_col_idx = column_index_from_string(end_column)
     # find min and max values
     min_row = min(start_row, end_row)
     max_row = max(start_row, end_row)
-    # min_col = min(start_col_idx, end_col_idx)
-    # max_col = max(start_col_idx, end_col_idx)
+
     min_col = min(start_column, end_column)
     max_col = max(start_column, end_column)
     return min_row, max_row, min_col, max_col
@@ -377,9 +375,26 @@ def convert_datetime_date(value: Any) -> Optional[datetime.date]:
 
 class PyXLRow:
     """
+    Define the issue parameters from the table.
 
+    Params:
+        excel_prop_name --- the ExcelProp name, str;\n
+        issue --- the issue cell, Cell;
+    Properties:
+        excel_prop --- the ExcelProp instance;\n
+        ws --- the Worksheet instance;\n
+        coord --- the cell coordinate;\n
+        row --- the table row;\n
+        parent --- the parent issue name, B column;\n
+        issue_name --- the issue name, C column;\n
+        summary --- the issue summary, D column;\n
+        deadline --- the issue deadline, E column;\n
+        commentary --- the issue commentary, NS column;
+    Functions:
+        get_pyxl_row(excel_prop_name, coord) --- get PyXLRow instance;
     """
     index = 0
+
     __slots__ = ("excel_prop_name", "issue", "identifier")
 
     def __init__(self, excel_prop_name: str, issue: Cell):
@@ -402,7 +417,6 @@ class PyXLRow:
         return hash((self.excel_prop_name, self.issue.coordinate))
 
     def __key(self):
-        """Sets the private tuple of attributes to use next."""
         return self.excel_prop_name, self.issue.coordinate
 
     def __eq__(self, other):
@@ -444,7 +458,8 @@ class PyXLRow:
     @classmethod
     def get_pyxl_row(cls, excel_prop_name: str, coord: str):
         """
-        Get the class instance.\n
+        Get the class instance.
+
         :param excel_prop_name: the ExcelProp instance name, str
         :param coord: the cell coordinate, str
         :return: the instance of the PyXLRow
@@ -454,17 +469,32 @@ class PyXLRow:
 
     @property
     def excel_prop(self) -> ExcelProp:
-        """Returns the ExcelProp instance."""
+        """
+        Get the ExcelProp instance by its name.
+
+        :return: the ExcelProp instance.
+        :rtype: ExcelProp
+        """
         return ConstXL.dict_excel_prop[self.excel_prop_name]
 
     @property
     def ws(self) -> Worksheet:
-        """Returns the Worksheet instance."""
+        """
+        Get the Worksheet instance.
+
+        :return: the Worksheet instance.
+        :rtype: Worksheet
+        """
         return self.excel_prop.ws
 
     @property
     def coord(self) -> str:
-        """Returns the cell coordinate."""
+        """
+        Get the cell coordinate.
+
+        :return: the cell coordinate.
+        :rtype: str
+        """
         return self.issue.coordinate
 
     @property
@@ -474,27 +504,52 @@ class PyXLRow:
 
     @property
     def parent(self) -> Optional[str]:
-        """Get the parent issue name."""
+        """
+        Get the parent issue name.
+
+        :return: the parent issue name.
+        :rtype: str or None
+        """
         return self.ws[f"B{self.row}"].value
 
     @property
     def issue_name(self) -> str:
-        """Get the issue name."""
+        """
+        Get the issue name.
+
+        :return: the issue name.
+        :rtype: str
+        """
         return self.ws[f"C{self.row}"].value
 
     @property
     def summary(self) -> str:
-        """Get the issue summary."""
+        """
+        Get the issue summary.
+
+        :return: the issue summary.
+        :rtype: str
+        """
         return self.ws[f"D{self.row}"].value
 
     @property
     def deadline(self) -> Optional[datetime.date]:
-        """Get the issue deadline."""
+        """
+        Get the issue deadline.
+
+        :return: the issue deadline.
+        :rtype: date or None
+        """
         return convert_datetime_date(self.ws[f"E{self.row}"].value)
 
     @property
     def commentary(self) -> Optional[str]:
-        """Get the issue commentary."""
+        """
+        Get the issue commentary.
+
+        :return: the issue commentary.
+        :rtype: str or None
+        """
         return self.ws[f"NS{self.row}"].value
 
     def __add__(self, other):
@@ -520,8 +575,24 @@ class PyXLWorkItem:
     Define the work items in the table.
 
     Params:
+        attrs --- the attributes of the class instances:
+          number_format, alignment, border, fill, font, protection, data_type;\n
         excel_prop_name --- the ExcelProp instance name;\n
         cell --- the cell in the table;\n
+
+    Properties:
+        excel_prop --- the ExcelProp instance;\n
+        ws --- the Worksheet instance;\n
+        coord --- the cell coordinate;\n
+        row --- the cell row;\n
+        spent_time --- the issue spent time;\n
+        date --- the work item date;\n
+        _cell_style --- the cell style;\n
+        cell_style_params --- the cell style parameters;\n
+
+    Functions:
+        set_style(style_name) --- set the cell style;
+        _set_cell_attr(key, value) --- set the cell attributes;\n
     """
 
     index = 0
@@ -548,7 +619,6 @@ class PyXLWorkItem:
         return hash((self.excel_prop_name, self.cell.coordinate))
 
     def __key(self):
-        """Sets the private tuple of attributes to use next."""
         return self.excel_prop_name, self.cell.row, self.cell.column_letter
 
     def __eq__(self, other):
@@ -589,37 +659,67 @@ class PyXLWorkItem:
 
     @property
     def excel_prop(self) -> ExcelProp:
-        """Get the ExcelProp instance."""
+        """
+        Get the ExcelProp instance.
+
+        :return: the ExcelProp instance.
+        :rtype: ExcelProp
+        """
         return ConstXL.dict_excel_prop[self.excel_prop_name]
 
     @property
     def ws(self) -> Worksheet:
-        """Returns the Worksheet instance."""
+        """
+        Get the Worksheet instance.
+
+        :return: the Worksheet instance.
+        :rtype: Worksheet
+        """
         return self.excel_prop.ws
 
     @property
     def coord(self) -> str:
-        """Returns the cell coordinate."""
+        """
+        Get the cell coordinates.
+
+        :return: the cell coordinates.
+        :rtype: str
+        """
         return self.cell.coordinate
 
     @property
     def row(self) -> int:
-        """Returns the cell row."""
+        """
+        Get the cell row.
+
+        :return: the cell row.
+        :rtype: int
+        """
         return self.cell.row
 
     @property
     def spent_time(self) -> Union[int, Decimal]:
-        """Get the work item spent time."""
+        """
+        Get the work item spent time.
+
+        :return: the spent time.
+        :rtype: int or Decimal
+        """
         return convert_spent_time(self.cell.value)
 
     @property
-    def date(self):
-        """Get the work item date."""
+    def date(self) -> datetime.date:
+        """
+        Get the work item date.
+
+        :return: the work item date.
+        :rtype: date
+        """
         column: str = self.cell.column_letter
         return convert_datetime_date(self.ws[f"{column}1"].value)
 
     @property
-    def _get_cell_style(self) -> Optional[str]:
+    def _cell_style(self) -> Optional[str]:
         """
         Get the cell style if exists.
 
@@ -642,7 +742,7 @@ class PyXLWorkItem:
         Set the cell style.
 
         :param style_name: the style name, str
-        :return: None
+        :return: None.
         """
         if style_name not in _StyleWorkItemList.style_names:
             self.cell._style = copy(_StyleWorkItem.basic())
@@ -676,6 +776,36 @@ class PyXLWorkItem:
 
 
 class _PyXLMerged:
+    """
+    Get the PyXLRow and PyXLWorkItem instances in the row.
+
+    Params:
+        excel_prop_name --- the ExcelProp instance name;\n
+        cell --- the base cell;\n
+
+    Properties:
+        excel_prop --- the ExcelProp instance;\n
+        __coord --- the cell coordinate;\n
+        row --- the cell row;\n
+        ws --- the Worksheet instance;\n
+        pyxl_row --- the PyXLRow instance;\n
+        work_items --- the PyXLWorkItem instances;\n
+        parent --- the parent issue name if exists;\n
+        issue_name --- the issue name;\n
+        summary --- the issue summary;\n
+        deadline --- the issue deadline if exists;\n
+        commentary --- the issue commentary if exists;\n
+        item_params --- the work item parameters to compare;\n
+
+    Functions:
+        __getitem_id(identifier) --- get the PyXLWorkItem instance;\n
+        full_params() --- get the work item parameters;\n
+        date() --- get the work item dates;\n
+        spent_time() --- get the work item spent time values;\n
+        coord() --- get the work item coordinates;\n
+        style() --- get the work item styles;\n
+        __get_item_attr(item, attr) --- get the work item attribute;\n
+    """
     __slots__ = ("excel_prop_name", "cell")
 
     def __init__(self, excel_prop_name: str, cell: Cell):
@@ -799,16 +929,6 @@ class _PyXLMerged:
             return NotImplemented
 
     @property
-    def __get_pyxl_row(self) -> PyXLRow:
-        """
-        Get the PyXLRow instance.
-
-        :return: the PyXLRow instance.
-        :rtype: PyXLRow
-        """
-        return ConstXL.dict_pyxl_row[self.pyxl_row]
-
-    @property
     def parent(self) -> Optional[str]:
         """
         Get the parent issue name if exists.
@@ -858,42 +978,58 @@ class _PyXLMerged:
         """
         return self.__get_pyxl_row.commentary
 
-    @property
     def item_params(self) -> tuple[tuple[datetime.date, Union[int, Decimal]]]:
         """
         Get the work item parameters to compare.
 
         :return: the zipped dates and spent_time values.
-        :rtype: tuple[tuple[date, int or Decimal]]
+        :rtype: tuple[tuple[Optional[date], int or Decimal]]
         """
-        return tuple(zip(self.date, self.spent_time))
+        return tuple(zip(self.date(), self.spent_time()))
 
-    @property
-    def full_params(self):
+    def full_params(self) -> tuple[tuple[datetime.date, Union[int, Decimal], str, str]]:
         """
         Get the work item parameters.
 
+        :return: the date, spent time, coordinate, style.
+        :rtype: tuple[datetime.date or None, int or Decimal, str, str]
         """
-        return zip(self.date, self.spent_time, self.coord, self.style)
+        return tuple(zip(self.date(), self.spent_time(), self.coord(), self.style()))
 
-    @property
     def date(self) -> list[datetime.date]:
-        """Get the work item dates."""
+        """
+        Get the work item dates.
+
+        :return: the work item dates.
+        :rtype: list[datetime.date]
+        """
         return [self.__getitem_id(identifier).date for identifier in ConstXL.dict_pyxl_work_item]
 
-    @property
     def spent_time(self) -> list[Union[int, Decimal]]:
-        """Get the work item spent time values."""
+        """
+        Get the work item spent time values.
+
+        :return: the spent times.
+        :rtype: list[int or Decimal]
+        """
         return [self.__getitem_id(identifier).spent_time for identifier in ConstXL.dict_pyxl_work_item]
 
-    @property
-    def coord(self):
-        """Get the work item coordinates."""
+    def coord(self) -> list[str]:
+        """
+        Get the work item coordinates.
+
+        :return: the work item coordinates.
+        :rtype: list[str]
+        """
         return [self.__getitem_id(identifier).coord for identifier in ConstXL.dict_pyxl_work_item]
 
-    @property
-    def style(self):
-        """Get the work item styles."""
+    def style(self) -> list[str]:
+        """
+        Get the work item styles.
+
+        :return: the work item styles.
+        :rtype: list[str]
+        """
         return [self.__getitem_id(identifier).cell.style for identifier in ConstXL.dict_pyxl_work_item]
 
     def __get_item_attr(self, item: int, attr: str):
