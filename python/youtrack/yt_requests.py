@@ -164,7 +164,7 @@ class User:
     Functions:
         period_start() --- shorten the period_start call;\n
         period_end() --- shorten the period_end call;\n
-        __login_input() --- get the login from the user input;\n
+        login_input() --- get the login from the user input;\n
         request(url, params, method) --- shorten the request sending;\n
         _verify_login(login_option) --- check if the login_option is a proper login;\n
         get_issue_work_items() --- get IssueWorkItem instances;\n
@@ -260,7 +260,7 @@ class User:
         params = (('fields', 'login'),)
         return "error" not in self.request(url, params).keys()
 
-    def __login_input(self) -> str:
+    def login_input(self) -> str:
         """
         Get the login from the user input.
 
@@ -793,9 +793,6 @@ class _IssueMerged:
 
 
 def main():
-    user_config = UserConfig.set_config_file(pathlib.Path("./youtrack.json"))
-    user = User(user_config)
-
     pass
 
 
