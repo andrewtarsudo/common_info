@@ -143,7 +143,7 @@ class WorksheetDefault:
         weekend_columns --- specify the column letters for the weekend style;\n
     
     Functions:
-        set_dates() --- specify the dates in row 1
+        set_dates() --- specify the dates in row 1;\n
         column_col_idx(coord) --- convert the cell coord to the column index;\n
         set_month_names() --- specify the month names;\n
         month_cell_merge() --- merge cells for the month title;\n
