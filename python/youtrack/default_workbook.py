@@ -1,15 +1,12 @@
 import datetime
-from copy import copy
-from openpyxl.styles.cell_style import CellStyle
 from openpyxl.workbook.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
-from openpyxl.utils.cell import get_column_letter, rows_from_range, coordinate_from_string, column_index_from_string
+from openpyxl.utils.cell import get_column_letter, coordinate_from_string, column_index_from_string, coordinate_to_tuple
 from _style_work_item import _StyleWorkItemList
 
 
 class ConstDefaultWs:
-    __doc__ = """"""
     # style_name: (rus_name, cell_style_coordinate, cell_legend_coordinate
     dict_legend = {
         'weekend': ('выходные', 'B21', 'C21'), 'deadline': ('дедлайн', 'B22', 'C22'), 'done': ('done', 'B23', 'C23'),
@@ -31,16 +28,34 @@ class ConstDefaultWs:
         'october': ('ОКТЯБРЬ', 'KB1', 31), 'november': ('НОЯБРЬ', 'LH1', 30), 'december': ('ДЕКАБРЬ', 'MM1', 31)
     }
 
+    dict_month_titles: dict[str, tuple[str, str, str]] = {
+        'january': ('ЯНВАРЬ', 'G2', 'AK2'), 'february': ('ФЕВРАЛЬ', 'AM2', 'BN2'), 'march': ('МАРТ', 'BP2', 'CT2'),
+        'april': ('АПРЕЛЬ', 'CV2', 'DY2'), 'may': ('МАЙ', 'EA2', 'FE2'), 'june': ('ИЮНЬ', 'FG2', 'GJ2'),
+        'july': ('ИЮЛЬ', 'GL2', 'HP2'), 'august': ('АВГУСТ', 'HR2', 'IV2'), 'september': ('СЕНТЯБРЬ', 'IX2', 'KA2'),
+        'october': ('ОКТЯБРЬ', 'KC2', 'LG2'), 'november': ('НОЯБРЬ', 'LI2', 'ML2'),
+        'december': ('ДЕКАБРЬ', 'MN2', 'NR2')
+    }
+
     cells_headers: tuple[tuple[int, str]] = ((3, 'Active'), (7, 'New/Paused'), (11, 'Active/Done'), (15, 'Verified'))
     # holidays
     yy: int = datetime.date.today().year
-    holidays = (
+    start_day = datetime.date(yy, 1, 1)
+    end_day = datetime.date(yy + 1, 1, 1)
+    time_delta = datetime.timedelta(days=1)
+    holidays = {
         datetime.date(yy, 1, 1), datetime.date(yy, 1, 2), datetime.date(yy, 1, 3), datetime.date(yy, 1, 4),
         datetime.date(yy, 1, 5), datetime.date(yy, 1, 6), datetime.date(yy, 1, 7), datetime.date(yy, 2, 23),
         datetime.date(yy, 3, 7), datetime.date(yy, 3, 8), datetime.date(yy, 5, 1), datetime.date(yy, 5, 2),
         datetime.date(yy, 5, 3), datetime.date(yy, 5, 8), datetime.date(yy, 5, 9), datetime.date(yy, 5, 10),
         datetime.date(yy, 6, 12), datetime.date(yy, 6, 13), datetime.date(yy, 11, 4), datetime.date(yy, 12, 31)
-    )
+    }
+    day = start_day
+    while day + time_delta <= end_day:
+        if day.weekday() in (5, 6):
+            holidays.add(day)
+        day += time_delta
+
+    weekend_rows = (4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18)
     # for set_fill_color:
     # type_fill: str, fill_color: str, tint: float = None, theme: int = None
     dict_months_colors = {
@@ -51,30 +66,28 @@ class ConstDefaultWs:
         'september': ('tmp', 'FFCF687D', None, None), 'october': ('tmp', 'FF98668B', None, None),
         'november': ('tmp', 'FF697FB9', None, None), 'december': ('tmp', 'FF0078A9', None, None)
     }
-    # month title StyleCell values
-    # ['january', 'february', 'march', 'april', 'may', 'june', 'july',
-    # 'august', 'september', 'october', 'november', 'december']
-    dict_month_title_styles: dict[str, tuple] = dict()
-    # month header StyleCell values
-    dict_month_header_styles: dict[str, tuple] = dict()
-    # StyleCell values
-    dict_style_cells: dict[str, tuple] = dict()
 
-def month_cell_periods():
-    """Merges cells for the month title."""
-    start_cells = [add_column(month_coord, 1) for month_params in ConstDefaultWs.dict_month_ranges.values()
-                   for _, month_coord, _ in month_params]
-    end_cells = [add_column(month_coord, num_days) for month_params in ConstDefaultWs.dict_month_ranges.values()
-                 for _, month_coord, num_days in month_params]
+
+def month_cell_periods() -> list[str]:
+    """
+    Merge cells for the month titles.
+
+    :return: the merged cells.
+    :rtype: list[str]
+    """
+    start_cells = [start for _, start, _ in ConstDefaultWs.dict_month_titles.values()]
+    end_cells = [end for _, _, end in ConstDefaultWs.dict_month_titles.values()]
     return [f"{start_cell}:{end_cell}" for start_cell, end_cell in zip(start_cells, end_cells)]
 
 
-def add_column(coord: str, add_value: int):
+def add_column(coord: str, add_value: int) -> str:
     """
-    Finds the cell in the row that is N columns to the left/right.\n
-    :param coord: the base cell coordinate, str
-    :param add_value: the number of columns with the sign, int
-    :return: the new cell coordinate of the str value.
+    Find the cell in the row that is N columns to the left/right.
+
+    :param str coord: the base cell coordinate
+    :param int add_value: the number of columns with the sign
+    :return: the new cell coordinate.
+    :rtype: str
     """
     column, row = coordinate_from_string(coord)
     col_idx = column_index_from_string(column)
@@ -82,13 +95,66 @@ def add_column(coord: str, add_value: int):
         print('The incorrect work of the add_column method.')
         return coord
     add_col_idx = col_idx + add_value
-    add_column = get_column_letter(add_col_idx).upper()
-    return f'{add_column}{row}'
+    add_column_letter = get_column_letter(add_col_idx).upper()
+    return f'{add_column_letter}{row}'
+
+
+def range_coord(start_coord: str, end_coord: str) -> tuple[int, int, int, int]:
+    """
+    Convert the range string with the start and end coordinates to the tuple:\n
+    (min_row, min_col, max_row, max_col)\n
+
+    :param str start_coord: the start cell coordinates
+    :param str end_coord: the end cell coordinates
+    :return: the values of min_row, min_col, max_row, max_col.
+    :rtype: tuple[int, int, int, int]
+    """
+    # convert start coordinate
+    start_row, start_column = coordinate_to_tuple(start_coord)
+    # convert end coordinate
+    end_row, end_column = coordinate_to_tuple(end_coord)
+    # find min and max values
+    min_row = min(start_row, end_row)
+    max_row = max(start_row, end_row)
+    min_col = min(start_column, end_column)
+    max_col = max(start_column, end_column)
+    return min_row, max_row, min_col, max_col
+
+
+def cell_in_range(start_coord: str, end_coord: str):
+    """
+    Converts the cell range to the cell generator in the range.
+
+    :param str start_coord: the start cell coordinates
+    :param str end_coord: the end cell coordinates
+    :return: the generator of cells in the cell range.
+    """
+    min_row, max_row, min_col, max_col = range_coord(start_coord=start_coord, end_coord=end_coord)
+    for row in range(min_row, max_row + 1):
+        for col in range(min_col, max_col + 1):
+            yield f'{get_column_letter(col)}{row}'
 
 
 class WorksheetDefault:
-    __doc__ = """"""
-
+    """
+    Specify the default worksheet.
+    
+    Properties:
+        weekend_columns --- specify the column letters for the weekend style;\n
+    
+    Functions:
+        set_dates() --- specify the dates in row 1
+        column_col_idx(coord) --- convert the cell coord to the column index;\n
+        set_month_names() --- specify the month names;\n
+        month_cell_merge() --- merge cells for the month title;\n
+        set_month_titles() --- specify the month titles;\n
+        set_default() --- apply the basic style for the whole table;\n
+        set_weekends() --- apply the weekend style;\n
+        set_headers() --- apply the headers style to the headers;\n
+        set_headers_row() --- apply the style to the headers rows;\n
+        set_title() --- apply the title style to the title row;\n
+        set_legend() --- specify the legend;\n
+    """
     def __init__(self, wb: Workbook, ws: Worksheet, styles: _StyleWorkItemList):
         self.wb = wb
         self.ws = ws
@@ -98,8 +164,7 @@ class WorksheetDefault:
         return f"Workbook: {self.wb}, Worksheet: {self.ws}"
 
     def __repr__(self):
-        return f"Work"
-
+        return f"WorksheetDefault(wb={self.wb}, ws={self.ws})"
 
     def __hash__(self):
         return hash((self.wb.properties.name, self.ws.title))
@@ -122,16 +187,8 @@ class WorksheetDefault:
     def __contains__(self, item):
         return item in self.styles
 
-
-
-    def set_style_cell(self, coord: str, style_name: str):
-        """Alias for the self.const.set_style_cell."""
-        style = self.styles.get_style(style_name)
-        self.ws[f'{coord}']._style = copy(style)
-        return style
-
     def set_dates(self):
-        """Specifies the dates in row 1."""
+        """Specify the dates in row 1."""
         for index, month_params in enumerate(ConstDefaultWs.dict_month_ranges.values()):
             _, coord, num_days = month_params
             start_col_idx = self.column_col_idx(coord)
@@ -142,106 +199,100 @@ class WorksheetDefault:
                 col_idx = start_col_idx + day
                 cell_coord = f'{get_column_letter(col_idx)}1'
                 self.ws[f'{cell_coord}'].value = datetime.date(year=year, month=month, day=day)
+                self.styles.set_style("month_date", cell_coord)
+
+    @property
+    def weekend_columns(self) -> list[str]:
+        """
+        Specify the column letters for the weekend style.
+
+        :return: the column letters.
+        :rtype: list[str]
+        """
+        weekend_columns = []
+        for coord in cell_in_range("G1", "NR1"):
+            cell: Cell = self.ws[f"{coord}"]
+            if cell.value in ConstDefaultWs.holidays:
+                weekend_columns.append(cell.column_letter)
+        return weekend_columns
 
     def set_month_names(self):
-        """Specifies the month names."""
+        """Specify the month names."""
         for month, month_params in ConstDefaultWs.dict_month_ranges.items():
             rus_name, coord, _ = month_params
             self.ws[f'{coord}'].value = rus_name
-            self.ws[f'{coord}']._style = self.set_style_cell(coord, month)
+            self.styles.set_style(f"{month}_header", coord)
 
     def month_cell_merge(self):
-        """Merges cells for the month title."""
+        """Merge cells for the month title."""
         for period in month_cell_periods():
             self.ws.merge_cells(period)
 
-    def set_month_title(self):
-        """Defines the month titles."""
-        for index, coord in enumerate(ConstDefaultWs.month_cell_periods_start()):
-            self.ws[f'{coord}'].value = self.cells_month[index]
-            self.ws[f'{coord}']._style = self.set_style_cell(coord, ConstDefaultWs.dict_month_title_styles[index].name)
+    def set_month_titles(self):
+        """Specify the month titles."""
+        for month, month_values in ConstDefaultWs.dict_month_titles.items():
+            rus_name, coord, _ = month_values
+            self.ws[f'{coord}'].value = rus_name
+            self.styles.set_style(f"{month}_title", coord)
 
     def set_default(self):
-        """Applies the basic style for the whole table."""
-        for row in rows_from_range(f'A1:NT18'):
-            for coord in row:
-                cell: Cell = self.ws[f'{coord}']
-                cell._style = self.set_style_cell(coord, 'basic')
+        """Apply the basic style for the whole table."""
+        for coord in cell_in_range("A1", "NT18"):
+            self.styles.set_style("basic", coord)
 
     def set_weekends(self):
-        """Applies the weekend style."""
-        for column_letter in self.cols_weekend:
-            for row in self.rows_weekend:
+        """Apply the weekend style."""
+        for column_letter in self.weekend_columns:
+            for row in ConstDefaultWs.weekend_rows:
                 coord = f'{column_letter}{row}'
-                cell: Cell = self.ws[f'{coord}']
-                cell._style = self.set_style_cell(coord=coord, style_name='weekend')
+                self.styles.set_style("weekend", coord)
 
     def set_headers(self):
-        """Applies the headers."""
+        """Apply the headers style to the headers."""
         for row, value in ConstDefaultWs.cells_headers:
             # merge the cells
             self.ws.merge_cells(f'B{row}:E{row}')
-
             cell: Cell = self.ws[f'B{row}']
             cell.value = value
-            cell._style = self.set_style_cell(cell.coordinate, 'headers')
+            self.styles.set_style("header", f"B{row}")
 
     def set_headers_row(self):
-        """Applies the headers row."""
-        for row, value in ConstDefaultWs.cells_headers:
+        """Apply the style to the headers rows."""
+        for row, _ in ConstDefaultWs.cells_headers:
             cell_range: tuple[Cell] = self.ws[f'F{row}:NT{row}']
             row_range: tuple[Cell]
             cell: Cell
             for row_range in cell_range:
                 for cell in row_range:
-                    cell._style = self.set_style_cell(cell.coordinate, 'headers')
+                    self.styles.set_style("header", cell.coordinate)
 
     def set_title(self):
-        """Defines the title row."""
-        for coord, title in zip(self.title_coord, self.titles):
+        """Apply the title style to the title row."""
+        for title, coord in ConstDefaultWs.dict_titles.values():
             cell: Cell = self.ws[f'{coord}']
             cell.value = title
-            cell._style = self.set_style_cell(coord=coord, style_name='title')
+            self.styles.set_style("title", coord)
 
     def set_legend(self):
-        """Defines the legend."""
-        self.ws.merge_cells('B21:C21')
-        self.ws['B21'].value = 'Легенда'
-
-        for index, style_name in enumerate(ConstDefaultWs.dict_legend):
-            row = index + 22
-            self.ws[f'C{row}'].value = style_name
-            cell: Cell = self.ws[f'B{row}']
-            cell._style = self.set_style_cell(coord=cell.coordinate, style_name=self.const.const_styles[index])
+        """Specify the legend."""
+        self.ws.merge_cells('B20:C20')
+        self.ws['B20'].value = 'Легенда'
+        for style_name, values in ConstDefaultWs.dict_legend.items():
+            rus_name, coord, legend = values
+            self.styles.set_style(style_name, coord)
+            self.ws[f"{legend}"].value = rus_name
 
     def column_col_idx(self, coord: str) -> int:
         """
-        Converts the cell coord to the column index.
-        :param coord: the cell coord, str
-        :return: the col_idx of the int type.
+        Convert the cell coord to the column index.
+
+        :param str coord: the cell coordinates
+        :return: the column number.
+        :rtype: int
         """
         cell: Cell = self.ws[f'{coord}']
         return cell.col_idx
 
-    def set_table(self):
-        """Defines the cell styles in the table."""
-        cell: Cell
-        row: tuple[Cell]
-        for row in self.ws['B1:NT18']:
-            for cell in row:
-                cell._style = self.set_style_cell(cell.coordinate, 'table')
-                # 'table'
-
-    def set_month_ranges(self):
-        for
-    """
-        dict_month_ranges: dict[str, tuple[str, str, int]] = {
-        'january': ('ЯНВАРЬ', 'F1', 31), 'february': ('ФЕВРАЛЬ', 'AL1', 28), 'march': ('МАРТ', 'BO1', 31),
-        'april': ('АПРЕЛЬ', 'CU1', 30), 'may': ('МАЙ', 'DZ1', 31), 'june': ('ИЮНЬ', 'FF1', 30),
-        'july': ('ИЮЛЬ', 'GK1', 31), 'august': ('АВГУСТ', 'HQ1', 31), 'september': ('СЕНТЯБРЬ', 'IW1', 30),
-        'october': ('ОКТЯБРЬ', 'KB1', 31), 'november': ('НОЯБРЬ', 'LH1', 30), 'december': ('ДЕКАБРЬ', 'MM1', 31)
-    }
-    """
 
 def main():
     pass
