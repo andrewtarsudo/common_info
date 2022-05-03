@@ -1,4 +1,3 @@
-from copy import copy
 from typing import Optional, Union, Any
 import datetime
 from openpyxl.worksheet.worksheet import Worksheet
@@ -6,7 +5,6 @@ from openpyxl.cell.cell import Cell
 from openpyxl.utils.cell import coordinate_to_tuple, coordinate_from_string, get_column_letter
 from decimal import Decimal
 from _style_work_item import _StyleWorkItem, _StyleWorkItemList
-from openpyxl.styles.cell_style import CellStyle
 
 
 class ConstXL:
@@ -49,9 +47,10 @@ class ExcelProp:
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
     dict_headers_short = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3}
 
-    def __init__(self, ws: Worksheet, name: str):
+    def __init__(self, ws: Worksheet, name: str, styles: _StyleWorkItemList):
         self.ws = ws
         self.name = name
+        self.styles = styles
 
         ConstXL.dict_excel_prop[self.name] = self
 
@@ -276,7 +275,7 @@ class ExcelProp:
             else:
                 # get style
                 if cell.has_style:
-                    cell_style: str = cell._style.name
+                    cell_style: str = cell.style.name
                 else:
                     cell_style = "basic"
                 work_items.append(
@@ -288,20 +287,21 @@ def check_coord(coord: str) -> bool:
     """
     Verify the cell coordinate.
 
-    :param coord: the cell coordinate, str
-    :return: the verification flag of the bool type.
+    :param str coord: the cell coordinates
+    :return: the verification flag.
+    :rtype: bool
     """
     flag = False
     try:
         coordinate_to_tuple(coord)
     except TypeError as e:
-        print(f'TypeError occurred. Error in line {e.__traceback__.tb_lineno}. Incorrect value type.\n')
+        print(f'TypeError {str(e)}. Incorrect value type.\n')
         print(f'coordinate = {coord}')
     except ValueError as e:
-        print(f'ValueError occurred. Error in line {e.__traceback__.tb_lineno}. Incorrect value.\n')
+        print(f'ValueError {str(e)}. Incorrect value.\n')
         print(f'coordinate = {coord}')
     except OSError as e:
-        print(f'OSError occurred. Error {e.errno} in line {e.__traceback__.tb_lineno}.\n')
+        print(f'OSError {e.errno}, {e.strerror}.\n')
         print(f'coordinate = {coord}')
     else:
         flag = True
@@ -329,13 +329,6 @@ def range_coord(start_coord: str, end_coord: str):
     min_col = min(start_column, end_column)
     max_col = max(start_column, end_column)
     return min_row, max_row, min_col, max_col
-
-
-def get_pyxl_row_name(name: str):
-    pyxl_row: PyXLRow
-    for pyxl_row in ConstXL.dict_pyxl_row:
-        if pyxl_row.issue == name:
-            return pyxl_row
 
 
 def convert_spent_time(spent_time: Any) -> Union[int, Decimal]:
@@ -579,6 +572,7 @@ class PyXLWorkItem:
           number_format, alignment, border, fill, font, protection, data_type;\n
         excel_prop_name --- the ExcelProp instance name;\n
         cell --- the cell in the table;\n
+        style_name --- the cell style;\n
 
     Properties:
         excel_prop --- the ExcelProp instance;\n
@@ -587,7 +581,6 @@ class PyXLWorkItem:
         row --- the cell row;\n
         spent_time --- the issue spent time;\n
         date --- the work item date;\n
-        _cell_style --- the cell style;\n
         cell_style_params --- the cell style parameters;\n
 
     Functions:
@@ -599,12 +592,13 @@ class PyXLWorkItem:
 
     attrs = ("number_format", "alignment", "border", "fill", "font", "protection", "data_type")
 
-    __slots__ = ("excel_prop_name", "cell", "identifier")
+    __slots__ = ("excel_prop_name", "cell", "style_name", "identifier")
 
-    def __init__(self, excel_prop_name: str, cell: Cell):
+    def __init__(self, excel_prop_name: str, cell: Cell, style_name: str = "basic"):
         self.excel_prop_name = excel_prop_name
         self.cell = cell
         self.identifier = PyXLWorkItem.index
+        self.style_name = style_name
 
         ConstXL.dict_pyxl_work_item[self.identifier] = self
         PyXLWorkItem.index += 1
@@ -719,23 +713,14 @@ class PyXLWorkItem:
         return convert_datetime_date(self.ws[f"{column}1"].value)
 
     @property
-    def _cell_style(self) -> Optional[str]:
+    def cell_style(self) -> _StyleWorkItem:
         """
-        Get the cell style if exists.
+        Get the cell style .
 
         :return: the cell style.
-        :rtype: str or None
+        :rtype: _StyleWorkItem
         """
-        if not self.cell.has_style:
-            return None
-        else:
-            cell_style: CellStyle = self.cell.style
-            # get the style name
-            if cell_style.name in _StyleWorkItemList.style_names:
-                return cell_style.name
-            else:
-                _style_work_item = _StyleWorkItem.get_style_cell(cell_style.name, self.cell)
-                return _style_work_item.name
+        return self.excel_prop.styles[self.style_name]
 
     def set_style(self, style_name: str):
         """
@@ -744,10 +729,7 @@ class PyXLWorkItem:
         :param style_name: the style name, str
         :return: None.
         """
-        if style_name not in _StyleWorkItemList.style_names:
-            self.cell._style = copy(_StyleWorkItem.basic())
-        else:
-            self.cell._style = copy(_StyleWorkItem.get_style(style_name))
+        self.excel_prop.styles.set_style(style_name, self.coord)
 
     @property
     def cell_style_params(self):
@@ -758,7 +740,7 @@ class PyXLWorkItem:
         :return: the cell parameters.
         :rtype: tuple
         """
-        return tuple(self.cell.__getattribute__(attr) for attr in PyXLWorkItem.attrs if attr in PyXLWorkItem.attrs)
+        return tuple(self.cell.__getattribute__(attr) for attr in PyXLWorkItem.attrs)
 
     def _set_cell_attr(self, key: str, value):
         """
@@ -1032,7 +1014,7 @@ class _PyXLMerged:
         """
         return [self.__getitem_id(identifier).cell.style for identifier in ConstXL.dict_pyxl_work_item]
 
-    def __get_item_attr(self, item: int, attr: str):
+    def get_item_attr(self, item: int, attr: str):
         """
         Get the work item attribute.
 
