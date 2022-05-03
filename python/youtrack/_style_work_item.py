@@ -289,10 +289,10 @@ class _StyleWorkItem:
         data_type --- the cell data type, data_type, str;\n
 
     Properties:
-        get_named -> _StyleWorkItem --- convert to the NamedStyle instance;
+        get_named --- convert to the NamedStyle instance;\n
 
     Functions:
-
+        set_style(coord) --- set the style of the cell;\n
     """
 
     list_attrs: tuple[str] = (
