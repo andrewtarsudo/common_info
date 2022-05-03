@@ -7,6 +7,9 @@ from _style_work_item import _StyleWorkItemList
 
 
 class ConstDefaultWs:
+    """
+
+    """
     # style_name: (rus_name, cell_style_coordinate, cell_legend_coordinate
     dict_legend = {
         'weekend': ('выходные', 'B21', 'C21'), 'deadline': ('дедлайн', 'B22', 'C22'), 'done': ('done', 'B23', 'C23'),
@@ -138,10 +141,10 @@ def cell_in_range(start_coord: str, end_coord: str):
 class WorksheetDefault:
     """
     Specify the default worksheet.
-    
+
     Properties:
         weekend_columns --- specify the column letters for the weekend style;\n
-    
+
     Functions:
         set_dates() --- specify the dates in row 1;\n
         column_col_idx(coord) --- convert the cell coord to the column index;\n
