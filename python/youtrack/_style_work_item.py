@@ -1,3 +1,16 @@
+"""
+basic() -> _StyleWorkItem --- set the basic style;\n
+basic_state_style() -> _StyleWorkItem --- set the basic state style;\n
+state_styles() -> list[_StyleWorkItem] --- set the state styles;\n
+basic_month_style() -> _StyleWorkItem --- set the basic month style;\n
+month_styles() -> list[_StyleWorkItem] --- set the basic month styles;\n
+month_merged_styles() -> list[_StyleWorkItem] --- set the merged month styles;\n
+title() -> _StyleWorkItem --- set the title style;\n
+header() -> _StyleWorkItem --- set the header style;\n
+month_date_style() -> _StyleWorkItem --- set the month date style;
+generate_from_style(name, base_style, attrs, values) -> _StyleWorkItem --- set the style based on the other one;
+"""
+
 from copy import copy
 from typing import Union
 from openpyxl.styles.numbers import FORMAT_GENERAL, FORMAT_TEXT, FORMAT_NUMBER_00, FORMAT_DATE_XLSX14
@@ -9,6 +22,126 @@ from openpyxl.styles.fonts import Font
 from openpyxl.styles.protection import Protection
 from openpyxl.cell.cell import Cell
 from openpyxl.styles.named_styles import NamedStyle
+
+
+def basic():
+    """
+    Specify the basic style.
+
+    :return: the basic style.
+    :rtype: _StyleWorkItem
+    """
+    return _StyleWorkItem(
+        "basic", True, number_format=FORMAT_GENERAL, alignment=ConstStyle.TMP_ALIGNMENT,
+        border=ConstStyle.TMP_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.TMP_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="s"
+    )
+
+
+def _basic_state_style():
+    """
+    Specify the basic state style.
+
+    :return: the basic style for states.
+    :rtype: _StyleWorkItem
+    """
+    return _StyleWorkItem(
+        "_basic_style", False, number_format=FORMAT_NUMBER_00, alignment=ConstStyle.CENTER_ALIGNMENT,
+        border=ConstStyle.THIN_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="n")
+
+
+def state_styles():
+    """
+    Specify the state styles.
+
+    :return: the state styles.
+    :rtype: list[_StyleWorkItem]
+    """
+    return [generate_from_style(name, _basic_state_style(), ["_is_named", "fill"], [True, fill])
+            for name, fill in ConstStyle.dict_states_color.items()]
+
+
+def _basic_month_style():
+    """
+    Specify the basic month style.
+
+    :return: the basic style for months.
+    :rtype: _StyleWorkItem
+    """
+    return _StyleWorkItem(
+        "_basic_month", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
+        border=ConstStyle.THICK_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="s")
+
+
+def month_styles():
+    """
+    Specify the month title styles.
+
+    :return: the styles for month titles.
+    :rtype: list[_StyleWorkItem]
+    """
+    return [generate_from_style(
+            f"{month}_header", _basic_month_style(), ["alignment", "fill"], [ConstStyle.ROTATE_ALIGNMENT, fill])
+            for month, fill in ConstStyle.dict_months_color.items()]
+
+
+def month_merged_styles():
+    """
+    Specify the month styles for merged cells.
+
+    :return: the styles for merged month titles.
+    :rtype: list[_StyleWorkItem]
+    """
+    return [generate_from_style(f"{month}_title", _basic_month_style(), ["fill"], [fill])
+            for month, fill in ConstStyle.dict_months_color.items()]
+
+
+def title():
+    """
+    Specify the title style.
+
+    :return: the title style.
+    :rtype: _StyleWorkItem
+    """
+    title_fill = PatternFill(
+        fill_type=FILL_SOLID, fgColor=Color(theme=4, tint=-0.249977111117893, type='theme'),
+        bgColor=Color(indexed=64, type='indexed'))
+    return _StyleWorkItem(
+        "title", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
+        border=ConstStyle.TOP_BOTTOM_BORDER, fill=title_fill, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="s")
+
+
+def header():
+    """
+    Specify the header style.
+
+    :return: the header style.
+    :rtype: _StyleWorkItem
+    """
+    header_fill = PatternFill(
+        fill_type=FILL_SOLID, fgColor=Color(theme=3, tint=0.5999938962981048, type='theme'),
+        bgColor=Color(indexed=64, type='indexed'))
+    return _StyleWorkItem(
+        "header", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
+        border=ConstStyle.TOP_BOTTOM_BORDER, fill=header_fill, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="s")
+
+
+def month_date_style():
+    """
+    Specify the month date style.
+
+    :return: the month date style.
+    :rtype: _StyleWorkItem
+    """
+    return _StyleWorkItem(
+        "month_date", False, number_format=FORMAT_DATE_XLSX14, alignment=ConstStyle.CENTER_ALIGNMENT,
+        border=ConstStyle.TMP_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.TMP_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="d"
+    )
 
 
 class ConstStyle:
@@ -134,8 +267,6 @@ class ConstStyle:
         "december": PatternFill(
             fill_type=FILL_SOLID, fgColor=Color(rgb="FF0078A9", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb'))
     }
-    # dict of _StyleWorkItems
-    dict_style_work_item = dict()
 
 
 class _StyleWorkItem:
@@ -158,19 +289,10 @@ class _StyleWorkItem:
         data_type --- the cell data type, data_type, str;\n
 
     Properties:
-        _get_named -> _StyleWorkItem --- convert to the NamedStyle instance;
+        get_named -> _StyleWorkItem --- convert to the NamedStyle instance;
 
     Functions:
-        get_style_cell(name, cell) -> _StyleWorkItem --- get the cell style;\n
-        basic() -> _StyleWorkItem --- set the basic style;\n
-        basic_state_style() -> _StyleWorkItem --- set the basic state style;\n
-        state_styles() -> list[_StyleWorkItem] --- set the state styles;\n
-        basic_month_style() -> _StyleWorkItem --- set the basic month style;\n
-        month_styles() -> list[_StyleWorkItem] --- set the basic month styles;\n
-        month_merged_styles() -> list[_StyleWorkItem] --- set the merged month styles;\n
-        title() -> _StyleWorkItem --- set the title style;\n
-        header() -> _StyleWorkItem --- set the header style;\n
-        month_date_style() -> _StyleWorkItem --- set the month date style;\n
+
     """
 
     list_attrs: tuple[str] = (
@@ -215,8 +337,6 @@ class _StyleWorkItem:
         self.protection = protection
         self.data_type = data_type
 
-        ConstStyle.dict_style_work_item[self.name] = self
-
     def __str__(self):
         return f"name = {self.name}, number_format = {self.number_format}, alignment = {self.alignment}, " \
                f"border = {self.border}, fill = {self.fill}, font = {self.font}, protection = {self.protection}, " \
@@ -254,24 +374,8 @@ class _StyleWorkItem:
         if key in _StyleWorkItem.list_attrs:
             object.__setattr__(self, key, value)
 
-    @staticmethod
-    def get_style_cell(name: str, cell: Cell):
-        """
-        Get the style of the cell.
-
-        :param str name: the style name
-        :param Cell cell: the cell to get the style
-        :return: the _StyleWorkItem instance.
-        :rtype: _StyleWorkItem or None
-        """
-        if cell.has_style:
-            return _StyleWorkItem(
-                name, number_format=cell.number_format, alignment=cell.alignment, border=cell.border, fill=cell.fill,
-                font=cell.font, protection=cell.protection, data_type=cell.data_type)
-        else:
-            return None
-
-    def _get_named(self):
+    @property
+    def get_named(self):
         """
         Convert the _StyleWorkItem instance to the NamedStyle one.
 
@@ -285,125 +389,26 @@ class _StyleWorkItem:
         else:
             return self
 
-    @staticmethod
-    def basic():
+    def set_style(self, coord: str):
         """
-        Specify the basic style.
+        Specify the style of the cell.
 
-        :return: the basic style.
-        :rtype: _StyleWorkItem
+        :param str coord: the cell coordinates.
+        :return: None
         """
-        return _StyleWorkItem(
-            "basic", True, number_format=FORMAT_GENERAL, alignment=ConstStyle.TMP_ALIGNMENT,
-            border=ConstStyle.TMP_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.TMP_FONT,
-            protection=ConstStyle.TMP_PROTECTION, data_type="s"
-        )
-
-    @staticmethod
-    def basic_state_style():
-        """
-        Specify the basic state style.
-
-        :return: the basic style for states.
-        :rtype: _StyleWorkItem
-        """
-        return _StyleWorkItem(
-            "basic_style", False, number_format=FORMAT_NUMBER_00, alignment=ConstStyle.CENTER_ALIGNMENT,
-            border=ConstStyle.THIN_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
-            protection=ConstStyle.TMP_PROTECTION, data_type="n")
-
-    @staticmethod
-    def state_styles():
-        """
-        Specify the state styles.
-
-        :return: the state styles.
-        :rtype: list[_StyleWorkItem]
-        """
-        return [generate_from_style(name, _StyleWorkItem.basic_state_style(), ["_is_named", "fill"], [True, fill])
-                for name, fill in ConstStyle.dict_states_color.items()]
-
-    @staticmethod
-    def basic_month_style():
-        """
-        Specify the basic month style.
-
-        :return: the basic style for months.
-        :rtype: _StyleWorkItem
-        """
-        return _StyleWorkItem(
-            "basic_month", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
-            border=ConstStyle.THICK_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
-            protection=ConstStyle.TMP_PROTECTION, data_type="s")
-
-    @staticmethod
-    def month_styles():
-        """
-        Specify the month title styles.
-
-        :return: the styles for month titles.
-        :rtype: list[_StyleWorkItem]
-        """
-        return [generate_from_style(
-                month, _StyleWorkItem.basic_month_style(), ["alignment", "fill"], [ConstStyle.ROTATE_ALIGNMENT, fill])
-                for month, fill in ConstStyle.dict_months_color.items()]
-
-    @staticmethod
-    def month_merged_styles():
-        """
-        Specify the month styles for merged cells.
-
-        :return: the styles for merged month titles.
-        :rtype: list[_StyleWorkItem]
-        """
-        return [generate_from_style(month, _StyleWorkItem.basic_month_style(), ["fill"], [fill])
-                for month, fill in ConstStyle.dict_months_color.items()]
-
-    @staticmethod
-    def title():
-        """
-        Specify the title style.
-
-        :return: the title style.
-        :rtype: _StyleWorkItem
-        """
-        title_fill = PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(theme=4, tint=-0.249977111117893, type='theme'),
-            bgColor=Color(indexed=64, type='indexed'))
-        return _StyleWorkItem(
-            "title", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
-            border=ConstStyle.TOP_BOTTOM_BORDER, fill=title_fill, font=ConstStyle.THEME_FONT,
-            protection=ConstStyle.TMP_PROTECTION, data_type="s")
-
-    @staticmethod
-    def header():
-        """
-        Specify the header style.
-
-        :return: the header style.
-        :rtype: _StyleWorkItem
-        """
-        header_fill = PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(theme=3, tint=0.5999938962981048, type='theme'),
-            bgColor=Color(indexed=64, type='indexed'))
-        return _StyleWorkItem(
-            "header", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
-            border=ConstStyle.TOP_BOTTOM_BORDER, fill=header_fill, font=ConstStyle.THEME_FONT,
-            protection=ConstStyle.TMP_PROTECTION, data_type="s")
-
-    @staticmethod
-    def month_date_style():
-        """
-        Specify the month date style.
-
-        :return: the month date style.
-        :rtype: _StyleWorkItem
-        """
-        return _StyleWorkItem(
-            "month_date", False, number_format=FORMAT_DATE_XLSX14, alignment=ConstStyle.CENTER_ALIGNMENT,
-            border=ConstStyle.TMP_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.TMP_FONT,
-            protection=ConstStyle.TMP_PROTECTION, data_type="d"
-        )
+        cell: Cell = self.ws[f"{coord}"]
+        # apply the number format
+        cell.style.number_format = copy(self.number_format)
+        # apply the alignment
+        cell.style.alignment = copy(self.alignment)
+        # apply the border
+        cell.style.border = copy(self.border)
+        # apply the fill
+        cell.style.fill = copy(self.fill)
+        # apply the font
+        cell.style.font = copy(self.font)
+        # apply the protection
+        cell.style.protection = copy(self.protection)
 
 
 def generate_from_style(name: str, base_style: _StyleWorkItem, attrs: list = None, values: list = None):
@@ -421,7 +426,7 @@ def generate_from_style(name: str, base_style: _StyleWorkItem, attrs: list = Non
     check_values: bool = values is not None
     check_length: bool = len(attrs) == len(values)
     if check_attrs and check_values and check_length:
-        return _StyleWorkItem.basic()
+        return basic()
     else:
         style = copy(base_style)
         style.name = name
@@ -434,45 +439,40 @@ class _StyleWorkItemList:
     """
     Define the style list.
 
-    Constants:
-        list_states --- the states:
-            "weekend", "deadline", "done",\n
-            "active", "test", "going_start",\n
-            "paused", "verified_closed",\n
-            "going_finish", "sick",\n
-            "vacation"
-
-    Properties:
-        style_names -> list[str] --- get the style names;\n
-        _get_styles -> list[Union[NamedStyle, _StyleWorkItem]] --- get the styles;
+    Params:
+        name --- the list name;\n
+        styles --- the dict of the styles,
+            dict[style_name, _StyleWorkItem];\n
 
     Functions:
-        get_style(style_name) -> _StyleWorkItem --- get the style by name;\n
-        set_list(name, style_names) --- set the style list;
+        set_style(style_name, coord) --- set the style to the cell;\n
     """
-    list_states = (
-        "weekend", "deadline", "done", "active", "test", "going_start", "paused",
-        "verified_closed", "going_finish", "sick", "vacation")
-
-    __slots__ = ("name", "styles")
-
-    def __init__(self,
-                 name: str,
-                 styles: list[_StyleWorkItem] = None):
-
-        if styles is None:
-            styles = []
-
+    def __init__(self, name: str):
         self.name = name
-        self.styles = styles
+        self.styles: dict[str, Union[_StyleWorkItem, NamedStyle]] = dict()
+        self.styles["basic"] = basic().get_named
+        self.styles["_basic_style"] = _basic_state_style().get_named
+        self.styles["_basic_month"] = _basic_month_style().get_named
+        self.styles["header"] = header().get_named
+        self.styles["title"] = title().get_named
+        self.styles["month_date"] = month_date_style().get_named
+
+        for style in state_styles():
+            self.styles[style.name] = style.get_named
+
+        for style in month_styles():
+            self.styles[style.name] = style.get_named
+
+        for style in month_merged_styles():
+            self.styles[style.name] = style.get_named
 
     def __str__(self):
-        str_styles = [style.name for style in self.styles]
+        str_styles = [style_name for style_name in self.styles.keys()]
         unified_str_styles = ", ".join(str_styles)
         return f"_StyleWorkItemList: name = {self.name}, styles: {unified_str_styles}"
 
     def __repr__(self):
-        repr_styles = [repr(style) for style in self.styles]
+        repr_styles = [repr(style_name) for style_name in self.styles.keys()]
         unified_repr_styles = ",".join(repr_styles)
         return f"_StyleWorkItemList(name={self.name}, styles=[{unified_repr_styles}])"
 
@@ -492,7 +492,7 @@ class _StyleWorkItemList:
             return NotImplemented
 
     def __contains__(self, item):
-        return item in self.styles
+        return item in self.styles.keys()
 
     def __getitem__(self, item):
         return self.styles[item]
@@ -501,63 +501,17 @@ class _StyleWorkItemList:
         self.styles[key] = value
 
     def __iter__(self):
-        return (item for item in self.styles)
+        return (item for item in self.styles.values())
 
-    def get_style(self, style_name: str) -> _StyleWorkItem:
+    def set_style(self, style_name: str, coord: str):
         """
-        Get the style from the list by name.
+        Specify the style of the cell.
 
         :param str style_name: the style name
-        :return: the style.
-        :rtype: _StyleWorkItem
+        :param str coord: the cell coordinates
+        :return: None.
         """
-        if style_name == "basic":
-            return _StyleWorkItem.basic()
-        elif style_name in _StyleWorkItemList.list_states:
-            for style in self.styles:
-                if style.name == style_name:
-                    return style
-
-    @property
-    def style_names(self) -> list[str]:
-        """
-        Get the style names.
-
-        :return: the names of the styles.
-        :rtype: list[str]
-        """
-        return [style.name for style in self.styles]
-
-    @property
-    def _get_styles(self) -> list[Union[NamedStyle, _StyleWorkItem]]:
-        """
-        Get all styles in the list.
-
-        :return: the styles.
-        :rtype: list[NamedStyle and _StyleWorkItem]
-        """
-        style: _StyleWorkItem
-        for name, style in ConstStyle.dict_style_work_item.items():
-            if name not in self.style_names:
-                self.styles.append(style._get_named())
-        return self.styles
-
-    @classmethod
-    def set_list(cls, name: str, style_names: list[str] = None):
-        """
-        Define the style list.
-
-        :param str name: the list name
-        :param style_names: the names of the styles
-        :type: list[str] or None
-        :return: the style list.
-        :rtype: _StyleWorkItemList
-        """
-        if style_names is not None:
-            styles = [ConstStyle.dict_style_work_item[style_name] for style_name in style_names]
-        else:
-            styles = []
-        return cls(name, styles)
+        return self.styles[style_name].set_style(coord)
 
 
 def main():
