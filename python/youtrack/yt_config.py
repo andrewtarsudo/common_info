@@ -36,13 +36,14 @@ class UserConfig:
     # names to replace
     __dict_name_conv: dict[str, str] = {"mozglyakova": "matyushina", "AndrewTarasov": "tarasov-a"}
     # attributes
-    attrs = ("login", "auth_token", "period_start", "period_end")
+    attrs = ("login", "auth_token", "period_start", "period_end", "path_table")
     # default configuration
     default_conf = {
         "login": "",
         "auth_token": "perm:dGFyYXNvdi1h.NjEtMTQw.1udDlV6zaAitHIgvw2eNQvF1sZ9JTZ",
         "period_start": f"{default_period_start}",
-        "period_end": f"{default_period_end}"
+        "period_end": f"{default_period_end}",
+        "path_table": "./report.xlsx"
     }
 
     conf_values = dict()
@@ -66,7 +67,7 @@ class UserConfig:
     def check_json(file_path: pathlib.Path) -> bool:
         """
         Verify if the file exists.
-        
+
         :param pathlib.Path file_path: the path to the file
         :return: the validation result.
         :rtype: bool
@@ -77,7 +78,7 @@ class UserConfig:
     def generate_json(file_path: pathlib.Path):
         """
         Create the file if it does not exist.
-        
+
         :param pathlib.Path file_path: the path to the file
         :return: None.
         """
@@ -90,7 +91,7 @@ class UserConfig:
         Get the JSON file values.
 
         :param pathlib.Path file_path: the path to the file
-        :return: the attribute dict values: login, auth_token, period_start, period_end.
+        :return: the attribute dict values: login, auth_token, period_start, period_end, path_table.
         :rtype: dict[str, str]
         """
         with open(file_path, "r") as json_file:
