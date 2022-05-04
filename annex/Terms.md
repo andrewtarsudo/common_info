@@ -3,6 +3,20 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|TLLI|Temporary Logical Link Identity, временная идентификация логического канала|
+|PUAN|Packet Uplink Acknowledgement/Negative Acknowledgement, подтверждение/отсутствие подтверждения приема пакета по восходящему каналу|
+|RACH|Random Access Channel, канал случайного доступа|
+|FUA|Fixed Uplink Allocation, фиксированное выделение восходящего канала|
+|RRLP|Radio Resource Location Services Protocol, протокол услуг по определению местоположения радиоресурсов|
+|TBF|Temporary Block Flow, временного потока блоков|
+|AGCH|Access Grant Channel, канал предоставления доступа|
+|ASIC|Application Specific integrated Circuit, специализированная прикладная интегральная схема|
+|FPGA|Field Programmable Gate Array, программируемая логическая интегральная схема|
+|SON|Self-Organizing Network, сети самоорганизации|
+|PDA|Personal Digital Assistant, персональный цифровой помощник|
+|LEE|Laptop Embedded Equipment, оборудование со встроенным ноутбуком|
+|LME|Laptop Mounted Equipment, оборудование с вмонтированным ноутбуком|
+|MTA|Multilateration Timing Advance, множественное позиционирование на основе времени задержки ответного сигнала|
 |PAPR|Peak-to-Average Power Ratio|
 |SC-FDMA|Single Carrier - Frequency Division Multiple Access|
 |HARQ|Hybrid Automatic Repeat Request|
