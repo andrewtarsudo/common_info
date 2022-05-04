@@ -116,7 +116,6 @@ class FileRecord:
                self.product, self.commentary
 
 
-
 def user_approve():
     user_input = input("Do you want to apply the changes? Y/Д, N/Н\n").lower().strip()
 
@@ -383,6 +382,15 @@ class JSONFile:
             file.write(json.dumps(dict_to_json, indent=2))
 
 
+class _TempFile:
+    def __init__(self, file_name: str):
+        self.file_name = file_name
+
+    def file(self):
+        return Const.dict_file[self.file_name]
+
+
+
 class User:
     def __init__(self, json_file: JSONFile, password: str):
         self.time = datetime.datetime.now()
@@ -470,3 +478,17 @@ class User:
             print("Not appropriate request.")
             return None
 
+    @staticmethod
+    def find_file_name(value: str):
+        return User.find_file("name", value)
+
+    @staticmethod
+    def modify_file(file: FileRecord, attr: str, value):
+        try:
+            setattr(file, attr, value)
+        except AttributeError as e:
+            logging.warning(f"AttributeError, {str(e)}.")
+        except ValueError as e:
+            logging.warning(f"ValueError, {str(e)}.")
+        except NameError as e:
+            logging.warning(f"NameError, {str(e)}.")
