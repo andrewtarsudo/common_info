@@ -815,36 +815,23 @@ class _PyXLMerged:
         return self.excel_prop.ws
 
     @property
-    def pyxl_row(self) -> int:
+    def pyxl_row(self) -> PyXLRow:
         """Get the PyXLRow instance."""
         pyxl_row: PyXLRow
-        for pyxl_row_id, pyxl_row in ConstXL.dict_pyxl_row.items():
+        for pyxl_row in ConstXL.dict_pyxl_row.values():
             if self.cell == pyxl_row.issue:
-                return pyxl_row_id
+                return pyxl_row
 
     @property
-    def work_items(self) -> list[int]:
-        """Get the PyXLWorkItem instance."""
-        return [work_item_id for work_item_id, work_item in ConstXL.dict_pyxl_work_item.items()
-                if work_item.row == self.row]
+    def work_items(self) -> list[PyXLWorkItem]:
+        """Get the PyXLWorkItem instances."""
+        return [work_item for work_item in ConstXL.dict_pyxl_work_item.values() if work_item.row == self.row]
 
     def __hash__(self):
         return hash(self.__coord)
 
     def __iter__(self):
-        return (self.__getitem_id(work_item) for work_item in self.work_items)
-
-    def __getitem_id(self, identifier: int) -> Optional[PyXLWorkItem]:
-        """
-        Get the PyXLWorkItem instance.
-
-        :param identifier: the instance identifier, int
-        :return: the instance of the PyXLWorkItem type.
-        """
-        if identifier in self.work_items:
-            return ConstXL.dict_pyxl_work_item[identifier]
-        else:
-            return None
+        return (self.getitem_id(work_item) for work_item in self.work_items)
 
     def __eq__(self, other):
         if isinstance(other, _PyXLMerged):
@@ -904,9 +891,9 @@ class _PyXLMerged:
 
     def __contains__(self, item):
         if isinstance(item, PyXLRow):
-            return self.pyxl_row == item.identifier
+            return self.pyxl_row == item
         elif isinstance(item, PyXLWorkItem):
-            return item.identifier in self.work_items
+            return item in self.work_items
         else:
             return NotImplemented
 
@@ -918,7 +905,7 @@ class _PyXLMerged:
         :return: the parent issue name.
         :rtype: str or None
         """
-        return self.__get_pyxl_row.parent
+        return self.pyxl_row.parent
 
     @property
     def issue_name(self) -> str:
@@ -928,7 +915,7 @@ class _PyXLMerged:
         :return: the issue name.
         :rtype: str
         """
-        return self.__get_pyxl_row.issue_name
+        return self.pyxl_row.issue_name
 
     @property
     def summary(self) -> str:
@@ -938,7 +925,7 @@ class _PyXLMerged:
         :return: the issue summary.
         :rtype: str
         """
-        return self.__get_pyxl_row.summary
+        return self.pyxl_row.summary
 
     @property
     def deadline(self) -> Optional[datetime.date]:
@@ -948,7 +935,7 @@ class _PyXLMerged:
         :return: the issue deadline.
         :rtype: date
         """
-        return self.__get_pyxl_row.deadline
+        return self.pyxl_row.deadline
 
     @property
     def commentary(self) -> Optional[str]:
@@ -958,7 +945,7 @@ class _PyXLMerged:
         :return: the issue commentary.
         :rtype: str or None
         """
-        return self.__get_pyxl_row.commentary
+        return self.pyxl_row.commentary
 
     def item_params(self) -> tuple[tuple[datetime.date, Union[int, Decimal]]]:
         """
@@ -985,7 +972,7 @@ class _PyXLMerged:
         :return: the work item dates.
         :rtype: list[datetime.date]
         """
-        return [self.__getitem_id(identifier).date for identifier in ConstXL.dict_pyxl_work_item]
+        return [pyxl_item.date for pyxl_item in self.work_items]
 
     def spent_time(self) -> list[Union[int, Decimal]]:
         """
@@ -994,7 +981,7 @@ class _PyXLMerged:
         :return: the spent times.
         :rtype: list[int or Decimal]
         """
-        return [self.__getitem_id(identifier).spent_time for identifier in ConstXL.dict_pyxl_work_item]
+        return [pyxl_item.spent_time for pyxl_item in self.work_items]
 
     def coord(self) -> list[str]:
         """
@@ -1003,7 +990,7 @@ class _PyXLMerged:
         :return: the work item coordinates.
         :rtype: list[str]
         """
-        return [self.__getitem_id(identifier).coord for identifier in ConstXL.dict_pyxl_work_item]
+        return [pyxl_item.coord for pyxl_item in self.work_items]
 
     def style(self) -> list[str]:
         """
@@ -1012,7 +999,7 @@ class _PyXLMerged:
         :return: the work item styles.
         :rtype: list[str]
         """
-        return [self.__getitem_id(identifier).cell.style for identifier in ConstXL.dict_pyxl_work_item]
+        return [pyxl_item.cell_style.name for pyxl_item in self.work_items]
 
     def get_item_attr(self, item: int, attr: str):
         """
