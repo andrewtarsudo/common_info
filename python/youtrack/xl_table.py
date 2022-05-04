@@ -378,6 +378,7 @@ class PyXLRow:
         ws --- the Worksheet instance;\n
         coord --- the cell coordinate;\n
         row --- the table row;\n
+        state --- the issue state;\n
         parent --- the parent issue name, B column;\n
         issue_name --- the issue name, C column;\n
         summary --- the issue summary, D column;\n
@@ -544,6 +545,19 @@ class PyXLRow:
         :rtype: str or None
         """
         return self.ws[f"NS{self.row}"].value
+
+    def state(self) -> str:
+        """
+        Get the issue state.
+
+        :return: the issue state.
+        :rtype: str 
+        """
+        for state in ExcelProp.dict_headers_short.keys():
+            if self.row in self.excel_prop.list_state_item(state):
+                return state
+            else:
+                continue
 
     def __add__(self, other):
         if isinstance(other, int):
