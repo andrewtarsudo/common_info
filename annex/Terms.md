@@ -4,7 +4,7 @@
 |Термин|Комментарий|
 |:-----|:----------|
 |LA|Level Access, уровень доступа|
-|CA|Call Alert, уведомление о пропущенных вызовах|
+|CA|Call Alert, уведомление о вызовах|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |AAL5|ATM Adaptation Layer Type 5, уровень адаптации ATM|
