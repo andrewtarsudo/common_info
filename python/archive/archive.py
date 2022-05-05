@@ -45,6 +45,8 @@ class FileRecord:
 
     __slots__ = ("name", "cabinet_name", "shelf_no", "folder_name", "doc_type", "serial", "product", "commentary")
 
+    attrs = ("name", "cabinet_name", "shelf_no", "folder_name", "doc_type", "serial", "product", "commentary")
+
     def __init__(self,
                  name: str,
                  cabinet_name: str = None,
@@ -73,30 +75,27 @@ class FileRecord:
     def __hash__(self):
         return hash((id(self), self.name))
 
-    def __key(self):
-        return id(self), self.name
-
     def __eq__(self, other):
         if isinstance(other, FileRecord):
-            return self.__key() == other.__key()
+            return self.name == other.name
         else:
             return NotImplemented
 
     def __ne__(self, other):
         if isinstance(other, FileRecord):
-            return self.__key() != other.__key()
+            return self.name != other.name
         else:
             return NotImplemented
 
     def __getattribute__(self, key):
-        if key in self.__slots__:
+        if key in FileRecord.attrs:
             return object.__getattribute__(self, key)
         else:
             logging.warning(f"Attribute {key} is not appropriate and cannot be got.")
             return None
 
     def __setattr__(self, key, value):
-        if key in self.__slots__:
+        if key in FileRecord.attrs:
             object.__setattr__(self, key, value)
         else:
             logging.warning(f"Attribute {key} is not appropriate and cannot be set.")
@@ -383,12 +382,47 @@ class JSONFile:
 
 
 class _TempFile:
+
+    attrs = ("name", "cabinet_name", "shelf_no", "folder_name", "doc_type", "serial", "product", "commentary")
+
     def __init__(self, file_name: str):
         self.file_name = file_name
+        self._saved = False
+
+        for attr in _TempFile.attrs:
+            object.__setattr__(self, attr, getattr(self.file(), attr))
+
+    def __str__(self):
+        return f"Original: {self.file_name}, saved: {self._saved}"
+
+    def __repr__(self):
+        return f"_TempFile(file_name={self.file_name}, saved={self._saved})"
+
+    def __hash__(self):
+        return hash((id(self), self.file_name))
+
+    def __key_eq(self):
+        return self.file_name, self._saved
+
+    def __eq__(self, other):
+        if isinstance(other, _TempFile):
+            return self.file_name == other.file_name
+        else:
+            return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, _TempFile):
+            return self.file_name == other.file_name
+        else:
+            return NotImplemented
 
     def file(self):
         return Const.dict_file[self.file_name]
 
+    def write_file(self):
+        for attr in _TempFile.attrs:
+            object.__setattr__(self.file(), attr, getattr(self, attr))
+        return self.file()
 
 
 class User:
@@ -447,11 +481,6 @@ class User:
             key = "USER"
         return os.environ[key]
 
-    def read_file(self):
-        return self.json_file.parsed_file
-
-    def init_objects(self):
-        self.json_file.get_files()
 
     @property
     def _is_ok(self) -> bool:
@@ -460,12 +489,43 @@ class User:
             return True
         else:
             logging.critical(f"User {self.name}, password {self.password} failed to log in.")
-            exit()
+            return False
 
-    @staticmethod
-    def find_file(attr: str, value):
-        if attr in FileRecord.__slots__:
-            result = [file for file in Const.dict_file.values() if getattr(file, attr) == value]
+
+class _User:
+
+    def __init__(self, user: User):
+        if user._is_ok:
+            self.user = user
+            self.temp_files = []
+
+    def __str__(self):
+        return str(self.user)
+
+    def __repr__(self):
+        return repr(self.user)
+
+    @property
+    def name(self):
+        return self.user.name
+
+    @property
+    def json_file(self) -> JSONFile:
+        return self.user.json_file
+
+    def read_file(self):
+        return self.json_file.parsed_file
+
+    @property
+    def init_objects(self):
+        return self.json_file.get_files()
+
+    def init_object_names(self):
+        return [file.name for file in self.init_objects]
+
+    def find_file(self, attr: str, value):
+        if attr in FileRecord.attrs:
+            result = [file for file in self.init_objects if getattr(file, attr) == value]
             if not result:
                 message = f"Found results:\n{result}"
                 pprint(message)
@@ -478,17 +538,57 @@ class User:
             print("Not appropriate request.")
             return None
 
-    @staticmethod
-    def find_file_name(value: str):
-        return User.find_file("name", value)
+    def find_file_name(self, value: str):
+        return self.find_file("name", value)
 
-    @staticmethod
-    def modify_file(file: FileRecord, attr: str, value):
+    def modify_file(self, file: FileRecord, attr: str, value):
+        temp_file = _TempFile(file.name)
+        self.temp_files.append(temp_file)
         try:
-            setattr(file, attr, value)
+            setattr(temp_file, attr, value)
         except AttributeError as e:
             logging.warning(f"AttributeError, {str(e)}.")
         except ValueError as e:
             logging.warning(f"ValueError, {str(e)}.")
         except NameError as e:
             logging.warning(f"NameError, {str(e)}.")
+        finally:
+            return temp_file
+
+    def save_file(self, temp_file: _TempFile, approve: bool):
+        if temp_file not in self.temp_files:
+            logging.error(f"Internal error, saving {temp_file} that does not exist.")
+        else:
+            if temp_file._saved:
+                logging.warning(f"The file {temp_file} has already been saved.")
+                print("The file has already been saved.")
+                self.temp_files.remove(temp_file)
+            else:
+                if approve:
+                    temp_file.write_file()
+                    temp_file._saved = True
+                    self.temp_files.remove(temp_file)
+                else:
+                    self.temp_files.remove(temp_file)
+
+    def create_file(
+            self, name: str, /,
+            cabinet_name: str = None,
+            shelf_no: int = None,
+            folder_name: str = None,
+            doc_type: str = None,
+            serial: str = None,
+            product: str = None,
+            commentary: str = None):
+        # attrs = ("name", "cabinet_name", "shelf_no", "folder_name", "doc_type", "serial", "product", "commentary")
+        if name in self.init_object_names():
+            logging.warning(f"The name {name} already exists.")
+            return None
+        else:
+            file = FileRecord(name, cabinet_name, shelf_no, folder_name, doc_type, serial, product, commentary)
+            return file
+
+    def delete_file(self, file_name: str):
+        if file_name in self.init_object_names():
+            file = self.find_file_name(file_name)
+
