@@ -3,57 +3,6 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
-|TLLI|Temporary Logical Link Identity, временная идентификация логического канала|
-|PUAN|Packet Uplink Acknowledgement/Negative Acknowledgement, подтверждение/отсутствие подтверждения приема пакета по восходящему каналу|
-|RACH|Random Access Channel, канал случайного доступа|
-|FUA|Fixed Uplink Allocation, фиксированное выделение восходящего канала|
-|RRLP|Radio Resource Location Services Protocol, протокол услуг по определению местоположения радиоресурсов|
-|TBF|Temporary Block Flow, временного потока блоков|
-|AGCH|Access Grant Channel, канал предоставления доступа|
-|ASIC|Application Specific integrated Circuit, специализированная прикладная интегральная схема|
-|FPGA|Field Programmable Gate Array, программируемая логическая интегральная схема|
-|SON|Self-Organizing Network, сети самоорганизации|
-|PDA|Personal Digital Assistant, персональный цифровой помощник|
-|LEE|Laptop Embedded Equipment, оборудование со встроенным ноутбуком|
-|LME|Laptop Mounted Equipment, оборудование с вмонтированным ноутбуком|
-|MTA|Multilateration Timing Advance, множественное позиционирование на основе времени задержки ответного сигнала|
-|PAPR|Peak-to-Average Power Ratio|
-|SC-FDMA|Single Carrier - Frequency Division Multiple Access|
-|HARQ|Hybrid Automatic Repeat Request|
-|MCE|Multicell/Multicast Coordination Entity|
-|TDMA|Time Division Multiple Access|
-|WCDMA|Wideband Code Division Multiple Access|
-|OFDMA|Orthogonal Frequency Division Multiple Access|
-|TTI|Transmission Time Interval, время передачи|
-|HSDPA|High Speed Downlink Packet Data Access|
-|HSUPA|High Speed Uplink Packet Data Access|
-|CQI|Channel Quality Information, информация о качестве работы канала|
-|HS-DSCH|High Speed Downlink Shared Channel|
-|E-DCH|Enhanced Dedicated Channel, усовершенствованный выделенный канал|
-|TDD|Time Division Duplex|
-|FDD|Frequency Division Duplex|
-|MBMS|Multimedia Broadcast Multicast Service|
-|OBD|Outbound Dialer, абонент, оформивший подписку во время массового оповещения пользователей| 
-|CCD|Call Center Dialer, абонент, оформивший подписку с помощью оператора поддержки пользователей|
-|SLA|Service Level Agreement, соглашение о качестве предоставляемых услуг|
-|MCA|Mobile Communication on Aircraft|
-|APM|Application Transport Mechanism|
-|BICC|Bearer Independent Call Control|
-|CCD|Conference Call Device|
-|RAB|Radio Access Bearer|
-|TICC|Transport Independent Call Control|
-|TFO|Tandem Free Operation|
-|RDS|Route Selection Descriptor, дескриптор выбора маршрута|
-|VBS|Voice Broadcast Service|
-|VGCS|Voice Group Call Service|
-|MPS|Multimedia Priority Services|
-|NMC|Network Management Controls|
-|ETS|Emergency Telecommunications Services|
-|WPS|Wireless Priority Service|
-|RPH|Resource Priority Header|
-|SCAP|Ericsson Service Charging Application Protocol, прикладной протокол тарификации услуг Ericsson|
-|LDAP|Lightweight Directory Access Protocol, упрощённый протокол доступа к каталогам|
-|SQN|Sequence Number, порядковый номер|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
 |AAA|Authentication, Authorization, and Accounting; аутентификация, авторизация и учет|
 |AAL5|ATM Adaptation Layer Type 5, уровень адаптации ATM|
@@ -70,6 +19,7 @@
 |ADSP|Analog-Digital Signal Processing, аналого-цифровая обработка сигналов|
 |AERM|Alignment Error Rate Monitoring, контроль коэффициента ошибок синхронизации|
 |AES|Advanced Encrypting Scheme — общепринятый стандарт шифрования Rijndael|
+|AGCH|Access Grant Channel, канал предоставления доступа|
 |AICA|Automatic Initial Call Attempt, автоматическая попытка начального вызова — один из этапов вызова|
 |AID|Application Identifier, идентификатор приложения|
 |AIS|Alarm Indication Signal, сигнал индикации тревоги|
@@ -85,12 +35,14 @@
 |AP|Alarm Processor, подсистема обработки аварий|
 |APC|Alias Point Code, код смежной сигнальной точки|
 |APDU|Application Protocol Data Unit, блок данных прикладного протокола|
+|APM|Application Transport Mechanism|
 |APN|Access Point Name, имя точки доступа|
 |APRI|Address Presentation Restriction Indicator, индикатор запрета отображения адреса|
 |ARP|Allocation and Retention Priority, приоритет при распределении и хранении|
 |AS|Application Server, узел дополнительного управления вызовом или логический объект SIGTRAN, обрабатывающий сигнализацию|
 |AS|Application Service, служба приложений|
 |ASCII|American Standard Code for Information Interchange, американский стандартный код обмена информацией|
+|ASIC|Application Specific integrated Circuit, специализированная прикладная интегральная схема|
 |ASN|Abstract Syntax Notation, абстрактная синтаксическая нотация|
 |ASP|Application Server Process, отдельный экземпляр AS SIGTRAN|
 |ASP|Application Service Provider, поставщик услуг доступа к приложениям|
@@ -114,6 +66,7 @@
 |BGCF|Breakout Gateway Control Function, узел управления шлюзами|
 |BGP|Border Gateway Protocol, протокол граничного шлюза|
 |BIB|Backward Indicator Bit, указательный бит назад|
+|BICC|Bearer Independent Call Control|
 |BLA|Blocking Acknowledgement, подтверждение блокировки канала ISUP|
 |BLF|Busy Lamp Field, панель индикации состояния абонентов|
 |BLO|Blocking, блокировка канала ISUP|
@@ -148,6 +101,8 @@
 |CBSP|Cell Broadcast Service Protocol, протокол трансляции по сотам — протокол взаимодействия CBC и RNC|
 |CC|Credit-Control, кредитный контроль|
 |CC|Cryptographic Checksum, криптографическая хэш–суммы|
+|CCD|Call Center Dialer, абонент, оформивший подписку с помощью оператора поддержки пользователей|
+|CCD|Conference Call Device|
 |CCF|Charging Collection Function, функция сбора тарификационнных данных|
 |CCT|Cryptographic Checksum Template, шаблон криптографической хэш–суммы|
 |CCU|Channel Codec Unit, блок кодека канала|
@@ -191,6 +146,7 @@
 |CPS|Calls per Second, количество вызовов в секунду|
 |CPT|Cellular Paging, сотовая пейджинговая связь|
 |CPU|Central Processing Unit, центральный процессор|
+|CQI|Channel Quality Information, информация о качестве работы канала|
 |CRC4|Cyclic Redundancy Check 4 - метод контроля целостности данных потока Е1, описанный в ITU-T G.704|
 |CRS|Call Recording System, система записи вызовов|
 |CS|Call Segment, вызов сегмента|
@@ -249,6 +205,7 @@
 |DUP|Data User Part, абонентская подсистема передачи данных|
 |DUPU|Destination User Part Unavailable|
 |DWDM|Dense Wavelength Division Multiplexing, мультиплексирование с разделением по длине волны|
+|E-DCH|Enhanced Dedicated Channel, усовершенствованный выделенный канал|
 |E–DSS1|Extended Digital Subscriber Signaling, расширенная цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами|
 |E–UTRAN|Evolved Universal Terrestrial Radio Access Network, улучшенная универсальная сеть наземного радиодоступа стандарта LTE|
 |EAP|Extensible Authentication Protocol, расширяемый протокол аутентификации|
@@ -279,10 +236,12 @@
 |ETE|End-To-End, сквозной|
 |ETFTN|Extended TFT Support Network, сеть поддержки расширенной TFT|
 |ETFTU|Extended TFT Support UE, абонентское оборудование поддержки расширенной TFT|
+|ETS|Emergency Telecommunications Services|
 |ETSI|European Telecommunications Standards Institute, Европейский институт телекоммуникационных стандартов|
 |f|frequency, частота|
 |FCS|Failure Cause, причина неуспешного выполнения|
 |FCS|Frame Check Sequence, контрольная последовательность кадра|
+|FDD|Frequency Division Duplex|
 |FEC|Forward Error Correction, упреждающая коррекция ошибок — техника помехоустойчивого кодирования/декодирования|
 |FIB|Forward Indicator Bit, указательный бит вперед|
 |FIBR|Forward Indicator Bit Routing, маршрутизация указательного бита вперед|
@@ -290,6 +249,7 @@
 |FISU|Fill In Signaling Unit, кадр однонаправленной передачи сигнальных сообщений от получателя о наличии ошибок|
 |FMC|Fixed Mobile Convergence, конвергенция фиксированной и мобильной связи|
 |FO|forwardingOptions, дополнительные опции при передаче дополнительной услуги|
+|FPGA|Field Programmable Gate Array, программируемая логическая интегральная схема|
 |FQDN|Fully Qualified Domain Name, полностью уточнённое доменное имя|
 |FQPC|Fully Qualified Partial CDR, полностью уточнённая частичная запись CDR|
 |FSN|Forward Sequence Number, номер последовательности вперед|
@@ -297,7 +257,10 @@
 |FTP|File Transfer Protocol, протокол передачи файлов|
 |FTS|Fixed Terminal System, система связи со стационарным терминалом|
 |FTS|forwardedToSubaddress, субадрес переадресации вызова|
+|FUA|Fixed Uplink Allocation, фиксированное выделение восходящего канала|
 |FXO|Foreign Exchange Office, аналоговый интерфейс абонентских устройств телефонных станций|
+|FXO|Foreign Exchange Office, аналоговый интерфейс для подключения к интерфейсу FXS|
+|FXS|Foreign Exchange Station, голосовой интерфейс для подключения обычного аналогового телефона к мультиплексору и для подключения к АТС в сети оператора другой мини-АТС|
 |GAN|Generative Adversarial Network, генеративно-состязательная сеть|
 |GEA|GPRS Encryption Algorithm, алгоритм шифрования в сетях GPRS|
 |GERAN|GSM/EDGE Radio Access Network, сеть радиодоступа к GSM/EDGE|
@@ -322,6 +285,7 @@
 |GW|Gateway, шлюз|
 |HAC|High–Availability Cluster, кластер высокой доступности|
 |Handover|хэндовер, передача обслуживания абонента в процессе разговора из одной соты в другую без разрыва соединения|
+|HARQ|Hybrid Automatic Repeat Request|
 |HDB3|High Density Bipolar, высокоплотное биполярное кодирование|
 |HDC|HTTP–to–Diameter converter, преобразователь данных HTTP в формат протокола Diameter|
 |HDD|Hard Disk Drive, накопитель на жестких дисках|
@@ -330,10 +294,13 @@
 |HMDT|Signaling Message Handling: Message Distribution, обработка сигнальных сообщений: распределение сообщений|
 |HMRT|Signaling Message Handling: Message Routing, обработка сигнальных сообщений: маршрутизация сообщений|
 |HPLMN|Home PLMN, домашняя сеть PLMN|
+|HS-DSCH|High Speed Downlink Shared Channel|
+|HSDPA|High Speed Downlink Packet Data Access|
 |HSL|High-Speed Link, высокоскоростное соединение|
 |HSM|Hardware Security Module, модуль аппаратной защиты|
 |HSPA|High-Speed Packet Data Access, высокоскоростная пакетная передача данных|
 |HSS|Home Subscriber Server, база данных абонентов собственной сети LTE|
+|HSUPA|High Speed Uplink Packet Data Access|
 |HUP|Handover User Part, абонентская подсистема хэндовера|
 |I–CSCF|Interrogating CSCF, узел взаимодействия с внешними сетями IMS|
 |I/O|Input/Output, ввод/вывод|
@@ -409,6 +376,8 @@
 |LBS|Location Based Services, служба на основе определения местоположения абонента|
 |LCCTF|Location Client Coordinate Transformation Function, функция преобразования коодинат позиции пользователя|
 |LCS|Location Service, служба определения местоположения|
+|LDAP|Lightweight Directory Access Protocol, упрощённый протокол доступа к каталогам|
+|LEE|Laptop Embedded Equipment, оборудование со встроенным ноутбуком|
 |LFA|Loss of Frame Alignment, потеря цикловой (фазовой) синхронизации|
 |LFN|longForwardedToNumber, адрес переадресации вызова|
 |LI|Legal Intervention, законное вмешательство в вызов|
@@ -416,6 +385,7 @@
 |LIDB|Line Information Database, информационная база данных линии связи|
 |LIFO|Last in, First out, стек по принципу «последним пришел — первым ушел»|
 |LLC|Logical Link Control|
+|LME|Laptop Mounted Equipment, оборудование с вмонтированным ноутбуком|
 |LMMF|LMU Mobility Management Function, функция управления мобильностью LMU|
 |LMSI|Local Mobile Subscriber Identity, местный идентификатор абонента мобильной связи|
 |LMU|Line Measurement Unit, стационарный измерительный модуль|
@@ -439,7 +409,10 @@
 |MAC|Message Authentication Code, код проверки подлинности сообщения|
 |MAP|Mobile Application Part, протокол мобильных приложений|
 |MB|Music Box, автоматическое воспроизведение мелодий|
+|MBMS|Multimedia Broadcast Multicast Service|
+|MCA|Mobile Communication on Aircraft|
 |MCC|Mobile Country Code, код страны в мобильных сетях|
+|MCE|Multicell/Multicast Coordination Entity|
 |MCU|Media Control Unit, сервер обработки медиа–данных|
 |MCU|Multipoint Control Unit, сервер многоточечной конференции|
 |MD5|Message Digest 5, алгоритм хэширования|
@@ -471,6 +444,7 @@
 |MO|Mobile Originated, исходящий|
 |MOCN|Multi-Operator Core Network|
 |MPC|Multiple Party Conference, многопользовательская конференция|
+|MPS|Multimedia Priority Services|
 |MPS|MultiPage Signal|
 |MR|Message Reference, идентификатор соответствующего сообщения SMS-SUBMIT|
 |MRFC|Media Resource Function Controller, контролер мультимедийных ресурсов|
@@ -489,6 +463,7 @@
 |MSU|Message Signaling Unit, кадр передачи сигнальных сообщений|
 |MT–SMS|Mobile Terminated Short Message, входящее SMS–сообщение|
 |MT|Mobile Terminated, входящий|
+|MTA|Multilateration Timing Advance, множественное позиционирование на основе времени задержки ответного сигнала|
 |MTI|Message Type Indicator, индикатор типа сообщения|
 |MTP|Message Transfer Part, подсистема передачи сообщений|
 |MTU|Maximum Transmission Unit, максимальный размер пакета|
@@ -516,6 +491,7 @@
 |NI|Network Identifier, идентификатор сети|
 |NIC|Network Interface Controller, сетевой контроллер|
 |NIDD|Non-IP Data Delivery, передача данных не по IP|
+|NMC|Network Management Controls|
 |NMS|Network Management System, система управления сетью|
 |NP|Numbering Plan, план нумерации|
 |NPI|Numbering Plan Indicator, индикатор плана нумерации|
@@ -534,16 +510,19 @@
 |NWDAF|Network Data Analytics Function, функция анализа сетевых данных|
 |OA|Originating Address, адрес отправления|
 |OAM|Operation, Administration, and Maintenance; эксплуатация, администрирование и техническое обслуживание|
+|OBD|Outbound Dialer, абонент, оформивший подписку во время массового оповещения пользователей| 
 |OCS|Online Charging System, система учета расходов в реальном времени|
 |ODB|Operator Determined Barring; запрет, установленный оператором связи|
 |ODBC|Open Database Connectivity, программный интерфейс подключения к базам данных|
 |OFCS|Offline Charging System, система учета расходов в режиме offline|
+|OFDMA|Orthogonal Frequency Division Multiple Access|
 |OgPN|Original Party Number, первоначальный номер абонента|
 |OMA|Open Mobile Alliance, Открытое сообщество операторов мобильной связи|
 |OMAP|Operation, Maintenance, and Administration Part; подсистема эксплуатации, администрирования и технического обслуживания|
 |OMC|Operation and Maintenance Centre, центр эксплуатации и технического обслуживания|
 |OMI|Open Message Interface, интерфейс открытых сообщений|
 |OMI|Operation and Maintenance Interface, интерфейс эксплуатации и технического обслуживания|
+|OMS|Outlook Mobile Service - сервис для интеграции почтовых служб ПК с сетями мобильных операторов|
 |OP|Open Platform|
 |OPC|Origination Point Code, код сигнальной точки отправления|
 |OQoD|Originating Call Query on Digit Analysis, анализ при запросе по цифрам инициируемого вызова|
@@ -556,6 +535,7 @@
 |P–CSCF|Proxy CSCF, узел взаимодействия с абонентскими терминалами IMS|
 |PA|PlayAnnouncement, проигрыш оповещения|
 |PAP|Password Authentication Protocol, протокол аутентификации по паролю|
+|PAPR|Peak-to-Average Power Ratio|
 |PBX|Private Branch Exchange, учрежденческая телефонная станция|
 |PC|Protocol Class, класс протокола|
 |PCAP|Packet Capture, захват данных — программное обеспечение для обработки сетевых данных, поступающих на сетевую карту оборудования|
@@ -571,6 +551,7 @@
 |PCRF|Policy and Charging Rules Function, правила и политики тарификации — узел LTE, управляющий начислением платы за оказанные услуги|
 |PCSM|Peer Connection Service Manager, диспетчер соединений протокола Diameter|
 |PCU|Packet Control Unit, элемент управления пакетами|
+|PDA|Personal Digital Assistant, персональный цифровой помощник|
 |PDCH|Packet Data Channel, канал пакетных данных|
 |PDCP|Packet Data Convergence Protocol, протокол конвергенции пакетных данных|
 |PDN|Packet Data Network, сеть пакетной передачи данных|
@@ -604,6 +585,7 @@
 |PSMF|Positioning Signal Measurement Function, функция измерения параметров сигнала при позиционировании|
 |PSTN|Public Switched Telephone Network, телефонная сеть общего пользования|
 |PTT|Push–to–Talk, полудуплексный режим приема–передачи|
+|PUAN|Packet Uplink Acknowledgement/Negative Acknowledgement, подтверждение/отсутствие подтверждения приема пакета по восходящему каналу|
 |PUK|PIN Unblocking Key, личный код разблокирования PIN|
 |PVC|Permanent Virtual Circuit, постоянный виртуальный канал|
 |PVI|Preemption Vulnerability Indicator, индикатор возможности завершения текущего вызова при наличии приоритетного входящего вызова|
@@ -616,7 +598,9 @@
 |R–TPDU|Response–TPDU|
 |RA|Recipient Address, адрес получателя предыдущего сообщения MAP-MO-SM|
 |RAB|Radio Access Bearer, канал радиодоступа|
+|RAB|Radio Access Bearer|
 |RAC|Routing Area Code, код зоны маршрутизации|
+|RACH|Random Access Channel, канал случайного доступа|
 |RADIUS|Remote Authentication in Dial–In User Service, услуга удалённой аутентификации абонента телефонной сети — протокол для реализации аутентификации, авторизации и сбора сведений об использованных ресурсах|
 |RAI|Remote Alarm Indication, индикация удаленной аварии|
 |RAI|Routing Area Identifier, идентификатор области адресации|
@@ -633,6 +617,7 @@
 |RCS|Rich Communication Services, система передачи сообщений и контактных данных в сетях мобильной связи|
 |RD|Reject Duplicates, флаг приема/отбоя сообщений SMS-SUBMIT с одинаковыми MR и DA|
 |RdPN|Redirected Party Number, номер абонента, перенаправленный в последний раз|
+|RDS|Route Selection Descriptor, дескриптор выбора маршрута|
 |REL|Release, освобождение линии ISUP|
 |RFC|Request for Comments — документы, содержащие общепринятые технические спецификации и стандарты|
 |RFU|Reserved for Future Use, зарезервировано для использования в будущем|
@@ -650,9 +635,11 @@
 |RNTI|Radio Network Temporary Identity, временный объект радиосети|
 |RP|Reply Path, адрес для отправки ответа|
 |RPC|Remote Procedure Call, удаленный вызов процедур|
+|RPH|Resource Priority Header|
 |RPS|Reductant Power Supply, резервный источник питания|
 |RPS|Requests per Second, количество запросов в секунду|
 |RRC|Radio Resource Control, управление радиоресурсами|
+|RRLP|Radio Resource Location Services Protocol, протокол услуг по определению местоположения радиоресурсов|
 |RRP|Reductant Ring Protocol, ошибкоустойчивый протокол резервирования|
 |RSC|Reset Circuit, сброс канала ISUP|
 |RTCP|Real–Time Transport Control Protocol, протокол, управляющий передачей данных в режиме реального времени. Работает совместно с RTP|
@@ -676,7 +663,9 @@
 |SBcAP|SBc Application Part, прикладная часть протокола SBc — протокол взаимодействия CBC и MME|
 |SBSC|Serving Base Station Controller, контроллер |
 |SBSS|Serving BSS, обслуживающая BSS|
+|SC-FDMA|Single Carrier - Frequency Division Multiple Access|
 |SCA|Service Center Address, адрес сервисного центра|
+|SCAP|Ericsson Service Charging Application Protocol, прикладной протокол тарификации услуг Ericsson|
 |SCC-AS|Service Centralization and Continuity Application Server, сервер централизации и продолжения сервиса|
 |SCC–AS|Service Centralization and Continuity Application Server, сервер для централизации и непрерывности предоставления услуг|
 |SCCP|Signaling Connection Control Part, подсистема управления сигнализацией|
@@ -711,6 +700,7 @@
 |SIP|Session Initiation Protocol, протокол инициирования сеансов связи|
 |SIPTO|Selected IP Traffic Offload, разгрузка выбранного IP-трафика|
 |SL|Service Logic, обслуживающая логика|
+|SLA|Service Level Agreement, соглашение о качестве предоставляемых услуг|
 |SLC|Signaling Link Code, код сигнального соединения|
 |SLF|Subscriber Location Function, функция определения местоположения абонента|
 |SLS|Signaling Link Set, набор сигнальных линий  |
@@ -738,6 +728,7 @@
 |SNMP|Simple Network Management Protocol, простой протокол управления сетью|
 |SNOW3G|Потоковый алгоритм шифрования 3GPP|
 |SOAP|Simple Object Access Protocol, простой протокол доступа к объектам — протокол обмена структурированными сообщениями в формате XML в компьютерных сетях|
+|SON|Self-Organizing Network, сети самоорганизации|
 |SoR|Steering of Roaming, стиринг при нахождении в роуминговой сети|
 |SOSM|System of the Operative and Search Measures, Система оперативно–розыскных мероприятий — СОРМ|
 |SPC|Signaling Point Code, код сигнального пункта|
@@ -749,6 +740,7 @@
 |SPN|Service Provider Name, название обслуживающего оператора связи|
 |SPT|Service Point Trigger, условие активации точки триггера|
 |SQL|Structured Query Language, язык структурированных запросов|
+|SQN|Sequence Number, порядковый номер|
 |SRF|Signalling Relay Function, функция ретрансляции сигнальных сообщений|
 |SRI|Status Report Indication, индикация запроса отчета о состоянии|
 |SRQ|Status Report Qualifier, указатель предыдущего сообщения: SMS-SUBMIT или SMS-COMMAND|
@@ -780,19 +772,25 @@
 |TAR|Toolkit Application Reference, справочник приложений — уникальный идентификатор приложений верхнего уровня|
 |TAS|Telephony Application Server, сервер приложений телефонии|
 |TAU|Tracking Area Update, обновление зоны обслуживания|
+|TBF|Temporary Block Flow, временного потока блоков|
 |TCAP|Transaction Capabilities Application Part, прикладная подсистема возможностей транзакции|
 |TCM|Toolkit for Conceptual Modeling, пакет программного обеспечения для концептуального моделирования|
 |TCP|Transport Control Protocol, протокол управления передачей данных|
 |TCS|Terminal Capability Set, функциональные возможности терминала|
+|TDD|Time Division Duplex|
 |TDM|Time Division Multiplexing, мультиплексирование с разделением по времени|
+|TDMA|Time Division Multiple Access|
 |TDP|Trigger Detection Point, триггерная точка обнаружения|
 |TEI|Terminal Endpoint Identifier, идентификатор оконечной точки терминала|
 |TEID|Tunnel Endpoint Identifier, идентификатор конечной точки туннеля|
 |TETRA|Terrestrial Trunked Radio, магистральная наземная радиосвязь|
+|TFO|Tandem Free Operation|
 |TFT|Traffic Flow Template, шаблон потока трафика|
+|TICC|Transport Independent Call Control|
 |TID|Thread ID, идентификатор потока|
 |TID|Transaction Identifier, идентификатор транзакции|
 |TIF|Translation Information Flag, флаг разрешения использовать короткие FTN в сети CAMEL|
+|TLLI|Temporary Logical Link Identity, временная идентификация логического канала|
 |TLLI|Temporary Logical Link Identity, временный объект логического канала|
 |TLS|Transport Layer Security — протокол защищенной передачи данных с применением шифрования|
 |TLV|Tag – Length – Value (data structure)|
@@ -811,6 +809,7 @@
 |TSP|Telecom Specific Peripheral, телекоммуникационное специальное периферийное устройство|
 |TT|Translation Type, тип трансляции|
 |TTF|Failure To Train, кадр отказа в настройке|
+|TTI|Transmission Time Interval, время передачи|
 |TTL|Time–to–Live, время жизни|
 |TUP|Telephone User Part, абонентская подсистема телефонной связи|
 |UA|User–Agent, агент пользователя|
@@ -853,8 +852,10 @@
 |VAS|Value Added Service, дополнительная платная услуга|
 |VASP|Value Added Service Provider, поставщик дополнительных платных услуг|
 |VBD|Voice Band Data, данные, передаваемые в полосе речевого сигнала|
+|VBS|Voice Broadcast Service|
 |VFC|Voice Frequency Circuit, канал тональной частоты|
 |VFS|Virtual File System, виртуальная файловая система|
+|VGCS|Voice Group Call Service|
 |VLAN|Virtual Local Area Network, виртуальная локальная сеть|
 |VLR|Visitor Location Register, регистр местоположения абонентов в роуминге в своей сети|
 |VMA|Voice Mail Alerting, голосовые предупреждения|
@@ -871,11 +872,13 @@
 |WAE|WAN Automation Engine|
 |WAP|Wireless Application Protocol, протокол для приложений беспроводной связи|
 |WB|Welcome Back, система оповещения вновь зарегистрированных гостевых абонентов|
+|WCDMA|Wideband Code Division Multiple Access|
 |WISM|Wireless Services Module, модуль, предоставляющий беспроводные услуги|
 |WIX|Wireless Information Exchange, беспроводной обмен информацией|
 |WLAN|Wireless Local Area Network, беспроводная локальная сеть|
 |WLSS|WebLogic SIP Server, программное обеспечение сервера от Oracle для запуска SIP-приложений|
 |WML|Wireless Markup Language|
+|WPS|Wireless Priority Service|
 |WTP|Wireless Transport Protocol, протокол беспроводной передачи|
 |XML|eXtensible Markup Language, расширяемый язык разметки|
 |ААЛ|Абонентская аналоговая линия|
@@ -883,6 +886,8 @@
 |ИКМ–30|Плата с импульсно-кодовой модуляцией|
 |КТЧ|Канал тональной частоты|
 |ЛБДПН|Локальная база данных перенесенных абонентских номеров|
+|МАК|Мультисервисный абонентский концентратор|
+|МКД|Мультисервисный коммутатор доступа|
 |ПЛИС|Программируемая логическая интегральная схема|
 |ТфОП|Телефонные сети общего пользования|
 |УКИО|Унифицированная карточка информационного обмена|
