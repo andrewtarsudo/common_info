@@ -150,7 +150,7 @@ def pair_merged(
         pyxl_merged: list[_PyXLMerged]) -> dict[str, tuple[_IssueMerged, _PyXLMerged]]:
     """
     Match the _Merged instances.
-    
+
     :param issue_merged: the _IssueMerged instances
     :type issue_merged: list[_IssueMerged]
     :param pyxl_merged: the _PyXLMerged instances
@@ -168,7 +168,7 @@ def pair_merged(
 def unpaired(issue_merged: list[_IssueMerged], pyxl_merged: list[_PyXLMerged]) -> list[str]:
     """
     Get the unpaired YouTrack issue names.
-    
+
     :param issue_merged: the _IssueMerged instances
     :type issue_merged: list[_IssueMerged]
     :param pyxl_merged: the _PyXLMerged instances
@@ -176,7 +176,7 @@ def unpaired(issue_merged: list[_IssueMerged], pyxl_merged: list[_PyXLMerged]) -
     :return: the unpaired issue names.
     :rtype: list[str]
     """
-    return [issue.issue_name for issue in issue_merged 
+    return [issue.issue_name for issue in issue_merged
             if not any(pyxl.issue_name == issue.issue_name for pyxl in pyxl_merged)]
 
 
