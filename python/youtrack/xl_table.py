@@ -331,25 +331,9 @@ def range_coord(start_coord: str, end_coord: str):
     return min_row, max_row, min_col, max_col
 
 
-def convert_spent_time(spent_time: Any) -> Union[int, Decimal]:
+def convert_spent_time(spent_time: Any) -> Decimal:
     """Converts the spent time to the specified format."""
-    return spent_time if isinstance(spent_time, int) else Decimal(spent_time).normalize()
-
-
-def converter_work_items(
-        work_items: list[tuple[Any, Any, str, str]]) -> list[tuple[datetime.date, Union[int, Decimal], str, str]]:
-    """
-
-    :param work_items:
-    :return:
-    """
-    work_items_final: list[tuple[datetime.date, Union[int, Decimal], str, str]] = []
-    for work_item in work_items:
-        date_init, spent_time_init, coord, style_name = work_item
-        date_final: Optional[datetime.date] = convert_datetime_date(date_init)
-        spent_time_final = convert_spent_time(spent_time_init)
-        work_items_final.append((date_final, spent_time_final, coord, style_name))
-    return work_items_final
+    return Decimal(spent_time).normalize()
 
 
 def convert_datetime_date(value: Any) -> Optional[datetime.date]:
@@ -370,6 +354,11 @@ class PyXLRow:
     """
     Define the issue parameters from the table.
 
+    Class params:
+        attrs --- the attributes:\n
+        "issue", "state", "summary", "parent", "deadline";\n
+        index --- the unique instance identifier, 0-based;\n
+
     Params:
         excel_prop_name --- the ExcelProp name, str;\n
         issue --- the issue cell, Cell;
@@ -388,6 +377,8 @@ class PyXLRow:
         get_pyxl_row(excel_prop_name, coord) --- get PyXLRow instance;
     """
     index = 0
+
+    attrs = ("issue_name", "state", "summary", "parent", "deadline")
 
     __slots__ = ("excel_prop_name", "issue", "identifier")
 
@@ -559,31 +550,27 @@ class PyXLRow:
             else:
                 continue
 
-    def __add__(self, other):
-        if isinstance(other, int):
-            row, column = coordinate_to_tuple(self.coord)
-            if column + other < 1:
-                raise ValueError("Incorrect operand.")
-            else:
-                col_idx = column + other
-                return self.ws[f"{get_column_letter(col_idx)}{row}"]
-        else:
-            return NotImplemented
+    def to_tuple(self):
+        """
+        Represent the instance as a tuple.
 
-    def __iadd__(self, other):
-        if isinstance(other, int):
-            return self.__add__(other)
-        else:
-            return NotImplemented
+        :return: the tuple of the issue attributes.
+        :rtype: tuple[str, str, str, str or None, datetime.date or None]
+        """
+        return tuple(getattr(self, attr) for attr in PyXLRow.attrs)
 
 
 class PyXLWorkItem:
     """
     Define the work items in the table.
 
+    Class params:
+        cell_attrs --- the attributes of the class instances:\n
+        number_format, alignment, border, fill, font, protection, data_type;\n
+        attrs --- the attributes: "issue", "date", "spent_time";\n
+        index --- the unique instance identifier, 0-based;\n
+
     Params:
-        attrs --- the attributes of the class instances:
-          number_format, alignment, border, fill, font, protection, data_type;\n
         excel_prop_name --- the ExcelProp instance name;\n
         cell --- the cell in the table;\n
         style_name --- the cell style;\n
@@ -600,11 +587,13 @@ class PyXLWorkItem:
     Functions:
         set_style(style_name) --- set the cell style;
         _set_cell_attr(key, value) --- set the cell attributes;\n
+        to_tuple() --- represent the instance as a tuple;\n
     """
 
     index = 0
 
-    attrs = ("number_format", "alignment", "border", "fill", "font", "protection", "data_type")
+    cell_attrs = ("number_format", "alignment", "border", "fill", "font", "protection", "data_type")
+    attrs = ("issue", "date", "spent_time")
 
     __slots__ = ("excel_prop_name", "cell", "style_name", "identifier")
 
@@ -706,7 +695,7 @@ class PyXLWorkItem:
         return self.cell.row
 
     @property
-    def spent_time(self) -> Union[int, Decimal]:
+    def spent_time(self) -> Decimal:
         """
         Get the work item spent time.
 
@@ -729,7 +718,7 @@ class PyXLWorkItem:
     @property
     def cell_style(self) -> _StyleWorkItem:
         """
-        Get the cell style .
+        Get the cell style.
 
         :return: the cell style.
         :rtype: _StyleWorkItem
@@ -754,7 +743,7 @@ class PyXLWorkItem:
         :return: the cell parameters.
         :rtype: tuple
         """
-        return tuple(self.cell.__getattribute__(attr) for attr in PyXLWorkItem.attrs)
+        return tuple(getattr(self.cell, attr) for attr in PyXLWorkItem.cell_attrs)
 
     def _set_cell_attr(self, key: str, value):
         """
@@ -765,10 +754,19 @@ class PyXLWorkItem:
         :param value: the attribute value
         :return: None.
         """
-        if key in PyXLWorkItem.attrs:
-            self.cell.__setattr__(key, value)
+        if key in PyXLWorkItem.cell_attrs:
+            setattr(self.cell, key, value)
         else:
             print(f"AttributeError, {key} in not a valid attribute.")
+
+    def to_tuple(self):
+        """
+        Represent the instance as a tuple.
+
+        :return: the tuple of the issue work item attributes.
+        :rtype: tuple[str, datetime.date, Decimal]
+        """
+        return tuple(getattr(self, attr) for attr in PyXLWorkItem.attrs)
 
 
 class _PyXLMerged:
