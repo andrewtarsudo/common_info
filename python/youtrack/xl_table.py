@@ -2,15 +2,9 @@ from typing import Optional, Union, Any
 import datetime
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
-from openpyxl.utils.cell import coordinate_to_tuple, coordinate_from_string, get_column_letter
+from openpyxl.utils.cell import coordinate_to_tuple, get_column_letter
 from decimal import Decimal
 from _style_work_item import _StyleWorkItem, _StyleWorkItemList
-
-
-class ConstXL:
-    dict_excel_prop = dict()
-    dict_pyxl_row = dict()
-    dict_pyxl_work_item = dict()
 
 
 class ExcelProp:
@@ -20,6 +14,10 @@ class ExcelProp:
     Constants:
         dict_headers --- mapping states and indexes;\n
         dict_headers_short --- mapping issue states and indexes;\n
+
+    Class params:
+        dict_pyxl_row --- the dictionary of the PyXLRow instances;\n
+        dict_pyxl_work_item --- the dictionary of the PyXLWorkItem instances;\n
 
     Properties:
         ws --- the worksheet;\n
@@ -31,8 +29,6 @@ class ExcelProp:
         cell_from_coord --- the cell from its coord;\n
         headers --- the header cells;\n
         headers_row --- the header rows;\n
-        column_letter --- column letter from the coordinate;\n
-        row_coord --- row value from the coordinate;\n
         list_state_row --- get the non-empty rows in the table;\n
         tasks --- get the PyXLRow instances;\n
 
@@ -43,16 +39,16 @@ class ExcelProp:
         get_work_items(row) --- get the PyXLWorkItem instances in the row;\n
         get_column_date(date) --- get the column letter for the specified date;\n
     """
-
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
     dict_headers_short = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3}
+
+    dict_pyxl_row = dict()
+    dict_pyxl_work_item = dict()
 
     def __init__(self, ws: Worksheet, name: str, styles: _StyleWorkItemList):
         self.ws = ws
         self.name = name
         self.styles = styles
-
-        ConstXL.dict_excel_prop[self.name] = self
 
     def __str__(self):
         return f"Worksheet is {self.ws}, name is {self.name}"
@@ -80,7 +76,7 @@ class ExcelProp:
         Get the column letter for the specified date.
 
         :param datetime.date date: the date
-        :return: the column_letter
+        :return: the column_letter.
         :rtype: str
         """
         cell: Cell
@@ -130,16 +126,6 @@ class ExcelProp:
         """
         return self.bottom_right.row
 
-    def cell_from_coord(self, coord: str) -> Cell:
-        """
-        Get the cell by its coordinate.
-
-        :param str coord: the cell coordinate
-        :return: the cell.
-        :rtype: Cell
-        """
-        return self.ws[f"{coord}"]
-
     def cell_in_range(self, start_coord: str, end_coord: str):
         """
         Convert the cell range to the cell generator in the range.
@@ -176,35 +162,13 @@ class ExcelProp:
         """
         return [header.row for header in self.headers]
 
-    @staticmethod
-    def column_coord(coord: str) -> str:
-        """
-        Get the column letter from the cell coordinate.
-
-        :param str coord: the cell coordinate
-        :return: the column letter.
-        :rtype: str
-        """
-        return coordinate_from_string(coord)[0]
-
-    @staticmethod
-    def row_coord(coord: str) -> int:
-        """
-        Get the row number from the cell coordinate.
-
-        :param str coord: the cell coordinate
-        :return: the row number.
-        :rtype: int
-        """
-        return coordinate_from_string(coord)[1]
-
     def check_empty(self, item: Union[int, str, Cell]) -> bool:
         """
         Check if the cell is empty.
 
         :param item: the cell value
         :type item: int or str or Cell
-        :return: the flag if the cell is empty.
+        :return: the emptiness flag.
         :rtype: bool
         """
         if isinstance(item, Cell):
@@ -246,23 +210,24 @@ class ExcelProp:
         :return: the PyXLRow instances.
         :rtype: list[PyXLRow]
         """
-        return [PyXLRow.get_pyxl_row(self.name, f"C{row}") for list_state in self.list_state_row for row in list_state]
+        return [PyXLRow(self, self.ws[f"C{row}"]) for list_state in self.list_state_row for row in list_state]
 
-    def pyxl_row_names(self):
+    def pyxl_row_names(self) -> list[str]:
         """
-        Get the pyxl_row issue names.
+        Get the PyXLRow issue names.
 
-        :return: the list of issue names.
+        :return: the issue names.
         :rtype: list[str]
         """
-        return [task.issue for task in self.tasks]
+        return [task.issue_name for task in self.tasks]
 
     def get_work_items(self, row: int) -> list[tuple[datetime.date, Union[int, Decimal], str, str]]:
         """
         Get the work items.
 
-        :param row: the table row, int
-        :return: the list of work items of the tuple[date, Union[int, Decimal], str, str] type.
+        :param int row: the table row
+        :return: the work items.
+        :rtype: list[tuple[date, Union[int, Decimal], str, str]]
         """
         work_items: list[tuple[datetime.date, Union[int, Decimal], str, str]] = []
         work_item_row: tuple[Cell]
@@ -281,6 +246,16 @@ class ExcelProp:
                 work_items.append(
                     (self.ws[f'{column}1'].value, cell.value, cell.coordinate, cell_style))
         return work_items
+
+    def get_merged(self):
+        """
+        Specify the _PyXLMerged instances.
+
+        :return: the _PyXLMerged instances.
+        :rtype: list[_PyXLMerged]
+        """
+        list_rows = [value for item in self.list_state_row for value in item]
+        return [_PyXLMerged(self, self.ws[f"C{row}"]) for row in list_rows]
 
 
 def check_coord(coord: str) -> bool:
@@ -361,7 +336,8 @@ class PyXLRow:
 
     Params:
         excel_prop_name --- the ExcelProp name, str;\n
-        issue --- the issue cell, Cell;
+        issue --- the issue cell, Cell;\n
+
     Properties:
         excel_prop --- the ExcelProp instance;\n
         ws --- the Worksheet instance;\n
@@ -372,37 +348,32 @@ class PyXLRow:
         issue_name --- the issue name, C column;\n
         summary --- the issue summary, D column;\n
         deadline --- the issue deadline, E column;\n
-        commentary --- the issue commentary, NS column;
-    Functions:
-        get_pyxl_row(excel_prop_name, coord) --- get PyXLRow instance;
-    """
-    index = 0
+        commentary --- the issue commentary, NS column;\n
 
+    Functions:
+        to_tuple() --- convert to the tuple;\n
+    """
     attrs = ("issue_name", "state", "summary", "parent", "deadline")
 
-    __slots__ = ("excel_prop_name", "issue", "identifier")
+    __slots__ = ("excel_prop", "issue")
 
-    def __init__(self, excel_prop_name: str, issue: Cell):
-        self.excel_prop_name = excel_prop_name
+    def __init__(self, excel_prop: ExcelProp, issue: Cell):
+        self.excel_prop = excel_prop
         self.issue = issue
-        self.identifier = PyXLRow.index
 
-        ConstXL.dict_pyxl_row[self.identifier] = self
-        PyXLRow.index += 1
+        self.excel_prop.dict_pyxl_row[self.issue_name] = self
 
     def __str__(self):
-        return f"PyXLRow: excel_prop_name = {self.excel_prop_name}, cell = {self.issue.coordinate}," \
-               f"identifier = {self.identifier}"
+        return f"PyXLRow: excel_prop = {self.excel_prop}, cell = {self.issue.coordinate}"
 
     def __repr__(self):
-        return f"PyXLRow(excel_prop_name={self.excel_prop_name}, issue={self.issue.coordinate})," \
-               f"PyXLRow.identifier={self.identifier}"
+        return f"PyXLRow(excel_prop={self.excel_prop}, issue={self.issue.coordinate})"
 
     def __hash__(self):
-        return hash((self.excel_prop_name, self.issue.coordinate))
+        return hash((self.excel_prop.name, self.issue.coordinate))
 
     def __key(self):
-        return self.excel_prop_name, self.issue.coordinate
+        return self.excel_prop.name, self.issue.coordinate
 
     def __eq__(self, other):
         if isinstance(other, PyXLRow):
@@ -440,28 +411,6 @@ class PyXLRow:
         else:
             return NotImplemented
 
-    @classmethod
-    def get_pyxl_row(cls, excel_prop_name: str, coord: str):
-        """
-        Get the class instance.
-
-        :param excel_prop_name: the ExcelProp instance name, str
-        :param coord: the cell coordinate, str
-        :return: the instance of the PyXLRow
-        """
-        excel_prop = ConstXL.dict_excel_prop[excel_prop_name]
-        return cls(excel_prop_name, excel_prop.ws[f"{coord}"])
-
-    @property
-    def excel_prop(self) -> ExcelProp:
-        """
-        Get the ExcelProp instance by its name.
-
-        :return: the ExcelProp instance.
-        :rtype: ExcelProp
-        """
-        return ConstXL.dict_excel_prop[self.excel_prop_name]
-
     @property
     def ws(self) -> Worksheet:
         """
@@ -484,7 +433,12 @@ class PyXLRow:
 
     @property
     def row(self) -> int:
-        """Returns the cell row."""
+        """
+        Get the cell row.
+
+        :return: the cell row.
+        :rtype: int
+        """
         return self.issue.row
 
     @property
@@ -505,7 +459,7 @@ class PyXLRow:
         :return: the issue name.
         :rtype: str
         """
-        return self.ws[f"C{self.row}"].value
+        return self.issue.value
 
     @property
     def summary(self) -> str:
@@ -589,34 +543,29 @@ class PyXLWorkItem:
         _set_cell_attr(key, value) --- set the cell attributes;\n
         to_tuple() --- represent the instance as a tuple;\n
     """
-
-    index = 0
-
     cell_attrs = ("number_format", "alignment", "border", "fill", "font", "protection", "data_type")
     attrs = ("issue", "date", "spent_time")
 
-    __slots__ = ("excel_prop_name", "cell", "style_name", "identifier")
+    __slots__ = ("excel_prop", "cell", "style_name")
 
-    def __init__(self, excel_prop_name: str, cell: Cell, style_name: str = "basic"):
-        self.excel_prop_name = excel_prop_name
+    def __init__(self, excel_prop: ExcelProp, cell: Cell, style_name: str = "basic"):
+        self.excel_prop = excel_prop
         self.cell = cell
-        self.identifier = PyXLWorkItem.index
         self.style_name = style_name
 
-        ConstXL.dict_pyxl_work_item[self.identifier] = self
-        PyXLWorkItem.index += 1
+        self.excel_prop.dict_pyxl_work_item[self.issue] = self
 
     def __str__(self):
-        return f"excel_prop_name = {self.excel_prop_name}, cell = {self.cell}, identifier = {self.identifier}"
+        return f"excel_prop_name = {self.excel_prop.name}, cell = {self.cell}"
 
     def __repr__(self):
-        return f"PyXLWorkItem(excel_prop_name={self.excel_prop_name}, cell={self.cell}), identifier={self.identifier}"
+        return f"PyXLWorkItem(excel_prop_name={self.excel_prop.name}, cell={self.cell})"
 
     def __hash__(self):
-        return hash((self.excel_prop_name, self.cell.coordinate))
+        return hash((self.excel_prop.name, self.cell.coordinate))
 
     def __key(self):
-        return self.excel_prop_name, self.cell.row, self.cell.column_letter
+        return self.excel_prop.name, self.cell.row, self.cell.column_letter
 
     def __eq__(self, other):
         if isinstance(other, PyXLWorkItem):
@@ -655,16 +604,6 @@ class PyXLWorkItem:
             return NotImplemented
 
     @property
-    def excel_prop(self) -> ExcelProp:
-        """
-        Get the ExcelProp instance.
-
-        :return: the ExcelProp instance.
-        :rtype: ExcelProp
-        """
-        return ConstXL.dict_excel_prop[self.excel_prop_name]
-
-    @property
     def ws(self) -> Worksheet:
         """
         Get the Worksheet instance.
@@ -673,16 +612,6 @@ class PyXLWorkItem:
         :rtype: Worksheet
         """
         return self.excel_prop.ws
-
-    @property
-    def coord(self) -> str:
-        """
-        Get the cell coordinates.
-
-        :return: the cell coordinates.
-        :rtype: str
-        """
-        return self.cell.coordinate
 
     @property
     def row(self) -> int:
@@ -725,6 +654,10 @@ class PyXLWorkItem:
         """
         return self.excel_prop.styles[self.style_name]
 
+    @property
+    def issue(self):
+        return self.ws[f"C{self.row}"].value
+
     def set_style(self, style_name: str):
         """
         Set the cell style.
@@ -732,7 +665,7 @@ class PyXLWorkItem:
         :param style_name: the style name, str
         :return: None.
         """
-        self.excel_prop.styles.set_style(style_name, self.coord)
+        self.excel_prop.styles.set_style(style_name, self.cell.coordinate)
 
     @property
     def cell_style_params(self):
@@ -779,81 +712,79 @@ class _PyXLMerged:
 
     Properties:
         excel_prop --- the ExcelProp instance;\n
-        __coord --- the cell coordinate;\n
         row --- the cell row;\n
         ws --- the Worksheet instance;\n
         pyxl_row --- the PyXLRow instance;\n
         work_items --- the PyXLWorkItem instances;\n
-        parent --- the parent issue name if exists;\n
-        issue_name --- the issue name;\n
-        summary --- the issue summary;\n
-        deadline --- the issue deadline if exists;\n
-        commentary --- the issue commentary if exists;\n
-        item_params --- the work item parameters to compare;\n
 
     Functions:
-        __getitem_id(identifier) --- get the PyXLWorkItem instance;\n
-        full_params() --- get the work item parameters;\n
-        date() --- get the work item dates;\n
-        spent_time() --- get the work item spent time values;\n
-        coord() --- get the work item coordinates;\n
-        style() --- get the work item styles;\n
-        __get_item_attr(item, attr) --- get the work item attribute;\n
+        get_item_attr(item, attr) --- get the work item attribute;\n
     """
-    __slots__ = ("excel_prop_name", "cell")
+    attrs = ("excel_prop", "cell")
+    __slots__ = ("excel_prop", "cell")
 
-    def __init__(self, excel_prop_name: str, cell: Cell):
-        self.excel_prop_name = excel_prop_name
+    def __init__(self, excel_prop: ExcelProp, cell: Cell):
+        self.excel_prop = excel_prop
         self.cell = cell
 
     @property
-    def excel_prop(self) -> ExcelProp:
-        """Get the ExcelProp instance."""
-        return ConstXL.dict_excel_prop[self.excel_prop_name]
-
-    @property
-    def __coord(self) -> str:
-        """Get the cell coordinate."""
-        return self.cell.coordinate
-
-    @property
     def row(self) -> int:
-        """Get the cell row."""
+        """
+        Get the cell row.
+
+        :return: the cell row.
+        :rtype: int
+        """
         return self.cell.row
 
     @property
     def ws(self) -> Worksheet:
-        """Get the Worksheet instance."""
+        """
+        Get the Worksheet instance.
+
+        :return: the Worksheet instance.
+        :rtype: Worksheet
+        """
         return self.excel_prop.ws
 
     @property
     def pyxl_row(self) -> PyXLRow:
-        """Get the PyXLRow instance."""
+        """
+        Get the PyXLRow instance.
+
+        :return: the PyXLRow instance.
+        :rtype: PyXLRow
+        """
         pyxl_row: PyXLRow
-        for pyxl_row in ConstXL.dict_pyxl_row.values():
+        for pyxl_row in self.excel_prop.dict_pyxl_row.values():
             if self.cell == pyxl_row.issue:
                 return pyxl_row
 
     @property
     def work_items(self) -> list[PyXLWorkItem]:
-        """Get the PyXLWorkItem instances."""
-        return [work_item for work_item in ConstXL.dict_pyxl_work_item.values() if work_item.row == self.row]
+        """
+        Get the PyXLWorkItem instances.
+
+        :return: the PyXLWorkItem instances.
+        :rtype: list[PyXLWorkItem]
+        """
+        return [work_item for work_item in self.excel_prop.dict_pyxl_work_item.values() if work_item.row == self.row]
 
     def __hash__(self):
-        return hash(self.__coord)
+        return hash(self.cell.coordinate)
 
     def __iter__(self):
         return (self.getitem_id(work_item) for work_item in self.work_items)
 
     def __eq__(self, other):
         if isinstance(other, _PyXLMerged):
-            return self.__coord == other.__coord
+            return self.cell.coordinate == other.cell.coordinate
         else:
             return NotImplemented
 
     def __ne__(self, other):
         if isinstance(other, _PyXLMerged):
-            return self.__coord != other.__coord
+            return self.cell.coordinate != other.cell.coordinate
         else:
             return NotImplemented
 
@@ -881,12 +812,14 @@ class _PyXLMerged:
         else:
             return NotImplemented
 
-    def __getattribute__(self, item):
-        if item in self.__slots__:
-            return object.__getattribute__(self, item)
-        return None
+    def __getattribute__(self, key: str):
+        if key in _PyXLMerged.attrs:
+            return object.__getattribute__(self, key)
+        else:
+            print(f"AttributeError, {key} in not a valid attribute.")
+            return None
 
-    def __setattr__(self, key, value):
+    def __setattr__(self, key: str, value):
         if key in self.__slots__:
             object.__setattr__(self, key, value)
         else:
@@ -896,6 +829,7 @@ class _PyXLMerged:
         if item in self.work_items:
             return self.work_items[item]
         else:
+            print(f"KeyError, {item} in not a valid key.")
             return None
 
     def __setitem__(self, key, value):
@@ -908,110 +842,6 @@ class _PyXLMerged:
             return item in self.work_items
         else:
             return NotImplemented
-
-    @property
-    def parent(self) -> Optional[str]:
-        """
-        Get the parent issue name if exists.
-
-        :return: the parent issue name.
-        :rtype: str or None
-        """
-        return self.pyxl_row.parent
-
-    @property
-    def issue_name(self) -> str:
-        """
-        Get the issue name.
-
-        :return: the issue name.
-        :rtype: str
-        """
-        return self.pyxl_row.issue_name
-
-    @property
-    def summary(self) -> str:
-        """
-        Get the issue summary.
-
-        :return: the issue summary.
-        :rtype: str
-        """
-        return self.pyxl_row.summary
-
-    @property
-    def deadline(self) -> Optional[datetime.date]:
-        """
-        Get the issue deadline if exists.
-
-        :return: the issue deadline.
-        :rtype: date
-        """
-        return self.pyxl_row.deadline
-
-    @property
-    def commentary(self) -> Optional[str]:
-        """
-        Get the issue commentary if exists.
-
-        :return: the issue commentary.
-        :rtype: str or None
-        """
-        return self.pyxl_row.commentary
-
-    def item_params(self) -> tuple[tuple[datetime.date, Union[int, Decimal]]]:
-        """
-        Get the work item parameters to compare.
-
-        :return: the zipped dates and spent_time values.
-        :rtype: tuple[tuple[Optional[date], int or Decimal]]
-        """
-        return tuple(zip(self.date(), self.spent_time()))
-
-    def full_params(self) -> tuple[tuple[datetime.date, Union[int, Decimal], str, str]]:
-        """
-        Get the work item parameters.
-
-        :return: the date, spent time, coordinate, style.
-        :rtype: tuple[datetime.date or None, int or Decimal, str, str]
-        """
-        return tuple(zip(self.date(), self.spent_time(), self.coord(), self.style()))
-
-    def date(self) -> list[datetime.date]:
-        """
-        Get the work item dates.
-
-        :return: the work item dates.
-        :rtype: list[datetime.date]
-        """
-        return [pyxl_item.date for pyxl_item in self.work_items]
-
-    def spent_time(self) -> list[Union[int, Decimal]]:
-        """
-        Get the work item spent time values.
-
-        :return: the spent times.
-        :rtype: list[int or Decimal]
-        """
-        return [pyxl_item.spent_time for pyxl_item in self.work_items]
-
-    def coord(self) -> list[str]:
-        """
-        Get the work item coordinates.
-
-        :return: the work item coordinates.
-        :rtype: list[str]
-        """
-        return [pyxl_item.coord for pyxl_item in self.work_items]
-
-    def style(self) -> list[str]:
-        """
-        Get the work item styles.
-
-        :return: the work item styles.
-        :rtype: list[str]
-        """
-        return [pyxl_item.cell_style.name for pyxl_item in self.work_items]
 
     def get_item_attr(self, item: int, attr: str):
         """
@@ -1030,6 +860,10 @@ class _PyXLMerged:
             return None
         else:
             return getattr(self.__getitem__(item), attr)
+
+    @property
+    def issue_name(self):
+        return self.pyxl_row.issue_name
 
 
 def main():
