@@ -1,4 +1,4 @@
-import pathlib
+from decimal import Decimal
 from json.decoder import JSONDecodeError
 from typing import Union, Optional
 import numpy
@@ -296,7 +296,11 @@ class User:
         return " .. ".join((start_period, end_period))
 
     def get_issue_work_items(self):
-        """Get IssueWorkItem instances. name, date, spent_time."""
+        """
+        Get IssueWorkItem instances.
+
+        issue, date, spent_time.
+        """
         # define the parameters of the request
         url = 'https://youtrack.protei.ru/api/workItems'
         parameters_fields = ','.join(('duration(minutes)', 'date', 'issue(idReadable)'))
@@ -312,7 +316,11 @@ class User:
             IssueWorkItem(issue, date, modified_spent_time)
 
     def get_issues(self):
-        """Get Issue instances. issue, state, summary, parent, deadline."""
+        """
+        Get Issue instances.
+
+        issue, state, summary, parent, deadline.
+        """
         # define the parameters of the request
         states_period = "state: Done, Test, Verified, Closed, Canceled, Review"
         states_no_period = "state: New, Active, Paused, Discuss"
@@ -355,7 +363,8 @@ class User:
             parsed_response = self.request(url, params)
             if "value" in parsed_response.keys() and "name" in parsed_response["value"].keys():
                 return convert_issue_state(parsed_response['value']['name'])
-            return None
+            else:
+                return None
 
     def get_issue_deadline(self, issue: str) -> Optional[datetime.date]:
         """
@@ -376,7 +385,8 @@ class User:
             parsed_response = self.request(url, params)
             if "value" in parsed_response.keys():
                 return convert_long_date(parsed_response['value'])
-            return None
+            else:
+                return None
 
     def get_issue_id(self, issue: str):
         """
@@ -444,13 +454,13 @@ def convert_spent_time(spent_time: int) -> Union[int, float]:
     return numpy.divide(spent_time, 60)
 
 
-def parse_response_work_item(response_item: dict) -> tuple[str, datetime.date, Union[int, float]]:
+def parse_response_work_item(response_item: dict) -> tuple[str, datetime.date, Decimal]:
     """
     Get the parameters from the response item.
 
     :param dict response_item: the item from the response
     :return: the issue name, date, and modified spent time.
-    :rtype: tuple[str, date, (int or float)]
+    :rtype: tuple[str, date, Decimal]
     """
     # define the issue name of the work item
     issue: str = response_item['issue']['idReadable']
@@ -460,7 +470,7 @@ def parse_response_work_item(response_item: dict) -> tuple[str, datetime.date, U
     spent_time: int = response_item['duration']['minutes']
     # convert to the hours
     modified_spent_time: Union[int, float] = convert_spent_time(spent_time)
-    return issue, date, modified_spent_time
+    return issue, date, Decimal(modified_spent_time).normalize()
 
 
 def convert_issue_state(state: str) -> str:
@@ -494,16 +504,26 @@ class Issue:
     """
     Define the Issue entity from the YouTrack.
 
+    Class params:
+        attrs --- the attributes:\n
+        "issue", "state", "summary", "parent", "deadline";\n
+        index --- the unique instance identifier, 0-based;\n
+
     Params:
-        index --- the unique issue identifier, 0-based;\n
+        identifier --- the unique issue identifier, 0-based;\n
         issue --- the issue name, idReadable, {project}-{id};\n
         state --- the issue state, state;\n
         summary -- the issue short description, summary;\n
         parent --- the parent issue name, parent;\n
         deadline --- the issue deadline, deadline;\n
 
-    state values: Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
+    state values:\n
+    Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
+
+    Functions:
+        to_tuple() --- represent the instance as a tuple;\n
     """
+    attrs = ("issue", "state", "summary", "parent", "deadline")
 
     index = 0
 
@@ -516,7 +536,6 @@ class Issue:
             summary: str,
             parent: str = None,
             deadline: datetime.date = None):
-
         self.identifier = Issue.index
         self.issue = issue
         self.state = state
@@ -559,32 +578,48 @@ class Issue:
         else:
             return NotImplemented
 
+    def to_tuple(self):
+        """
+        Represent the instance as a tuple.
+
+        :return: the tuple of the issue attributes.
+        :rtype: tuple[str, str, str, str or None, datetime.date or None]
+        """
+        return tuple(getattr(self, attr) for attr in Issue.attrs)
+
 
 class IssueWorkItem:
     """
     Define the IssueWorkItem entity from the YouTrack.
 
+    Class params:
+        attrs --- the attributes: "issue", "date", "spent_time";\n
+        index --- the unique instance identifier, 0-based;\n
+
     Params:
-        index --- the unique item identifier, 0-based;\n
+        identifier --- the unique item identifier, 0-based;\n
         issue --- the issue name, idReadable, {project}-{id};\n
         date --- the issue work item date, date;\n
         spent_time -- the issue work item recorded time in minutes, int;\n
 
-    state values: Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
+    state values:\n
+    Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
 
     Functions:
-        __join_items(other) --- combine two instances with the same date;
+        __join_items(other) --- combine two instances with the same date;\n
+        to_tuple() --- represent the instance as a tuple;\n
     """
+    attrs = ("issue", "date", "spent_time")
 
     index = 0
 
     __slots__ = ("identifier", "issue", "date", "spent_time")
 
-    def __init__(self, issue: str, date: datetime.date, spent_time: int):
+    def __init__(self, issue: str, date: datetime.date, spent_time: Decimal):
         self.identifier = IssueWorkItem.index
         self.issue = issue
         self.date = date
-        self.spent_time = spent_time
+        self.spent_time = Decimal(spent_time).normalize()
 
         ConstYT.dict_issue_work_item[self.identifier] = self
         IssueWorkItem.index += 1
@@ -621,13 +656,15 @@ class IssueWorkItem:
         Combines the work items with the same issue and date into the single one.
 
         :param other: the issue work item
-        :return: None.
+        :return: the issue work item.
+        :rtype: IssueWorkItem
         """
         if isinstance(other, IssueWorkItem):
             if self.__key_order() == other.__key_order() and self.spent_time != other.spent_time:
-                IssueWorkItem(self.issue, self.date, self.spent_time + other.spent_time)
+                issue_work_item = IssueWorkItem(self.issue, self.date, self.spent_time + other.spent_time)
                 del other
                 del self
+                return issue_work_item
 
     def __lt__(self, other):
         if isinstance(other, IssueWorkItem) and self.issue == other.issue:
@@ -653,22 +690,32 @@ class IssueWorkItem:
         else:
             return NotImplemented
 
+    def __getattribute__(self, key: str):
+        if key in IssueWorkItem.attrs:
+            return object.__getattribute__(self, key)
+        else:
+            print("Incorrect attribute.")
+            return None
+
+    def to_tuple(self):
+        """
+        Represent the instance as a tuple.
+
+        :return: the tuple of the issue work item attributes.
+        :rtype: tuple[str, datetime.date, Decimal]
+        """
+        return tuple(getattr(self, attr) for attr in IssueWorkItem.attrs)
+
 
 class _IssueMerged:
     """
     Define the merged Issue and IssueWorkItem instances.
 
-    Constants:
-        issue_attrs --- the issue attributes:
-            "state", "summary", "parent", "deadline";\n
-        work_item_attrs --- the issue work item attributes:
-            "date", "spent_time";\n
+    Class params:
+        index --- the unique item identifier, 0-based;\n
 
     Params:
-        index --- the unique item identifier,
-            0-based;\n
-        issue_name --- the issue name, idReadable,
-            {project}-{id};\n
+        issue_name --- the issue name, idReadable,{project}-{id};\n
 
     Properties:
         issue_item --- the Issue item;\n
@@ -676,19 +723,20 @@ class _IssueMerged:
         items_id --- the IssueWorkItem item identifiers;\n
 
     Functions:
-        _get_work_attr(work_item_id, attr) --- get the attribute of the IssueWorkItem item;\n
-        issue_to_tuple() --- convert the Issue to the tuple;\n
-        work_items_to_tuple() --- convert the IssueWorkItem to the list of tuples;\n
+        to_tuple() --- convert to the tuple;\n
     """
-
     index = 0
-    issue_attrs = ("state", "summary", "parent", "deadline")
-    work_item_attrs = ("date", "spent_time")
 
     __slots__ = "issue_name"
 
     def __init__(self, issue_name: str):
         self.issue_name = issue_name
+
+    def __str__(self):
+        return f"_IssueMerged = {self.issue_name}"
+
+    def __repr__(self):
+        return f"_IssueMerged(issue_name={self.issue_name})"
 
     def __hash__(self):
         return hash(self.issue_name)
@@ -765,31 +813,16 @@ class _IssueMerged:
         """
         return [work_item.identifier for work_item in self.work_items]
 
-    def _get_work_attr(self, work_item_id: int, attr: str):
+    def to_tuple(self):
         """
-        Get work item attribute.
+        Represent the instance items as tuples.
 
-        :param int work_item_id: the work item identifier
-        :param str attr: the attribute name
-        :return: the attribute value
+        :return: to_tuple() of the Issue and IssueWorkItem instances.
+        :rtype: tuple[tuple[str, str, str, str or None, datetime.date or None],
+            list[tuple[str, datetime.date, Decimal]]]
         """
-        if attr in _IssueMerged.work_item_attrs:
-            index = self.items_id.index(work_item_id)
-            return getattr(self.work_items[index], attr, None)
-        elif attr in _IssueMerged.issue_attrs:
-            return getattr(self.issue_item, attr, None)
-        else:
-            return None
-
-    def issue_to_tuple(self):
-        """Represent the instance issue as a tuple."""
-        attrs = ("state", "parent", "issue", "summary", "deadline")
-        return tuple(getattr(self.issue_item, attr) for attr in attrs)
-
-    def work_items_to_tuple(self):
-        """Represent the instance work items as a list of tuples."""
-        attrs = ("issue", "date", "spent_time")
-        return [tuple(getattr(work_item, attr) for attr in attrs) for work_item in self.work_items]
+        list_to_tuple = [work_item.to_tuple() for work_item in self.work_items]
+        return self.issue_item.to_tuple(), list_to_tuple
 
 
 def main():
