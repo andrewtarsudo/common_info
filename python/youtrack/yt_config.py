@@ -13,7 +13,7 @@ class UserConfig:
         path --- the path to the JSON file (default "./youtrack.json")\n
         default_period_start --- the start period date (default the first day of the year)\n
         default_period_end --- the end period date (default the current day)\n
-        attrs --- the attributes of the configuration file
+        cell_attrs --- the attributes of the configuration file
         (default "login", "auth_token", "period_start", "period_end")\n
         default_config --- the default values if the file does not exist.\n
 
