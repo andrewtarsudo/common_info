@@ -14,13 +14,9 @@ class ConstYT:
     Contain the constants.
 
     Constants:\n
-        dict_issue --- the dictionary of Issue instances and identifiers;\n
-        dict_issue_work_item --- the dictionary of IssueWorkItem instances and identifiers;\n
         dict_issue_name --- the dictionary of Projects and state and deadline identifiers;\n
         date_conversion_rules --- the rules to convert the user input dates;
     """
-    dict_issue = dict()
-    dict_issue_work_item = dict()
     # state and deadline identifiers
     dict_issue_name = {
         "ARCH_ST": ('139-1028', '67-2494'),
@@ -154,6 +150,8 @@ class User:
 
     Params:
         user_config --- the UserConfig item;\n
+        dict_issue --- the dictionary of Issue instances and identifiers;\n
+        dict_issue_work_item --- the dictionary of IssueWorkItem instances and identifiers;\n
 
     Properties:
         login --- get the login;\n
@@ -173,11 +171,15 @@ class User:
         get_issue_deadline(issue) --- define the deadline of the issue from the YouTrack;\n
         get_issue_id(issue) --- get the Issue instance from the YouTrack by the issue name;\n
         parse_response_issue(response_item) --- parse the response in the dict format to get Issue;\n
+        __items_no_issues() --- specify the names of the issue work items with no issues;\n
+        get_new_issues() --- get the missing issues to assign to the issue work items;\n
+        get_merged() --- specify the _IssueMerged instances;\n
+        _check_issues() --- verify all issues are requested;\n
     """
-    __slots__ = "user_config"
-
     def __init__(self, user_config: UserConfig):
         self.user_config = user_config
+        self.dict_issue = dict()
+        self.dict_issue_work_item = dict()
 
     def __str__(self):
         return f"User: config file {self.user_config.path}"
@@ -313,7 +315,7 @@ class User:
         parsed_response = self.request(url, params)
         for item in parsed_response:
             issue, date, modified_spent_time = parse_response_work_item(item)
-            IssueWorkItem(issue, date, modified_spent_time)
+            IssueWorkItem(self, issue, date, modified_spent_time)
 
     def get_issues(self):
         """
@@ -426,7 +428,42 @@ class User:
         deadline: datetime.date = self.get_issue_deadline(issue)
         # define the issue state
         state = self.get_issue_state(issue)
-        Issue(issue, state, summary, parent, deadline)
+        Issue(self, issue, state, summary, parent, deadline)
+
+    def __items_no_issues(self) -> set[str]:
+        """
+        Specify the names of the issue work items with no issues.
+
+        :return: the set of issue names to add.
+        :rtype: set[str]
+        """
+        return set(self.dict_issue_work_item.keys()).intersection(set(self.dict_issue.keys()))
+
+    def get_new_issues(self):
+        """Get the missing issues to assign to the issue work items. """
+        if self.__items_no_issues():
+            return
+        else:
+            for issue in self.__items_no_issues():
+                self.get_issue_id(issue)
+
+    def get_merged(self):
+        """
+        Specify the _IssueMerged instances.
+
+        :return: the _IssueMerged instances.
+        :rtype: list[_IssueMerged]
+        """
+        return [_IssueMerged(self, issue) for issue in list(self.dict_issue.keys())]
+
+    def _check_issues(self) -> bool:
+        """
+        Verify all issues are requested.
+
+        :return: the verification flag.
+        :rtype: bool
+        """
+        return set(self.dict_issue.keys()).issuperset(set(self.dict_issue_work_item.keys()))
 
 
 def convert_long_date(long) -> Optional[datetime.date]:
@@ -507,10 +544,9 @@ class Issue:
     Class params:
         attrs --- the attributes:\n
         "issue", "state", "summary", "parent", "deadline";\n
-        index --- the unique instance identifier, 0-based;\n
 
     Params:
-        identifier --- the unique issue identifier, 0-based;\n
+        user --- the user instance;\n
         issue --- the issue name, idReadable, {project}-{id};\n
         state --- the issue state, state;\n
         summary -- the issue short description, summary;\n
@@ -525,26 +561,24 @@ class Issue:
     """
     attrs = ("issue", "state", "summary", "parent", "deadline")
 
-    index = 0
-
-    __slots__ = ("identifier", "issue", "state", "summary", "parent", "deadline")
+    __slots__ = ("user", "issue", "state", "summary", "parent", "deadline")
 
     def __init__(
             self,
+            user: User,
             issue: str,
             state: str,
             summary: str,
             parent: str = None,
             deadline: datetime.date = None):
-        self.identifier = Issue.index
+        self.user = user
         self.issue = issue
         self.state = state
         self.summary = summary
         self.parent = parent
         self.deadline = deadline
 
-        ConstYT.dict_issue[self.issue] = self
-        Issue.index += 1
+        self.user.dict_issue[self.issue] = self
 
     def __str__(self):
         str_parent = ""
@@ -561,10 +595,10 @@ class Issue:
                f"deadline={self.deadline})"
 
     def __hash__(self):
-        return hash((self.identifier, self.issue, self.state))
+        return hash((self.issue, self.state))
 
     def __key(self):
-        return self.identifier, self.issue, self.state
+        return self.issue, self.state
 
     def __eq__(self, other):
         if isinstance(other, Issue):
@@ -594,10 +628,8 @@ class IssueWorkItem:
 
     Class params:
         attrs --- the attributes: "issue", "date", "spent_time";\n
-        index --- the unique instance identifier, 0-based;\n
 
     Params:
-        identifier --- the unique item identifier, 0-based;\n
         issue --- the issue name, idReadable, {project}-{id};\n
         date --- the issue work item date, date;\n
         spent_time -- the issue work item recorded time in minutes, int;\n
@@ -611,18 +643,20 @@ class IssueWorkItem:
     """
     attrs = ("issue", "date", "spent_time")
 
-    index = 0
+    __slots__ = ("user", "issue", "date", "spent_time")
 
-    __slots__ = ("identifier", "issue", "date", "spent_time")
-
-    def __init__(self, issue: str, date: datetime.date, spent_time: Decimal):
-        self.identifier = IssueWorkItem.index
+    def __init__(
+            self,
+            user: User,
+            issue: str,
+            date: datetime.date,
+            spent_time: Decimal):
+        self.user = user
         self.issue = issue
         self.date = date
         self.spent_time = Decimal(spent_time).normalize()
 
-        ConstYT.dict_issue_work_item[self.identifier] = self
-        IssueWorkItem.index += 1
+        self.user.dict_issue_work_item[self.issue] = self
 
     def __str__(self):
         return f"IssueWorkItem: issue = {self.issue}, date = {self.date}, spent time = {self.spent_time}"
@@ -631,10 +665,10 @@ class IssueWorkItem:
         return f"IssueWorkItem(issue={self.issue}, date={self.date}, spent_time={self.spent_time})"
 
     def __hash__(self):
-        return hash((self.identifier, self.issue, self.date, self.spent_time))
+        return hash((self.issue, self.date, self.spent_time))
 
     def __key_eq(self):
-        return self.identifier, self.issue, self.date, self.spent_time
+        return self.issue, self.date, self.spent_time
 
     def __eq__(self, other):
         if isinstance(other, IssueWorkItem):
@@ -653,7 +687,7 @@ class IssueWorkItem:
 
     def __join_items(self, other):
         """
-        Combines the work items with the same issue and date into the single one.
+        Combine the work items with the same issue and date into the single one.
 
         :param other: the issue work item
         :return: the issue work item.
@@ -661,7 +695,7 @@ class IssueWorkItem:
         """
         if isinstance(other, IssueWorkItem):
             if self.__key_order() == other.__key_order() and self.spent_time != other.spent_time:
-                issue_work_item = IssueWorkItem(self.issue, self.date, self.spent_time + other.spent_time)
+                issue_work_item = IssueWorkItem(self.user, self.issue, self.date, self.spent_time + other.spent_time)
                 del other
                 del self
                 return issue_work_item
@@ -727,9 +761,13 @@ class _IssueMerged:
     """
     index = 0
 
-    __slots__ = "issue_name"
+    __slots__ = ("user", "issue_name")
 
-    def __init__(self, issue_name: str):
+    def __init__(
+            self,
+            user: User,
+            issue_name: str):
+        self.user = user
         self.issue_name = issue_name
 
     def __str__(self):
@@ -788,8 +826,9 @@ class _IssueMerged:
         :rtype: Issue
         """
         issue: Issue
-        for issue in ConstYT.dict_issue.values():
-            if issue.issue == self.issue_name:
+        name: str
+        for name, issue in self.user.dict_issue.items():
+            if name == self.issue_name:
                 return issue
 
     @property
@@ -801,7 +840,8 @@ class _IssueMerged:
         :rtype: list[IssueWorkItem]
         """
         work_item: IssueWorkItem
-        return [work_item for work_item in ConstYT.dict_issue_work_item.values() if work_item.issue == self.issue_name]
+        name: str
+        return [work_item for (name, work_item) in self.user.dict_issue_work_item.items() if name == self.issue_name]
 
     @property
     def items_id(self) -> list[int]:
