@@ -8,7 +8,7 @@ month_merged_styles() -> list[_StyleWorkItem] --- set the merged month styles;\n
 title() -> _StyleWorkItem --- set the title style;\n
 header() -> _StyleWorkItem --- set the header style;\n
 month_date_style() -> _StyleWorkItem --- set the month date style;
-generate_from_style(name, base_style, attrs, values) -> _StyleWorkItem --- set the style based on the other one;
+generate_from_style(name, base_style, cell_attrs, values) -> _StyleWorkItem --- set the style based on the other one;
 """
 
 from copy import copy
