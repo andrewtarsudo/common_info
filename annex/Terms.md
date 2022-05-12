@@ -45,7 +45,7 @@
 |AS|Application Service, служба приложений|
 |ASCII|American Standard Code for Information Interchange, американский стандартный код обмена информацией|
 |ASIC|Application Specific integrated Circuit, специализированная прикладная интегральная схема|
-|ASN|Abstract Syntax Notation, абстрактная синтаксическая нотация|
+|ASN.1|Abstract Syntax Notation One, абстрактная синтаксическая нотация|
 |ASP|Application Server Process, отдельный экземпляр AS SIGTRAN|
 |ASP|Application Service Provider, поставщик услуг доступа к приложениям|
 |ATA|Advanced Technology Attachment, параллельный интерфейс подключения накопителей|
