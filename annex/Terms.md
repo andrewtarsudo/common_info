@@ -3,6 +3,7 @@
 
 |Термин|Комментарий|
 |:-----|:----------|
+|MCN|Missed Call Notification, оповещение о пропущенных вызовах|
 |LA|Level Access, уровень доступа|
 |CA|Call Alert, уведомление о вызовах|
 |3GPP|3rd Generation Partnership Project, Проект партнерства третьего поколения|
