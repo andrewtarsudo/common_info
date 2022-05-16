@@ -1,3 +1,4 @@
+from copy import copy
 from typing import Optional, Union, Any
 import datetime
 from openpyxl.worksheet.worksheet import Worksheet
@@ -22,10 +23,11 @@ class ExcelProp:
     Properties:
         ws --- the worksheet;\n
         name --- the instance name;\n
+        styles --- the _StyleWorkItemList instance;\n
         bottom_right --- the bottom-right cell;\n
         max_column --- the max column index;\n
         max_column_letter --- the max column letter;\n
-        max_row --- the max row value;\n
+        max_row --- the max _row value;\n
         cell_from_coord --- the cell from its coord;\n
         headers --- the header cells;\n
         headers_row --- the header rows;\n
@@ -36,7 +38,7 @@ class ExcelProp:
         cell_in_range(start_coord, end_coord) --- generate the cell from range;\n
         check_empty(item) --- get the cell emptiness flag;\n
         list_state_item(state) --- get the non-empty rows with issues of the state;\n
-        get_work_items(row) --- get the PyXLWorkItem instances in the row;\n
+        get_work_items(_row) --- get the PyXLWorkItem instances in the _row;\n
         get_column_date(date) --- get the column letter for the specified date;\n
     """
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
@@ -119,9 +121,9 @@ class ExcelProp:
     @property
     def max_row(self) -> int:
         """
-        Get the max row value.
+        Get the max _row value.
 
-        :return: the row number.
+        :return: the _row number.
         :rtype: int
         """
         return self.bottom_right.row
@@ -155,7 +157,7 @@ class ExcelProp:
     @property
     def headers_row(self) -> list[int]:
         """
-        Get the header row values.
+        Get the header _row values.
 
         :return: the list of header rows.
         :rtype: list[int]
@@ -225,7 +227,7 @@ class ExcelProp:
         """
         Get the work items.
 
-        :param int row: the table row
+        :param int row: the table _row
         :return: the work items.
         :rtype: list[tuple[date, Union[int, Decimal], str, str]]
         """
@@ -342,7 +344,7 @@ class PyXLRow:
         excel_prop --- the ExcelProp instance;\n
         ws --- the Worksheet instance;\n
         coord --- the cell coordinate;\n
-        row --- the table row;\n
+        _row --- the table _row;\n
         state --- the issue state;\n
         parent --- the parent issue name, B column;\n
         issue_name --- the issue name, C column;\n
@@ -434,9 +436,9 @@ class PyXLRow:
     @property
     def row(self) -> int:
         """
-        Get the cell row.
+        Get the cell _row.
 
-        :return: the cell row.
+        :return: the cell _row.
         :rtype: int
         """
         return self.issue.row
@@ -496,7 +498,7 @@ class PyXLRow:
         Get the issue state.
 
         :return: the issue state.
-        :rtype: str 
+        :rtype: str
         """
         for state in ExcelProp.dict_headers_short.keys():
             if self.row in self.excel_prop.list_state_item(state):
@@ -533,7 +535,7 @@ class PyXLWorkItem:
         excel_prop --- the ExcelProp instance;\n
         ws --- the Worksheet instance;\n
         coord --- the cell coordinate;\n
-        row --- the cell row;\n
+        _row --- the cell _row;\n
         spent_time --- the issue spent time;\n
         date --- the work item date;\n
         cell_style_params --- the cell style parameters;\n
@@ -553,7 +555,7 @@ class PyXLWorkItem:
         self.cell = cell
         self.style_name = style_name
 
-        self.excel_prop.dict_pyxl_work_item[self.issue] = self
+        self.excel_prop.dict_pyxl_work_item[self.issue].append(self)
 
     def __str__(self):
         return f"excel_prop_name = {self.excel_prop.name}, cell = {self.cell}"
@@ -616,9 +618,9 @@ class PyXLWorkItem:
     @property
     def row(self) -> int:
         """
-        Get the cell row.
+        Get the cell _row.
 
-        :return: the cell row.
+        :return: the cell _row.
         :rtype: int
         """
         return self.cell.row
@@ -719,14 +721,68 @@ class _PyXLMerged:
 
     Functions:
         get_item_attr(item, attr) --- get the work item attribute;\n
+    
+    TODO: add the identifier to connect with the _PyXLParse class instances.
     """
-    attrs = ("excel_prop", "cell")
     __slots__ = ("excel_prop", "cell")
 
     def __init__(self, excel_prop: ExcelProp, cell: Cell):
         self.excel_prop = excel_prop
         self.cell = cell
 
+    def __hash__(self):
+        return hash(self.cell.coordinate)
+
+    def __iter__(self):
+        return (work_item for work_item in self.work_items)
+
+    def __len__(self):
+        return len(self.work_items)
+
+    def __eq__(self, other):
+        if isinstance(other, _PyXLMerged):
+            return self.cell.coordinate == other.cell.coordinate
+        else:
+            return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, _PyXLMerged):
+            return self.cell.coordinate != other.cell.coordinate
+        else:
+            return NotImplemented
+
+    def __lt__(self, other):
+        if isinstance(other, _PyXLMerged):
+            return self.row < other.row
+        else:
+            return NotImplemented
+
+    def __gt__(self, other):
+        if isinstance(other, _PyXLMerged):
+            return self.row > other.row
+        else:
+            return NotImplemented
+
+    def __le__(self, other):
+        if isinstance(other, _PyXLMerged):
+            return self.row <= other.row
+        else:
+            return NotImplemented
+
+    def __ge__(self, other):
+        if isinstance(other, _PyXLMerged):
+            return self.row >= other.row
+        else:
+            return NotImplemented
+
+    def __contains__(self, item):
+        if isinstance(item, PyXLRow):
+            return self.pyxl_row == item
+        elif isinstance(item, PyXLWorkItem):
+            return item in self.work_items
+        else:
+            return NotImplemented
+        
     @property
     def row(self) -> int:
         """
@@ -770,79 +826,6 @@ class _PyXLMerged:
         """
         return [work_item for work_item in self.excel_prop.dict_pyxl_work_item.values() if work_item.row == self.row]
 
-    def __hash__(self):
-        return hash(self.cell.coordinate)
-
-    def __iter__(self):
-        return (self.getitem_id(work_item) for work_item in self.work_items)
-
-    def __eq__(self, other):
-        if isinstance(other, _PyXLMerged):
-            return self.cell.coordinate == other.cell.coordinate
-        else:
-            return NotImplemented
-
-    def __ne__(self, other):
-        if isinstance(other, _PyXLMerged):
-            return self.cell.coordinate != other.cell.coordinate
-        else:
-            return NotImplemented
-
-    def __lt__(self, other):
-        if isinstance(other, _PyXLMerged):
-            return self.row < other.row
-        else:
-            return NotImplemented
-
-    def __gt__(self, other):
-        if isinstance(other, _PyXLMerged):
-            return self.row > other.row
-        else:
-            return NotImplemented
-
-    def __le__(self, other):
-        if isinstance(other, _PyXLMerged):
-            return self.row <= other.row
-        else:
-            return NotImplemented
-
-    def __ge__(self, other):
-        if isinstance(other, _PyXLMerged):
-            return self.row >= other.row
-        else:
-            return NotImplemented
-
-    def __getattribute__(self, key: str):
-        if key in _PyXLMerged.attrs:
-            return object.__getattribute__(self, key)
-        else:
-            print(f"AttributeError, {key} in not a valid attribute.")
-            return None
-
-    def __setattr__(self, key: str, value):
-        if key in self.__slots__:
-            object.__setattr__(self, key, value)
-        else:
-            print(f"AttributeError, {key} in not a valid attribute.")
-
-    def __getitem__(self, item):
-        if item in self.work_items:
-            return self.work_items[item]
-        else:
-            print(f"KeyError, {item} in not a valid key.")
-            return None
-
-    def __setitem__(self, key, value):
-        self.work_items[key] = value
-
-    def __contains__(self, item):
-        if isinstance(item, PyXLRow):
-            return self.pyxl_row == item
-        elif isinstance(item, PyXLWorkItem):
-            return item in self.work_items
-        else:
-            return NotImplemented
-
     def get_item_attr(self, item: int, attr: str):
         """
         Get the work item attribute.
@@ -855,15 +838,219 @@ class _PyXLMerged:
         if attr not in list_attr:
             print(f"AttributeError, the attribute {attr} is not specified.")
             return None
-        elif item not in self.work_items:
-            print(f"KeyError, {item} is not a proper list item index.")
-            return None
         else:
-            return getattr(self.__getitem__(item), attr)
+            return getattr(self.work_items[item], attr)
 
     @property
-    def issue_name(self):
+    def issue_name(self) -> str:
+        """
+        TODO
+        :return: 
+        """
         return self.pyxl_row.issue_name
+
+
+class _PyXLParse:
+    """
+    Define the values to insert into the table. The proxy class to fix the values that are added to the table.
+
+    Params:
+        excel_prop --- the ExcelProp instance;\n
+        name --- the issue name;\n
+
+    Properties:
+        _row --- the table row;\n
+        __check_row --- the table data correctness validation;\n
+        ws --- the Worksheet instance;\n
+
+    Functions:
+        pyxl_row() --- get the PyXLRow instance;\n
+        pyxl_items() --- get the PyXLWorkItem instances;\n
+        __parent() --- get the PyXLRow parent attribute value;\n
+        __hyperlink_issue() --- get the hyperlink to the issue in the YouTrack;\n
+        __hyperlink_parent() --- get the hyperlink to the parent issue in the YouTrack if exists;\n
+        __parse_parent() --- put the parent issue data to the table if exists;\n
+        __parse_issue() --- put the issue data to the table;\n
+        __parse_summary() --- put the issue summary data to the table;\n
+        __parse_deadline() --- put the issue deadline data to the table if exists;\n
+        __parse_formula() --- put the total spent time formula to the table;\n
+        __parse_pyxl_row() --- put the data of the PyXLRow instance to the table;\n
+        __parse_work_item(work_item) --- put the PyXLWorkItem data to the table;\n
+        __parse_pyxl_items() --- put the data of the PyXLWorkItem instances to the table;\n
+        parse() --- put the full existing data to the table;\n
+    
+    TODO: replace excel_prop and name with _PyXLMerged identifier.
+    """
+    
+    def __init__(self, excel_prop: ExcelProp, name: str):
+        self.excel_prop = excel_prop
+        self.name = name
+
+        if not self.__check_row:
+            raise AttributeError("Rows are not equal. You have a problem.")
+
+    def __repr__(self):
+        return f"_PyXLParse({self.name})"
+
+    def __hash__(self):
+        return hash(self.name)
+
+    def __eq__(self, other):
+        if isinstance(other, _PyXLParse):
+            return self.name == other.name
+        else:
+            return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, _PyXLParse):
+            return self.name != other.name
+        else:
+            return NotImplemented
+
+    def __len__(self):
+        return len(self.pyxl_items())
+
+    def pyxl_row(self) -> PyXLRow:
+        """
+        TODO
+        :return: 
+        """
+        return self.excel_prop.dict_pyxl_row[self.name]
+
+    def pyxl_items(self) -> list[PyXLWorkItem]:
+        """
+        TODO
+        :return: 
+        """
+        return self.excel_prop.dict_pyxl_work_item[self.name]
+
+    @property
+    def _row(self) -> int:
+        """
+        TODO
+        :return: 
+        """
+        return self.pyxl_row().row
+
+    @property
+    def __check_row(self) -> bool:
+        """
+        TODO
+        :return: 
+        """
+        return all(self._row == work_item.row for work_item in self.pyxl_items()) if not self.pyxl_items() else True
+
+    @property
+    def ws(self) -> Worksheet:
+        """
+        TODO
+        :return: 
+        """
+        return self.excel_prop.ws
+
+    def __parent(self) -> Optional[str]:
+        """
+        TODO
+        :return: 
+        """
+        return self.pyxl_row().parent
+
+    def __hyperlink_issue(self) -> str:
+        """
+        
+        :return: 
+        """
+        return f"https://youtrack.protei.ru/issue/{self.name}"
+
+    def __hyperlink_parent(self) -> Optional[str]:
+        """
+        TODO
+        :return: 
+        """
+        return f"https://youtrack.protei.ru/issue/{self.__parent()}" if not self.__parent() else None
+
+    def __parse_parent(self):
+        """
+        TODO
+        :return: 
+        """
+        if not self.__parent():
+            self.ws[f"B{self._row}"].value = self.__parent()
+            self.ws[f"B{self._row}"].data_type = "s"
+            self.ws[f"B{self._row}"].hyperlink = self.__hyperlink_parent()
+
+    def __parse_issue(self):
+        """
+        TODO
+        :return: 
+        """
+        self.ws[f"C{self._row}"].value = self.name
+        self.ws[f"C{self._row}"].data_type = "s"
+        self.ws[f"C{self._row}"].hyperlink = self.__hyperlink_issue()
+
+    def __parse_summary(self):
+        """
+        TODO
+        :return: 
+        """
+        self.ws[f"D{self._row}"].value = self.pyxl_row().summary
+        self.ws[f"D{self._row}"].data_type = "s"
+
+    def __parse_deadline(self):
+        """
+        TODO
+        :return: 
+        """
+        if not self.pyxl_row().deadline:
+            self.ws[f"E{self._row}"].value = self.pyxl_row().deadline
+            self.ws[f"E{self._row}"].data_type = "d"
+
+    def __parse_formula(self):
+        """
+        TODO
+        :return: 
+        """
+        self.ws[f"NS{self._row}"].value = f"=SUM(G{self._row}:NR{self._row})"
+        self.ws[f"NS{self._row}"].data_type = "f"
+
+    def __parse_pyxl_row(self):
+        """
+        TODO
+        :return: 
+        """
+        self.__parse_parent()
+        self.__parse_issue()
+        self.__parse_summary()
+        self.__parse_deadline()
+        self.__parse_formula()
+
+    def __parse_work_item(self, work_item: PyXLWorkItem):
+        """
+        TODO
+        :param work_item: 
+        :return: 
+        """
+        coord = work_item.cell.coordinate
+        style = work_item.style_name
+        self.ws[f"{coord}"].value = work_item.spent_time
+        self.ws[f"{coord}"].data_type = "n"
+        self.ws[f"{coord}"].style = copy(self.excel_prop.styles[style])
+
+    def __parse_pyxl_items(self):
+        """
+        TODO
+        :return: 
+        """
+        for work_item in self.pyxl_items():
+            self.__parse_work_item(work_item)
+
+    def parse(self):
+        """
+        TODO
+        :return: 
+        """
+        self.__parse_pyxl_row()
+        self.__parse_pyxl_items()
 
 
 def main():
