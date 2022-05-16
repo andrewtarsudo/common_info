@@ -164,3 +164,12 @@ TODO:
 | ELECTRO_CONNECTIONS_DIAGRAM_SHORT | Э5 |
 | LIST_OPERATION_PAPERS_ED_SHORT | ЭД |
 | LABEL_SHORT | ЭТ |
+
+| Doc Category in English | Doc Category in Russian |
+| :---------------------- | :---------------------- |
+| BASIC_DESIGN | Технический проект |
+| DESIGN_DOC | Конструкторская документация |
+| DEVELOPMENT_DOC | Программная документация |
+| OPERATION_DOC | Эксплуатационная документация |
+| PRODUCTION_DOC | Технологическая документация |
+| FOREIGN | Зарубежье |
