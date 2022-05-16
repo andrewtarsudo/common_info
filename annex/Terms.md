@@ -1,6 +1,23 @@
 # Термины и сокращения #
 ## Таблица { SEQ "Таблица" \* ARABIC \* MERGEFORMAT } ##
 
+
+PIM-SM Protocol Independent Multicast – Sparse Mode
+DVMRP Distance Vector Multicast Routing Protocol
+GBR Guaranteed Bit Rate
+GFBR Guaranteed Flow Bit Rate
+LAC L2TP Access Concentrator
+MLD Multicast Listener Discovery
+MOSPF Multicast Open Shortest Path First
+PDCP Packet Data Convergence Protocol
+SMDS Switched Multimegabit Data Service
+SMF Session Management Function
+TMGI Temporary Mobile Group Identity
+TWAN Trusted WLAN Access Network
+CCB Customer Care and Billing system
+DNIS Dialed number identification service
+TISPAN Telecoms & Internet converged Services & Protocols for Advanced Networks (standardization body of ETSI)
+
 |Термин|Комментарий|
 |:-----|:----------|
 |MCN|Missed Call Notification, оповещение о пропущенных вызовах|
