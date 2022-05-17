@@ -1,151 +1,233 @@
+import os
 import sqlite3
-from copy import copy
-from sqlite3 import Connection, Cursor
+import sys
 from pathlib import Path
 from typing import Union, Optional
 from pprint import pprint
-from archive_base import init_doc_classifications
-from archive_base import DocType, DocShort, DocCategory, DocStandard, DocClassification, Const
-
-
-def add_values():
-    # type short category standard
-    init_doc_classifications()
-    return [(value.doc_type, value.doc_short, value.doc_category, value.doc_standard)
-            for value in Const.dict_classification.values()]
-
-
-
-
-def query_select_all(table: str):
-    return f"""SELECT * FROM {table}"""
+import datetime
+import logging
+import hashlib
 
 
 def query_get_tables():
     return """SELECT name from sqlite_master WHERE type='table';"""
 
 
+def query_select_all(table: str):
+    return f"""SELECT * FROM {table}"""
+
+
 def query_select_record(table: str, attr: str, value: str):
     return f"""SELECT * FROM {table} WHERE {attr} = {value};"""
 
 
-def query_select_column(table: str, column: str):
-    return f"""SELECT {column} FROM {table};"""
+def get_sha256(input_string: str) -> str:
+    """
+    Gets the SHA-256 hash of the file.
+
+    :param str input_string: the line to encrypt
+    :return: the SHA-256 checksum in the hex format.
+    :rtype: str
+    """
+    hash_sha256 = hashlib.sha256()
+    hash_sha256.update(input_string.encode("utf-8"))
+
+    return hash_sha256.hexdigest()
 
 
-def query_update_record(table: str, set_attr: str, set_value: str, attr: str, value: str):
-    return f"""UPDATE {table} SET {set_attr} = {set_value} WHERE {attr} = {value};"""
+class User:
+    def __init__(self, db_path: Union[Path, str], password: str):
+        self.time = datetime.datetime.now()
+        self.db_path = Path(db_path).resolve()
+        self.password = password
 
+    def __hash__(self):
+        return hash((self.name, self.password))
 
-def query_delete_record(table: str, attr: str, value: str):
-    return f"""DELETE FROM {table} WHERE {attr} = {value};"""
+    def __key(self):
+        return self.name, self.time, self.password
 
+    def __eq__(self, other):
+        if isinstance(other, User):
+            return self.__key() == other.__key()
+        else:
+            return NotImplemented
 
-def query_select_product_name(product_name: str):
-    return query_select_record("product", "name", product_name)
+    def __ne__(self, other):
+        if isinstance(other, User):
+            return self.__key() != other.__key()
+        else:
+            return NotImplemented
 
+    def __lt__(self, other):
+        if isinstance(other, User):
+            return self.time < other.time
+        else:
+            return NotImplemented
 
-def check_product_name(product_name: str):
-    return product_name in query_select_column("product", "name")
+    def __gt__(self, other):
+        if isinstance(other, User):
+            return self.time > other.time
+        else:
+            return NotImplemented
 
+    def __le__(self, other):
+        if isinstance(other, User):
+            return self.time <= other.time
+        else:
+            return NotImplemented
 
-def query_get_product_id(product_name: str):
-    return query_select_record("product", "name", product_name)
-
-
-class SQLDatabase:
-    classifiers = ('doc_class_short', 'doc_class_category', 'doc_class_standard', 'doc_class_type')
-
-    def __init__(self, path: Union[str, Path]):
-        self.path = path
+    def __ge__(self, other):
+        if isinstance(other, User):
+            return self.time >= other.time
+        else:
+            return NotImplemented
 
     @property
-    def connection(self) -> Connection:
-        return sqlite3.Connection(self.path)
-
-    def cursor(self) -> Cursor:
-        return self.connection.cursor()
+    def name(self):
+        if self._user_system.sysname == "Windows":
+            key = "USERNAME"
+        else:
+            key = "USER"
+        return os.environ[key]
 
     @property
-    def tables(self):
-        return [item[0] for item in self.execute(query_get_tables())]
+    def _user_system(self):
+        return os.uname()
 
-    def execute(self, query: str):
+    def __trusted_names(self):
+        connection = sqlite3.Connection()
         try:
-            res = [row for row in self.cursor().execute(query)]
-        except sqlite3.OperationalError as e:
-            print(f"{e.sqlite_errorcode}, {e.sqlite_errorname}, {e.args}")
+            connection = sqlite3.Connection(self.db_path.with_name("trusted.db"))
+            cursor = connection.cursor()
+            result = [item for item in cursor.execute("SELECT name FROM trusted")]
+        except sqlite3.ProgrammingError as e:
+            logging.error(
+                f"ProgrammingError: {str(e)}. User: {self.name}, OS: {self._user_system}, datetime: {self.time}")
+            return None
+        except sqlite3.DatabaseError as e:
+            logging.error(
+                f"DatabaseError: {str(e)}. User: {self.name}, OS: {self._user_system}, datetime: {self.time}")
+            return None
         except sqlite3.Error as e:
-            print(f"SQL Connection Error {e.sqlite_errorcode}, {e.sqlite_errorname}. {e.args}")
+            logging.error(
+                f"Error: {str(e)}. User: {self.name}, OS: {self._user_system}, datetime: {self.time}")
             return None
-        except AttributeError as e:
-            print(f"{e.name}, {e.obj}, {e.args}")
         else:
-            return res
+            return result
         finally:
-            self.cursor().close()
+            connection.close()
 
-    def commit_changes(self):
-        self.connection.commit()
+    def _all_allowed(self):
+        return "all" in self.__trusted_names()
 
-    def __check_table_exists(self, table: str):
-        return table in self.tables
-
-    def doc_class_category(self) -> Optional[list[str]]:
-        if self.__check_table_exists("doc_class_category"):
-            query = query_select_all("doc_class_category")
-            return [category for category, _ in self.execute(query)]
+    def _trusted(self):
+        if self.__trusted_names():
+            sys.exit("Sorry, some problems with the database. Please, connect back later.")
         else:
-            print("No such table.")
-            return None
+            if self.name not in self.__trusted_names():
+                logging.warning(
+                    f"AUTHORIZATION: NOT TRUSTED. User: {self.name}, OS: {self._user_system}, datetime: {self.time}")
+                sys.exit("Sorry, you are not a trusted user. You are not welcome. Get out of here.")
 
-    def doc_class_standard(self) -> Optional[list[str]]:
-        if self.__check_table_exists("doc_class_standard"):
-            query = query_select_all("doc_class_standard")
-            return [standard for standard, _ in self.execute(query)]
-        else:
-            print("No such table.")
+    def __hashed_password(self):
+        connection = sqlite3.Connection()
+        try:
+            connection = sqlite3.Connection(self.db_path.with_name("trusted.db"))
+            cursor = connection.cursor()
+            result = cursor.execute("SELECT password FROM trusted WHERE name = ?", (self.name,))
+        except sqlite3.ProgrammingError as e:
+            logging.error(
+                f"ProgrammingError: {str(e)}. User: {self.name}, OS: {self._user_system}, datetime: {self.time}")
             return None
+        except sqlite3.DatabaseError as e:
+            logging.error(
+                f"DatabaseError: {str(e)}. User: {self.name}, OS: {self._user_system}, datetime: {self.time}")
+            return None
+        except sqlite3.Error as e:
+            logging.error(
+                f"Error: {str(e)}. User: {self.name}, OS: {self._user_system}, datetime: {self.time}")
+            return None
+        else:
+            return result.fetchone()
+        finally:
+            connection.close()
 
-    def doc_class_type(self) -> Optional[list[str]]:
-        if self.__check_table_exists("doc_class_type"):
-            query = query_select_all("doc_class_type")
-            return [doc_type for doc_type, _ in self.execute(query)]
+    @property
+    def verify_password(self) -> bool:
+        if self._all_allowed():
+            logging.info(
+                f"AUTHORIZATION: SUCCESS ALL. User {self.name}, OS: {self._user_system}, datetime: {self.time}.")
+            return True
+        hashed_password = get_sha256(self.password)
+        if hashed_password == self.__hashed_password():
+            logging.info(
+                f"AUTHORIZATION: SUCCESS. User {self.name}, password {self.password}, "
+                f"OS: {self._user_system}, datetime: {self.time}.")
+            return True
         else:
-            print("No such table.")
-            return None
+            logging.info(f"AUTHORIZATION: FAIL. User {self.name}, password {self.password}, OS: {self._user_system}.")
+            return False
 
-    def doc_class_short(self) -> Optional[list[str]]:
-        if self.__check_table_exists("doc_class_short"):
-            query = query_select_all("doc_class_short")
-            return [short for short, _ in self.execute(query)]
-        else:
-            print("No such table.")
-            return None
 
-    def doc_classification(self):
-        if self.__check_table_exists("classification"):
-            query = query_select_all("classification")
-            return self.execute(query)
-        else:
-            print("No such table.")
-            return None
+class _User:
+    def __init__(self, user: User):
+        if user.verify_password:
+            self.user = user
 
-    def all_products(self):
-        if self.__check_table_exists("product"):
-            query = query_select_all("product")
-            return self.execute(query)
-        else:
-            print("No such table.")
-            return None
+    def __str__(self):
+        return str(self.user)
 
-    def all_product_names(self):
-        if self.__check_table_exists("product"):
-            query = query_select_column("product", "name")
-            return self.execute(query)
-        else:
-            print("No such table.")
-            return None
+    def __repr__(self):
+        return repr(self.user)
+
+    @property
+    def name(self):
+        return self.user.name
+
+    @property
+    def db_path(self):
+        return self.user.db_path
+
+    def get_tables(self) -> Optional[list[str]]:
+        connection = sqlite3.Connection(self.db_path)
+        cursor = connection.cursor()
+        tables = [row for row in cursor.execute(query_get_tables())]
+        connection.close()
+        return tables
+
+    def __products(self):
+        connection = sqlite3.Connection(self.db_path)
+        cursor = connection.cursor()
+        products = [row for row in cursor.execute(query_select_all("product"))]
+        attrs = cursor.description
+        connection.close()
+        return products, attrs
+
+    def get_products(self):
+        products, _ = self.__products()
+        return products
+
+    def get_product_attrs(self):
+        _, attrs = self.__products()
+        return attrs
+
+    def start_end(self, func):
+        def wrapper(*args, **kwargs):
+            connection = sqlite3.Connection(self.db_path)
+            cursor = connection.cursor()
+            func()
+            connection.close()
+            return func()
+        return wrapper()
+
+    @start_end
+    def search_product(self, connection: sqlite3.Connection, cursor: sqlite3.Cursor, product_name: str):
+        cursor_product = cursor.execute(query_select_record("product", "name", product_name))
+        return cursor_product.fetchone()
+
+    def get_product_docs(self, product_name: str):
+        pass
 
 
 def create_database():
@@ -172,20 +254,15 @@ def create_table():
 
 
 def main():
+    filename = "./basic_log.log"
+    fmt = "%(levelName)s %(asctime)s, %(funcName) --- %(message)s"
+    level = logging.INFO
+    logging.basicConfig(filename=filename, format=fmt, level=level)
+
     path = '/Users/user/Desktop/archive.db'
-    sql_db = SQLDatabase(path)
-    print(add_values())
-    for index, (doc_type, short, category, standard) in enumerate(add_values()):
-        print(index)
-        print(doc_type)
-        print(short)
-        print(category)
-        print(standard)
-        sql_db.cursor().execute("INSERT INTO classification values(?, ?, ?, ?, ?)", (index, doc_type, str(short), str(category), ""))
-        sql_db.connection.commit()
-    # pprint(sql_db.doc_class_category())
-    sql_db.connection.commit()
-    # pprint(sql_db.execute(query_select_all("sqlite_sequence")))
+
+    connection = sqlite3.Connection(path)
+    cursor = connection.cursor()
 
 
 if __name__ == "__main__":
