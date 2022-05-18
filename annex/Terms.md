@@ -3,6 +3,7 @@
 
 | Термин | Комментарий |
 | :----- | :---------- |
+| SSML | Speech Synthesis Markup Language, язык разметки для синтеза речи |
 | 3GPP | 3rd Generation Partnership Project, Проект партнерства третьего поколения |
 | AAA | Authentication, Authorization, and Accounting; аутентификация, авторизация и учет |
 | AAL5 | ATM Adaptation Layer Type 5, уровень адаптации ATM |
@@ -35,7 +36,6 @@
 | AMF | Access and Mobility Management Function, функция управления доступом и мобильностью |
 | AMHS | ATS (Air Traffic Services) Message Handling Services, служба обработки авиационных сообщений |
 | AMR | Adaptive Multi Rate, адаптивное кодирование с переменной скоростью |
-| AMR | Adaptive Multi-Rate, адаптивное кодирование с переменной скоростью |
 | ANDSP | Access Network Discovery and Selection Policy, политика обнаружения и выбора сети доступа |
 | ANM | Answer Message, ответное сообщение от вызываемого абонента ISUP |
 | AoC | Advice of Charge, уведомление об оплате |
@@ -194,7 +194,8 @@
 | DCS | Digital Command Signal, сигнал цифровой команды |
 | DEA | Diameter Edge Agent, пограничный агент сигнальной сети оператора в протоколе Diameter |
 | DEF–номер | Телефонный код, присвоенный по не географическому признаку |
-| DES/3DES | Data Encryption Standard, стандарт для шифрования данных — алгоритм шифрования, 3DES, Triple–DES, алгоритм шифрования на основе последовательного применения DES трижды |
+| DES | Data Encryption Standard, стандарт для шифрования данных |
+| 3DES | Triple–DES — алгоритм шифрования на основе последовательного применения DES трижды |
 | DF | Dedicated File, специальный выделенный файл |
 | DHCP | Dynamic Host Configuration Protocol, протокол динамической настройки хоста |
 | DIS | Digital Identification Signal, цифровой опознавательный сигнал |
@@ -233,7 +234,6 @@
 | E-DCH | Enhanced Dedicated Channel, усовершенствованный выделенный канал |
 | E–DSS1 | Extended Digital Subscriber Signaling, расширенная цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами |
 | E–UTRAN | Evolved Universal Terrestrial Radio Access Network, улучшенная универсальная сеть наземного радиодоступа стандарта LTE |
-| EAP | Extensible Authentication Protocol, расширяемый протокол аутентификации |
 | EAP | Extensible Authentication Protocol, расширяемый протокол проверки подлинности |
 | ECB | Electronic Code Book, электронная кодовая книга — один из режимов шифрования |
 | ECD | Echo Control Device, эхо-компенсатор |
@@ -334,7 +334,7 @@
 | HSM | Hardware Security Module, модуль аппаратной защиты |
 | HSPA | High-Speed Packet Data Access, высокоскоростная пакетная передача данных |
 | HSS | Home Subscriber Server, база данных абонентов собственной сети LTE |
-| HSUPA | High Speed Uplink Packet Data Access |
+| HSUPA | High Speed Uplink Packet Data Access, высокоскоростной доступ к пакетным данным по восходящему каналу |
 | HUP | Handover User Part, абонентская подсистема хэндовера |
 | I–CSCF | Interrogating CSCF, узел взаимодействия с внешними сетями IMS |
 | I/O | Input/Output, ввод/вывод |
@@ -390,10 +390,10 @@
 | IUA | ISDN User Adaptation, протокол пользовательской адаптации ISDN |
 | IVR | Interactive Voice Response, интерактивное голосовое меню |
 | IWMSC | Interworking MSC, межсетевой MSC |
-| JAXB | Java Architecture for XML Binding, инструмент для конвертации Java–объектов в XML и обратно |
+| JAXB | Java Architecture for XML Binding — инструмент для конвертации Java–объектов в XML и обратно |
 | JDBC | Java Database Connectivity, соединение с базами данных на Java |
 | JMX | Java Management Extensions, управленческие расширения Java для контроля и управления приложениями, объектами, устройствами и сетями |
-| JSF | JavaServer Faces, Java–спецификация для построения компонентно–ориентированных пользовательских интерфейсов Web–приложений |
+| JSF | JavaServer Faces — Java–спецификация для построения компонентно–ориентированных пользовательских интерфейсов Web–приложений |
 | JSON | Java Script Object Notation — текстовый формат обмена на базе JavaScript |
 | JVM | Java Virtual Machine, виртуальная машина Java |
 | JWT | JSON Web Token, токен для авторизации в Web–интерфейсе формата JSON |
@@ -679,7 +679,7 @@
 | RgPN | Redirecting Party Number, номер абонента, на котором последний раз сработала переадресация |
 | RHCP | Remote Hardware Card Protei, протокол управления аппаратным обеспечением |
 | RHCS | Red Hat Cluster Suite, программное обеспечение от Red Hat для создания кластера высокой доступности и кластера распределенной нагрузки |
-| RHEL | Red Hat Enterprise Linux, дистрибутив Linux от Red Hat |
+| RHEL | Red Hat Enterprise Linux — дистрибутив Linux от Red Hat |
 | RI | Repeat Interval, время ожидания между попытками |
 | RI | Routing Indicator, код направления |
 | RIF | Request Indication Flag, флаг индикации запроса |
@@ -699,7 +699,7 @@
 | RRLP | Radio Resource Location Services Protocol, протокол услуг по определению местоположения радиоресурсов |
 | RRP | Reductant Ring Protocol, ошибкоустойчивый протокол резервирования |
 | RSC | Reset Circuit, сброс канала ISUP |
-| RTCP | Real–Time Transport Control Protocol, протокол, управляющий передачей данных в режиме реального времени. Работает совместно с RTP |
+| RTCP | Real–Time Transport Control Protocol, протокол, управляющий передачей данных в режиме реального времени — работает совместно с RTP |
 | RTD | Round Trip Delay, задержка на подтверждение приема |
 | RTO | Recovery Time Objective, допустимое время восстановления |
 | RTO | Retransmission Time, время ожидания до повторной отправки |
@@ -921,7 +921,6 @@
 | VAD | Voice Activity Detector, детектор речевой активности |
 | VAS | Value Added Service, дополнительная платная услуга |
 | VASP | Value Added Service Provider, поставщик дополнительных платных услуг |
-| VBD | Voice Band Data, данные, передаваемые в полосе речевого сигнала |
 | VBD | Voiceband Data, данные в речевом диапазоне |
 | VBS | Voice Broadcast Service, услуга голосового вещания |
 | VFC | Voice Frequency Circuit, канал тональной частоты |
