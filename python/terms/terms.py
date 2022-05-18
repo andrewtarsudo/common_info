@@ -48,8 +48,7 @@ class Term:
         short --- the short term;\n
         full --- the full term;\n
         rus --- the Russian equivalent;\n
-        commentary --- the commentary to the term;
-
+        commentary --- the commentary to the term;\n
     """
     index = 0
 
@@ -152,7 +151,7 @@ def add_term(short: str, full: str, meaning_rus: str = None):
 
 class TermList:
     """
-
+    
     """
     def __init__(self, terms: list[Term] = None):
         if terms is None:
@@ -225,7 +224,12 @@ class TermList:
 
     def _sorted_terms(self):
         return sorted(self.terms)
-
+    
+    def get_terms(self, parsed_md: list[tuple[str, str, str, str]]):
+        for short, full, rus, commentary in parsed_md:
+            self.terms.append(Term(short, full, rus, commentary))
+        return self._sorted_terms()
+            
 
 def main():
     # filename = "./basic_log.log"
