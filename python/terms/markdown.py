@@ -1,0 +1,118 @@
+import re
+import requests
+
+
+class MarkdownFile:
+    """
+    Specify the Markdown operation instance.
+
+    """
+    def __init__(self, url: str = "https://raw.githubusercontent.com/andrewtarsudo/common_info/master/annex/Terms.md"):
+        self.url = url
+
+    @staticmethod
+    def _split_columns(line: str) -> list[str]:
+        """
+        Split the line by the columns.
+
+        :param str line: the text string
+        :return: the column strings.
+        :rtype: list[str]
+        """
+        edit_line = line.strip("|").strip()
+        return edit_line.split(" | ")
+
+    @staticmethod
+    def _split_first_rus_char(line: str) -> tuple[str, str]:
+        """
+        Split the line by the first non-Latin character.
+
+        :param str line: the text string
+        :return: the resulted strings.
+        :rtype: tuple[str, str]
+        """
+        split_index = -1
+        # verify if the char is an ASCII one
+        for index, char in enumerate(line):
+            if not char.isascii():
+                split_index = index
+                break
+            else:
+                continue
+        # verify if the line contains the non-Latin characters
+        if split_index != -1:
+            return line[:split_index - 2], line[split_index:]
+        else:
+            return line, ""
+
+    @staticmethod
+    def _split_dash(line: str) -> list[str]:
+        """
+        Split the line by the minus sign, en dash, and em dash.
+
+        :param str line: the text string
+        :return: the resulted strings.
+        :rtype: list[str]
+        """
+        pattern = re.compile(' [-\u2013\u2014] ')
+        return re.split(pattern, line)
+
+    def parse_md_line(self, line: str) -> tuple[str, str, str, str]:
+        """
+        Parse the Markdown line to the short, full, rus, comment parameters.
+
+        :param str line: the text string
+        :return: the short, full, rus, comment parameters.
+        :rtype: tuple[str, str, str, str]
+        """
+        short, upd_line = self._split_columns(line)
+        full, rus_line = self._split_first_rus_char(upd_line)
+        rus, comment = self._split_dash(rus_line)
+        return short, full, rus, comment
+
+    def parse_md_file(self) -> list[tuple[str, str, str, str]]:
+        """
+        Parse the Markdown text.
+
+        :return: the parsed lines.
+        :rtype: list[tuple[str, str, str, str]]
+        """
+        return [self.parse_md_line(line) for line in self.text()]
+
+    def text(self) -> list[str]:
+        """
+        Specify the text from the GitHub repo file.
+
+        :return: the file contents.
+        :rtype: list[str]
+        """
+        response = requests.get(self.url)
+        return response.text.split("\n")
+
+
+def main():
+    text = """| VoMS | Voucher Management System, система управления платежными картами |
+| VP | Validity Period, время прекращения валидности сообщения |
+| VPF | Validity Period Format, флаг наличия Validity Period |
+| VPLMN | Visited PLMN, гостевая PLMN |
+| VPN | Virtual Private Network, виртуальная частная сеть |
+| VSAT | Very Small Aperture Terminal, малый терминал спутниковой связи узкой направленности |
+| WAAS | Wide Area Argumentation System, широкозонная корректирующая система |
+| WAE | WAN Automation Engine, механизм автоматизации глобальных сетей |
+| WAG | WLAN Access Gateway, шлюз доступа WLAN |
+| WAP | Wireless Application Protocol, протокол для приложений беспроводной связи |
+| WB | Welcome Back, система оповещения вновь зарегистрированных гостевых абонентов |
+| WCDMA | Wideband Code Division Multiple Access, широкополосный множественный доступ с кодовым разделением каналов |
+| WISM | Wireless Services Module, модуль, предоставляющий беспроводные услуги |
+| WIX | Wireless Information Exchange, беспроводной обмен информацией |
+| WLAN | Wireless Local Area Network, беспроводная локальная сеть |
+| WLSS | WebLogic SIP Server, программное обеспечение сервера от Oracle для запуска SIP-приложений |
+| WML | Wireless Markup Language, язык разметки для мобильных устройств |
+| WMM | Wi-Fi Multimedia, Wi-Fi мультимедиа |
+| WPS | Wireless Priority Service, служба беспроводной приоритетной связи |
+| WTP | Wireless Transport Protocol, протокол беспроводной передачи |
+| XML | eXtensible Markup Language, расширяемый язык разметки |"""
+
+
+if __name__ == "__main__":
+    main()
