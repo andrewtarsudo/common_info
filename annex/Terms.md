@@ -267,6 +267,11 @@
 | ETS | Emergency Telecommunications Services, Служба электросвязи в чрезвычайных ситуациях |
 | ETSI | European Telecommunications Standards Institute, Европейский институт телекоммуникационных стандартов |
 | f | frequency, частота |
+| PNR | Premium Rate Number, номер с Premium-тарифом |
+| UAN | Universal Access Number, номер универсального доступа |
+| IL | Incoming Line, входящее соединение |
+| LFM | Multi Load Filtering, голосование со множественным выбором |
+| LFS | Single Load Filtering, голосование с единоразовым выбором |
 | FCS | Failure Cause, причина неуспешного выполнения |
 | FCS | Frame Check Sequence, контрольная последовательность кадра |
 | FDD | Frequency Division Duplex, режим частотного дуплексного разноса |
