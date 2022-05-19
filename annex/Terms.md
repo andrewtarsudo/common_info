@@ -3,6 +3,16 @@
 
 | Термин | Комментарий |
 | :----- | :---------- |
+| NSDU |  | Network Service Data Unit, блок данных сетевой услуги |
+| NPCI | Network Protocol Control Information, управляющая информация сетевого протокола |
+| SCOC | SCCP Connection-Oriented Control, блок управления услугами SCCP с созданием сигнального соединения |
+| SCLC | SCCP Connectionless Control, блок управления услугами SCCP без создания сигнального соединения |
+| SCRC | SCCP Routing Control, средства управления маршрутизацией SCCP |
+| SCMG | SCCP Management, средства эксплуатационного управления SCCP |
+| SNDCP | Subnetwork Dependent Convergence Protocol, протокол сходимости подсетей |
+| PESQ | Perceptual Evaluation of Speech Quality, оценка восприятия качества передачи речи |
+| TFTP | Trivial File Transfer Protocol, протокол передачи тривиального файла |
+| NGOSS | New Generation Operation Systems and Software, новое поколение систем технико-эксплуатационной поддержки и программных средств |
 | SSML | Speech Synthesis Markup Language, язык разметки для синтеза речи |
 | 3GPP | 3rd Generation Partnership Project, Проект партнерства третьего поколения |
 | AAA | Authentication, Authorization, and Accounting; аутентификация, авторизация и учет |
