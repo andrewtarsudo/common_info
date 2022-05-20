@@ -12,7 +12,7 @@ TODO:
 
 | Parameter ID | Meaning | Mandatory | Type | Range | Default Value | Remarks |
 | :----------- | :------ | :-------- | :--- | :---- | :------------ | :------ |
-| username | The username of this entry. | Yes | String | Length: 1 to 32 digits | - | - | 
+| username | The username of this entry. | Yes | String | Length: 1 to 32 digits | - | - |
 | password | The password of this entry. | Yes | String | Length: 6 to 32 digits | - | - |
 
 
@@ -173,3 +173,59 @@ TODO:
 | OPERATION_DOC | Эксплуатационная документация |
 | PRODUCTION_DOC | Технологическая документация |
 | FOREIGN | Зарубежье |
+
+from pprint import pprint
+
+
+# make a list from the multiple line input
+def make_list():
+    res_list = []
+    while True:
+        line = input()
+        if not line == '':
+            res_list.append(line)
+        else:
+            break
+    return res_list
+
+
+def parse_md(lines: list[str]):
+    dict_lines: dict[str, str] = dict()
+    for line in sorted(lines):
+        upd_line = line.strip("|").strip()
+        key, value = upd_line.split(" | ")
+        dict_lines[key] = value
+
+    return dict_lines
+
+
+def join_dict(dict_1: dict[str, str], dict_2: dict[str, str]):
+    keys = set.intersection(set(dict_1.keys()), set(dict_2.keys()))
+    return dict((key, [dict_line[key] for dict_line in [dict_1, dict_2]]) for key in keys)
+
+def format_lines(dict_lines: dict[str, list[str]]):
+    lines = []
+    for key, value in dict_lines.items():
+        line = " | ".join((key, value))
+        lines.append(line)
+    return lines
+
+
+def main():
+    print('Type the first set of values. Finish the input with the empty line:')
+    check_list_1 = make_list()
+    print('Type the second set of values. Finish the input with the empty line:')
+    check_list_2 = make_list()
+
+    # pprint(parse_md(check_list_1))
+
+    dict_list_1 = parse_md(check_list_1)
+    dict_list_2 = parse_md(check_list_2)
+
+    dict_final = join_dict(dict_list_1, dict_list_2)
+
+    pprint(format_lines(dict_final))
+
+
+if __name__ == "__main__":
+    main()
