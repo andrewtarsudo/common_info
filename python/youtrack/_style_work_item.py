@@ -296,7 +296,8 @@ class _StyleWorkItem:
     """
 
     list_attrs: tuple[str] = (
-        "name", "_is_named", "number_format", "alignment", "border", "fill", "font", "protection", "data_type"
+        "name", "_is_named", "number_format", "alignment", "border", "fill", "font", "protection", "data_type",
+        "get_named"
     )
 
     def __init__(
@@ -363,16 +364,18 @@ class _StyleWorkItem:
         else:
             return NotImplemented
 
-    def __getattribute__(self, key):
-        if key in _StyleWorkItem.list_attrs:
-            return object.__getattribute__(self, key)
-        else:
-            print(f"AttributeError, the attribute {key} is not specified.")
-            return None
+    # def __getattribute__(self, key):
+    #     return object.__getattribute__(self, key)
 
-    def __setattr__(self, key, value):
-        if key in _StyleWorkItem.list_attrs:
-            object.__setattr__(self, key, value)
+        # if key in _StyleWorkItem.list_attrs:
+        #     return object.__getattribute__(self, key)
+        # else:
+        #     print(f"AttributeError, the attribute {key} is not specified.")
+        #     return None
+
+    # def __setattr__(self, key, value):
+    #     if key in _StyleWorkItem.list_attrs:
+    #         object.__setattr__(self, key, value)
 
     @property
     def get_named(self):
@@ -389,14 +392,13 @@ class _StyleWorkItem:
         else:
             return self
 
-    def set_style(self, coord: str):
+    def set_style(self, cell: Cell):
         """
         Specify the style of the cell.
 
-        :param str coord: the cell coordinates.
+        :param Cell cell: the cell coordinates.
         :return: None
         """
-        cell: Cell = self.ws[f"{coord}"]
         # apply the number format
         cell.style.number_format = copy(self.number_format)
         # apply the alignment
@@ -425,7 +427,7 @@ def generate_from_style(name: str, base_style: _StyleWorkItem, attrs: list = Non
     check_attrs: bool = (attrs is not None and all(attr in _StyleWorkItem.list_attrs for attr in attrs))
     check_values: bool = values is not None
     check_length: bool = len(attrs) == len(values)
-    if check_attrs and check_values and check_length:
+    if not(check_attrs and check_values and check_length):
         return basic()
     else:
         style = copy(base_style)
@@ -503,15 +505,15 @@ class _StyleWorkItemList:
     def __iter__(self):
         return (item for item in self.styles.values())
 
-    def set_style(self, style_name: str, coord: str):
+    def set_style(self, style_name: str, cell: Cell):
         """
         Specify the style of the cell.
 
         :param str style_name: the style name
-        :param str coord: the cell coordinates
+        :param str cell: the cell
         :return: None.
         """
-        return self.styles[style_name].set_style(coord)
+        return self.styles[style_name].set_style(cell)
 
 
 def main():
