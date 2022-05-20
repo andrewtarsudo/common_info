@@ -1,19 +1,6 @@
-# Термины и сокращения #
-## Таблица { SEQ "Таблица" \* ARABIC \* MERGEFORMAT } ##
-
-| Термин | Комментарий |
-| :----- | :---------- |
-| NSDU |  | Network Service Data Unit, блок данных сетевой услуги |
-| NPCI | Network Protocol Control Information, управляющая информация сетевого протокола |
-| SCOC | SCCP Connection-Oriented Control, блок управления услугами SCCP с созданием сигнального соединения |
-| SCLC | SCCP Connectionless Control, блок управления услугами SCCP без создания сигнального соединения |
-| SCRC | SCCP Routing Control, средства управления маршрутизацией SCCP |
-| SCMG | SCCP Management, средства эксплуатационного управления SCCP |
-| SNDCP | Subnetwork Dependent Convergence Protocol, протокол сходимости подсетей |
-| PESQ | Perceptual Evaluation of Speech Quality, оценка восприятия качества передачи речи |
-| TFTP | Trivial File Transfer Protocol, протокол передачи тривиального файла |
-| NGOSS | New Generation Operation Systems and Software, новое поколение систем технико-эксплуатационной поддержки и программных средств |
-| SSML | Speech Synthesis Markup Language, язык разметки для синтеза речи |
+| Термин | Описание |
+| :----- | :------- |
+| 3DES | Triple–DES — алгоритм шифрования на основе последовательного применения DES трижды |
 | 3GPP | 3rd Generation Partnership Project, Проект партнерства третьего поколения |
 | AAA | Authentication, Authorization, and Accounting; аутентификация, авторизация и учет |
 | AAL5 | ATM Adaptation Layer Type 5, уровень адаптации ATM |
@@ -86,6 +73,8 @@
 | BGP | Border Gateway Protocol, протокол граничного шлюза |
 | BIB | Backward Indicator Bit, указательный бит назад |
 | BICC | Bearer Independent Call Control, управление вызовом независимо от несущего канала |
+| BICC | Bearer Independent Call Control, управление вызовом независимо от несущего канала |
+| BIP | Bearer Independent Protocol, протокол обмена данными независимо от канала передачи |
 | BLA | Blocking Acknowledgement, подтверждение блокировки канала ISUP |
 | BLF | Busy Lamp Field, панель индикации состояния абонентов |
 | BLO | Blocking, блокировка канала ISUP |
@@ -205,7 +194,6 @@
 | DEA | Diameter Edge Agent, пограничный агент сигнальной сети оператора в протоколе Diameter |
 | DEF–номер | Телефонный код, присвоенный по не географическому признаку |
 | DES | Data Encryption Standard, стандарт для шифрования данных |
-| 3DES | Triple–DES — алгоритм шифрования на основе последовательного применения DES трижды |
 | DF | Dedicated File, специальный выделенный файл |
 | DHCP | Dynamic Host Configuration Protocol, протокол динамической настройки хоста |
 | DIS | Digital Identification Signal, цифровой опознавательный сигнал |
@@ -277,11 +265,6 @@
 | ETS | Emergency Telecommunications Services, Служба электросвязи в чрезвычайных ситуациях |
 | ETSI | European Telecommunications Standards Institute, Европейский институт телекоммуникационных стандартов |
 | f | frequency, частота |
-| PNR | Premium Rate Number, номер с Premium-тарифом |
-| UAN | Universal Access Number, номер универсального доступа |
-| IL | Incoming Line, входящее соединение |
-| LFM | Multi Load Filtering, голосование со множественным выбором |
-| LFS | Single Load Filtering, голосование с единоразовым выбором |
 | FCS | Failure Cause, причина неуспешного выполнения |
 | FCS | Frame Check Sequence, контрольная последовательность кадра |
 | FDD | Frequency Division Duplex, режим частотного дуплексного разноса |
@@ -369,6 +352,7 @@
 | IEI | Information Element Identifier, идентификатор информационного элемента |
 | IETF | International Engineering Task Force, Инженерный совет Интернета — открытое международное сообщество, занимающееся развитием сетевых протоколов и архитектуры Интернета |
 | IFC | Initial Filter Criteria, первичные критерии фильтрации |
+| IL | Incoming Line, входящее соединение |
 | iLo | Integrated Lights Out, механизм управления серверами в условиях отсутствия физического доступа к ним |
 | IM-SSF | IP Multimedia Service Switching Function, мультимедийная функция коммутации услуг на базе протокола IP |
 | IMEI | International Mobile Equipment Identifier, международный идентификатор оборудования для мобильной связи |
@@ -433,7 +417,9 @@
 | LDAP | Lightweight Directory Access Protocol, упрощённый протокол доступа к каталогам |
 | LEE | Laptop Embedded Equipment, оборудование со встроенным ноутбуком |
 | LFA | Loss of Frame Alignment, потеря цикловой (фазовой) синхронизации |
+| LFM | Multi Load Filtering, голосование со множественным выбором |
 | LFN | longForwardedToNumber, адрес переадресации вызова |
+| LFS | Single Load Filtering, голосование с единоразовым выбором |
 | LI | Legal Intervention, законное вмешательство в вызов |
 | LI | Length Indicator, индикатор длины |
 | LIDB | Line Information Database, информационная база данных линии связи |
@@ -549,6 +535,7 @@
 | NGAF | Non-GPRS Alert Flag, флаг оповещения MSC/VLR об активности абонента |
 | NGN | Next Generation Networks, сети нового поколения — мультисервисные сети связи |
 | NGOSS | New Generation Operation Systems and Software, новое поколение систем технико-эксплуатационной поддержки и программных средств |
+| NGOSS | New Generation Operation Systems and Software, новое поколение систем технико-эксплуатационной поддержки и программных средств |
 | NI | Network Identifier, идентификатор сети |
 | NI USSI | Network Initiated Unstructured Supplementary Service Data over IMS, инициированный сетью USSD по сетям IMS |
 | NI-LR | Network Induced Location Request, запрос местоположения от сети |
@@ -557,12 +544,14 @@
 | NMC | Network Management Controls, функции управления сетью |
 | NMS | Network Management System, система управления сетью |
 | NP | Numbering Plan, план нумерации |
+| NPCI | Network Protocol Control Information, управляющая информация сетевого протокола |
 | NPI | Numbering Plan Indicator, индикатор плана нумерации |
 | NRCT | noReplyConditionTime, таймер ожидания ответа при переадресации в случае отсутствия вызова |
 | NRSN | Network Request Support Network, сеть поддержки сетевых запросов |
 | NRSU | Network Request Support UE; пользовательское оборудование, поддерживающее сетевые запросы |
 | NSAPI | Network Service Access Point Identifier, идентификатор точки доступа к сетевых службам |
 | NSC | Non-Standard Facilities Command, сообщение о посылке NSF в протоколе T.30 |
+| NSDU | Network Service Data Unit, блок данных сетевой услуги |
 | NSE | Named Signaling Event, ключ для обеспечения взаимодействия между протоколами факсимильной передачи |
 | NSF | Non-Standard Facilities, нестандартное сообщение в протоколе T.30 |
 | NSLIP | Negative Slip, отрицательное проскальзывание (пропуск фрейма) |
@@ -625,6 +614,7 @@
 | PDP | Packet Data Protocol, протокол пакетной передачи данных |
 | PDU | Protocol Data Unit, единица данных протокола |
 | PERL | Practical Extraction and Report Language — язык программирования |
+| PESQ | Perceptual Evaluation of Speech Quality, оценка восприятия качества передачи речи |
 | PFD | Packet Flow Description, описание потока пакетов |
 | PGW | Packet Data Network Gateway, шлюз пакетной передачи данных |
 | PI | Presentation Indicator, индикатор отображения (адреса) |
@@ -640,6 +630,7 @@
 | PMM | Packet Mobility Management, управление мобильностью пакетов |
 | PNG | Portable Network Graphics — один из форматов изображения |
 | PNR | Phone Number Registry, регистр телефонных номеров — сервис определения региона/субъекта РФ и часового пояса по номеру |
+| PNR | Premium Rate Number, номер с Premium-тарифом |
 | PoR | Proof–of–Receipt, уведомление о получении |
 | PPF | Paging Proceed Flag, флаг посылки вызова |
 | PPR | Privacy Profile Register, регистр приватных профилей |
@@ -742,9 +733,13 @@
 | SCCP | Signaling Connection Control Part, подсистема управления сигнализацией |
 | SCEF | Service Capability Exposure Function, технология для взаимодействия с сетью Интернета вещей через единый интерфейс |
 | SCF | Service Control Function, функциональный объект управления услугами |
+| SCLC | SCCP Connectionless Control, блок управления услугами SCCP без создания сигнального соединения |
+| SCMG | SCCP Management, средства эксплуатационного управления SCCP |
+| SCOC | SCCP Connection-Oriented Control, блок управления услугами SCCP с созданием сигнального соединения |
 | SCON | Signalling Congestion, управление нагрузкой сигнализации |
 | SCP | Service Control Point, модуль логик услуг, реализованных посредством протокола CAMEL |
 | SCR | Source Controlled Rate, скорость, регулируемая источником |
+| SCRC | SCCP Routing Control, средства управления маршрутизацией SCCP |
 | SCS | Service Capabilities Server, сервер обеспечения работоспособности услуг |
 | SCS | Supported Codec Set, набор поддерживаемых кодеков |
 | SCTP | Stream Control Transmission Protocol, протокол передачи с управлением потока |
@@ -797,6 +792,7 @@
 | SN | Serial Number, серийный номер |
 | SNDC | Subnetwork Dependent Convergence, конвергенция зависимых подсетей |
 | SNDCP | SubNetwork Dependent Convergence Protocol, протокол конвергенции зависимых подсетей |
+| SNDCP | Subnetwork Dependent Convergence Protocol, протокол сходимости подсетей |
 | SNI | Server Name Indication, индикация имени сервера |
 | SNMM | Signaling Network Management Message, сообщение от системы управления сетью сигнализации |
 | SNMP | Simple Network Management Protocol, простой протокол управления сетью |
@@ -833,6 +829,7 @@
 | SSH | Secure Shell, безопасная оболочка — прикладной протокол удаленного управления и туннелирования TCP–соединений |
 | SSID | Service Set Identifier, идентификатор набора услуг сети |
 | SSL | Secure Sockets Layer — протокол защищенных соединений с применением шифрования |
+| SSML | Speech Synthesis Markup Language, язык разметки для синтеза речи |
 | SSN | Subsystem Number, номер подсистемы |
 | SSNI | SSN Indicator, индикатор SSN |
 | SSP | Service Switching Point, узел коммутации услуг |
@@ -866,6 +863,7 @@
 | TETRA | Terrestrial Trunked Radio, магистральная наземная радиосвязь |
 | TFO | Tandem Free Operation, работа без тандемного преобразования |
 | TFT | Traffic Flow Template, шаблон потока трафика |
+| TFTP | Trivial File Transfer Protocol, протокол передачи тривиального файла |
 | TICC | Transport Independent Call Control, система управления вызовами, не зависимая от способов передачи данных |
 | TID | Thread ID, идентификатор потока |
 | TID | Transaction Identifier, идентификатор транзакции |
@@ -897,6 +895,7 @@
 | TUP | Telephone User Part, абонентская подсистема телефонной связи |
 | TWAN | Trusted WLAN Access Network, доверенная беспроводная локальная сеть доступа |
 | UA | User–Agent, агент пользователя |
+| UAN | Universal Access Number, номер универсального доступа |
 | UBA | Unblocking Acknowledgement, подтверждение разблокировки канала ISUP |
 | UBL | Unblocking, разблокировка канала ISUP |
 | UBS | Universal Billing Server, универсальная биллинговый сервер |
@@ -946,7 +945,7 @@
 | VMA | Voice Mail Alerting, голосовые предупреждения |
 | VMN | Voice Mail Notification, голосовые оповещения |
 | VMSC | Visited MSC, абонентский MSC |
-| VOC | Voice, голосовые сообщения |
+| VOC | Voice, голосовое сообщение |
 | VoIP | Voice over Internet Protocol, технология передачи голосовых сообщений в IP-сетях |
 | VoLTE | Voice over LTE, голосовой вызов на базе протокола LTE |
 | VoMS | Voucher Management System, система управления платежными картами |
@@ -964,22 +963,9 @@
 | WISM | Wireless Services Module, модуль, предоставляющий беспроводные услуги |
 | WIX | Wireless Information Exchange, беспроводной обмен информацией |
 | WLAN | Wireless Local Area Network, беспроводная локальная сеть |
-| WLSS | WebLogic SIP Server, программное обеспечение сервера от Oracle для запуска SIP-приложений |
+| WLSS | WebLogic SIP Server — программное обеспечение сервера от Oracle для запуска SIP-приложений |
 | WML | Wireless Markup Language, язык разметки для мобильных устройств |
 | WMM | Wi-Fi Multimedia, Wi-Fi мультимедиа |
 | WPS | Wireless Priority Service, служба беспроводной приоритетной связи |
 | WTP | Wireless Transport Protocol, протокол беспроводной передачи |
 | XML | eXtensible Markup Language, расширяемый язык разметки |
-| --- | --- |
-| ААЛ | Абонентская аналоговая линия |
-| АОН | Автоматический определитель номера |
-| ИКМ–30 | Плата с импульсно-кодовой модуляцией |
-| КТЧ | Канал тональной частоты |
-| ЛБДПН | Локальная база данных перенесенных абонентских номеров |
-| МАК | Мультисервисный абонентский концентратор |
-| МКД | Мультисервисный коммутатор доступа |
-| ПЛИС | Программируемая логическая интегральная схема |
-| ТфОП | Телефонные сети общего пользования |
-| УКИО | Унифицированная карточка информационного обмена |
-| ЦАЛ | Центральная аналоговая линия |
-| ЦБДПН | Центральная база данных перенесенных номеров |
