@@ -1,16 +1,3 @@
-"""
-basic() -> _StyleWorkItem --- set the basic style;\n
-basic_state_style() -> _StyleWorkItem --- set the basic state style;\n
-state_styles() -> list[_StyleWorkItem] --- set the state styles;\n
-basic_month_style() -> _StyleWorkItem --- set the basic month style;\n
-month_styles() -> list[_StyleWorkItem] --- set the basic month styles;\n
-month_merged_styles() -> list[_StyleWorkItem] --- set the merged month styles;\n
-title() -> _StyleWorkItem --- set the title style;\n
-header() -> _StyleWorkItem --- set the header style;\n
-month_date_style() -> _StyleWorkItem --- set the month date style;
-generate_from_style(name, base_style, cell_attrs, values) -> _StyleWorkItem --- set the style based on the other one;
-"""
-
 from copy import copy
 from typing import Union
 from openpyxl.styles.numbers import FORMAT_GENERAL, FORMAT_TEXT, FORMAT_NUMBER_00, FORMAT_DATE_XLSX14
@@ -22,6 +9,20 @@ from openpyxl.styles.fonts import Font
 from openpyxl.styles.protection import Protection
 from openpyxl.cell.cell import Cell
 from openpyxl.styles.named_styles import NamedStyle
+
+
+__doc__ = """
+basic() -> _StyleWorkItem --- set the basic style;\n
+_basic_state_style() -> _StyleWorkItem --- set the basic state style;\n
+state_styles() -> list[_StyleWorkItem] --- set the state styles;\n
+_basic_month_style() -> _StyleWorkItem --- set the basic month style;\n
+month_styles() -> list[_StyleWorkItem] --- set the basic month styles;\n
+month_merged_styles() -> list[_StyleWorkItem] --- set the merged month styles;\n
+title() -> _StyleWorkItem --- set the title style;\n
+header() -> _StyleWorkItem --- set the header style;\n
+month_date_style() -> _StyleWorkItem --- set the month date style;
+generate_from_style(name, base_style, cell_attrs, values) -> _StyleWorkItem --- set the style based on the other one;
+"""
 
 
 def basic():
@@ -155,10 +156,9 @@ class ConstStyle:
 
     Border(outline, left, right, top, bottom, diagonal):
         TMP_BORDER --- False, Side(), Side(), Side(), Side(), Side()\n
-        THIN_BORDER --- True, Side(style=BORDER_THIN)\n
-        THICK_BORDER --- True, Side(style=BORDER_THICK)\n
-        TOP_BOTTOM_BORDER --- True, Side(style=BORDER_THIN),
-            Side(BORDER_THICK)\n
+        THIN_BORDER --- True, Side(BORDER_THIN)\n
+        THICK_BORDER --- True, Side(BORDER_THICK)\n
+        TOP_BOTTOM_BORDER --- True, Side(BORDER_THIN), Side(BORDER_THICK)\n
 
     PatternFill(fill_type, fgColor, bgColor):
         TMP_FILL --- FILL_SOLID, Color(rgb=WHITE, type='rgb'),
@@ -364,19 +364,6 @@ class _StyleWorkItem:
         else:
             return NotImplemented
 
-    # def __getattribute__(self, key):
-    #     return object.__getattribute__(self, key)
-
-        # if key in _StyleWorkItem.list_attrs:
-        #     return object.__getattribute__(self, key)
-        # else:
-        #     print(f"AttributeError, the attribute {key} is not specified.")
-        #     return None
-
-    # def __setattr__(self, key, value):
-    #     if key in _StyleWorkItem.list_attrs:
-    #         object.__setattr__(self, key, value)
-
     @property
     def get_named(self):
         """
@@ -493,14 +480,14 @@ class _StyleWorkItemList:
         else:
             return NotImplemented
 
-    def __contains__(self, item):
-        return item in self.styles.keys()
-
     def __getitem__(self, item):
         return self.styles[item]
 
     def __setitem__(self, key, value):
         self.styles[key] = value
+
+    def __contains__(self, item):
+        return item in self.styles.keys()
 
     def __iter__(self):
         return (item for item in self.styles.values())
