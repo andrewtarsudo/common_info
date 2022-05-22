@@ -10,22 +10,22 @@ class UserConfig:
     Define the configuration file to initiate YouTrack requests.
     
     Constants:
-        path --- the path to the JSON file (default "./youtrack.json")\n
-        default_period_start --- the start period date (default the first day of the year)\n
-        default_period_end --- the end period date (default the current day)\n
-        cell_attrs --- the attributes of the configuration file
-        (default "login", "auth_token", "period_start", "period_end")\n
-        default_config --- the default values if the file does not exist.\n
+        path --- the path to the JSON file, default: youtrack.json;\n
+        default_period_start --- the start period date, default: the first day of the year;\n
+        default_period_end --- the end period date, default: the current day;\n
+        cell_attrs --- the attributes of the configuration file:\n
+        (default "login", "auth_token", "period_start", "period_end");\n
+        default_config --- the default values if the file does not exist;\n
 
     Functions:
-        func sys_login() -> str --- get the system name of the user\n
-        check_json(file_path) -> bool -- verify if the file exists\n
-        generate_json(file_path) --- generate the file is does not exist\n
-        read_json(file_path) -> dict[str, str] --- get the JSON file dictionary\n
-        get_json_attr(key) -> Optional[str] --- get the JSON file attribute if exists\n
-        update_json_item(file_path, key, value) --- update the attribute value\n
-        check_json_attrs(file_path) --- validate all required attributes are set, otherwise, add the default values\n
-        set_config_file(file_path) --- initiate all steps to get the proper configuration file
+        sys_login() --- get the system user from the OS environment;\n
+        check_json(file_path) --- verify if the file exists;\n
+        generate_json(file_path) --- create the file if does not exist;\n
+        read_json(file_path) --- get the JSON file values;\n
+        get_json_attr(key) --- get the JSON file attribute if exists;\n
+        update_json_item(file_path, key, value) --- Modify the JSON file values;\n
+        check_json_attrs(file_path) --- verify that all main values are specified;\n
+        set_config_file(file_path) ---  the UserConfig instance parameter values;\n
     """
     path = pathlib.Path("./youtrack.json")
 
@@ -33,11 +33,11 @@ class UserConfig:
     date_period_start = datetime.date(today.year, 1, 1)
     default_period_start = date_period_start.strftime("%Y-%m-%d")
     default_period_end = today.strftime("%Y-%m-%d")
-    # names to replace
+    # the names to replace
     __dict_name_conv: dict[str, str] = {"mozglyakova": "matyushina", "AndrewTarasov": "tarasov-a"}
-    # attributes
+    # the attributes
     attrs = ("login", "auth_token", "period_start", "period_end", "path_table")
-    # default configuration
+    # the default configuration
     default_conf = {
         "login": "",
         "auth_token": "perm:dGFyYXNvdi1h.NjEtMTQw.1udDlV6zaAitHIgvw2eNQvF1sZ9JTZ",
@@ -45,7 +45,7 @@ class UserConfig:
         "period_end": f"{default_period_end}",
         "path_table": "./report.xlsx"
     }
-
+    # the configuration file parameters and values
     conf_values = dict()
 
     @staticmethod
@@ -104,7 +104,7 @@ class UserConfig:
     def get_json_attr(key: str) -> Optional[str]:
         """
         Get the JSON file attribute if it exists.
-        
+
         :param str key: the attribute key to get
         :return: the attribute value or None
         :rtype: str or None.
@@ -159,25 +159,20 @@ class UserConfig:
         """
         if not UserConfig.check_json(file_path):
             UserConfig.generate_json(file_path)
-
         conf = UserConfig.read_json(file_path)
-
         for key, value in conf.items():
             UserConfig.conf_values[key] = value
-
         name = UserConfig.get_json_attr("login")
-
         if not name or name in UserConfig.__dict_name_conv:
             login = UserConfig.sys_login()
             UserConfig.update_json_item(file_path, "login", login)
         UserConfig.check_json_attrs(file_path)
         user_config = UserConfig()
-
         return user_config
 
 
 def main():
-    UserConfig.set_config_file(UserConfig.path)
+    pass
 
 
 if __name__ == "__main__":
