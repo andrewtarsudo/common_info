@@ -14,17 +14,8 @@ class ConstYT:
     Contain the constants.
 
     Constants:\n
-        dict_issue_name --- the dictionary of Projects and state and deadline identifiers;\n
         date_conversion_rules --- the rules to convert the user input dates;
     """
-    # state and deadline identifiers
-    dict_issue_name = {
-        "ARCH_ST": ('139-1028', '67-2494'),
-        "DOC_ST": ('139-595', '67-1426'),
-        "ARCH": ('139-1027', '67-2487'),
-        "DOC": ('139-339', '67-1127'),
-        "VCST": ('139-77', '67-353')
-    }
     # patterns to parse user-defined period dates
     date_conversion_rules = (
         (re.compile(r'(\d{4}).(\d{1,2}).(\d{1,2})'), (1, 2, 3)),
@@ -55,33 +46,6 @@ def convert_spent_time(spent_time: int) -> Union[int, float]:
     :rtype: int or float
     """
     return numpy.divide(spent_time, 60)
-
-
-def convert_issue_state(state: str) -> str:
-    """
-    Converts the state to the table headers.
-
-    :param str state: the issue state
-    :return: the modified state.
-    :rtype: str
-    """
-    # the issues to convert to the New/Paused
-    to_new_paused = ('New', 'Paused', 'Canceled', 'Discuss')
-    # the issues to convert to the Done/Test
-    to_done_test = ('Done', 'Test', 'Review')
-    # the issues to convert to the Verified
-    to_verified = ('Closed',)
-
-    if state in to_new_paused:
-        modified_state = 'New/Paused'
-    elif state in to_done_test:
-        modified_state = 'Done/Test'
-    elif state in to_verified:
-        modified_state = 'Verified'
-    else:
-        print(f"Unspecified state {state} is found.")
-        modified_state = state
-    return modified_state
 
 
 def check_terminate_script(prompt: str) -> str:
@@ -164,38 +128,6 @@ def convert_date_iso(input_date: str) -> Optional[datetime.date]:
     return None
 
 
-def define_deadline_state(issue_name: str, res: str) -> Optional[str]:
-    """
-    Define the deadline and state identifier based on the issue name.
-
-    res values: deadline/state\n
-    :param str issue_name: the name of the issue
-    :param str res: the required identifier
-    :return: the parameter identifier of the str type
-    :rtype: str or None
-    """
-    if issue_name.startswith('ARCH_ST'):
-        key = 'ARCH_ST'
-    elif issue_name.startswith('DOC_ST'):
-        key = 'DOC_ST'
-    elif issue_name.startswith('ARCH'):
-        key = 'ARCH'
-    elif issue_name.startswith('DOC'):
-        key = 'DOC'
-    elif issue_name.startswith('VCST'):
-        key = 'VCST'
-    else:
-        key = None
-
-    if key is None:
-        return None
-    else:
-        if res == 'deadline':
-            return ConstYT.dict_issue_name[key][0]
-        elif res == 'state':
-            return ConstYT.dict_issue_name[key][1]
-
-
 def parse_response_work_item(response_item: dict) -> tuple[str, datetime.date, Decimal]:
     """
     Get the parameters from the response item.
@@ -235,15 +167,17 @@ def parse_response_issue(response_item: dict):
         parent = None
     # define the issue summary
     summary: str = response_item['summary']
-    deadline = None
-    state = None
+    deadline: datetime.date = datetime.date(1, 1, 1)
+    state: str = ""
     for item in response_item["customFields"]:
         # define the issue state
         if item["$type"] == "StateIssueCustomField":
             state = item["value"]["name"]
         # define the issue deadline
         elif item["$type"] == "DateIssueCustomField":
-            deadline = item["value"]
+            deadline = convert_long_date(item["value"])
+        else:
+            continue
     return issue, state, summary, parent, deadline
 
 
@@ -265,6 +199,7 @@ class User:
         start_period --- the start period of the specified format;\n
         end_period --- the end period of the specified format;\n
         period --- the period of the specified format;\n
+        path_table --- the path to the report;\n
 
     Functions:
         auth_token() --- get the auth_token;\n
@@ -327,6 +262,16 @@ class User:
         :rtype: str
         """
         return self.user_config.get_json_attr("auth_token")
+
+    @property
+    def path_table(self):
+        """
+        Shorten the path_table call.
+
+        :return: the path to the report.
+        :rtype: str
+        """
+        return self.user_config.get_json_attr("path_table")
 
     @property
     def __headers_yt(self) -> dict[str, str]:
@@ -456,7 +401,7 @@ class User:
         url = 'https://youtrack.protei.ru/api/issues'
         parameters_fields = ','.join(('idReadable', 'summary', "parent(issues(idReadable))",
                                       'customFields(value,value(name),projectCustomField(field(name)))'))
-        parameters_query = ": ".join(('issue ID', issue_names))
+        parameters_query = " ".join((f'issue ID: {issue_names}', f'updated: {self.period}'))
         parameters_custom_fields_state = "State"
         parameters_custom_fields_deadline = "Дедлайн"
         params = (
@@ -558,10 +503,16 @@ class Issue:
             deadline: datetime.date = None):
         self.user = user
         self.issue = issue
-        self.state = state
         self.summary = summary
         self.parent = parent
-        self.deadline = deadline
+        if deadline == datetime.date(1, 1, 1):
+            self.deadline = None
+        else:
+            self.deadline = deadline
+        if state == "":
+            self.state = None
+        else:
+            self.state = state
 
         self.user.dict_issue[self.issue] = self
 
@@ -744,7 +695,7 @@ class _IssueMerged:
         items_id --- the IssueWorkItem identifiers;\n
 
     Functions:
-        to_tuple() --- represent the instance items as tuples;\n
+        items_to_tuple() --- get the items in the tuple format;\n
     """
     index = 0
 
@@ -844,16 +795,14 @@ class _IssueMerged:
         """
         return [work_item.identifier for work_item in self.work_items]
 
-    def to_tuple(self):
+    def items_to_tuple(self):
         """
-        Represent the instance items as tuples.
+        Get the items in the tuple format.
 
-        :return: to_tuple() of the Issue and IssueWorkItem instances.
-        :rtype: tuple[tuple[str, str, str, str or None, datetime.date or None],
-            list[tuple[str, datetime.date, Decimal]]]
+        :return: the converted items.
+        :rtype: list[tuple[str, datetime.date, Decimal]]]
         """
-        list_to_tuple = [work_item.to_tuple() for work_item in self.work_items]
-        return self.issue_item.to_tuple(), list_to_tuple
+        return [work_item.to_tuple() for work_item in self.work_items]
 
 
 def main():
