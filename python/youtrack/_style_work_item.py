@@ -10,18 +10,17 @@ from openpyxl.styles.protection import Protection
 from openpyxl.cell.cell import Cell
 from openpyxl.styles.named_styles import NamedStyle
 
-
 __doc__ = """
-basic() -> _StyleWorkItem --- set the basic style;\n
-_basic_state_style() -> _StyleWorkItem --- set the basic state style;\n
-state_styles() -> list[_StyleWorkItem] --- set the state styles;\n
-_basic_month_style() -> _StyleWorkItem --- set the basic month style;\n
-month_styles() -> list[_StyleWorkItem] --- set the basic month styles;\n
-month_merged_styles() -> list[_StyleWorkItem] --- set the merged month styles;\n
-title() -> _StyleWorkItem --- set the title style;\n
-header() -> _StyleWorkItem --- set the header style;\n
-month_date_style() -> _StyleWorkItem --- set the month date style;
-generate_from_style(name, base_style, cell_attrs, values) -> _StyleWorkItem --- set the style based on the other one;
+basic() --- set the basic style;\n
+_basic_state_style() --- set the basic state style;\n
+state_styles() --- set the state styles;\n
+_basic_month_style() --- set the basic month style;\n
+month_styles() --- set the basic month styles;\n
+month_merged_styles() --- set the merged month styles;\n
+title() --- set the title style;\n
+header() --- set the header style;\n
+month_date_style() --- set the month date style;\n
+generate_from_style(name, base_style, cell_attrs, values) --- set the style based on the other one;\n
 """
 
 
@@ -500,7 +499,7 @@ class _StyleWorkItemList:
         :param str cell: the cell
         :return: None.
         """
-        return self.styles[style_name].set_style(cell)
+        self.styles[style_name].set_style(cell)
 
 
 def main():
