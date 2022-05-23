@@ -1,7 +1,7 @@
 | Термин | Описание |
 | :----- | :------- |
 | DGI | Data Grouping Identifier, идентификатор группирования данных |
-| RSA | Rivest-Shamir-Adleman Algorithm, алгоритм RSA - один из несимметричных алгоритмов шифрования и цифровой подписи |
+| RSA | Rivest-Shamir-Adleman Algorithm, алгоритм RSA — один из несимметричных алгоритмов шифрования и цифровой подписи |
 | DAP | Data Authentication Pattern, шаблон аутентификации данных |
 | CASD | Controlling Authority Security Domain, контрольный орган доменов безопасности |
 | ADD | Access Domain Data, данные домена доступа|
