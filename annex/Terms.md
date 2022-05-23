@@ -1,5 +1,7 @@
 | Термин | Описание |
 | :----- | :------- |
+| DAP | Data Authentication Pattern, шаблон аутентификации данных |
+| CASD | Controlling Authority Security Domain, контрольный орган доменов безопасности |
 | ADD | Access Domain Data, данные домена доступа|
 | ADF | Application Data File, файл данных приложения |
 | APSD | Application Provider Security Domain, домен безопасности поставщика приложений |
