@@ -1,0 +1,92 @@
+{
+  "product": {
+    "general": {
+      "full_name": "string",
+      "short_name": "string",
+      "modification_no": "string or None",
+      "company_name": "string",
+      "spec_no": "string or None",
+      "devops_department": "string",
+      "certificate": {
+        "has_cert": "bool",
+        "cert_no": "string or None",
+        "expiry_date": "date or None"
+      },
+      "summary": "string",
+      "has_hardware": "bool",
+      "has_software": "bool",
+      "branch": "string or None",
+      "tags": [
+        "tag": "string or None"
+      ]
+    },
+    "hardware": {
+      "dimensions": {
+        "length": "float or None",
+        "width": "float or None",
+        "height": "float or None",
+        "unit": "string or None, default mm"
+      },
+      "mass": {
+        "weight": "float or None",
+        "unit": "string or None, default kg"
+      },
+      "hw_components": [
+        "component_name": "string or None"
+      ],
+      "hw_interfaces": [
+        {
+          "interface_name": "string or None",
+          "interface_number": "int or None"
+        }
+      ],
+      "hw_operating": [
+        "oper_component_name": "string or None"
+      ],
+      "hw_requirements": [
+        {
+          "hw_requirement_object_name": "string or None",
+          "hw_requirement_nullable": "string or None, STRONG|RECOMMENDED"
+        }
+      ],
+      "hw_opmodes": [
+        "hw_opmode_name": "string or None"
+      ]
+    },
+    "software": {
+      "sw_components": [
+        "component_name": "string or None"
+      ],
+      "protocols": [
+        "protocol_name": "string or None"
+      ],
+      "funcs": [
+        "feature": "string or None"
+      ],
+      "sw_opmodes": [
+        "sw_opmode_name": "string or None"
+      ],
+      "sw_operating": [
+        "oper_component_name": "string or None"
+      ],
+      "sw_requirements": [
+        {
+          "sw_requirement_object_name": "string or None",
+          "sw_requirement_nullable": "string or None, STRONG|RECOMMENDED"
+        }
+      ],
+      "has_gui": "bool, default False",
+      "has_api": "bool, default False",
+      "has_cli": "bool, default False"
+    },
+    "documentation": [
+      "category": {
+        "doc_category": "string",
+        "doc_type": "string, enum"
+        "language": "string, RUS|ENG, default RUS"
+      }
+    ]
+  }
+}
+
+  
