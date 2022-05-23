@@ -27,7 +27,7 @@ class UserConfig:
         check_json_attrs(file_path) --- verify that all main values are specified;\n
         set_config_file(file_path) ---  the UserConfig instance parameter values;\n
     """
-    path = pathlib.Path("./youtrack.json")
+    path = pathlib.Path("youtrack.json")
 
     today = datetime.date.today()
     date_period_start = datetime.date(today.year, 1, 1)
