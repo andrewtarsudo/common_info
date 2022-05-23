@@ -17,7 +17,9 @@
       "has_software": "bool",
       "branch": "string or None",
       "tags": [
-        "tag": "string or None"
+        {
+          "tag": "string or None"
+        }
       ]
     },
     "hardware": {
@@ -32,7 +34,9 @@
         "unit": "string or None, default kg"
       },
       "hw_components": [
-        "component_name": "string or None"
+        {
+          "component_name": "string or None"
+        }
       ],
       "hw_interfaces": [
         {
@@ -41,7 +45,9 @@
         }
       ],
       "hw_operating": [
-        "oper_component_name": "string or None"
+        {
+          "oper_component_name": "string or None"
+        }
       ],
       "hw_requirements": [
         {
@@ -50,24 +56,36 @@
         }
       ],
       "hw_opmodes": [
-        "hw_opmode_name": "string or None"
+        {
+          "hw_opmode_name": "string or None"
+        }
       ]
     },
     "software": {
       "sw_components": [
-        "component_name": "string or None"
+        {
+          "component_name": "string or None"
+        }
       ],
       "protocols": [
-        "protocol_name": "string or None"
+        {
+          "protocol_name": "string or None"
+        }
       ],
       "funcs": [
-        "feature": "string or None"
+        {
+          "feature": "string or None"
+        }
       ],
       "sw_opmodes": [
-        "sw_opmode_name": "string or None"
+        {
+          "sw_opmode_name": "string or None"
+        }
       ],
       "sw_operating": [
-        "oper_component_name": "string or None"
+        {
+          "oper_component_name": "string or None"
+        }
       ],
       "sw_requirements": [
         {
@@ -80,13 +98,13 @@
       "has_cli": "bool, default False"
     },
     "documentation": [
-      "category": {
-        "doc_category": "string",
-        "doc_type": "string, enum"
-        "language": "string, RUS|ENG, default RUS"
+      {
+        "category": {
+          "doc_category": "string",
+          "doc_type": "string, enum",
+          "language": "string, RUS|ENG, default RUS"
+        }
       }
     ]
   }
 }
-
-  
