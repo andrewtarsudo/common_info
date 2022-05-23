@@ -151,6 +151,9 @@ class ExcelProp:
         get_merged() --- get the _PyXLMerged instances;\n
         delete_empty_rows_state(state) --- delete the empty rows for the state;\n
         delete_empty_rows() --- delete the empty rows in the workspace;\n
+        get_merged_by_name(issue_name) --- get the _PyXLMerged instance by the issue name;
+        get_row_by_name(issue_name) --- get the row by the issue name;
+        add_work_item(issue_name, date, spent_time) --- add the work item;\n
     """
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
     dict_headers_short = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3}
@@ -431,8 +434,46 @@ class ExcelProp:
         return max(self.list_state_item(state_row)) + 1
 
     def get_merged_by_name(self, issue_name: str):
+        """
+        Get the _PyXLMerged instance by the issue name.
+
+        :param str issue_name: the issue name
+        :return: the _PyXLMerged instance.
+        :rtype: _PyXLMerged or None
+        """
         if issue_name in self.pyxl_row_names():
             return self.dict_pyxl_merged[issue_name]
+        return None
+
+    def get_row_by_name(self, issue_name: str) -> Optional[int]:
+        """
+        Get the table row by the issue name.
+
+        :param str issue_name: the issue name
+        :return: the row number.
+        :rtype: int or None
+        """
+        if issue_name in self.pyxl_row_names():
+            return self.get_merged_by_name(issue_name).row
+        return None
+
+    def add_work_item(self, issue_name: str, date: datetime.date, spent_time: Union[int, Decimal]):
+        """
+        Add the work item to the table.
+
+        :param str issue_name: the issue name
+        :param date: the work item date
+        :type date: datetime.date
+        :param spent_time: the work item spent time
+        :type spent_time: int or Decimal
+        :return: None.
+        """
+        column = self.get_column_date(date)
+        row = self.get_row_by_name(issue_name)
+        cell: Cell = self.ws[f"{column}{row}"]
+        cell.value = spent_time
+        pyxl_work_item = PyXLWorkItem(self, cell)
+        pyxl_work_item.set_style()
 
 
 class PyXLRow:
@@ -647,6 +688,7 @@ class PyXLWorkItem:
         cell_style --- the cell style;\n
         issue --- the issue name;\n
         cell_style_params --- the cell attributes;\n
+        last_item --- last work item verification;\n
 
     Functions:
         set_style(style_name) --- set the cell style;\n
@@ -664,6 +706,7 @@ class PyXLWorkItem:
         __parse_work_item(work_item) --- specify the PyXLWorkItem value in the table;\n
         __parse_pyxl_items() --- specify the PyXLWorkItem values in the table;\n
         parse() --- specify all values in the table;\n
+        _pyxl_row() --- get the associated _PyXLRow instance;\n
     """
     cell_attrs = ("number_format", "alignment", "border", "fill", "font", "protection", "data_type")
     attrs = ("issue", "date", "spent_time")
@@ -786,13 +829,25 @@ class PyXLWorkItem:
         """
         return self.ws[f"C{self.row}"].value
 
-    def set_style(self, style_name: str):
+    def set_style(self, style_name: str = None):
         """
         Set the cell style.
 
         :param style_name: the style name, str
         :return: None.
         """
+        if style_name is None:
+            deadline = self._pyxl_row().deadline
+            # if the date is a deadline
+            if self.date == deadline:
+                style_name = "deadline"
+            else:
+                # if the work item is not the last
+                if not self.last_item:
+                    style_name = "active"
+                # otherwise, associate with the current state
+                else:
+                    style_name = self.excel_prop.dict_state_style[self._pyxl_row().state]
         self.style_name = style_name
         self.excel_prop.styles.set_style(style_name, self.cell.coordinate)
 
@@ -830,6 +885,26 @@ class PyXLWorkItem:
         """
         return tuple(getattr(self, attr) for attr in PyXLWorkItem.attrs)
 
+    @property
+    def last_item(self) -> bool:
+        """
+        Verify if the work item is the last one.
+
+        :return: the verification flag.
+        :rtype: bool
+        """
+        max_date = max(date for date, *_ in self.excel_prop.get_work_items(self.row))
+        return self.date >= max_date
+
+    def _pyxl_row(self):
+        """
+        Get the associated PyXLRow instance.
+
+        :return: the PyXLRow instance.
+        :rtype: PyXLRow
+        """
+        return self.excel_prop.dict_pyxl_row[self.issue]
+
 
 class _PyXLMerged:
     """
@@ -845,7 +920,6 @@ class _PyXLMerged:
         pyxl_row --- the PyXLRow instance;\n
         work_items --- the PyXLWorkItem instances;\n
         issue_name --- the issue name;\n
-        last_work_item --- the last work item cell coordinates;\n
 
     Functions:
         get_item_attr(item, attr) --- get the work item attribute;\n
@@ -863,7 +937,6 @@ class _PyXLMerged:
         parse(row) --- specify all values in the table;\n
         modify_pyxl_state(state) --- modify the issue state;\n
         work_item_style() --- set the work item styles;\n
-        add_work_item(date, spent_time) --- add the work item;\n
     """
 
     __slots__ = ("excel_prop", "cell")
@@ -1192,43 +1265,6 @@ class _PyXLMerged:
         self.parse(row)
         # delete the old row
         self.ws.delete_rows(old_row)
-
-    def work_item_style(self, work_item: PyXLWorkItem):
-        """
-        Set the work item style.
-
-        :param PyXLWorkItem work_item: the work item
-        :return: None
-        """
-        last_item = self.last_work_item
-        # if the date is a deadline
-        if work_item.date == self.pyxl_row.deadline:
-            style_name = "deadline"
-        else:
-            # if the work item is not the last
-            if work_item.cell.coordinate != last_item:
-                style_name = "active"
-            # otherwise, associate with the current state
-            else:
-                style_name = self.excel_prop.dict_state_style[self.pyxl_row.state]
-        work_item.style_name = style_name
-        work_item.set_style(style_name)
-
-    def add_work_item(self, date: datetime.date, spent_time: Union[int, Decimal]):
-        """
-        Add the work item to the table.
-
-        :param date: the work item date
-        :type date: datetime.date
-        :param spent_time: the work item spent time
-        :type spent_time: int or Decimal
-        :return: None.
-        """
-        column = self.excel_prop.get_column_date(date)
-        cell: Cell = self.ws[f"{column}{self.row}"]
-        cell.value = spent_time
-        pyxl_work_item = PyXLWorkItem(self.excel_prop, cell)
-        self.work_item_style(pyxl_work_item)
 
 
 def main():
