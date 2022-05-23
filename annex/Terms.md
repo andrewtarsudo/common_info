@@ -1,5 +1,11 @@
 | Термин | Описание |
 | :----- | :------- |
+| ADD | Access Domain Data, данные домена доступа|
+| ADF | Application Data File, файл данных приложения |
+| APSD | Application Provider Security Domain, домен безопасности поставщика приложений |
+| MSL | Minimum Security Level, минимальный уровень безопасности для отправки защищенных пакетов |
+| MSLD | Minimum Security Level Data, данные минимального уровня безопасности для отправки защищенных пакетов |
+| RFM | Remote File Management, удаленное управление файлами |
 | 3DES | Triple–DES — алгоритм шифрования на основе последовательного применения DES трижды |
 | 3GPP | 3rd Generation Partnership Project, Проект партнерства третьего поколения |
 | AAA | Authentication, Authorization, and Accounting; аутентификация, авторизация и учет |
