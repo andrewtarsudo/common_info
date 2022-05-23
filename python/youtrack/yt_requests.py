@@ -211,6 +211,7 @@ class User:
         get_current_issues() --- get the Issue instances with no work items;\n
         get_merged() --- get the _IssueMerged instances;\n
         issue_names() --- get the _IssueMerged issue names;\n
+        issues_from_yt() --- get all issue information from the YouTrack;\n
     """
     def __init__(self, user_config: UserConfig):
         self.user_config = user_config
@@ -360,13 +361,8 @@ class User:
         """
         return " .. ".join((self.start_period, self.end_period))
 
-    def get_issue_work_items(self) -> list[str]:
-        """
-        Get the IssueWorkItem instances.
-
-        :return: the work item names.
-        :rtype: list[str]
-        """
+    def get_issue_work_items(self):
+        """Get the IssueWorkItem instances."""
         # define the parameters of the request
         url = 'https://youtrack.protei.ru/api/workItems'
         parameters_fields = ','.join(('duration(minutes)', 'date', 'issue(idReadable)'))
@@ -383,21 +379,13 @@ class User:
         )
         # get the response in the JSON format
         parsed_response = self.request(url, params)
-        work_items_names = []
         for item in parsed_response:
             issue, date, modified_spent_time = parse_response_work_item(item)
             IssueWorkItem(self, issue, date, modified_spent_time)
-            work_items_names.append(issue)
-        return work_items_names
 
-    def get_issues(self) -> list[str]:
-        """
-        Get the Issue instances.
-
-        :return: the issue names.
-        :rtype: list[str]
-        """
-        issue_names = ",".join(self.get_issue_work_items())
+    def get_issues(self):
+        """Get the Issue instances."""
+        issue_names = ",".join([issue_name for issue_name in list(self.dict_issue_work_item.values())])
         url = 'https://youtrack.protei.ru/api/issues'
         parameters_fields = ','.join(('idReadable', 'summary', "parent(issues(idReadable))",
                                       'customFields(value,value(name),projectCustomField(field(name)))'))
@@ -419,13 +407,8 @@ class User:
             yt_issue_names.append(issue)
         return yt_issue_names
 
-    def get_current_issues(self) -> list[str]:
-        """
-        Get the non-closed Issue instances with no IssueWorkItem instances.
-
-        :return: the issue names.
-        :rtype: list[str]
-        """
+    def get_current_issues(self):
+        """Get the non-closed Issue instances with no IssueWorkItem instances."""
         states = ",".join(("New", "Active", "Discuss", "Paused"))
         url = 'https://youtrack.protei.ru/api/issues'
         parameters_fields = ','.join(('idReadable', 'summary', "parent(issues(idReadable))",
@@ -441,12 +424,9 @@ class User:
         )
         # get the response in the JSON format
         parsed_response = self.request(url, params)
-        issue_names = []
         for item in parsed_response:
             issue, state, summary, parent, deadline = parse_response_issue(item)
             Issue(self, issue, state, summary, parent, deadline)
-            issue_names.append(issue)
-        return issue_names
 
     def get_merged(self):
         """
@@ -465,6 +445,18 @@ class User:
         :rtype: list[str]
         """
         return [merged.issue_name for merged in self.get_merged()]
+
+    def issues_from_yt(self):
+        """
+        Get all issues and work items and combine them into the _IssueMerged instances.
+
+        :return: the _IssueMerged instances.
+        :rtype: list[_IssueMerged]
+        """
+        self.get_issue_work_items()
+        self.get_issues()
+        self.get_current_issues()
+        return self.get_merged()
 
 
 class Issue:
