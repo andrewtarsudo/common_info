@@ -3,7 +3,7 @@ from typing import Optional, Union, Any
 import datetime
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
-from openpyxl.utils.cell import coordinate_to_tuple, get_column_letter
+from openpyxl.utils.cell import coordinate_to_tuple, get_column_letter, column_index_from_string
 from decimal import Decimal
 from _style_work_item import _StyleWorkItem, _StyleWorkItemList
 
@@ -174,6 +174,7 @@ class ExcelProp:
     dict_pyxl_row = dict()
     dict_pyxl_work_item = dict()
     dict_pyxl_merged = dict()
+    dict_table_cell = dict()
 
     def __init__(self, ws: Worksheet, name: str, styles: _StyleWorkItemList):
         self.ws = ws
@@ -201,7 +202,7 @@ class ExcelProp:
         else:
             return NotImplemented
 
-    def get_column_date(self, date: datetime.date) -> str:
+    def get_column_by_date(self, date: datetime.date) -> str:
         """
         Get the column letter for the specified date.
 
@@ -468,12 +469,67 @@ class ExcelProp:
         :type spent_time: int or Decimal
         :return: None.
         """
-        column = self.get_column_date(date)
+        column = self.get_column_by_date(date)
         row = self.get_row_by_name(issue_name)
         cell: Cell = self.ws[f"{column}{row}"]
         cell.value = spent_time
         pyxl_work_item = PyXLWorkItem(self, cell)
         pyxl_work_item.set_style()
+
+    def get_date_by_cell(self, cell: Cell) -> datetime.date:
+        column = cell.column_letter
+        raw_date = self.ws[f"{column}1"].value
+        return convert_datetime_date(raw_date)
+
+    def table_cells(self):
+        return [TableCell(self, self.ws[f"C{row}"]) for list_state in self.list_state_row for row in list_state]
+
+    def table_cell_names(self):
+        return [table_cell.issue for table_cell in self.table_cells()]
+
+    def get_table_cell(self, issue: str):
+        if issue not in self.table_cell_names():
+            print(f"ValueError, the issue {issue} not in the table.")
+            return None
+        else:
+            for table_cell in self.table_cells():
+                if table_cell.issue == issue:
+                    return table_cell
+                else:
+                    continue
+
+    def __non_unique(self):
+        """
+        Get the non-unique issue names.
+
+        :return: the dictionary of the issue names and dates.
+        :rtype: dict[str, list[TableCell]]
+        """
+        non_unique: dict[str, list[TableCell]] = dict()
+        issue: str
+        for issue, table_cell in self.dict.items():
+            counter = Counter([work_item.date for work_item in work_items])
+            non_unique_date = [key for key, value in counter.items() if value > 1]
+            if not len(non_unique_date):
+                non_unique[issue_name] = non_unique_date
+        return non_unique
+
+    def _join_work_items(self):
+        """Join the non-unique work items."""
+        for issue, dates in self.__non_unique.items():
+            for date in dates:
+                work_item: IssueWorkItem
+                # cumulative sum
+                cum_spent_time = numpy.cumsum(
+                    [work_item.spent_time for work_item in self.dict_issue_work_item.values()
+                     if work_item.issue == issue and work_item.date == date])
+                # delete
+                del_work_items = [
+                    work_item for work_item in self.dict_issue_work_item.values()
+                    if work_item.issue == issue and work_item.date == date]
+                for item in del_work_items:
+                    del item
+                IssueWorkItem(self, issue, date, cum_spent_time)
 
 
 class PyXLRow:
@@ -1265,6 +1321,147 @@ class _PyXLMerged:
         self.parse(row)
         # delete the old row
         self.ws.delete_rows(old_row)
+
+
+class TableCell:
+    def __init__(self, excel_prop: ExcelProp, cell: Cell):
+        self.excel_prop = excel_prop
+        self.cell = cell
+        self.issue = str(cell.value)
+
+        self.excel_prop.dict_table_cell[self.issue] = self
+
+    def __str__(self):
+        return f"Table cell: {self.cell.coordinate}"
+
+    def __repr__(self):
+        return f"TableCell({self.excel_prop}, {self.cell})"
+
+    def __hash__(self):
+        return hash((self.excel_prop.name, self.cell.coordinate, self.issue))
+
+    def __key(self):
+        return self.excel_prop.name, self.cell.coordinate, self.issue
+
+    def __eq__(self, other):
+        if isinstance(other, TableCell):
+            return self.__key() == other.__key()
+        else:
+            return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, TableCell):
+            return self.__key() != other.__key()
+        else:
+            return NotImplemented
+
+    def __lt__(self, other):
+        if isinstance(other, TableCell):
+            return self.row < other.row
+        else:
+            return NotImplemented
+
+    def __gt__(self, other):
+        if isinstance(other, TableCell):
+            return self.row > other.row
+        else:
+            return NotImplemented
+
+    def __le__(self, other):
+        if isinstance(other, TableCell):
+            return self.row <= other.row
+        else:
+            return NotImplemented
+
+    def __ge__(self, other):
+        if isinstance(other, TableCell):
+            return self.row >= other.row
+        else:
+            return NotImplemented
+
+    @property
+    def ws(self):
+        return self.excel_prop.ws
+
+    @property
+    def row(self):
+        return self.cell.row
+
+    def _get_shift_col_idx(self, column: str) -> int:
+        return column_index_from_string(column) - self.cell.col_idx
+
+    def _shift_cell(self, value: int) -> Optional[Cell]:
+        col_idx = self.cell.col_idx + value
+        if col_idx > 1:
+            column_letter = get_column_letter(col_idx)
+            return self.ws[f"{column_letter}{self.row}"]
+        else:
+            print(f"ValueError, the shift {value} is out of bounds.")
+            return None
+
+    @property
+    def state(self):
+        for state in self.excel_prop.dict_headers_short.keys():
+            if self.row in self.excel_prop.list_state_item(state):
+                return state
+            else:
+                continue
+        return None
+
+    def _commentary(self):
+        return self._shift_cell(self._get_shift_col_idx("NT")).value
+
+    def _summary(self):
+        return self._shift_cell(1).value
+
+    def _deadline(self):
+        return self._shift_cell(2).value
+
+    def _parent(self):
+        return self._shift_cell(-1).value
+
+    def pyxl_row(self):
+        return self.issue, self.state, self._summary(), self._parent(), self._deadline()
+
+    def __cell_range(self):
+        return self.excel_prop.cell_in_range(f"G{self.row}", f"NR{self.row}")
+
+    def __pyxl_cells(self) -> list[Cell]:
+        return [cell for cell in self.__cell_range() if cell.value is not None]
+
+    def pyxl_work_items(self):
+        return [self._mapping_cell_work_item(cell) for cell in self.__pyxl_cells()]
+
+    def pyxl_cell_last(self) -> Cell:
+        max_column = max(cell.column_letter for cell in self.__pyxl_cells())
+        return self.ws[f"{max_column}{self.row}"]
+
+    def pyxl_work_item_last(self):
+        cell: Cell = self.pyxl_cell_last()
+        return self._mapping_cell_work_item(cell)
+
+    def set_pyxl_work_item_style(self, style_name: str, cell: Cell):
+        cell._style = self.excel_prop.styles.set_style(style_name, cell)
+
+    def _mapping_cell_work_item(self, cell: Cell) -> tuple[str, datetime.date, Decimal]:
+        date = self.excel_prop.get_date_by_cell(cell)
+        return self.issue, date, Decimal(cell.value).normalize()
+
+    def _mapping_work_item_cell(self, work_item: tuple[str, datetime.date, Decimal]) -> Cell:
+        _, date, _ = work_item
+        column = self.excel_prop.get_column_by_date(date)
+        return self.ws[f"{column}{self.row}"]
+
+    def compare_cell_work_item(self, cell: Cell, work_item: tuple[str, datetime.date, Decimal]):
+        if cell not in self.__pyxl_cells() or work_item not in self.pyxl_work_items():
+            return False
+        work_item_cell = self._mapping_work_item_cell(work_item)
+        return cell.coordinate == work_item_cell.coordinate
+
+    def add_work_item(self, date: datetime.date, spent_time: Decimal):
+        cell = self._mapping_work_item_cell((self.issue, date, spent_time))
+        cell.data_type = "n"
+        cell.value = spent_time
 
 
 def main():
