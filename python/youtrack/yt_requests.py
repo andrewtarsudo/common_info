@@ -7,6 +7,7 @@ import requests
 import datetime
 import re
 from yt_config import UserConfig
+from collections import Counter
 
 
 class ConstYT:
@@ -189,7 +190,6 @@ class User:
         user_config --- the UserConfig item;\n
         dict_issue --- the dictionary of Issue instances and identifiers;\n
         dict_issue_work_item --- the dictionary of IssueWorkItem instances and identifiers;\n
-        dict_issue_merged --- the dictionary of _IssueMerged instances and identifiers;\n
 
     Properties:
         login --- the login call;\n
@@ -200,6 +200,7 @@ class User:
         end_period --- the end period of the specified format;\n
         period --- the period of the specified format;\n
         path_table --- the path to the report;\n
+        _get_non_unique --- the non-unique work items;\n
 
     Functions:
         auth_token() --- get the auth_token;\n
@@ -209,10 +210,10 @@ class User:
         get_issue_work_items() --- get the IssueWorkItem instances;\n
         get_issues() --- get the Issue instances;\n
         get_current_issues() --- get the Issue instances with no work items;\n
-        get_merged() --- get the _IssueMerged instances;\n
-        issue_names() --- get the _IssueMerged issue names;\n
         issues_from_yt() --- get all issue information from the YouTrack;\n
+        _join_work_items() --- combine the non-unique work items;\n
     """
+
     def __init__(self, user_config: UserConfig):
         self.user_config = user_config
         self.dict_issue = dict()
@@ -400,12 +401,9 @@ class User:
         )
         # get the response in the JSON format
         parsed_response = self.request(url, params)
-        yt_issue_names = []
         for item in parsed_response:
             issue, state, summary, parent, deadline = parse_response_issue(item)
             Issue(self, issue, state, summary, parent, deadline)
-            yt_issue_names.append(issue)
-        return yt_issue_names
 
     def get_current_issues(self):
         """Get the non-closed Issue instances with no IssueWorkItem instances."""
@@ -428,35 +426,55 @@ class User:
             issue, state, summary, parent, deadline = parse_response_issue(item)
             Issue(self, issue, state, summary, parent, deadline)
 
-    def get_merged(self):
-        """
-        Get the _IssueMerged instances.
-
-        :return: the _IssueMerged instances.
-        :rtype: list[_IssueMerged]
-        """
-        return [_IssueMerged(self, issue) for issue in list(self.dict_issue.keys())]
-
     def issue_names(self) -> list[str]:
         """
-        Get the _IssueMerged issue names.
+        Get the issue names.
 
         :return: the issue names.
         :rtype: list[str]
         """
-        return [merged.issue_name for merged in self.get_merged()]
+        return list(self.dict_issue.keys())
 
     def issues_from_yt(self):
-        """
-        Get all issues and work items and combine them into the _IssueMerged instances.
-
-        :return: the _IssueMerged instances.
-        :rtype: list[_IssueMerged]
-        """
+        """Get all YouTrack information."""
         self.get_issue_work_items()
         self.get_issues()
         self.get_current_issues()
-        return self.get_merged()
+        self._join_work_items()
+
+    @property
+    def __non_unique(self) -> dict[str, list[datetime.date]]:
+        """
+        Get the non-unique work items.
+
+        :return: the dictionary of the issue names and dates.
+        :rtype: dict[str, list[date]]
+        """
+        non_unique: dict[str, list[datetime.date]] = dict()
+        issue_name: str
+        for issue_name, work_items in self.dict_issue_work_item.items():
+            counter = Counter([work_item.date for work_item in work_items])
+            non_unique_date = [key for key, value in counter.items() if value > 1]
+            if not len(non_unique_date):
+                non_unique[issue_name] = non_unique_date
+        return non_unique
+
+    def _join_work_items(self):
+        """Join the non-unique work items."""
+        for issue, dates in self.__non_unique.items():
+            for date in dates:
+                work_item: IssueWorkItem
+                # cumulative sum
+                cum_spent_time = numpy.cumsum(
+                    [work_item.spent_time for work_item in self.dict_issue_work_item.values()
+                     if work_item.issue == issue and work_item.date == date])
+                # delete
+                del_work_items = [
+                    work_item for work_item in self.dict_issue_work_item.values()
+                    if work_item.issue == issue and work_item.date == date]
+                for item in del_work_items:
+                    del item
+                IssueWorkItem(self, issue, date, cum_spent_time)
 
 
 class Issue:
@@ -566,7 +584,6 @@ class IssueWorkItem:
     Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
 
     Functions:
-        __join_items(other) --- combine two instances with the same date;\n
         to_tuple() --- represent the instance as a tuple;\n
     """
     attrs = ("issue", "date", "spent_time")
@@ -613,21 +630,6 @@ class IssueWorkItem:
     def __key_order(self):
         return self.issue, self.date
 
-    def __join_items(self, other):
-        """
-        Combine the work items with the same issue and date into the single one.
-
-        :param other: the issue work item
-        :return: the issue work item.
-        :rtype: IssueWorkItem
-        """
-        if isinstance(other, IssueWorkItem):
-            if self.__key_order() == other.__key_order() and self.spent_time != other.spent_time:
-                issue_work_item = IssueWorkItem(self.user, self.issue, self.date, self.spent_time + other.spent_time)
-                del other
-                del self
-                return issue_work_item
-
     def __lt__(self, other):
         if isinstance(other, IssueWorkItem) and self.issue == other.issue:
             return self.date < other.date
@@ -652,13 +654,6 @@ class IssueWorkItem:
         else:
             return NotImplemented
 
-    def __getattribute__(self, key: str):
-        if key in IssueWorkItem.attrs:
-            return object.__getattribute__(self, key)
-        else:
-            print("Incorrect attribute.")
-            return None
-
     def to_tuple(self):
         """
         Represent the instance as a tuple.
@@ -667,134 +662,6 @@ class IssueWorkItem:
         :rtype: tuple[str, datetime.date, Decimal]
         """
         return tuple(getattr(self, attr) for attr in IssueWorkItem.attrs)
-
-
-class _IssueMerged:
-    """
-    Define the merged Issue and IssueWorkItem instances.
-
-    Class params:
-        index --- the unique item identifier, 0-based;\n
-
-    Params:
-        user --- the User instance;\n
-        issue_name --- the issue name, idReadable,{project}-{id};\n
-        identifier --- the instance identifier;\n
-
-    Properties:
-        issue_item --- the Issue instance;\n
-        work_items --- the IssueWorkItem instances;\n
-        items_id --- the IssueWorkItem identifiers;\n
-
-    Functions:
-        items_to_tuple() --- get the items in the tuple format;\n
-    """
-    index = 0
-
-    __slots__ = ("user", "issue_name", "identifier")
-
-    def __init__(
-            self,
-            user: User,
-            issue_name: str):
-        self.user = user
-        self.issue_name = issue_name
-        self.identifier = _IssueMerged.index
-
-        self.user.dict_issue_merged[self.identifier] = self
-        _IssueMerged.index += 1
-
-    def __str__(self):
-        return f"_IssueMerged = {self.issue_name}"
-
-    def __repr__(self):
-        return f"_IssueMerged(issue_name={self.issue_name})"
-
-    def __hash__(self):
-        return hash(self.issue_name)
-
-    def __key(self):
-        return self.issue_name, self.issue_item, self.work_items
-
-    def __eq__(self, other):
-        if isinstance(other, _IssueMerged):
-            return self.issue_name == other.issue_name
-        else:
-            return NotImplemented
-
-    def __ne__(self, other):
-        if isinstance(other, _IssueMerged):
-            return self.__key() != other.issue_name
-        else:
-            return NotImplemented
-
-    def __len__(self):
-        return len(self.work_items)
-
-    def __contains__(self, item):
-        if isinstance(item, Issue):
-            return self.issue_item == item
-        elif isinstance(item, IssueWorkItem):
-            return item in self.work_items
-        else:
-            return NotImplemented
-
-    def __getitem__(self, item):
-        if item < len(self.work_items):
-            return self.work_items[item]
-        else:
-            return None
-
-    def __setitem__(self, key, value):
-        self.work_items[key] = value
-
-    def __iter__(self):
-        return (work_item for work_item in self.work_items)
-
-    @property
-    def issue_item(self) -> Issue:
-        """
-        Get the issue.
-
-        :return: the issue.
-        :rtype: Issue
-        """
-        issue: Issue
-        name: str
-        for name, issue in self.user.dict_issue.items():
-            if name == self.issue_name:
-                return issue
-
-    @property
-    def work_items(self) -> list[IssueWorkItem]:
-        """
-        Get the work items.
-
-        :return: the work items.
-        :rtype: list[IssueWorkItem]
-        """
-        work_item: IssueWorkItem
-        name: str
-        return [work_item for (name, work_item) in self.user.dict_issue_work_item.items() if name == self.issue_name]
-
-    @property
-    def items_id(self) -> list[int]:
-        """
-        Get the work item identifiers.
-
-        :return: the identifiers.
-        :rtype: list[int]
-        """
-        return [work_item.identifier for work_item in self.work_items]
-
-    def items_to_tuple(self):
-        """
-        Get the items in the tuple format.
-
-        :return: the converted items.
-        :rtype: list[tuple[str, datetime.date, Decimal]]]
-        """
-        return [work_item.to_tuple() for work_item in self.work_items]
 
 
 def main():
