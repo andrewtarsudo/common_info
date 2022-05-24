@@ -54,7 +54,7 @@ def parse_list_values(input_terms: str) -> list[str]:
     """
     Convert the multiple value string to the sequence.
 
-    :param str input_terms: the input line 
+    :param str input_terms: the input line
     :return: the parsed items.
     :rtype: list[str]
     """
@@ -120,9 +120,9 @@ class MarkdownFile:
     def name(self):
         """
         Get the GitHub repo file name.
-        
+
         :return: the file name.
-        :rtype: str 
+        :rtype: str
         """
         return self.url.split("/")[-1]
 
@@ -607,7 +607,8 @@ def main():
     filename = "./terms.log"
     fmt = "%(levelName)s %(asctime)s, %(funcName) --- %(message)s"
     level = logging.INFO
-    logging.basicConfig(filename=filename, format=fmt, level=level)
+    encoding = "utf-8"
+    logging.basicConfig(filename=filename, format=fmt, level=level, encoding=encoding)
     # set the basic instances
     md_file = MarkdownFile()
     term_list = TermList()
