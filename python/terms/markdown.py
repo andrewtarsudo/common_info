@@ -6,6 +6,17 @@ class MarkdownFile:
     """
     Specify the Markdown operation instance.
 
+    Params:
+        url --- the URL to the Markdown file;\n
+
+    Functions:
+        _split_columns(line) --- split the line by the columns;\n
+        _split_first_rus_char(line) --- split the line by the first non-Latin character;\n
+        _split_dash(line) --- split the line by the minus sign, en dash, and em dash;\n
+        parse_md_line(line) --- parse the Markdown line to the short, full, rus, comment parameters;\n
+        parse_md_file(line) --- parse the Markdown text;\n
+        text() --- the text from the GitHub repo file;\n
+
     """
     def __init__(self, url: str = "https://raw.githubusercontent.com/andrewtarsudo/common_info/master/annex/Terms.md"):
         self.url = url
@@ -91,27 +102,7 @@ class MarkdownFile:
 
 
 def main():
-    text = """| VoMS | Voucher Management System, система управления платежными картами |
-| VP | Validity Period, время прекращения валидности сообщения |
-| VPF | Validity Period Format, флаг наличия Validity Period |
-| VPLMN | Visited PLMN, гостевая PLMN |
-| VPN | Virtual Private Network, виртуальная частная сеть |
-| VSAT | Very Small Aperture Terminal, малый терминал спутниковой связи узкой направленности |
-| WAAS | Wide Area Argumentation System, широкозонная корректирующая система |
-| WAE | WAN Automation Engine, механизм автоматизации глобальных сетей |
-| WAG | WLAN Access Gateway, шлюз доступа WLAN |
-| WAP | Wireless Application Protocol, протокол для приложений беспроводной связи |
-| WB | Welcome Back, система оповещения вновь зарегистрированных гостевых абонентов |
-| WCDMA | Wideband Code Division Multiple Access, широкополосный множественный доступ с кодовым разделением каналов |
-| WISM | Wireless Services Module, модуль, предоставляющий беспроводные услуги |
-| WIX | Wireless Information Exchange, беспроводной обмен информацией |
-| WLAN | Wireless Local Area Network, беспроводная локальная сеть |
-| WLSS | WebLogic SIP Server, программное обеспечение сервера от Oracle для запуска SIP-приложений |
-| WML | Wireless Markup Language, язык разметки для мобильных устройств |
-| WMM | Wi-Fi Multimedia, Wi-Fi мультимедиа |
-| WPS | Wireless Priority Service, служба беспроводной приоритетной связи |
-| WTP | Wireless Transport Protocol, протокол беспроводной передачи |
-| XML | eXtensible Markup Language, расширяемый язык разметки |"""
+    pass
 
 
 if __name__ == "__main__":
