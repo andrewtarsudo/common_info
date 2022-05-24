@@ -7,11 +7,15 @@ class User:
         self.md_file = md_file
         self.term_list = term_list
 
-    def __terms(self):
+    def __terms(self) -> list[Term]:
         return self.term_list.terms
 
-    def terms_to_md(self):
+    def terms_to_md(self) -> list[str]:
         return [format(term, "md") for term in self.__terms()]
+
+    def add_term(self, short: str, full: str, rus: str = None, commentary: str = None):
+        new_term = Term(short, full, rus, commentary)
+        self.__terms().append(new_term)
 
 
 def main():
