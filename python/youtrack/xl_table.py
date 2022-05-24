@@ -1,5 +1,5 @@
 from copy import copy
-from typing import Optional, Union, Any
+from typing import Optional, Union, Any, Iterable
 import datetime
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
@@ -399,47 +399,127 @@ class ExcelProp:
         cell: Cell = self.ws[f"{column}{row}"]
         cell.value = spent_time
 
-    def get_date_by_cell(self, cell: Cell) -> datetime.date:
+    def get_date_by_cell(self, cell: Cell) -> Optional[datetime.date]:
+        """
+        Define the date associated with the cell.
+
+        :param Cell cell: the table cell
+        :return: the date.
+        :rtype: datetime.date or None
+        """
         column = cell.column_letter
         raw_date = self.ws[f"{column}1"].value
         return convert_datetime_date(raw_date)
 
     def table_cells(self):
+        """
+        Get the TableCell instances.
+
+        :return: the TableCell instances.
+        """
         return [TableCell(self, self.ws[f"C{row}"]) for list_state in self.list_state_row for row in list_state]
 
     def table_cell_names(self) -> list[str]:
+        """
+        Get the issue names.
+
+        :return: the issue names.
+        :rtype: list[str]
+        """
         return [self.ws[f"C{row}"].value for list_state in self.list_state_row for row in list_state]
 
-    def __non_unique(self):
+    def __non_unique(self) -> list[str]:
         """
         Get the non-unique issue names.
 
         :return: the dictionary of the issue names and dates.
-        :rtype: dict[str, list[TableCell]]
+        :rtype: list[str]
         """
-        issue: str
         counter = Counter([issue for issue in self.table_cell_names()])
         return [key for key, value in counter.items() if value > 1]
 
     def _replace_cell(self, cell: Cell, row: int):
-        """TODO"""
+        """
+        Replace the cell to the new row.
+
+        :param Cell cell: the cell to replace
+        :param int row: the new cell row
+        :return: None.
+        """
         new_cell: Cell = self.ws[f"{cell.column_letter}{row}"]
         new_cell.data_type = "n"
-        new_cell.value = cell.value
+        if new_cell.value is None:
+            new_cell.value = cell.value
+        else:
+            new_cell.value += cell.value
         new_cell._style = copy(cell.style)
         cell.value = None
         self.styles.set_style("basic", cell.coordinate)
 
+    def row_cells(self, row: int) -> list[Cell]:
+        """
+        Get the cells in the row.
+
+        :param int row: the table row
+        :return: the cells.
+        :rtype: list[Cell]
+        """
+        cell: Cell
+        return [cell for cell in self.cell_in_range(f"G{row}", f"NR{row}") if cell.value is not None]
+
+    def cell_state(self, cell: Cell) -> str:
+        """
+        Get the state section the cell is located in.
+        :param Cell cell: the cell
+        :return: the state.
+        :rtype: str
+        """
+        for state in self.dict_headers_short.keys():
+            if cell.row in self.list_state_item(state):
+                return state
+            else:
+                continue
+
+    def __priority_cell_state(self, cell: Cell) -> int:
+        """
+        Get the cell state priority.
+
+        :param Cell cell: the cell
+        :return: the priority.
+        :rtype: int
+        """
+        return self.dict_state_priority[self.cell_state(cell)]
+
     def _join_work_items(self, issue: str):
         """
-        TODO
         Join the non-unique work items.
-        """
 
-        max_row = max(row for list_state in self.list_state_row for row in list_state)
-        issue_cells = [cell for cell in self.cell_in_range("C3", f"C{max_row}") if cell.value == issue]
-        final_row = min(cell.row for cell in issue_cells)
-        final_cell = issue_cells.remove()
+        :param str issue: the issue name
+        :return: None.
+        """
+        max_row: int = max(row for list_state in self.list_state_row for row in list_state)
+        issue_cells: list[Cell] = [cell for cell in self.cell_in_range("C3", f"C{max_row}") if cell.value == issue]
+        final_row: int = self.order_cell_state(issue_cells)
+        for cell in issue_cells:
+            if cell.row != final_row:
+                self._replace_cell(cell, final_row)
+            else:
+                continue
+
+    def order_cell_state(self, cells: Iterable[Cell]) -> int:
+        """
+        Choose the row to keep if several issues have the same names.
+
+        max(priority), min(cell.row)
+
+        :param cells: the cells with the issue names
+        :type cells: Iterable[Cell]
+        :return: the row.
+        :rtype: int
+        """
+        max_priority = max(self.__priority_cell_state(cell) for cell in cells)
+        priority_high_row = [cell.row for cell in cells if self.__priority_cell_state(cell) == max_priority]
+        return min(row for row in priority_high_row)
 
 
 class TableCell:
