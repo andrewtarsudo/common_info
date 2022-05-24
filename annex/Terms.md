@@ -1,15 +1,5 @@
 | Термин | Описание |
 | :----- | :------- |
-| DGI | Data Grouping Identifier, идентификатор группирования данных |
-| RSA | Rivest-Shamir-Adleman Algorithm, алгоритм RSA — один из несимметричных алгоритмов шифрования и цифровой подписи |
-| DAP | Data Authentication Pattern, шаблон аутентификации данных |
-| CASD | Controlling Authority Security Domain, контрольный орган доменов безопасности |
-| ADD | Access Domain Data, данные домена доступа|
-| ADF | Application Data File, файл данных приложения |
-| APSD | Application Provider Security Domain, домен безопасности поставщика приложений |
-| MSL | Minimum Security Level, минимальный уровень безопасности для отправки защищенных пакетов |
-| MSLD | Minimum Security Level Data, данные минимального уровня безопасности для отправки защищенных пакетов |
-| RFM | Remote File Management, удаленное управление файлами |
 | 3DES | Triple–DES — алгоритм шифрования на основе последовательного применения DES трижды |
 | 3GPP | 3rd Generation Partnership Project, Проект партнерства третьего поколения |
 | AAA | Authentication, Authorization, and Accounting; аутентификация, авторизация и учет |
@@ -27,7 +17,10 @@
 | ACSE | Association Control Service Element, сервисный элемент управления ассоциацией |
 | ACT | Active Codec Type, тип активных кодеков |
 | ADC | Automatic Device Configuration, автоматическая настройка устройств |
+| ADD | Access Domain Data, данные домена доступа|
 | ADD | Automatic Device Detection, автоматическое обнаружение устройств |
+| ADF | Application Data File, файл данных приложения |
+| ADSI | Analog Display Services Interface, аналоговый интерфейс системы обслуживания дисплеев |
 | ADSP | Analog-Digital Signal Processing, аналого-цифровая обработка сигналов |
 | AERM | Alignment Error Rate Monitoring, контроль коэффициента ошибок синхронизации |
 | AES | Advanced Encrypting Scheme — общепринятый стандарт шифрования Rijndael |
@@ -53,6 +46,7 @@
 | APM | Application Transport Mechanism, прикладной транспортный механизм |
 | APN | Access Point Name, имя точки доступа |
 | APRI | Address Presentation Restriction Indicator, индикатор запрета отображения адреса |
+| APSD | Application Provider Security Domain, домен безопасности поставщика приложений |
 | ARP | Address Resolution Protocol, протокол разрешения адресов |
 | ARP | Allocation and Retention Priority, приоритет при распределении и хранении |
 | AS | Application Server, узел дополнительного управления вызовом или логический объект SIGTRAN, обрабатывающий сигнализацию |
@@ -78,11 +72,11 @@
 | BCI | Backward Call Indicator, индикатор обратного вызова |
 | BCM | Bearer Control Mode, режим управления переносом информации |
 | BCSM | Basic Call State Model, базовая модель состояния вызова CAMEL |
+| BER | Basic Encoding Rules, базовые правила кодирования |
 | BFCP | Binary Floor Control Protocol, протокол управления на двоичном уровне — протокол для обмена презентациями во время видеоконференций |
 | BGCF | Breakout Gateway Control Function, узел управления шлюзами |
 | BGP | Border Gateway Protocol, протокол граничного шлюза |
 | BIB | Backward Indicator Bit, указательный бит назад |
-| BICC | Bearer Independent Call Control, управление вызовом независимо от несущего канала |
 | BICC | Bearer Independent Call Control, управление вызовом независимо от несущего канала |
 | BIP | Bearer Independent Protocol, протокол обмена данными независимо от канала передачи |
 | BLA | Blocking Acknowledgement, подтверждение блокировки канала ISUP |
@@ -116,6 +110,7 @@
 | CAPS | Call Attempts per Second, количество попыток вызова в секунду |
 | captcha | Completely Automated Public Turing Test to Tell Computers and Humans Apart, тест для различения человека и компьютера |
 | CAS | Channel Associated Signaling, сигнализация по выделенному каналу |
+| CASD | Controlling Authority Security Domain, контрольный орган доменов безопасности |
 | CASP | Content and Application Service Provider, провайдер услуг с контентом и приложениями |
 | CAT | Card Application Toolkit, пакет прикладноого программного обеспечения для карт |
 | CBC | Cell Broadcast Center, центр вещания по сотам |
@@ -140,6 +135,7 @@
 | CDR | Call Detail Record, подробная запись о вызове |
 | CED | Called Tone, сигнал тональной частоты 2100 Гц, определяющий вызываемое устройство как факсимильный аппарат |
 | CellID | Cell Identifier, идентификатор базовой станции сети GSM |
+| CER | Canonical Encoding Rules, канонические правила кодирования |
 | CES | Circuit Emulation Service, служба эмуляции соединений |
 | CFR | Confirmation to Receive, кадр подтверждения готовности к приёму |
 | CG | Cell Global, глобальная сота |
@@ -161,7 +157,7 @@
 | CMSDB | Call Management Services Database, база данных услуг управления вызовами |
 | CMT | Cellular Messaging, передача сообщений в сотовой сети |
 | CNG | Calling Tone, повторяющийся сигнал тональной частоты 1100 Гц, определяющий вызывающее устройство как факсимильный аппарат |
-| CNG | Comfort Noise Generation, генерация комфортного шума |
+| CNG | Comfort Noise Generator, генератор комфортного шума |
 | CNTR | Counter, счетчик |
 | COM | Component Operation and Maintenance, эксплуатация и техническое обслуживание компонент |
 | CON | Connect, сообщение о получении ответа от вызываемого абонента в ISUP |
@@ -195,6 +191,7 @@
 | CUG | Closed User Group, замкнутая группа пользователей |
 | DACS | Distant Active Codec Set, общий набор активных кодеков удаленного доступа |
 | DAD | Destination Address, адрес назначения |
+| DAP | Data Authentication Pattern, шаблон аутентификации данных |
 | DAVA | Destination Available, доступ к пункту назначения свободен |
 | DBI | Database Interface, интерфейс базы данных |
 | DBRM | Database Request Machine, подсистема запросов к базе данных |
@@ -203,13 +200,16 @@
 | DCS | Digital Command Signal, сигнал цифровой команды |
 | DEA | Diameter Edge Agent, пограничный агент сигнальной сети оператора в протоколе Diameter |
 | DEF–номер | Телефонный код, присвоенный по не географическому признаку |
+| DER | Distinguished Encoding Rules, особые правила кодирования |
 | DES | Data Encryption Standard, стандарт для шифрования данных |
 | DF | Dedicated File, специальный выделенный файл |
+| DGI | Data Grouping Identifier, идентификатор группирования данных |
 | DHCP | Dynamic Host Configuration Protocol, протокол динамической настройки хоста |
 | DIS | Digital Identification Signal, цифровой опознавательный сигнал |
 | DISA | Dial–In System Access, прямой внутрисистемный доступ |
 | DL | Downlink, нисходящая линия |
 | DME | Distance Measuring Equipment, дальномерное оборудование |
+| DNIC | Data Network Identification Code, цифровой код сети передачи данных |
 | DNIS | Dialed Number Identification Service, служба определения набранного номера |
 | DNL | Destination Number Length, длина номера назначения |
 | DNS | Domain Name Server, сервер доменных имен |
@@ -237,7 +237,7 @@
 | DUNA | Destination Unavailable, пункт назначения недоступен |
 | DUP | Data User Part, абонентская подсистема передачи данных |
 | DUPU | Destination User Part Unavailable, пользовательская часть пункта назначения недоступна |
-| DVMRP | Distance Vector Multicast Routing Protocol, дистанционно-векторный протокол многоадресатной маршрутизации |
+| DVMRP | Distance Vector Multicast Routing Protocol, дистанционно-векторный протокол многоадресной маршрутизации |
 | DWDM | Dense Wavelength Division Multiplexing, мультиплексирование с разделением по длине волны |
 | E-DCH | Enhanced Dedicated Channel, усовершенствованный выделенный канал |
 | E–DSS1 | Extended Digital Subscriber Signaling, расширенная цифровая абонентская сигнализация — протокол сигнализации ISDN для взаимодействия оконечного абонентского оборудования с другими устройствами |
@@ -245,6 +245,7 @@
 | EAP | Extensible Authentication Protocol, расширяемый протокол проверки подлинности |
 | ECB | Electronic Code Book, электронная кодовая книга — один из режимов шифрования |
 | ECD | Echo Control Device, эхо-компенсатор |
+| ECD | Echo Control Device, эхозаградитель |
 | ECF | Event Charging Function, функция учета расходов на основе событий |
 | ECI | Embedded Common Interface, встроенный CI–модуль — интерфейс подключения модулей для взаимодействия с закодированными каналами |
 | ECM | Error Correction Mode, режим коррекции ошибок |
@@ -453,6 +454,7 @@
 | LSPF | Location Subscriber Privacy Function, функция приватности позиции абонента |
 | LSSU | Link Status Signal Unit, кадр передачи статусов сигнальных сообщений |
 | LTE | Long–Term Evolution, стандарт беспроводной высокоскоростной передачи связи для мобильных сетей |
+| LTO | Line Signal Timeout, истечение допустимой длительности линейного сигнала |
 | LVDS | Low Voltage Differential Signaling, дифференциальная сигнализация низкого напряжения |
 | M2PA | MTP-2 User Peer-to-Peer Adaptation Part, протокол адаптации пользовательского Peer-to-Peer уровня MTP–2 стандарта SIGTRAN |
 | M3UA | MTP–3 User Adaptation Part, протокол адаптации пользовательского уровня MTP–3 стандарта SIGTRAN |
@@ -514,6 +516,8 @@
 | MSC | Mobile Switching Center, коммутационный центр мобильной связи |
 | MSISDN | Mobile Subscriber Integrated Services Digital Number, номер абонента мобильной связи для цифровой сети с интеграцией услуг |
 | MSL | Minimum Security Level, минимально допустимый уровень безопасности |
+| MSL | Minimum Security Level, минимальный уровень безопасности для отправки защищенных пакетов |
+| MSLD | Minimum Security Level Data, данные минимального уровня безопасности для отправки защищенных пакетов |
 | MSML | Media Sessions Markup Language, язык разметки сессии канала передачи |
 | MSRN | Mobile Station Roaming Number, роуминговый номер мобильной станции |
 | MSS | Maximum Segment Size, максимальный размер полезного блока данных TCP |
@@ -544,7 +548,6 @@
 | NFV | Network Function Virtualization, виртуализация сетевых функций |
 | NGAF | Non-GPRS Alert Flag, флаг оповещения MSC/VLR об активности абонента |
 | NGN | Next Generation Networks, сети нового поколения — мультисервисные сети связи |
-| NGOSS | New Generation Operation Systems and Software, новое поколение систем технико-эксплуатационной поддержки и программных средств |
 | NGOSS | New Generation Operation Systems and Software, новое поколение систем технико-эксплуатационной поддержки и программных средств |
 | NI | Network Identifier, идентификатор сети |
 | NI USSI | Network Initiated Unstructured Supplementary Service Data over IMS, инициированный сетью USSD по сетям IMS |
@@ -623,6 +626,7 @@
 | PDN | Packet Data Network, сеть пакетной передачи данных |
 | PDP | Packet Data Protocol, протокол пакетной передачи данных |
 | PDU | Protocol Data Unit, единица данных протокола |
+| PER | Packed Encoding Rules, сжатые правила кодирования |
 | PERL | Practical Extraction and Report Language — язык программирования |
 | PESQ | Perceptual Evaluation of Speech Quality, оценка восприятия качества передачи речи |
 | PFD | Packet Flow Description, описание потока пакетов |
@@ -647,7 +651,7 @@
 | PRAF | Positioning Radio Assistance Function, вспомогательная функция радиоподсистемы |
 | PRBT | Private Ring Back Tone, персональный сигнал контроля посылки вызова |
 | PRCF | Positioning Radio Coordinating Function, функция позиционирования в радиоподсистеме |
-| PRI | Primary Rate Interface, стандартный интерфейс сети ISDN, определяющий подключение станций ISDN к широкополосным магистралям между АТС или сетевыми коммутаторами |
+| PRI | Primary Rate Interface — стандартный интерфейс сети ISDN, определяющий подключение станций ISDN к широкополосным магистралям между АТС или сетевыми коммутаторами |
 | PS | Packet Switch, коммутация пакетов |
 | PS | Profile Server, профайл–сервер |
 | PSI | Public Service Identity, публичный идентификатор сервиса |
@@ -691,6 +695,7 @@
 | RDS | Route Selection Descriptor, дескриптор выбора маршрута |
 | REL | Release, освобождение линии ISUP |
 | RFC | Request for Comments — документы, содержащие общепринятые технические спецификации и стандарты |
+| RFM | Remote File Management, удаленное управление файлами |
 | RFU | Reserved for Future Use, зарезервировано для использования в будущем |
 | RgPN | Redirecting Party Number, номер абонента, на котором последний раз сработала переадресация |
 | RHCP | Remote Hardware Card Protei, протокол управления аппаратным обеспечением |
@@ -714,6 +719,7 @@
 | RRC | Radio Resource Control, управление радиоресурсами |
 | RRLP | Radio Resource Location Services Protocol, протокол услуг по определению местоположения радиоресурсов |
 | RRP | Reductant Ring Protocol, ошибкоустойчивый протокол резервирования |
+| RSA | Rivest-Shamir-Adleman Algorithm, алгоритм RSA — один из несимметричных алгоритмов шифрования и цифровой подписи |
 | RSC | Reset Circuit, сброс канала ISUP |
 | RTCP | Real–Time Transport Control Protocol, протокол, управляющий передачей данных в режиме реального времени — работает совместно с RTP |
 | RTD | Round Trip Delay, задержка на подтверждение приема |
@@ -787,6 +793,7 @@
 | SLTM | Signaling Link Termination Message, сообщение об окончании звена сигнализации |
 | SM | Secure Message, сообщение с повышенными параметрами безопасности |
 | SMDS | Switched Multimegabit Data Service, услуга коммутируемой многомегабитной передачи данных |
+| SME | Protocol State Machine Malfunction, сбой конечного автомата протокола |
 | SMF | Session Management Function, функция управления сессиями |
 | SMLC | Serving Mobile Location Centre, сервисный центр позиционирования |
 | SMPP | Short Messages Peer–to–Peer Protocol, протокол передачи сообщений одноранговой сети |
@@ -802,7 +809,6 @@
 | SN | Serial Number, серийный номер |
 | SNDC | Subnetwork Dependent Convergence, конвергенция зависимых подсетей |
 | SNDCP | SubNetwork Dependent Convergence Protocol, протокол конвергенции зависимых подсетей |
-| SNDCP | Subnetwork Dependent Convergence Protocol, протокол сходимости подсетей |
 | SNI | Server Name Indication, индикация имени сервера |
 | SNMM | Signaling Network Management Message, сообщение от системы управления сетью сигнализации |
 | SNMP | Simple Network Management Protocol, простой протокол управления сетью |
@@ -927,6 +933,7 @@
 | UICC | Universal Integrated Circuit Card, универсальная карта с интегральной схемой |
 | UIM | UICC Integrity Mechanism, механизм проверки цельности UICC |
 | UL | Uplink, восходящая линия |
+| ULS | Unexpected Line Signal, непредвиденный линейный сигнал |
 | UMTS | Universal Mobile Telecommunications System, универсальная мобильная телекоммуникационная система |
 | UP | User Profile, профиль абонента |
 | UPF | User Plane Function, функция передачи данных пользователей |
@@ -942,7 +949,6 @@
 | UTF | Unicode Transformation Format, формат кодирования символов |
 | UTRAN | UMTS Terrestrial Radio Access Network, сеть радиодоступа к UMTS |
 | VAD | Voice Activity Detection, функция обнаружения голоса |
-| VAD | Voice Activity Detector, детектор речевой активности |
 | VAS | Value Added Service, дополнительная платная услуга |
 | VASP | Value Added Service Provider, поставщик дополнительных платных услуг |
 | VBD | Voiceband Data, данные в речевом диапазоне |
