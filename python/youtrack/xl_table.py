@@ -467,9 +467,10 @@ class ExcelProp:
         cell: Cell
         return [cell for cell in self.cell_in_range(f"G{row}", f"NR{row}") if cell.value is not None]
 
-    def cell_state(self, cell: Cell) -> str:
+    def get_cell_state(self, cell: Cell) -> str:
         """
         Get the state section the cell is located in.
+
         :param Cell cell: the cell
         :return: the state.
         :rtype: str
@@ -488,7 +489,7 @@ class ExcelProp:
         :return: the priority.
         :rtype: int
         """
-        return self.dict_state_priority[self.cell_state(cell)]
+        return self.dict_state_priority[self.get_cell_state(cell)]
 
     def _join_work_items(self, issue: str):
         """
@@ -607,63 +608,152 @@ class TableCell:
                 continue
         return None
 
-    def _commentary(self):
+    def _commentary(self) -> str:
+        """
+        Get the commentary.
+
+        :return: the commentary.
+        :rtype: str
+        """
         return self._shift_cell(self._get_shift_col_idx("NT")).value
 
-    def _summary(self):
+    def _summary(self) -> str:
+        """
+        Get the issue summary.
+
+        :return: the summary.
+        :rtype: str
+        """
         return self._shift_cell(1).value
 
-    def _deadline(self):
+    def _deadline(self) -> Optional[datetime.date]:
+        """
+        Get the issue deadline if exists.
+
+        :return: the deadline.
+        :rtype: datetime.date or None
+        """
         return self._shift_cell(2).value
 
     def _parent(self):
+        """
+        Get the parent issue name if exists.
+
+        :return: the parent issue name.
+        :rtype: str
+        """
         return self._shift_cell(-1).value
 
-    def pyxl_row(self):
+    def pyxl_row(self) -> tuple[str, str, str, Optional[str], Optional[datetime.date]]:
+        """
+        Get the values to operate with the Issue instances.
+
+        :return: the attribute values.
+        :rtype: tuple[str, str, str, Optional[str], Optional[datetime.date]]
+        """
         return self.issue, self.state, self._summary(), self._parent(), self._deadline()
 
     def __cell_range(self):
+        """
+        Specify the cell generator for the range.
+
+        :return: iterating through the cells.
+        """
         return self.excel_prop.cell_in_range(f"G{self.row}", f"NR{self.row}")
 
     def __pyxl_cells(self) -> list[Cell]:
+        """
+        Get the work item cells.
+
+        :return: the cells.
+        :rtype: list[Cell]
+        """
         return [cell for cell in self.__cell_range() if cell.value is not None]
 
-    def pyxl_work_items(self):
+    def pyxl_work_items(self) -> list[tuple[str, datetime.date, Decimal]]:
+        """
+        Get the work items.
+
+        :return: the work items.
+        :rtype: list[tuple[str, datetime.date, Decimal]]
+        """
         return [self._mapping_cell_work_item(cell) for cell in self.__pyxl_cells()]
 
     def pyxl_cell_last(self) -> Cell:
+        """
+        Get the last work item cell.
+
+        :return: the last work item cell.
+        :rtype: Cell
+        """
         max_column = max(cell.column_letter for cell in self.__pyxl_cells())
         return self.ws[f"{max_column}{self.row}"]
 
-    def pyxl_work_item_last(self):
+    def pyxl_work_item_last(self) -> tuple[str, datetime.date, Decimal]:
+        """
+        
+        :return: 
+        """
         cell: Cell = self.pyxl_cell_last()
         return self._mapping_cell_work_item(cell)
 
     def set_pyxl_cell_style(self, style_name: str, cell: Cell):
+        """
+        
+        :param style_name: 
+        :param cell: 
+        :return: 
+        """
         cell._style = self.excel_prop.styles.set_style(style_name, cell.coordinate)
 
     def _mapping_cell_work_item(self, cell: Cell) -> tuple[str, datetime.date, Decimal]:
+        """
+        
+        :param cell: 
+        :return: 
+        """
         date = self.excel_prop.get_date_by_cell(cell)
         return self.issue, date, Decimal(cell.value).normalize()
 
     def _mapping_work_item_cell(self, work_item: tuple[str, datetime.date, Decimal]) -> Cell:
+        """
+        
+        :param work_item: 
+        :return: 
+        """
         _, date, _ = work_item
         column = self.excel_prop.get_column_by_date(date)
         return self.ws[f"{column}{self.row}"]
 
     def compare_cell_work_item(self, cell: Cell, work_item: tuple[str, datetime.date, Decimal]):
+        """
+        
+        :param cell: 
+        :param work_item: 
+        :return: 
+        """
         if cell not in self.__pyxl_cells() or work_item not in self.pyxl_work_items():
             return False
         work_item_cell = self._mapping_work_item_cell(work_item)
         return cell.coordinate == work_item_cell.coordinate
 
     def add_work_item(self, work_item: tuple[str, datetime.date, Decimal]):
+        """
+        
+        :param work_item: 
+        :return: 
+        """
         _, date, spent_time = work_item
         cell = self._mapping_work_item_cell((self.issue, date, spent_time))
         cell.data_type = "n"
         cell.value = spent_time
 
-    def _proper_cell_style(self, cell: Cell):
+    def _proper_cell_style(self, cell: Cell) -> str:
+        """
+        
+        :param cell: 
+        :return: 
+        """
         if cell not in self.__pyxl_cells():
             return cell.style.name
         elif self.excel_prop.get_date_by_cell(cell) == self._deadline():
@@ -675,7 +765,12 @@ class TableCell:
         else:
             return "basic"
 
-    def _proper_work_item_style(self, work_item: tuple[str, datetime.date, Decimal]):
+    def _proper_work_item_style(self, work_item: tuple[str, datetime.date, Decimal]) -> str:
+        """
+        
+        :param work_item: 
+        :return: 
+        """
         _, date, spent_time = work_item
         cell = self._mapping_work_item_cell((self.issue, date, spent_time))
         return self._proper_cell_style(cell)
