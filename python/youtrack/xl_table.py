@@ -5,6 +5,7 @@ from openpyxl.cell.cell import Cell
 from openpyxl.utils.cell import coordinate_to_tuple, get_column_letter, column_index_from_string
 from decimal import Decimal
 from _style_work_item import _StyleWorkItemList
+from copy import copy
 
 
 def convert_issue_state(state: str) -> str:
@@ -118,12 +119,12 @@ class ExcelProp:
         dict_headers_short --- mapping issue states and indexes;\n
         dict_attr_column --- the dictionary of the issue attributes and columns;\n
         dict_state_style --- mapping states and styles;\n
+        dict_state_priority --- the dictionary of the states and priorities;\n
 
     Class params:
         dict_pyxl_row --- the dictionary of the PyXLRow instances;\n
         dict_pyxl_work_item --- the dictionary of the PyXLWorkItem instances;\n
         dict_pyxl_merged --- the dictionary of the _PyXLMerged instances;\n
-        dict_state_priority --- the dictionary of the states and priorities;\n
 
     Params:
         ws --- the worksheet;\n
@@ -131,14 +132,9 @@ class ExcelProp:
         styles --- the _StyleWorkItemList instance;\n
 
     Properties:
-        bottom_right --- the bottom-right cell to get the bounds;\n
-        max_column --- the max column index;\n
-        max_column_letter --- the max column letter;\n
-        max_row --- the max row value;\n
         headers --- the header cells;\n
         headers_row --- the header row values;\n
         list_state_row --- the non-empty rows with issues for all states;\n
-        get_pyxl_rows --- the PyXLRow instances from the table;\n
 
     Functions:
         get_column_date(date) --- get the column letter for the specified date;\n
@@ -147,13 +143,7 @@ class ExcelProp:
         list_state_item(state) --- get the non-empty rows with issues of the state;\n
         pyxl_row_names() --- get the PyXLRow issue names;\n
         num_pyxl_rows() --- get the issue numbers;\n
-        get_work_items(row) --- get the work item instances in the row;\n
-        get_merged() --- get the _PyXLMerged instances;\n
-        delete_empty_rows_state(state) --- delete the empty rows for the state;\n
-        delete_empty_rows() --- delete the empty rows in the workspace;\n
-        get_merged_by_name(issue_name) --- get the _PyXLMerged instance by the issue name;
-        get_row_by_name(issue_name) --- get the row by the issue name;
-        add_work_item(issue_name, date, spent_time) --- add the work item;\n
+        get_row_by_name(issue_name) --- get the row by the issue name;\n
     """
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
     dict_headers_short = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3}
@@ -170,11 +160,11 @@ class ExcelProp:
         "Review": "paused",
         "Canceled": "verified_closed"
     }
+    dict_state_priority: dict[str, int] = {"Active": 30, "New/Paused": 10, "Done/Test": 20, "Verified": 40}
 
     dict_pyxl_row = dict()
     dict_pyxl_work_item = dict()
     dict_table_cell = dict()
-    dict_state_priority: dict[str, int] = {"Active": 30, "New/Paused": 10, "Done/Test": 20, "Verified": 40}
 
     def __init__(self, ws: Worksheet, name: str, styles: _StyleWorkItemList):
         self.ws = ws
@@ -189,16 +179,19 @@ class ExcelProp:
 
     def __hash__(self):
         return hash((self.ws, self.name))
+    
+    def __key(self):
+        return self.ws, self.name
 
     def __eq__(self, other):
         if isinstance(other, ExcelProp):
-            return (self.ws == other.ws) and (self.name == other.name)
+            return self.__key() == other.__key()
         else:
             return NotImplemented
 
     def __ne__(self, other):
         if isinstance(other, ExcelProp):
-            return (self.ws != other.ws) and (self.name != other.name)
+            return self.__key() != other.__key()
         else:
             return NotImplemented
 
@@ -206,7 +199,8 @@ class ExcelProp:
         """
         Get the column letter for the specified date.
 
-        :param datetime.date date: the date
+        :param date: the date
+        :type date: datetime.date
         :return: the column_letter.
         :rtype: str
         """
@@ -215,54 +209,12 @@ class ExcelProp:
             if convert_datetime_date(cell.value) == date:
                 return cell.column_letter
 
-    @property
-    def bottom_right(self) -> Cell:
-        """
-        Get the bottom-right cell.
-
-        :return: the bottom-right cell.
-        :rtype: Cell
-        """
-        max_row = self.ws.max_row
-        max_col = self.ws.max_column
-        return self.ws.cell(max_row, max_col)
-
-    @property
-    def max_column(self) -> int:
-        """
-        Get the max column index.
-
-        :return: the column index.
-        :rtype: int
-        """
-        return self.bottom_right.column
-
-    @property
-    def max_column_letter(self) -> str:
-        """
-        Get the max column letter.
-
-        :return: the column letter.
-        :rtype: str
-        """
-        return self.bottom_right.column_letter
-
-    @property
-    def max_row(self) -> int:
-        """
-        Get the max row value.
-
-        :return: the row number.
-        :rtype: int
-        """
-        return self.bottom_right.row
-
     def cell_in_range(self, start_coord: str, end_coord: str):
         """
         Convert the cell range to the cell generator in the range.
 
-        :param str start_coord: the start cell coordinate
-        :param str end_coord: the end cell coordinate
+        :param str start_coord: the start cell coordinates
+        :param str end_coord: the end cell coordinates
         :return: the generator of cells.
         """
         if check_coord(coord=start_coord) and check_coord(coord=end_coord):
@@ -270,7 +222,8 @@ class ExcelProp:
             for row in range(min_row, max_row + 1):
                 for col in range(min_col, max_col + 1):
                     coord = f'{get_column_letter(col)}{row}'
-                    yield self.ws[coord]
+                    cell: Cell = self.ws[coord]
+                    yield cell
 
     @property
     def headers(self) -> list[Cell]:
@@ -280,7 +233,7 @@ class ExcelProp:
         :return: the cells.
         :rtype: list[Cell]
         """
-        end_coord = f"B{self.max_row}"
+        end_coord = f"B{self.ws.max_row}"
         return [cell for cell in self.cell_in_range("B3", end_coord) if cell.value in ExcelProp.dict_headers.keys()]
 
     @property
@@ -315,35 +268,19 @@ class ExcelProp:
             else:
                 return True
 
-    def _empty_state_item(self, state: str) -> list[int]:
-        """
-        Get the empty rows with issues of the state.
-
-        :param str state: the state
-        :return: the empty rows with the state.
-        :rtype: list[int]
-        """
-        low_limit = self.headers_row[self.__index(state)] + 1
-        high_limit = self.headers_row[self.__index(state) + 1] - 1
-        return [row for row in range(low_limit, high_limit) if self._check_empty(row)]
-
-    def _empty_rows(self) -> list[int]:
-        """
-        Get all empty rows.
-
-        :return: the reversed empty rows.
-        :rtype: list[int]
-        """
-        empty_rows = [self._empty_state_item(state) for state in self.dict_headers_short.keys()]
-        list_empty = [item for empty_list in empty_rows for item in empty_list]
-        return sorted(list_empty, reverse=True)
-
-    def delete_empty_rows_state(self):
+    def _empty_rows(self):
         """Delete all empty rows except for the pre-headers."""
-        for row in self._empty_rows():
-            self.ws.delete_rows(row)
+        list_empty = []
+        for state in self.dict_headers_short.keys():
+            low_limit = self.headers_row[self.__index(state)] + 1
+            high_limit = self.headers_row[self.__index(state) + 1] - 1
+            for row in range(low_limit, high_limit):
+                if self._check_empty(row):
+                    list_empty.append(row)
+        for empty_row in sorted(list_empty, reverse=True):
+            self.ws.delete_rows(empty_row)
 
-    def _new_row(self, state: str) -> int:
+    def new_row(self, state: str) -> int:
         """
         Get the row for the new issue in the table.
 
@@ -365,21 +302,53 @@ class ExcelProp:
             return self.dict_table_cell[issue].row
         return None
 
-    def add_work_item(self, issue_name: str, date: datetime.date, spent_time: Union[int, Decimal]):
+    def replace_cell(self, *, from_: Union[Cell, str], to_: Optional[Union[Cell, str]] = None):
+        """
+        Replace the cell attribute values to another cell. If to_ is None, the values are deleted.
+
+        :param from_: the original cell or cell coordinates
+        :type from_: Cell or str
+        :param to_: the destination cell or cell coordinates
+        :type to_: Cell or str or None
+        :return: None.
+        """
+        cell_proxy: Optional[Cell]
+        cell_base: Cell
+        # if the cell coordinates
+        if isinstance(from_, str):
+            cell_base = self.ws[f"{from_}"]
+        # if the cell
+        else:
+            cell_base = from_
+        # if the destination cell exists
+        if to_ is not None:
+            if isinstance(to_, str):
+                cell_proxy = self.ws[f"{to_}"]
+            else:
+                cell_proxy = to_
+            # copy all required attribute values
+            # if the destination cell is empty
+            if cell_proxy.value is None:
+                cell_proxy.value = cell_base.value
+            # if the destination cell has some value
+            else:
+                cell_proxy.value += cell_base.value
+            cell_proxy._style = copy(cell_base.style)
+        # set the default cell attribute values
+        cell_base.value = None
+        self.styles.set_style("basic", cell_base)
+
+    def add_work_item(self, work_item: tuple[str, datetime.date, Union[int, Decimal]]):
         """
         Add the work item to the table.
 
-        :param str issue_name: the issue name
-        :param date: the work item date
-        :type date: datetime.date
-        :param spent_time: the work item spent time
-        :type spent_time: int or Decimal
+        issue_name: str, date: datetime.date, spent_time: Union[int, Decimal]
+        :param work_item: the work item to add
+        :type work_item: tuple[str, datetime.date, Decimal or int]
         :return: None.
         """
-        column = self.get_column_by_date(date)
-        row = self.get_row_by_name(issue_name)
-        cell: Cell = self.ws[f"{column}{row}"]
-        cell.value = spent_time
+        issue_name, *_ = work_item
+        self.dict_table_cell[issue_name].add_work_item(work_item)
 
     def get_date_by_cell(self, cell: Cell) -> Optional[datetime.date]:
         """
@@ -402,48 +371,43 @@ class ExcelProp:
         :return: the header index.
         :rtype: int
         """
-        return self.dict_headers[state]
+        return self.dict_headers_short[state]
 
-    def _cell_state_item(self, state: str) -> list[Cell]:
+    @property
+    def cell_states(self):
         """
-        Get the cell for the state.
+        Get the dictionary of the cell coordinates and states.
 
-        :param str state: the state
-        :return: the cells.
-        :rtype: list[Cell]
+        :return: the cell coordinates and state mapping.
+        :rtype: dict[str, str]
         """
-        start_row = self.dict_headers[self.__index(state)] + 1
-        end_row = self.dict_headers[self.__index(state) + 1]
-        start_coord = f"C{start_row}"
-        end_coord = f"C{end_row}"
-        return [cell for cell in self.cell_in_range(start_coord, end_coord)]
+        dict_cell_states: dict[str, str] = dict()
+        for state in self.dict_headers_short.keys():
+            start_row = self.dict_headers[self.__index(state)] + 1
+            end_row = self.dict_headers[self.__index(state) + 1]
+            start_coord = f"C{start_row}"
+            end_coord = f"C{end_row}"
+            for cell in self.cell_in_range(start_coord, end_coord):
+                dict_cell_states[cell.coordinate] = state
+        return dict_cell_states
 
-    def _cell_states(self) -> list[Cell]:
+    def table_cells(self) -> list[Cell]:
         """
         Get the cell for the TableCell instances.
 
         :return: the cells.
         :rtype: list[Cell]
         """
-        cell_states = []
-        for state in self.dict_headers_short.keys():
-            start_row = self.dict_headers[self.__index(state)] + 1
-            end_row = self.dict_headers[self.__index(state) + 1]
-            start_coord = f"C{start_row}"
-            end_coord = f"C{end_row}"
-            cell: Cell
-            for cell in self.cell_in_range(start_coord, end_coord):
-                cell_states.append(cell)
-        return cell_states
+        return [self.ws[f"{coord}"] for coord in self.cell_states if self.ws[f"{coord}"].value is not None]
 
-    def table_cells(self):
+    def table_cell_items(self):
         """
         Get the TableCell instances.
 
         :return: the TableCell instances.
         :rtype: list[TableCell]
         """
-        return [TableCell(self, cell) for cell in self._cell_states()]
+        return [TableCell(self, cell) for cell in self.table_cells()]
 
     def table_cell_names(self) -> list[str]:
         """
@@ -452,7 +416,7 @@ class ExcelProp:
         :return: the issue names.
         :rtype: list[str]
         """
-        return [table_cell.issue for table_cell in self.table_cells()]
+        return [table_cell.issue for table_cell in self.table_cell_items()]
 
 
 class TableCell:
@@ -533,12 +497,7 @@ class TableCell:
 
     @property
     def state(self):
-        for state in self.excel_prop.dict_headers_short.keys():
-            if self.row in self.excel_prop._cell_state_item(state):
-                return state
-            else:
-                continue
-        return None
+        return self.excel_prop.cell_states[self.cell.coordinate]
 
     def _commentary(self) -> str:
         """
@@ -602,7 +561,7 @@ class TableCell:
         """
         return [cell for cell in self._cell_range() if cell.value is not None]
 
-    def pyxl_work_items(self) -> list[tuple[str, datetime.date, Decimal]]:
+    def work_items(self) -> list[tuple[str, datetime.date, Decimal]]:
         """
         Get the work items.
 
@@ -638,7 +597,7 @@ class TableCell:
         :param cell:
         :return:
         """
-        self.excel_prop.styles.set_style(style_name, cell.coordinate)
+        self.excel_prop.styles.set_style(style_name, cell)
 
     def _mapping_cell_work_item(self, cell: Cell) -> tuple[str, datetime.date, Decimal]:
         """
@@ -666,7 +625,7 @@ class TableCell:
         :param work_item:
         :return:
         """
-        if cell not in self._pyxl_cells() or work_item not in self.pyxl_work_items():
+        if cell not in self._pyxl_cells() or work_item not in self.work_items():
             return False
         work_item_cell = self._mapping_work_item_cell(work_item)
         return cell.coordinate == work_item_cell.coordinate
@@ -714,6 +673,94 @@ class TableCell:
         _, date, spent_time = work_item
         cell = self._mapping_work_item_cell((self.issue, date, spent_time))
         return self._proper_cell_style(cell)
+
+
+class _RowEqual:
+    def __init__(self, excel_prop: ExcelProp, issue: str):
+        self.excel_prop = excel_prop
+        self.issue = issue
+
+    @property
+    def cells(self) -> list[Cell]:
+        """
+        Get the issue cells with the same names.
+
+        :return: the cells.
+        :rtype: list[Cell]
+        """
+        return [cell for cell in self.excel_prop.table_cells() if cell.value == self.issue]
+
+    def dict_issues(self) -> dict[Cell, int]:
+        """
+        Get the dictionary of the issue cells and state priorities.
+
+        :return: the cell and state priority mapping.
+        :rtype: dict[Cell, int]
+        """
+        dict_cell_priority: dict[Cell, int] = dict()
+        for cell in self.cells:
+            state = self.excel_prop.cell_states[cell.coordinate]
+            dict_cell_priority[cell] = self.excel_prop.dict_state_priority[state]
+        return dict_cell_priority
+
+    def work_item_cells(self) -> list[Cell]:
+        """
+        Get the work item cells to join.
+
+        :return: the work item cells.
+        :rtype: list[Cell]
+        """
+        work_cells: list[Cell] = []
+        for cell in self.cells:
+            if cell == self.cell_final():
+                continue
+            else:
+                for item in self.excel_prop.cell_in_range(f"G{cell.row}", f"NR{cell.row}"):
+                    if item.value is not None:
+                        work_cells.append(item)
+                    else:
+                        continue
+        return work_cells
+
+    def max_priority(self) -> int:
+        """
+        Get the maximum priority of the issue states.
+
+        :return: the maximum priority.
+        :rtype: int
+        """
+        return max(priority for priority in self.dict_issues().values())
+
+    def max_prior_min_row(self) -> int:
+        """
+        Get the minimum row if the issues have the same state.
+
+        :return: the minimum row.
+        :rtype: int
+        """
+        return min(cell.row for cell, priority in self.dict_issues().items() if priority == self.max_priority())
+
+    def cell_final(self) -> Cell:
+        """
+        Get the final cell to keep.
+
+        :return: the cell
+        :rtype: Cell
+        """
+        for cell in self.cells:
+            if cell.row == self.max_prior_min_row:
+                return cell
+
+    def replace_cells(self):
+        """Replace the work items to the final issue."""
+        row_final = self.cell_final().row
+        for cell in self.work_item_cells():
+            self.excel_prop.replace_cell(from_=cell, to_=f"{cell.column_letter}{row_final}")
+        for issue_cell in self.cells:
+            if issue_cell != self.cell_final():
+                row = issue_cell.row
+                for column in ("B", "C", "D", "E"):
+                    self.excel_prop.replace_cell(from_=f"{column}{row}")
 
 
 def main():
