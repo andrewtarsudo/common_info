@@ -1,3 +1,16 @@
+"""
+basic() -> _StyleWorkItem --- set the basic style;\n
+basic_state_style() -> _StyleWorkItem --- set the basic state style;\n
+state_styles() -> list[_StyleWorkItem] --- set the state styles;\n
+basic_month_style() -> _StyleWorkItem --- set the basic month style;\n
+month_styles() -> list[_StyleWorkItem] --- set the basic month styles;\n
+month_merged_styles() -> list[_StyleWorkItem] --- set the merged month styles;\n
+title() -> _StyleWorkItem --- set the title style;\n
+header() -> _StyleWorkItem --- set the header style;\n
+month_date_style() -> _StyleWorkItem --- set the month date style;
+generate_from_style(name, base_style, cell_attrs, values) -> _StyleWorkItem --- set the style based on the other one;
+"""
+
 from copy import copy
 from typing import Union
 from openpyxl.styles.numbers import FORMAT_GENERAL, FORMAT_TEXT, FORMAT_NUMBER_00, FORMAT_DATE_XLSX14
@@ -9,19 +22,6 @@ from openpyxl.styles.fonts import Font
 from openpyxl.styles.protection import Protection
 from openpyxl.cell.cell import Cell
 from openpyxl.styles.named_styles import NamedStyle
-
-__doc__ = """
-basic() --- set the basic style;\n
-_basic_state_style() --- set the basic state style;\n
-state_styles() --- set the state styles;\n
-_basic_month_style() --- set the basic month style;\n
-month_styles() --- set the basic month styles;\n
-month_merged_styles() --- set the merged month styles;\n
-title() --- set the title style;\n
-header() --- set the header style;\n
-month_date_style() --- set the month date style;\n
-generate_from_style(name, base_style, cell_attrs, values) --- set the style based on the other one;\n
-"""
 
 
 def basic():
@@ -155,9 +155,10 @@ class ConstStyle:
 
     Border(outline, left, right, top, bottom, diagonal):
         TMP_BORDER --- False, Side(), Side(), Side(), Side(), Side()\n
-        THIN_BORDER --- True, Side(BORDER_THIN)\n
-        THICK_BORDER --- True, Side(BORDER_THICK)\n
-        TOP_BOTTOM_BORDER --- True, Side(BORDER_THIN), Side(BORDER_THICK)\n
+        THIN_BORDER --- True, Side(style=BORDER_THIN)\n
+        THICK_BORDER --- True, Side(style=BORDER_THICK)\n
+        TOP_BOTTOM_BORDER --- True, Side(style=BORDER_THIN),
+            Side(BORDER_THICK)\n
 
     PatternFill(fill_type, fgColor, bgColor):
         TMP_FILL --- FILL_SOLID, Color(rgb=WHITE, type='rgb'),
@@ -291,12 +292,11 @@ class _StyleWorkItem:
         get_named --- convert to the NamedStyle instance;\n
 
     Functions:
-        set_style(coord) --- set the style of the cell;\n
+        set_style(cell/coord) --- set the style of the cell;\n
     """
 
     list_attrs: tuple[str] = (
-        "name", "_is_named", "number_format", "alignment", "border", "fill", "font", "protection", "data_type",
-        "get_named"
+        "name", "_is_named", "number_format", "alignment", "border", "fill", "font", "protection", "data_type"
     )
 
     def __init__(
@@ -382,7 +382,8 @@ class _StyleWorkItem:
         """
         Specify the style of the cell.
 
-        :param Cell cell: the cell coordinates.
+        :param cell: the cell or the cell coordinates
+        :type cell: Cell or str
         :return: None
         """
         # apply the number format
@@ -413,7 +414,7 @@ def generate_from_style(name: str, base_style: _StyleWorkItem, attrs: list = Non
     check_attrs: bool = (attrs is not None and all(attr in _StyleWorkItem.list_attrs for attr in attrs))
     check_values: bool = values is not None
     check_length: bool = len(attrs) == len(values)
-    if not(check_attrs and check_values and check_length):
+    if check_attrs and check_values and check_length:
         return basic()
     else:
         style = copy(base_style)
@@ -433,7 +434,7 @@ class _StyleWorkItemList:
             dict[style_name, _StyleWorkItem];\n
 
     Functions:
-        set_style(style_name, coord) --- set the style to the cell;\n
+        set_style(style_name, cell/coord) --- set the style to the cell;\n
     """
     def __init__(self, name: str):
         self.name = name
@@ -444,13 +445,10 @@ class _StyleWorkItemList:
         self.styles["header"] = header().get_named
         self.styles["title"] = title().get_named
         self.styles["month_date"] = month_date_style().get_named
-
         for style in state_styles():
             self.styles[style.name] = style.get_named
-
         for style in month_styles():
             self.styles[style.name] = style.get_named
-
         for style in month_merged_styles():
             self.styles[style.name] = style.get_named
 
@@ -479,14 +477,14 @@ class _StyleWorkItemList:
         else:
             return NotImplemented
 
+    def __contains__(self, item):
+        return item in self.styles.keys()
+
     def __getitem__(self, item):
         return self.styles[item]
 
     def __setitem__(self, key, value):
         self.styles[key] = value
-
-    def __contains__(self, item):
-        return item in self.styles.keys()
 
     def __iter__(self):
         return (item for item in self.styles.values())
@@ -496,10 +494,11 @@ class _StyleWorkItemList:
         Specify the style of the cell.
 
         :param str style_name: the style name
-        :param str cell: the cell
+        :param cell: the cell
+        :type cell: Cell
         :return: None.
         """
-        self.styles[style_name].set_style(cell)
+        return self.styles[style_name].set_style(cell)
 
 
 def main():
