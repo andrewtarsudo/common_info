@@ -218,10 +218,9 @@ class User:
         self.user_config = user_config
         self.dict_issue = dict()
         self.dict_issue_work_item = dict()
-        self.dict_issue_merged = dict()
 
     def __str__(self):
-        return f"User: config file {self.user_config.path}"
+        return f"User: config file {self.user_config.path}, login; {self.login}"
 
     def __repr__(self):
         return f"User(user_config={self.user_config.conf_values})"
