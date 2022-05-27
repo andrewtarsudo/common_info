@@ -21,7 +21,7 @@ def separate_issues(excel_prop: ExcelProp, user: User) -> dict[str, list[str]]:
     """
     dict_issue_names: dict[str, list[str]] = dict()
     # issue names
-    xl_names = set(excel_prop.pyxl_row_names())
+    xl_names = set(excel_prop.table_cell_names())
     yt_names = set(user.issue_names())
     # issues from the tables left unchanged
     dict_issue_names["xl_names_not_changed"] = [*xl_names.difference(yt_names)]
@@ -43,7 +43,7 @@ def _convert_to_pyxl_row(issue_merged: _IssueMerged, excel_prop: ExcelProp) -> P
     """
     issue, state, summary, parent, deadline = issue_merged.issue_item.to_tuple()
     # get the new row
-    row: int = excel_prop.add_row(state)
+    row: int = excel_prop._new_row(state)
     # add the row
     excel_prop.ws.insert_rows(row)
     # parse the values to the new table row
@@ -68,8 +68,8 @@ def _convert_to_pyxl_work_items(issue_merged: _IssueMerged, excel_prop: ExcelPro
     work_items = []
     for work_item in issue_merged.work_items:
         date: datetime.date = work_item.date
-        column: str = excel_prop.get_column_date(date)
-        row: int = excel_prop.add_row(issue_merged.issue_item.state)
+        column: str = excel_prop.get_column_by_date(date)
+        row: int = excel_prop._new_row(issue_merged.issue_item.state)
         cell: Cell = excel_prop.ws[f"{column}{row}"]
         work_items.append(PyXLWorkItem(excel_prop, cell))
     return work_items
