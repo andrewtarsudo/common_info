@@ -8,7 +8,7 @@ from typing import Optional
 class UserConfig:
     """
     Define the configuration file to initiate YouTrack requests.
-    
+
     Constants:
         path --- the path to the JSON file, default: youtrack.json;\n
         default_period_start --- the start period date, default: the first day of the year;\n
