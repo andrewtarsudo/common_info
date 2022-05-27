@@ -1,7 +1,6 @@
 import collections
 from typing import Optional, Union, Any
 import datetime
-import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
 from openpyxl.utils.cell import coordinate_to_tuple, get_column_letter, column_index_from_string
@@ -150,10 +149,11 @@ class ExcelProp:
         get_date_by_cell(cell) --- get the date associated with the cell;\n
         __index(state) --- get the state index;\n
         table_cell_items() --- get the TableCell instances;\n
+        pre_processing() --- pre-process the table to get rid of empty rows and repeating issues;\n
     """
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
     dict_headers_short = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3}
-    dict_attr_column = {"parent": "B", "summary": "D", "deadline": "E", "commentary": "NT"}
+    dict_attr_column = {"parent": "B", "issue": "C", "summary": "D", "deadline": "E", "commentary": "NT"}
     dict_state_style = {
         "New": "basic",
         "Active": "active",
@@ -302,18 +302,6 @@ class ExcelProp:
         """
         return self.headers_row[self.__index(state) + 1] - 1
 
-    def get_row_by_name(self, issue: str) -> Optional[int]:
-        """
-        Get the table row by the issue name.
-
-        :param str issue: the issue name
-        :return: the row number.
-        :rtype: int or None
-        """
-        if issue in self.table_cell_names():
-            return self.dict_table_cell[issue].row
-        return None
-
     def replace_cell(self, *, from_: Union[Cell, str], to_: Optional[Union[Cell, str]] = None):
         """
         Replace the cell attribute values to another cell. If to_ is None, the values are deleted.
@@ -422,6 +410,26 @@ class ExcelProp:
         """
         return [TableCell(self, cell) for cell in self.table_cells]
 
+    def table_cell_issue(self, table_base: Union[int, Cell, str]):
+        """
+        Get the TableCell instance based on the row, cell, or issue name.
+
+        :param table_base: the object to link to the TableCell instance
+        :type table_base: int or Cell or str
+        :return: the TableCell instance.
+        :rtype: TableCell or None
+        """
+        if isinstance(table_base, int):
+            cell = self.ws[f"C{table_base}"]
+            return TableCell(self, cell)
+        elif isinstance(table_base, str):
+            return self.dict_table_cell[table_base]
+        elif isinstance(table_base, Cell):
+            return TableCell(self, table_base)
+        else:
+            print(f"Something went wrong. Table base: {table_base}, type: {type(table_base)}.")
+            return None
+
     def table_cell_names(self) -> list[str]:
         """
         Get the issue names.
@@ -431,9 +439,79 @@ class ExcelProp:
         """
         return [cell.value for cell in self.table_cells]
 
-    def non_unique(self):
+    def pre_processing(self):
+        """Pre-process the table to get rid of empty rows and repeating issues."""
         counter = collections.Counter(self.table_cell_names())
-        return [key for key, value in counter.items() if value > 1]
+        non_unique = [key for key, value in counter.items() if value > 1]
+        for issue in non_unique:
+            row_eq = _RowEqual(self, issue)
+            row_eq.join_cells()
+        self._empty_rows()
+
+    def add_issue(self, issue_params: tuple[str, str, str, Optional[str], Optional[datetime.date]]):
+        """
+        Add the issue to the table.\n
+
+        issue, state, summary, parent, deadline
+
+        :param issue_params: the values to add to the table
+        :type issue_params: tuple[str, str, str, Optional[str], Optional[datetime.date]]
+        :return: None.
+        """
+        issue_name, issue_state, issue_summary, issue_parent, issue_deadline = issue_params
+        # verify the issue name is not in the table
+        if issue_name in self.table_cell_names:
+            print(f"The issue name {issue_name} is already in the table. It is modified.")
+            return self.modify_issue(issue_params)
+        # prepare the new row
+        add_row = self.new_row(issue_state)
+        self.ws.insert_rows(add_row)
+        # add the values to the associated cells
+        attrs = ["parent", "issue", "summary", "deadline"]
+        values = [issue_parent, issue_name, issue_summary, issue_deadline]
+        self._parse_attr_seq(attrs, values, add_row)
+
+    def _parse_attr(self, attr: str, value, row: int):
+        """
+        Add the issue attribute value to the table.
+
+        :param str attr: the attribute name
+        :param value: the attribute value
+        :param int row: the row in the table
+        :return: None.
+        """
+        if attr in self.dict_attr_column.keys():
+            if value is not None:
+                column_letter = self.dict_attr_column[attr]
+                self.ws[f"{column_letter}{row}"].value = value
+            else:
+                print("The None value is not assigned.")
+
+    def _parse_attr_seq(self, attrs: list[str], values: list[str], row: int):
+        if len(attrs) != len(values):
+            print("Improper lengths.")
+            return
+        for attr, value in zip(attrs, values):
+            self._parse_attr(attr, value, row)
+
+    def modify_issue(self, issue_params: tuple[str, str, str, Optional[str], Optional[datetime.date]]):
+        issue_name, issue_state, issue_summary, issue_parent, issue_deadline = issue_params
+        if issue_name not in self.table_cell_names():
+            print(f"The issue {issue_name} is not in the table. It is added.")
+            return self.add_issue(issue_params)
+        table_cell = self.table_cell_issue(issue_name)
+        row = table_cell.row
+        if table_cell.parent != issue_parent:
+            self._parse_attr("parent", issue_parent, row)
+        if table_cell.summary() != issue_summary:
+            self._parse_attr("summary", issue_summary, row)
+        if table_cell.deadline() != issue_deadline:
+            self._parse_attr("deadline", issue_deadline, row)
+        if table_cell.state != issue_state:
+            add_row = self.new_row(issue_state)
+            for cell in self.cell_in_range(f"B{row}", f"NT{row}"):
+                self.replace_cell(from_=cell, to_=self.ws[f"{cell.column_letter}{add_row}"])
+            self.ws.delete_rows(row)
 
 
 class TableCell:
@@ -455,10 +533,10 @@ class TableCell:
     Functions:
         _shift_col_idx(column) --- get the shift between the column and the base cell;\n
         _shift_cell(shift) --- get the shifted cell in the same row;\n
-        _commentary() --- get the commentary;\n
-        _summary() --- get the summary;\n
-        _deadline() --- get the deadline;\n
-        _parent() --- get the parent issue name;\n
+        commentary() --- get the commentary;\n
+        summary() --- get the summary;\n
+        deadline() --- get the deadline;\n
+        parent() --- get the parent issue name;\n
         pyxl_row() --- get the values to operate with the Issue instances;\n
         _cell_range() --- generate the cells in the range;\n
         _pyxl_cells() --- get the work item cells;\n
@@ -582,7 +660,7 @@ class TableCell:
         """
         return self.excel_prop.cell_states[self.cell.coordinate]
 
-    def _commentary(self) -> str:
+    def commentary(self) -> str:
         """
         Get the issue commentary.
 
@@ -591,7 +669,7 @@ class TableCell:
         """
         return self._shift_cell(self._shift_col_idx("NT")).value
 
-    def _summary(self) -> str:
+    def summary(self) -> str:
         """
         Get the issue summary.
 
@@ -600,7 +678,7 @@ class TableCell:
         """
         return self._shift_cell(1).value
 
-    def _deadline(self) -> Optional[datetime.date]:
+    def deadline(self) -> Optional[datetime.date]:
         """
         Get the issue deadline if exists.
 
@@ -609,7 +687,7 @@ class TableCell:
         """
         return self._shift_cell(2).value
 
-    def _parent(self):
+    def parent(self):
         """
         Get the parent issue name if exists.
 
@@ -625,7 +703,7 @@ class TableCell:
         :return: the attribute values.
         :rtype: tuple[str, str, str, Optional[str], Optional[datetime.date]]
         """
-        return self.issue, self.state, self._summary(), self._parent(), self._deadline()
+        return self.issue, self.state, self.summary(), self.parent(), self.deadline()
 
     def _cell_range(self):
         """
@@ -751,7 +829,7 @@ class TableCell:
         """
         if cell not in self._pyxl_cells():
             return cell.style.name
-        elif self.excel_prop.get_date_by_cell(cell) == self._deadline():
+        elif self.excel_prop.get_date_by_cell(cell) == self.deadline():
             return "deadline"
         elif cell != self.cell_last:
             return "active"
@@ -791,7 +869,7 @@ class _RowEqual:
         work_item_cells() --- get the cells to join;\n
         max_prior_min_row() --- get the minimum row if the issues have the same states;\n
         cell_final() --- get the final cell to keep in the table;\n
-        replace_cells() --- join the cells into the one issue;\n
+        join_cells() --- join the cells into the one issue;\n
     """
     def __init__(self, excel_prop: ExcelProp, issue: str):
         self.excel_prop = excel_prop
@@ -889,8 +967,8 @@ class _RowEqual:
             if cell.row == self.max_prior_min_row():
                 return cell
 
-    def replace_cells(self):
-        """Replace the work items to the final issue."""
+    def join_cells(self):
+        """Join the work items to the final issue."""
         row_final = self.cell_final().row
         for cell in self.work_item_cells():
             self.excel_prop.replace_cell(from_=cell, to_=f"{cell.column_letter}{row_final}")
@@ -902,24 +980,7 @@ class _RowEqual:
 
 
 def main():
-    path = "/Users/user/Desktop/test.xlsx"
-    wb = openpyxl.load_workbook(path)
-    ws: Worksheet = wb["12"]
-    styles = _StyleWorkItemList("styles")
-    excel_prop = ExcelProp(ws, "excel_prop", styles)
-
-    # print(excel_prop.cell_states)
-    # print(excel_prop.table_cell_items())
-    # print(excel_prop.non_unique())
-    print(type(excel_prop.styles["basic"]))
-    print(excel_prop.headers_row)
-    for issue in excel_prop.non_unique():
-        row_eq = _RowEqual(excel_prop, issue)
-        print(row_eq.cells)
-        row_eq.replace_cells()
-    print(excel_prop.headers_row)
-    excel_prop._empty_rows()
-    print(excel_prop.headers_row)
+    pass
 
 
 if __name__ == "__main__":
