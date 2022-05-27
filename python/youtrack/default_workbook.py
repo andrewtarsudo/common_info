@@ -8,7 +8,7 @@ from _style_work_item import _StyleWorkItemList
 
 class ConstDefaultWs:
     """
-    
+
     """
     # style_name: (rus_name, cell_style_coordinate, cell_legend_coordinate
     dict_legend = {
@@ -30,7 +30,7 @@ class ConstDefaultWs:
         'july': ('ИЮЛЬ', 'GK1', 31), 'august': ('АВГУСТ', 'HQ1', 31), 'september': ('СЕНТЯБРЬ', 'IW1', 30),
         'october': ('ОКТЯБРЬ', 'KB1', 31), 'november': ('НОЯБРЬ', 'LH1', 30), 'december': ('ДЕКАБРЬ', 'MM1', 31)
     }
-    
+
     dict_month_titles: dict[str, tuple[str, str, str]] = {
         'january': ('ЯНВАРЬ', 'G2', 'AK2'), 'february': ('ФЕВРАЛЬ', 'AM2', 'BN2'), 'march': ('МАРТ', 'BP2', 'CT2'),
         'april': ('АПРЕЛЬ', 'CV2', 'DY2'), 'may': ('МАЙ', 'EA2', 'FE2'), 'june': ('ИЮНЬ', 'FG2', 'GJ2'),
@@ -38,7 +38,7 @@ class ConstDefaultWs:
         'october': ('ОКТЯБРЬ', 'KC2', 'LG2'), 'november': ('НОЯБРЬ', 'LI2', 'ML2'),
         'december': ('ДЕКАБРЬ', 'MN2', 'NR2')
     }
-    
+
     cells_headers: tuple[tuple[int, str]] = ((3, 'Active'), (7, 'New/Paused'), (11, 'Active/Done'), (15, 'Verified'))
     # holidays
     yy: int = datetime.date.today().year
