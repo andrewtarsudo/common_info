@@ -13,6 +13,7 @@ generate_from_style(name, base_style, cell_attrs, values) -> _StyleWorkItem --- 
 
 from copy import copy
 from typing import Union
+import openpyxl.styles.numbers
 from openpyxl.styles.numbers import FORMAT_GENERAL, FORMAT_TEXT, FORMAT_NUMBER_00, FORMAT_DATE_XLSX14
 from openpyxl.styles.alignment import Alignment
 from openpyxl.styles.borders import Border, Side, BORDER_THIN, BORDER_THICK
@@ -32,7 +33,7 @@ def basic():
     :rtype: _StyleWorkItem
     """
     return _StyleWorkItem(
-        "basic", True, number_format=FORMAT_GENERAL, alignment=ConstStyle.TMP_ALIGNMENT,
+        "basic", False, number_format=FORMAT_GENERAL, alignment=ConstStyle.TMP_ALIGNMENT,
         border=ConstStyle.TMP_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.TMP_FONT,
         protection=ConstStyle.TMP_PROTECTION, data_type="s"
     )
@@ -83,8 +84,8 @@ def month_styles():
     :rtype: list[_StyleWorkItem]
     """
     return [generate_from_style(
-            f"{month}_header", _basic_month_style(), ["alignment", "fill"], [ConstStyle.ROTATE_ALIGNMENT, fill])
-            for month, fill in ConstStyle.dict_months_color.items()]
+        f"{month}_header", _basic_month_style(), ["alignment", "fill"], [ConstStyle.ROTATE_ALIGNMENT, fill])
+        for month, fill in ConstStyle.dict_months_color.items()]
 
 
 def month_merged_styles():
@@ -363,6 +364,10 @@ class _StyleWorkItem:
         else:
             return NotImplemented
 
+    def __bool__(self):
+        return any((self.name, self.number_format, self.alignment, self.border, self.fill,
+                    self.font, self.protection, self.data_type) is not None)
+
     @property
     def get_named(self):
         """
@@ -378,26 +383,42 @@ class _StyleWorkItem:
         else:
             return self
 
-    def set_style(self, cell: Cell):
+    def _reversed_style(self):
+        """
+        Get the _StyleWorkItem instance.
+
+        :return: the style work item.
+        :rtype: _StyleWorkItem
+        """
+        if isinstance(self, NamedStyle):
+            return _StyleWorkItem(
+                name=self.name, _is_named=False, font=self.font, fill=self.fill, border=self.border,
+                alignment=self.alignment, number_format=self.number_format, protection=self.protection)
+        else:
+            return self
+
+    def set_style(self, cell: Cell) -> bool:
         """
         Specify the style of the cell.
 
         :param cell: the cell or the cell coordinates
-        :type cell: Cell or str
-        :return: None
+        :type cell: Cell
+        :return: the implementation flag.
+        :rtype: bool
         """
         # apply the number format
-        cell.style.number_format = copy(self.number_format)
+        cell._style.numFmtId = openpyxl.styles.numbers.builtin_format_id(self.number_format)
         # apply the alignment
-        cell.style.alignment = copy(self.alignment)
+        cell.alignment = copy(self.alignment)
         # apply the border
-        cell.style.border = copy(self.border)
+        cell.border = copy(self.border)
         # apply the fill
-        cell.style.fill = copy(self.fill)
+        cell.fill = copy(self.fill)
         # apply the font
-        cell.style.font = copy(self.font)
+        cell.font = copy(self.font)
         # apply the protection
-        cell.style.protection = copy(self.protection)
+        cell.protection = copy(self.protection)
+        return True
 
 
 def generate_from_style(name: str, base_style: _StyleWorkItem, attrs: list = None, values: list = None):
@@ -424,6 +445,21 @@ def generate_from_style(name: str, base_style: _StyleWorkItem, attrs: list = Non
         return style
 
 
+def _reversed_style(style: Union[NamedStyle, _StyleWorkItem]):
+    """
+    Get the _StyleWorkItem instance.
+
+    :return: the style work item.
+    :rtype: _StyleWorkItem
+    """
+    if isinstance(style, NamedStyle):
+        return _StyleWorkItem(
+            name=style.name, _is_named=False, font=style.font, fill=style.fill, border=style.border,
+            alignment=style.alignment, number_format=style.number_format, protection=style.protection)
+    else:
+        return style
+
+
 class _StyleWorkItemList:
     """
     Define the style list.
@@ -436,6 +472,7 @@ class _StyleWorkItemList:
     Functions:
         set_style(style_name, cell/coord) --- set the style to the cell;\n
     """
+
     def __init__(self, name: str):
         self.name = name
         self.styles: dict[str, Union[_StyleWorkItem, NamedStyle]] = dict()
@@ -445,11 +482,7 @@ class _StyleWorkItemList:
         self.styles["header"] = header().get_named
         self.styles["title"] = title().get_named
         self.styles["month_date"] = month_date_style().get_named
-        for style in state_styles():
-            self.styles[style.name] = style.get_named
-        for style in month_styles():
-            self.styles[style.name] = style.get_named
-        for style in month_merged_styles():
+        for style in [*state_styles(), *month_styles(), month_merged_styles()]:
             self.styles[style.name] = style.get_named
 
     def __str__(self):
@@ -498,7 +531,10 @@ class _StyleWorkItemList:
         :type cell: Cell
         :return: None.
         """
-        return self.styles[style_name].set_style(cell)
+        style = _reversed_style(self.styles[style_name])
+        if not style.set_style(cell):
+            print(f"Something went wrong. The style {repr(style)}, name {style_name}, type {type(style)}, is not "
+                  f"implemented.")
 
 
 def main():
