@@ -4,10 +4,34 @@ from openpyxl.cell.cell import Cell
 from openpyxl.workbook.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from yt_config import UserConfig
-from yt_requests import User, Issue, IssueWorkItem, _IssueMerged
-from xl_table import ExcelProp, PyXLRow, PyXLWorkItem, _PyXLMerged
+from yt_requests import User, Issue, IssueWorkItem
+from xl_table import ExcelProp, TableCell, _RowEqual
 from _style_work_item import _StyleWorkItemList
 import datetime
+from openpyxl.styles.named_styles import NamedStyle
+from openpyxl.utils.cell import coordinate_to_tuple
+
+
+def is_coord(value: str) -> bool:
+    """
+    Verify if the value is a cell coordinate.
+
+    :param str value: the value to verify
+    :return: the verification flag.
+    :rtype: bool
+    """
+    try:
+        coordinate_to_tuple(value)
+    except KeyError:
+        return False
+    except ValueError:
+        return False
+    except TypeError:
+        return False
+    except UnboundLocalError:
+        return False
+    else:
+        return True
 
 
 def separate_issues(excel_prop: ExcelProp, user: User) -> dict[str, list[str]]:
@@ -30,6 +54,14 @@ def separate_issues(excel_prop: ExcelProp, user: User) -> dict[str, list[str]]:
     # issues that changed
     dict_issue_names["names_changed"] = [*set.intersection(xl_names, yt_names)]
     return dict_issue_names
+
+
+def convert_issue_table_cell(issue: Issue, excel_prop: ExcelProp):
+    add_row = excel_prop.new_row(issue.state)
+    excel_prop.ws.insert_rows(add_row)
+    issue_parent = issue.parent
+    issue_name = issue.issue
+
 
 
 def _convert_to_pyxl_row(issue_merged: _IssueMerged, excel_prop: ExcelProp) -> PyXLRow:
@@ -139,20 +171,33 @@ def modify_issues():
     pass
 
 
+def add_styles(wb: Workbook, styles: _StyleWorkItemList):
+    for style in styles:
+        if not isinstance(style, NamedStyle):
+            continue
+        else:
+            if style.name in wb.style_names:
+                wb._named_styles.remove(style)
+            wb._named_styles.append(style)
+            style.bind(wb)
+
+
 def main():
     youtrack_config = UserConfig()
     user = User(youtrack_config)
     user.get_issue_work_items()
     user.get_issues()
     user.get_current_issues()
-    yt_issues_merged = user.get_merged()
 
     path = youtrack_config.get_json_attr("path_table")
-    wb = openpyxl.load_workbook(path)
+    wb: Workbook = openpyxl.load_workbook(path)
     ws: Worksheet = wb["12 мес."]
     style_list = _StyleWorkItemList("styles")
+    add_styles(wb, style_list)
+
     excel_prop = ExcelProp(ws, "excel_prop", style_list)
-    pyxl_issues_merged = excel_prop.get_merged()
+    excel_prop.pre_processing()
+    excel_prop.table_cell_items()
 
     dict_issues = separate_issues(excel_prop, user)
 
