@@ -10,20 +10,6 @@ from yt_config import UserConfig
 from collections import Counter
 
 
-class ConstYT:
-    """
-    Contain the constants.
-
-    Constants:\n
-        date_conversion_rules --- the rules to convert the user input dates;
-    """
-    # patterns to parse user-defined period dates
-    date_conversion_rules = (
-        (re.compile(r'(\d{4}).(\d{1,2}).(\d{1,2})'), (1, 2, 3)),
-        (re.compile(r'(\d{1,2}).(\d{1,2}).(\d{4})'), (3, 2, 1))
-    )
-
-
 def convert_long_date(long) -> Optional[datetime.date]:
     """
     Convert the long value to the date.
@@ -117,7 +103,12 @@ def convert_date_iso(input_date: str) -> Optional[datetime.date]:
     :param str input_date: the date to convert
     :return: the modified date of the str type.
     """
-    for pattern, group_match in ConstYT.date_conversion_rules:
+    # the rules to convert the user input dates;
+    date_conversion_rules = (
+        (re.compile(r'(\d{4}).(\d{1,2}).(\d{1,2})'), (1, 2, 3)),
+        (re.compile(r'(\d{1,2}).(\d{1,2}).(\d{4})'), (3, 2, 1))
+    )
+    for pattern, group_match in date_conversion_rules:
         match = re.match(pattern, input_date)
         # find the pattern to convert
         if match:
@@ -210,7 +201,7 @@ class User:
         get_issue_work_items() --- get the IssueWorkItem instances;\n
         get_issues() --- get the Issue instances;\n
         get_current_issues() --- get the Issue instances with no work items;\n
-        issues_from_yt() --- get all issue information from the YouTrack;\n
+        issues_from_yt() --- get and pre-process the instances from the YouTrack;\n
         _join_work_items() --- combine the non-unique work items;\n
     """
 
@@ -434,7 +425,7 @@ class User:
         """
         return list(self.dict_issue.keys())
 
-    def issues_from_yt(self):
+    def pre_processing(self):
         """Get all YouTrack information."""
         self.get_issue_work_items()
         self.get_issues()
