@@ -1,6 +1,9 @@
-import collections
+from collections import Counter
 from typing import Optional, Union, Any
 import datetime
+
+import openpyxl
+from openpyxl.workbook.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
 from openpyxl.utils.cell import coordinate_to_tuple, get_column_letter, column_index_from_string
@@ -122,15 +125,22 @@ class ExcelProp:
         __index(state) --- get the state index;\n
         table_cell_items() --- get the TableCell instances;\n
         pre_processing() --- pre-process the table to get rid of empty rows and repeating issues;\n
+        _unmerge_headers() --- unmerge the header cells;\n
+        _headers_basic_style() --- set the basic style to the header cells;\n
+        _merge_headers() --- merge the header cells;\n
+        _headers_header_style() --- set the header style to the header cells;\n
     """
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
     dict_headers_short = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3}
     dict_state_style = {
         "New": "basic",
+        "New/Paused": "paused",
         "Active": "active",
         "Paused": "paused",
+        "Active/Paused": "active",
         "Done": "done",
         "Test": "test",
+        "Done/Test": "done",
         "Verified": "verified_closed",
         "Closed": "verified_closed",
         "Discuss": "paused",
@@ -219,6 +229,16 @@ class ExcelProp:
         return [cell for cell in self.cell_in_range("B3", end_coord) if cell.value in ExcelProp.dict_headers.keys()]
 
     @property
+    def headers_short(self) -> list[Cell]:
+        """
+        Get the header cells without the legend.
+
+        :return: the cells.
+        :rtype: list[Cell]
+        """
+        return self.headers[:3]
+
+    @property
     def headers_row(self) -> list[int]:
         """
         Get the header row values.
@@ -227,6 +247,57 @@ class ExcelProp:
         :rtype: list[int]
         """
         return [header.row for header in self.headers]
+
+    @property
+    def headers_row_short(self) -> list[int]:
+        """
+        Get the header row values without the legend.
+
+        :return: the list of header rows.
+        :rtype: list[int]
+        """
+        return self.headers_row[:3]
+
+    def _unmerge_all_headers(self):
+        """Unmerge the header cells."""
+        # the common headers
+        for header_row in self.headers_row_short:
+            self.ws.unmerge_cells(start_row=header_row, start_column=2, end_row=header_row, end_column=5)
+        # the legend header
+        header_legend_row = self.headers_row[4]
+        self.ws.unmerge_cells(start_row=header_legend_row, start_column=2, end_row=header_legend_row, end_column=3)
+
+    def _headers_all_basic(self):
+        """Set the basic style to the header cells."""
+        # the common headers
+        for header_row in self.headers_row_short:
+            start_coord = f"B{header_row}"
+            end_coord = f"E{header_row}"
+            for cell in self.cell_in_range(start_coord, end_coord):
+                self.styles.set_style("basic", cell)
+        # the legend header
+        header_legend_row = self.headers_row[4]
+        start_coord = f"B{header_legend_row}"
+        end_coord = f"C{header_legend_row}"
+        for cell in self.cell_in_range(start_coord, end_coord):
+            self.styles.set_style("basic", cell)
+
+    def _merge_all_headers(self):
+        """Merge the header cells."""
+        # the common headers
+        for header_row in self.headers_row_short:
+            range_string = f"B{header_row}:E{header_row}"
+            self.ws.merge_cells(range_string)
+        # the legend header
+        header_legend_row = self.headers_row[4]
+        range_string = f"B{header_legend_row}:C{header_legend_row}"
+        self.ws.merge_cells(range_string)
+
+    def _headers_header_style(self):
+        """Set the header style to the header cells."""
+        for header_row in self.headers_row:
+            cell = self.ws[f"B{header_row}"]
+            self.styles.set_style("header", cell)
 
     def _check_empty(self, item: Union[int, str, Cell]) -> bool:
         """
@@ -252,16 +323,22 @@ class ExcelProp:
 
     def _empty_rows(self):
         """Delete all empty rows except for the pre-headers."""
+        # TODO
+        self._unmerge_all_headers()
+        self._headers_all_basic()
         list_empty = []
         for state in self.dict_headers_short.keys():
             low_limit = self.headers_row[self.__index(state)] + 1
-            high_limit = self.headers_row[self.__index(state) + 1] - 1
+            high_limit = self.headers_row[self.__index(state) + 1] - 3
             for row in range(low_limit, high_limit):
                 if self._check_empty(row):
                     list_empty.append(row)
-        print(list_empty)
+        print(f"list_empty={list_empty}")
         for empty_row in sorted(list_empty, reverse=True):
             self.ws.delete_rows(empty_row)
+            print(f"headers_row={self.headers_row}")
+        self._merge_all_headers()
+        self._headers_header_style()
 
     def replace_cell(self, *, from_: Union[Cell, str], to_: Optional[Union[Cell, str]] = None):
         """
@@ -393,11 +470,14 @@ class ExcelProp:
 
     def pre_processing(self):
         """Pre-process the table to get rid of empty rows and repeating issues."""
-        counter = collections.Counter(self.table_cell_names())
-        non_unique = [key for key, value in counter.items() if value > 1]
-        for issue in non_unique:
-            row_eq = _RowEqual(self, issue)
-            row_eq.join_cells()
+        # TODO
+        # counter = Counter(self.table_cell_names())
+        # non_unique = [key for key, value in counter.items() if value > 1]
+        # print(non_unique)
+        # for issue in non_unique:
+        #     row_eq = _RowEqual(self, issue)
+        #     row_eq.join_cells()
+        #     print(row_eq.max_prior_min_row())
         self._empty_rows()
 
 
@@ -867,7 +947,26 @@ class _RowEqual:
 
 
 def main():
-    pass
+    wb: Workbook = openpyxl.load_workbook(r"C:\Users\tarasov-a\Desktop\Отчет_2022_Тарасов.xlsx")
+    ws: Worksheet = wb["12 мес."]
+    styles = _StyleWorkItemList("styles")
+    styles.add_styles(wb)
+    excel_prop = ExcelProp(ws, "excel_prop", styles)
+    excel_prop.pre_processing()
+    # excel_prop.ws.delete_rows(10)
+    # excel_prop.pre_processing()
+    # excel_prop.ws.delete_rows(9)
+    # excel_prop.pre_processing()
+    # print(excel_prop.headers)
+    # for cell in excel_prop.table_cells:
+    #     table_cell = TableCell(excel_prop, cell)
+    #     for work_item in table_cell.work_items():
+    #         work_item_cell = table_cell.mapping_work_item_cell(work_item)
+    #         proper_style = table_cell.proper_cell_style(work_item_cell)
+    #         table_cell.set_cell_style(proper_style, work_item_cell)
+
+    wb.save(r"C:\Users\tarasov-a\Desktop\test_Отчет_2022_Тарасов.xlsx")
+    wb.close()
 
 
 if __name__ == "__main__":
