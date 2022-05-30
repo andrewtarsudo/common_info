@@ -1,9 +1,10 @@
 import datetime
 from openpyxl.workbook.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.cell.cell import Cell
+from openpyxl.cell.cell import Cell, MergedCell
 from openpyxl.utils.cell import get_column_letter, coordinate_from_string, column_index_from_string, coordinate_to_tuple
-from _style_work_item import _StyleWorkItemList
+from _style_work_item import ConstStyle, _StyleWorkItemList
+from openpyxl.styles.named_styles import NamedStyle
 
 
 class ConstDefaultWs:
@@ -59,6 +60,7 @@ class ConstDefaultWs:
         day += time_delta
 
     weekend_rows = (4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18)
+    between_months_rows = (2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18)
     # for set_fill_color:
     #     # type_fill: str, fill_color: str, tint: float = None, theme: int = None
     dict_months_colors = {
@@ -189,7 +191,7 @@ class WorksheetDefault:
                 yield self.ws[f'{get_column_letter(col)}{row}']
 
     def set_dates(self):
-        """Specify the dates in _row 1."""
+        """Specify the dates in row 1."""
         for index, month_params in enumerate(ConstDefaultWs.dict_month_ranges.values()):
             _, coord, num_days = month_params
             start_col_idx = coordinate_to_tuple(coord)[1]
@@ -263,7 +265,7 @@ class WorksheetDefault:
                 self.styles.set_style("header", cell)
 
     def set_title(self):
-        """Apply the title style to the title _row."""
+        """Apply the title style to the title row."""
         for title, coord in ConstDefaultWs.dict_titles.values():
             cell: Cell = self.ws[f'{coord}']
             cell.value = title
@@ -279,9 +281,69 @@ class WorksheetDefault:
             self.styles.set_style(style_name, cell)
             self.ws[f"{legend}"].value = rus_name
 
+    def add_to_wb(self):
+        for style in self.styles:
+            if isinstance(style, NamedStyle):
+                if style.name in self.wb.style_names:
+                    self.wb.named_styles.remove(style)
+                self.wb.add_named_style(style)
+            else:
+                continue
+
+    def set_between_months(self):
+        """Set the style in the rows between the months."""
+        for _, coord, _ in ConstDefaultWs.dict_month_ranges.values():
+            column = get_column_letter(coordinate_to_tuple(coord)[1])
+            for row in ConstDefaultWs.between_months_rows:
+                cell: Cell = self.ws[f"{column}{row}"]
+                self.styles.set_style("header", cell)
+
+    def set_top_bottom_thick_border(self):
+        for _, coord, _ in ConstDefaultWs.dict_month_titles.values():
+            cell: Cell = self.ws[f"{coord}"]
+            cell.border = ConstStyle.TOP_BOTTOM_BORDER
+
+    def set_top_bottom_left_thick_border(self):
+        for row, _ in ConstDefaultWs.cells_headers:
+            cell: MergedCell = self.ws[f"B{row}"]
+            cell.border = ConstStyle.TOP_BOTTOM_LEFT_BORDER
+
 
 def main():
-    pass
+    wb: Workbook = Workbook()
+    ws: Worksheet = wb.active
+    ws.title = "12"
+    styles = _StyleWorkItemList("styles")
+    ws_default = WorksheetDefault(wb, ws, styles)
+    ws_default.add_to_wb()
+    print("Done")
+    # ws_default.set_default()
+    ws_default.set_dates()
+    print("Done")
+    ws_default.month_cell_merge()
+    print("Done")
+    ws_default.set_month_names()
+    print("Done")
+    ws_default.set_month_titles()
+    print("Done")
+    ws_default.set_weekends()
+    print("Done")
+    ws_default.set_headers()
+    print("Done")
+    ws_default.set_headers_row()
+    print("Done")
+    ws_default.set_title()
+    print("Done")
+    ws_default.set_legend()
+    print("Done")
+    ws_default.set_between_months()
+    print("Done")
+    ws_default.set_top_bottom_thick_border()
+    print("Done")
+    ws_default.set_top_bottom_left_thick_border()
+    print("Done")
+    wb.save("default_worksheet.xlsx")
+    wb.close()
 
 
 if __name__ == '__main__':
