@@ -9,33 +9,6 @@ from _style_work_item import _StyleWorkItemList
 from copy import copy
 
 
-def convert_issue_state(state: str) -> str:
-    """
-    Converts the state to the table headers.
-
-    :param str state: the issue state
-    :return: the modified state.
-    :rtype: str
-    """
-    # the issues to convert to the New/Paused
-    to_new_paused = ('New', 'Paused', 'Canceled', 'Discuss')
-    # the issues to convert to the Done/Test
-    to_done_test = ('Done', 'Test', 'Review')
-    # the issues to convert to the Verified
-    to_verified = ('Closed',)
-
-    if state in to_new_paused:
-        modified_state = 'New/Paused'
-    elif state in to_done_test:
-        modified_state = 'Done/Test'
-    elif state in to_verified:
-        modified_state = 'Verified'
-    else:
-        print(f"Unspecified state {state} is found.")
-        modified_state = state
-    return modified_state
-
-
 def check_coord(coord: str) -> bool:
     """
     Verify the cell coordinate.
@@ -118,7 +91,6 @@ class ExcelProp:
     Constants:
         dict_headers --- the dictionary of the states and indexes;\n
         dict_headers_short --- the dictionary of the issue states and indexes;\n
-        dict_attr_column --- the dictionary of the issue attributes and columns;\n
         dict_state_style --- the dictionary of the states and cell styles;\n
         dict_state_priority --- the dictionary of the states and priorities;\n
 
@@ -153,7 +125,6 @@ class ExcelProp:
     """
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
     dict_headers_short = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3}
-    dict_attr_column = {"parent": "B", "issue": "C", "summary": "D", "deadline": "E", "commentary": "NT"}
     dict_state_style = {
         "New": "basic",
         "Active": "active",
@@ -292,16 +263,6 @@ class ExcelProp:
         for empty_row in sorted(list_empty, reverse=True):
             self.ws.delete_rows(empty_row)
 
-    def new_row(self, state: str) -> int:
-        """
-        Get the row for the new issue in the table.
-
-        :param str state: the issue state
-        :return: the row number.
-        :rtype: int
-        """
-        return self.headers_row[self.__index(state) + 1] - 1
-
     def replace_cell(self, *, from_: Union[Cell, str], to_: Optional[Union[Cell, str]] = None):
         """
         Replace the cell attribute values to another cell. If to_ is None, the values are deleted.
@@ -401,15 +362,6 @@ class ExcelProp:
         """
         return [self.ws[f"{coord}"] for coord in self.cell_states if self.ws[f"{coord}"].value is not None]
 
-    def table_cell_items(self):
-        """
-        Get the TableCell instances.
-
-        :return: the TableCell instances.
-        :rtype: list[TableCell]
-        """
-        return [TableCell(self, cell) for cell in self.table_cells]
-
     def table_cell_issue(self, table_base: Union[int, Cell, str]):
         """
         Get the TableCell instance based on the row, cell, or issue name.
@@ -448,71 +400,6 @@ class ExcelProp:
             row_eq.join_cells()
         self._empty_rows()
 
-    def add_issue(self, issue_params: tuple[str, str, str, Optional[str], Optional[datetime.date]]):
-        """
-        Add the issue to the table.\n
-
-        issue, state, summary, parent, deadline
-
-        :param issue_params: the values to add to the table
-        :type issue_params: tuple[str, str, str, Optional[str], Optional[datetime.date]]
-        :return: None.
-        """
-        issue_name, issue_state, issue_summary, issue_parent, issue_deadline = issue_params
-        # verify the issue name is not in the table
-        if issue_name in self.table_cell_names:
-            print(f"The issue name {issue_name} is already in the table. It is modified.")
-            return self.modify_issue(issue_params)
-        # prepare the new row
-        add_row = self.new_row(issue_state)
-        self.ws.insert_rows(add_row)
-        # add the values to the associated cells
-        attrs = ["parent", "issue", "summary", "deadline"]
-        values = [issue_parent, issue_name, issue_summary, issue_deadline]
-        self._parse_attr_seq(attrs, values, add_row)
-
-    def _parse_attr(self, attr: str, value, row: int):
-        """
-        Add the issue attribute value to the table.
-
-        :param str attr: the attribute name
-        :param value: the attribute value
-        :param int row: the row in the table
-        :return: None.
-        """
-        if attr in self.dict_attr_column.keys():
-            if value is not None:
-                column_letter = self.dict_attr_column[attr]
-                self.ws[f"{column_letter}{row}"].value = value
-            else:
-                print("The None value is not assigned.")
-
-    def _parse_attr_seq(self, attrs: list[str], values: list[str], row: int):
-        if len(attrs) != len(values):
-            print("Improper lengths.")
-            return
-        for attr, value in zip(attrs, values):
-            self._parse_attr(attr, value, row)
-
-    def modify_issue(self, issue_params: tuple[str, str, str, Optional[str], Optional[datetime.date]]):
-        issue_name, issue_state, issue_summary, issue_parent, issue_deadline = issue_params
-        if issue_name not in self.table_cell_names():
-            print(f"The issue {issue_name} is not in the table. It is added.")
-            return self.add_issue(issue_params)
-        table_cell = self.table_cell_issue(issue_name)
-        row = table_cell.row
-        if table_cell.parent != issue_parent:
-            self._parse_attr("parent", issue_parent, row)
-        if table_cell.summary() != issue_summary:
-            self._parse_attr("summary", issue_summary, row)
-        if table_cell.deadline() != issue_deadline:
-            self._parse_attr("deadline", issue_deadline, row)
-        if table_cell.state != issue_state:
-            add_row = self.new_row(issue_state)
-            for cell in self.cell_in_range(f"B{row}", f"NT{row}"):
-                self.replace_cell(from_=cell, to_=self.ws[f"{cell.column_letter}{add_row}"])
-            self.ws.delete_rows(row)
-
 
 class TableCell:
     """
@@ -542,8 +429,8 @@ class TableCell:
         _pyxl_cells() --- get the work item cells;\n
         work_items() --- get the work items;\n
         set_cell_style(style_name, cell) --- set the style to the cell;\n
-        _mapping_cell_work_item(cell) --- convert the cell to the work item;\n
-        _mapping_work_item_cell(work_item) --- convert the work item to the cell;\n
+        mapping_cell_work_item(cell) --- convert the cell to the work item;\n
+        mapping_work_item_cell(work_item) --- convert the work item to the cell;\n
         compare_cell_work_item(cell, work_item) --- verify the coincidence of the cell and work item;\n
         add_work_item(work_item) --- add the work item to the row;
         _proper_cell_style(cell) --- get the cell style based on the state;\n
@@ -729,7 +616,7 @@ class TableCell:
         :return: the work items.
         :rtype: list[tuple[str, datetime.date, Decimal]]
         """
-        return [self._mapping_cell_work_item(cell) for cell in self._pyxl_cells()]
+        return [self.mapping_cell_work_item(cell) for cell in self._pyxl_cells()]
 
     @property
     def cell_last(self) -> Cell:
@@ -751,7 +638,7 @@ class TableCell:
         :rtype: tuple[str, datetime.date, Decimal]
         """
         cell: Cell = self.cell_last
-        return self._mapping_cell_work_item(cell)
+        return self.mapping_cell_work_item(cell)
 
     def set_cell_style(self, style_name: str, cell: Cell):
         """
@@ -764,7 +651,7 @@ class TableCell:
         """
         self.excel_prop.styles.set_style(style_name, cell)
 
-    def _mapping_cell_work_item(self, cell: Cell) -> tuple[str, datetime.date, Decimal]:
+    def mapping_cell_work_item(self, cell: Cell) -> tuple[str, datetime.date, Decimal]:
         """
         Convert the cell to the work item.
 
@@ -776,7 +663,7 @@ class TableCell:
         date = self.excel_prop.get_date_by_cell(cell)
         return self.issue, date, Decimal(cell.value).normalize()
 
-    def _mapping_work_item_cell(self, work_item: tuple[str, datetime.date, Decimal]) -> Cell:
+    def mapping_work_item_cell(self, work_item: tuple[str, datetime.date, Decimal]) -> Cell:
         """
         Convert the work item to the cell.
 
@@ -802,7 +689,7 @@ class TableCell:
         """
         if cell not in self._pyxl_cells() or work_item not in self.work_items():
             return False
-        work_item_cell = self._mapping_work_item_cell(work_item)
+        work_item_cell = self.mapping_work_item_cell(work_item)
         return cell.coordinate == work_item_cell.coordinate
 
     def add_work_item(self, work_item: tuple[str, datetime.date, Decimal]):
@@ -814,11 +701,11 @@ class TableCell:
         :return: None.
         """
         _, date, spent_time = work_item
-        cell = self._mapping_work_item_cell((self.issue, date, spent_time))
+        cell = self.mapping_work_item_cell((self.issue, date, spent_time))
         cell.data_type = "n"
         cell.value = spent_time
 
-    def _proper_cell_style(self, cell: Cell) -> str:
+    def proper_cell_style(self, cell: Cell) -> str:
         """
         Get the cell style based on the state.
 
@@ -838,7 +725,7 @@ class TableCell:
         else:
             return "basic"
 
-    def _proper_work_item_style(self, work_item: tuple[str, datetime.date, Decimal]) -> str:
+    def proper_work_item_style(self, work_item: tuple[str, datetime.date, Decimal]) -> str:
         """
         Get the proper work item style based on the state.
 
@@ -848,8 +735,8 @@ class TableCell:
         :rtype: str
         """
         _, date, spent_time = work_item
-        cell = self._mapping_work_item_cell((self.issue, date, spent_time))
-        return self._proper_cell_style(cell)
+        cell = self.mapping_work_item_cell((self.issue, date, spent_time))
+        return self.proper_cell_style(cell)
 
 
 class _RowEqual:
