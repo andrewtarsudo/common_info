@@ -5,7 +5,6 @@ from yt_config import UserConfig
 from yt_requests import User
 from xl_table import ExcelProp
 from _style_work_item import _StyleWorkItemList
-from openpyxl.styles.named_styles import NamedStyle
 from join_user_excel import JoinUserXL
 
 
@@ -36,24 +35,6 @@ def convert_issue_state(state: str) -> str:
         return state
 
 
-def add_styles(wb: Workbook, styles: _StyleWorkItemList):
-    """
-    Add the named styles to the Workbook styles.
-
-    :param Workbook wb: the Workbook instance
-    :param _StyleWorkItemList styles: the style list
-    :return: None.
-    """
-    for style in styles:
-        if not isinstance(style, NamedStyle):
-            continue
-        else:
-            if style.name in wb.style_names:
-                wb._named_styles.remove(style)
-            wb._named_styles.append(style)
-            style.bind(wb)
-
-
 def main():
     youtrack_config = UserConfig()
     user = User(youtrack_config)
@@ -64,7 +45,7 @@ def main():
     wb: Workbook = openpyxl.load_workbook(path)
     ws: Worksheet = wb["12 мес."]
     style_list = _StyleWorkItemList("styles")
-    add_styles(wb, style_list)
+    style_list.add_styles(wb)
 
     excel_prop = ExcelProp(ws, "excel_prop", style_list)
     excel_prop.pre_processing()
