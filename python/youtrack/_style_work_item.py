@@ -126,7 +126,7 @@ def header():
         fill_type=FILL_SOLID, fgColor=Color(theme=3, tint=0.5999938962981048, type='theme'),
         bgColor=Color(indexed=64, type='indexed'))
     return _StyleWorkItem(
-        "header", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
+        "header", True, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
         border=ConstStyle.TOP_BOTTOM_BORDER, fill=header_fill, font=ConstStyle.THEME_FONT,
         protection=ConstStyle.TMP_PROTECTION, data_type="s")
 
@@ -196,7 +196,7 @@ class ConstStyle:
         outline=True, left=Side(style=BORDER_THICK), right=Side(style=BORDER_THICK), top=Side(style=BORDER_THICK),
         bottom=Side(style=BORDER_THICK))
     TOP_BOTTOM_BORDER = Border(
-        outline=True, left=Side(style=BORDER_THIN), right=Side(style=BORDER_THIN), top=Side(style=BORDER_THICK),
+        outline=True, left=Side(), right=Side(), top=Side(style=BORDER_THICK),
         bottom=Side(style=BORDER_THICK))
     # Cell.fill
     TMP_FILL = PatternFill(
@@ -480,18 +480,6 @@ class _StyleWorkItemList:
         else:
             return NotImplemented
 
-    def __contains__(self, item):
-        return item in self.styles.keys()
-
-    def __getitem__(self, item):
-        return self.styles[item]
-
-    def __setitem__(self, key, value):
-        self.styles[key] = value
-
-    def __iter__(self):
-        return (item for item in self.styles.values())
-
     def set_style(self, style_name: str, cell: Cell):
         """
         Specify the style of the cell.
@@ -507,7 +495,7 @@ class _StyleWorkItemList:
         elif isinstance(style, _StyleWorkItem):
             style.set_style(cell)
         else:
-            print("Something went wrong.")
+            print(f"Something went wrong. Cell {cell.coordinate}. Style: {style_name}.")
 
     def add_styles(self, wb: Workbook):
         """
