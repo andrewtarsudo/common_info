@@ -282,7 +282,7 @@ class WorksheetDefault:
             self.ws[f"{legend}"].value = rus_name
 
     def add_to_wb(self):
-        for style in self.styles:
+        for style in self.styles.styles:
             if isinstance(style, NamedStyle):
                 if style.name in self.wb.style_names:
                     self.wb.named_styles.remove(style)
@@ -302,11 +302,6 @@ class WorksheetDefault:
         for _, coord, _ in ConstDefaultWs.dict_month_titles.values():
             cell: Cell = self.ws[f"{coord}"]
             cell.border = ConstStyle.TOP_BOTTOM_BORDER
-
-    def set_top_bottom_left_thick_border(self):
-        for row, _ in ConstDefaultWs.cells_headers:
-            cell: MergedCell = self.ws[f"B{row}"]
-            cell.border = ConstStyle.TOP_BOTTOM_LEFT_BORDER
 
 
 def main():
@@ -339,8 +334,6 @@ def main():
     ws_default.set_between_months()
     print("Done")
     ws_default.set_top_bottom_thick_border()
-    print("Done")
-    ws_default.set_top_bottom_left_thick_border()
     print("Done")
     wb.save("default_worksheet.xlsx")
     wb.close()
