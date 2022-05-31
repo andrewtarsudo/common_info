@@ -27,7 +27,7 @@ class UserConfig:
         check_json_attrs(file_path) --- verify that all main values are specified;\n
         set_config_file(file_path) ---  the UserConfig instance parameter values;\n
     """
-    path = pathlib.Path("youtrack.json")
+    path = pathlib.Path("./youtrack.json")
 
     today = datetime.date.today()
     date_period_start = datetime.date(today.year, 1, 1)
@@ -109,7 +109,7 @@ class UserConfig:
         :return: the attribute value or None
         :rtype: str or None.
         """
-        if key in UserConfig.conf_values:
+        if key in UserConfig.conf_values.keys():
             return UserConfig.conf_values[key]
         else:
             print(f"AttributeError, the attribute {key} is not specified.")
@@ -125,12 +125,12 @@ class UserConfig:
         :param str value: the attribute value
         :return: None.
         """
-        if key not in UserConfig.conf_values:
+        if key not in UserConfig.conf_values.keys():
             pass
         else:
             UserConfig.conf_values[key] = value
             with open(file_path, "w") as json_file:
-                json.dump(UserConfig.conf_values, json_file)
+                json.dump(UserConfig.conf_values.items(), json_file)
 
     @staticmethod
     def check_json_attrs(file_path: pathlib.Path):
@@ -141,12 +141,12 @@ class UserConfig:
         :return: None.
         """
         for key in UserConfig.attrs:
-            if key not in UserConfig.conf_values:
+            if key not in UserConfig.conf_values.keys():
                 UserConfig.conf_values[key] = UserConfig.default_conf[key]
             else:
                 continue
         with open(file_path, "w") as json_file:
-            json.dump(UserConfig.conf_values, json_file)
+            json.dump(UserConfig.conf_values.items(), json_file)
 
     @staticmethod
     def set_config_file(file_path: pathlib.Path):
@@ -163,6 +163,7 @@ class UserConfig:
         for key, value in conf.items():
             UserConfig.conf_values[key] = value
         name = UserConfig.get_json_attr("login")
+        print(f"name={name}")
         if not name or name in UserConfig.__dict_name_conv:
             login = UserConfig.sys_login()
             UserConfig.update_json_item(file_path, "login", login)
