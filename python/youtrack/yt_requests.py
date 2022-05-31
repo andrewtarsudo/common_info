@@ -163,7 +163,7 @@ def parse_response_issue(response_item: dict):
     state: str = ""
     for item in response_item["customFields"]:
         # define the issue state
-        if item["$type"] == "StateIssueCustomField":
+        if item["$type"] in ("StateIssueCustomField", "StateMachineIssueCustomField"):
             state = item["value"]["name"]
         # define the issue deadline
         elif item["$type"] == "DateIssueCustomField":
@@ -201,7 +201,6 @@ class User:
         get_issue_work_items() --- get the IssueWorkItem instances;\n
         get_issues() --- get the Issue instances;\n
         get_current_issues() --- get the Issue instances with no work items;\n
-        issues_from_yt() --- get and pre-process the instances from the YouTrack;\n
         _join_work_items() --- combine the non-unique work items;\n
     """
 
@@ -273,7 +272,7 @@ class User:
         :return: the headers.
         :rtype: dict[str, str]
         """
-        bearer = " ".join(("Bearer", self.auth_token))
+        bearer = " ".join(("Bearer", self.auth_token()))
         return {
             "Authorization": bearer,
             "Accept": "application/json",
@@ -376,7 +375,7 @@ class User:
 
     def get_issues(self):
         """Get the Issue instances."""
-        issue_names = ",".join([issue_name for issue_name in list(self.dict_issue_work_item.values())])
+        issue_names = ",".join([issue_name for issue_name in list(self.dict_issue_work_item.keys())])
         url = 'https://youtrack.protei.ru/api/issues'
         parameters_fields = ','.join(('idReadable', 'summary', "parent(issues(idReadable))",
                                       'customFields(value,value(name),projectCustomField(field(name)))'))
@@ -416,14 +415,14 @@ class User:
             issue, state, summary, parent, deadline = parse_response_issue(item)
             Issue(self, issue, state, summary, parent, deadline)
 
-    def issue_names(self) -> list[str]:
+    def issue_names(self) -> set[str]:
         """
         Get the issue names.
 
         :return: the issue names.
-        :rtype: list[str]
+        :rtype: set[str]
         """
-        return list(self.dict_issue.keys())
+        return set(self.dict_issue.keys())
 
     def pre_processing(self):
         """Get all YouTrack information."""
@@ -591,7 +590,9 @@ class IssueWorkItem:
         self.date = date
         self.spent_time = Decimal(spent_time).normalize()
 
-        self.user.dict_issue_work_item[self.issue] = self
+        if self.issue not in self.user.dict_issue_work_item.keys():
+            self.user.dict_issue_work_item[self.issue] = []
+        self.user.dict_issue_work_item[self.issue].append(self)
 
     def __str__(self):
         return f"IssueWorkItem: issue = {self.issue}, date = {self.date}, spent time = {self.spent_time}"
