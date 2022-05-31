@@ -1,7 +1,7 @@
 {
-  "login": "tarasov-a",
-  "auth_token": "perm:dGFyYXNvdi1h.NjEtMTQ2.IrYr12bqXijvtczciStS13gntwu2D7",
-  "period_start": "2022-01-01",
-  "period_end": "2022-04-24",
-  "path_table": "/users/User/Desktop/report.xlsx"
+  "login": "brovko",
+  "auth_token": "perm:dGFyYXNvdi1h.NjEtMTUw.gRyarbzX5ieIgKEfgRalpYj1DZ8vA5",
+  "period_start": "2022-05-20",
+  "period_end": "2022-05-31",
+  "path_table": "C:\\Users\\tarasov-a\\Desktop\\brovko_report.xlsx"
 }
