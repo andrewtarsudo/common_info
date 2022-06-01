@@ -12,6 +12,14 @@ from xl_table import ExcelProp, TableCell
 from decimal import Decimal
 
 
+# TODO:
+# get_current_states
+# update issues
+# check new styles in _style_work_item:
+# deadline_issue
+# header_cross
+
+
 def convert_issue_state(state: str) -> str:
     """
     Converts the state to the table headers.
@@ -141,6 +149,8 @@ class JoinUserXL:
             attrs = ["parent", "issue", "summary", "deadline"]
             values = [getattr(issue, attr) for attr in attrs]
             self._parse_attr_seq(attrs, values, add_row)
+            coord = f"C{add_row}"
+            TableCell(self.excel_prop, self.ws[f"{coord}"])
 
     def _parse_attr_seq(self, attrs: list[str], values: list[Any], row: int):
         """
@@ -163,12 +173,11 @@ class JoinUserXL:
                 if value is not None:
                     column_letter = self.dict_attr_column[attr]
                     self.ws[f"{column_letter}{row}"].value = value
-                else:
-                    print("The None value is not assigned.")
 
     def modify_all_issues(self):
         """Modify all issues in the table."""
         names_modify = set.intersection(self.user.issue_names(), self.excel_prop.table_cell_names())
+        print(names_modify)
         for issue_name in names_modify:
             issue, table_cell = self.__get_issue_by_name(issue_name)
             row = table_cell.row
@@ -217,15 +226,20 @@ class JoinUserXL:
                 style_name = table_cell.proper_work_item_style(work_item)
                 self.excel_prop.styles.set_style(style_name, cell)
 
+    def update_states(self):
+        table_names = [issue_name for issue_name in
+                       self.excel_prop.table_cell_names().difference(self.user.issue_names())]
+
+
 
 def old_main():
     youtrack_config = UserConfig().set_config_file(UserConfig.path)
     user = User(youtrack_config)
     user.pre_processing()
-    for issue_name, issue in user.dict_issue.items():
-        print(f"issue_name = {issue_name}, issue = {repr(issue)}")
-    for issue_work_item_name, issue_work_item in user.dict_issue_work_item.items():
-        print(f"issue_work_item_name = {issue_work_item_name}, issue_work_item = {repr(issue_work_item)}")
+    # for issue_name, issue in user.dict_issue.items():
+    #     print(f"issue_name = {issue_name}, issue = {repr(issue)}")
+    # for issue_work_item_name, issue_work_item in user.dict_issue_work_item.items():
+    #     print(f"issue_work_item_name = {issue_work_item_name}, issue_work_item = {repr(issue_work_item)}")
 
     path = Path(youtrack_config.get_json_attr("path_table")).resolve()
     name = path.name
@@ -239,23 +253,28 @@ def old_main():
     style_list.add_styles(wb)
 
     excel_prop = ExcelProp(ws, "excel_prop", style_list)
-    excel_prop.pre_processing()
-
-    join_user_xl = JoinUserXL(user, excel_prop)
-    join_user_xl.add_all_issues()
-    join_user_xl.modify_all_issues()
-    join_user_xl.add_new_work_items()
-    join_user_xl.set_work_item_styles()
+    # excel_prop.pre_processing()
+    excel_prop.delete_row(12)
+    for table_cell in excel_prop.table_cell_items():
+        table_cell.cell_hyperlink_nullify()
+        table_cell.cell_hyperlink()
+    # for table_cell in excel_prop.table_cells:
+    #     print(table_cell.hyperlink)
+    # join_user_xl = JoinUserXL(user, excel_prop)
+    # join_user_xl.add_all_issues()
+    # join_user_xl.modify_all_issues()
+    # join_user_xl.add_new_work_items()
+    # join_user_xl.set_work_item_styles()
 
     print("The work is finished.")
     wb.save(path_new_workbook)
 
 
-def main():
+def get_main():
     youtrack_config = UserConfig().set_config_file(UserConfig.path)
     user = User(youtrack_config)
     Issue(issue="DOC_ST-1467", state="Active", summary="Документация на ПДРА.465672.011 АРМ ДЛ МИ-2 ТИ",
-          parent="DOC_ST-717", deadline=datetime.date.fromisoformat("None"), user=user)
+          parent="DOC_ST-717", deadline=None, user=user)
     Issue(issue="DOC_ST-1611", state="Active", summary="Документы для поставки 021.093 с ВП", parent="None",
           deadline=datetime.date.fromisoformat("2022-04-26"), user=user)
     Issue(issue="DOC_ST-1589", state="Done", summary="Документация 021.096 (Сарапульский завод)", parent="None",
@@ -281,7 +300,7 @@ def main():
     Issue(issue="DOC_ST-899", state="Active", summary="Комплект документации на изделие АТС-Протей ПДРА.465684.020",
           parent="DOC_ST-720", deadline=datetime.date.fromisoformat("2021-03-05"), user=user)
     Issue(issue="DOC-173", state="Active", summary="Отчеты, совещания и прочие административные задачи.",
-          parent="DOC-22", deadline=datetime.date.fromisoformat("None"), user=user)
+          parent="DOC-22", deadline=None, user=user)
     Issue(issue="DOC_ST-1730", state="New", summary="Документы Севмаш 321.003 с ВП", parent="None",
           deadline=datetime.date.fromisoformat("2022-09-09"), user=user)
     Issue(issue="DOC_ST-896", state="Active",
@@ -310,12 +329,12 @@ def main():
           parent="None", deadline=datetime.date.fromisoformat("2021-02-15"), user=user)
     Issue(issue="DOC_ST-1356", state="Active",
           summary="Сертификация «Протей-imSwitch5 СП» (ИК-2020): Документ ПДРА.4604021.050 005-2.0 РЭ Руководство по эксплуатации",
-          parent="DOC_ST-1306", deadline=datetime.date.fromisoformat("None"), user=user)
+          parent="DOC_ST-1306", deadline=None, user=user)
     Issue(issue="DOC-180", state="New", summary="Обновление Технического описания продуктов SSW4/5", parent="None",
           deadline=datetime.date.fromisoformat("2021-12-05"), user=user)
     Issue(issue="ARCH_ST-89", state="New",
           summary="Оформление в архиве CD-диска с тестовыми конфигурационными файлами для проверки КПА Фобос",
-          parent="DOC_ST-717", deadline=datetime.date.fromisoformat("None"), user=user)
+          parent="DOC_ST-717", deadline=None, user=user)
     Issue(issue="DOC_ST-1423", state="Active", summary="Документация для сертификации ПК Гелиос R6",
           parent="DOC_ST-1370", deadline=datetime.date.fromisoformat("2021-03-26"), user=user)
     Issue(issue="ARCH_ST-87", state="New",
@@ -323,13 +342,13 @@ def main():
           deadline=datetime.date.fromisoformat("2021-08-30"), user=user)
     Issue(issue="DOC_ST-1349", state="Active",
           summary="Сертификация «Протей-imSwitch5 СП» (ИК-2020): Документ ПДРА.49010-02 13 Описание программы",
-          parent="DOC_ST-1306", deadline=datetime.date.fromisoformat("None"), user=user)
+          parent="DOC_ST-1306", deadline=None, user=user)
     Issue(issue="DOC_ST-1354", state="Active",
           summary="Сертификация «Протей-imSwitch5 СП» (ИК-2020): Документ ПДРА.49010-02 97 Инструкция по созданию Диска восстановления",
-          parent="DOC_ST-1306", deadline=datetime.date.fromisoformat("None"), user=user)
+          parent="DOC_ST-1306", deadline=None, user=user)
     Issue(issue="DOC_ST-1365", state="Active",
           summary="Поддержка в актуальном состоянии тестовой зоны отдела тех. документации", parent="None",
-          deadline=datetime.date.fromisoformat("None"), user=user)
+          deadline=None, user=user)
     Issue(issue="DOC-645", state="Active", summary="Актуализировать \"Руководство пользователя. CDR-файлы\" imSwitch5",
           parent="None", deadline=datetime.date.fromisoformat("2021-01-24"), user=user)
     Issue(issue="DOC-367", state="New", summary="Обновление документа mCore.MKD.ConfigFile.UserGuide", parent="None",
@@ -337,20 +356,52 @@ def main():
     Issue(issue="DOC-82", state="Active", summary="Обновление документации на mGate.ITG", parent="None",
           deadline=datetime.date.fromisoformat("2020-11-29"), user=user)
     Issue(issue="ARCH-1", state="Active", summary="Учет архивной документации", parent="None",
-          deadline=datetime.date.fromisoformat("None"), user=user)
+          deadline=None, user=user)
     Issue(issue="ARCH-19", state="New", summary="Книга учета CD-дисков в архиве", parent="None",
-          deadline=datetime.date.fromisoformat("None"), user=user)
+          deadline=None, user=user)
     Issue(issue="DOC-672", state="Active", summary="Актуализация документации signalling", parent="None",
           deadline=datetime.date.fromisoformat("2020-07-17"), user=user)
     Issue(issue="DOC-353", state="Active", summary="Создание XSM.TAKT.645 User Guide", parent="None",
           deadline=datetime.date.fromisoformat("2020-03-31"), user=user)
-    IssueWorkItem(issue="DOC_ST-1611", date=datetime.date.fromisoformat("2022-05-20"), spent_time=Decimal(8), user=user)
-    IssueWorkItem(issue="DOC_ST-1611", date=datetime.date.fromisoformat("2022-05-23"), spent_time=Decimal(0.5), user=user)
-    IssueWorkItem(issue="DOC_ST-1735", date=datetime.date.fromisoformat("2022-05-23"), spent_time=Decimal(3.5), user=user)
-    IssueWorkItem(issue="DOC_ST-1649", date=datetime.date.fromisoformat("2022-05-23"), spent_time=Decimal(3.5), user=user)
-    IssueWorkItem(issue="DOC_ST-1589", date=datetime.date.fromisoformat("2022-05-23"), spent_time=Decimal(0.5), user=user)
-    IssueWorkItem(issue="DOC_ST-1467", date=datetime.date.fromisoformat("2022-05-30"), spent_time=Decimal(8), user=user)
-    pass
+    path = Path(youtrack_config.get_json_attr("path_table")).resolve()
+    name = path.name
+    path_new_workbook = path.with_name(f"edited_{name}")
+
+    wb: Workbook = openpyxl.load_workbook(path)
+    ws_title = wb.sheetnames[1]
+    ws: Worksheet = wb[ws_title]
+
+    style_list = _StyleWorkItemList("styles")
+    style_list.add_styles(wb)
+
+    excel_prop = ExcelProp(ws, "excel_prop", style_list)
+    excel_prop._empty_rows()
+    excel_prop.pre_processing()
+    # excel_prop.delete_row(12)
+    for table_cell in excel_prop.table_cell_items():
+        table_cell.cell_hyperlink_nullify()
+        table_cell.cell_hyperlink()
+    # print(excel_prop.table_cell_names())
+
+    join_user_xl = JoinUserXL(user, excel_prop)
+    join_user_xl.add_all_issues()
+    print(excel_prop.table_cell_names())
+    join_user_xl.modify_all_issues()
+    join_user_xl.add_new_work_items()
+    join_user_xl.set_work_item_styles()
+
+    print("The work is finished.")
+    wb.save(path_new_workbook)
+    wb.close()
+
+
+def main():
+    youtrack_config = UserConfig().set_config_file(UserConfig.path)
+    user = User(youtrack_config)
+    response = user.get_current_states(["DOC-367"])
+    print(response[0])
+    print(response[0]["idReadable"])
+    print(response[0]["customFields"][0]["value"]["name"])
 
 
 if __name__ == "__main__":
