@@ -244,7 +244,6 @@
 | E–UTRAN | Evolved Universal Terrestrial Radio Access Network, улучшенная универсальная сеть наземного радиодоступа стандарта LTE |
 | EAP | Extensible Authentication Protocol, расширяемый протокол проверки подлинности |
 | ECB | Electronic Code Book, электронная кодовая книга — один из режимов шифрования |
-| ECD | Echo Control Device, эхо-компенсатор |
 | ECD | Echo Control Device, эхозаградитель |
 | ECF | Event Charging Function, функция учета расходов на основе событий |
 | ECI | Embedded Common Interface, встроенный CI–модуль — интерфейс подключения модулей для взаимодействия с закодированными каналами |
@@ -261,6 +260,7 @@
 | EIR | Equipment Identity Register, регистр идентификаторов оборудования |
 | EMS | Enhanced Message Service, расширенный сервис сообщений |
 | eMSS | Enhanced MSC Server, улучшенный сервер MSC |
+| ENIP | Enhanced Network Intelligent Platform, усовершенствованная сетевая интеллектуальная платформа |
 | eNodeB | Evolved Node B, базовая станция сети LTE |
 | ENUM | E.164 Number Mapping, протоколы для преобразования номеров E.164 к системе Интернет–адресации |
 | EOP | End Of Procedure, окончание процедуры |
@@ -275,7 +275,6 @@
 | ETFTU | Extended TFT Support UE, абонентское оборудование поддержки расширенной TFT |
 | ETS | Emergency Telecommunications Services, Служба электросвязи в чрезвычайных ситуациях |
 | ETSI | European Telecommunications Standards Institute, Европейский институт телекоммуникационных стандартов |
-| f | frequency, частота |
 | FCS | Failure Cause, причина неуспешного выполнения |
 | FCS | Frame Check Sequence, контрольная последовательность кадра |
 | FDD | Frequency Division Duplex, режим частотного дуплексного разноса |
