@@ -465,6 +465,28 @@ class User:
                     del item
                 IssueWorkItem(self, issue, date, cum_spent_time)
 
+    def get_current_states(self, issues: list[str]):
+        # TODO
+        string_issues = ",".join(issues)
+        url = 'https://youtrack.protei.ru/api/issues/'
+        parameters_fields = ','.join(('idReadable', 'customFields(value(name),projectCustomField(field(name)))'))
+        parameters_query = " ".join((f'issue ID:', f'{string_issues}'))
+        parameters_custom_fields_state = "State"
+        params = (
+            ('fields', parameters_fields),
+            ('query', parameters_query),
+            ('customFields', parameters_custom_fields_state),
+        )
+        # get the response in the JSON format
+        parsed_response = self.request(url, params)
+        dict_issue_states: dict[str, str] = dict()
+        for item in parsed_response:
+            issue = item["idReadable"]
+            state = item["customFields"][0]["value"]["name"]
+            dict_issue_states[issue] = state
+
+        return dict_issue_states
+
 
 class Issue:
     """
