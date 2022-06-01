@@ -5,7 +5,7 @@ from openpyxl.cell.cell import Cell, MergedCell
 from openpyxl.utils.cell import get_column_letter, coordinate_from_string, column_index_from_string, coordinate_to_tuple
 from _style_work_item import ConstStyle, _StyleWorkItemList
 from openpyxl.styles.named_styles import NamedStyle
-
+from pprint import pprint
 
 class ConstDefaultWs:
     """
@@ -284,8 +284,6 @@ class WorksheetDefault:
     def add_to_wb(self):
         for style in self.styles.styles:
             if isinstance(style, NamedStyle):
-                if style.name in self.wb.style_names:
-                    self.wb.named_styles.remove(style)
                 self.wb.add_named_style(style)
             else:
                 continue
@@ -301,7 +299,7 @@ class WorksheetDefault:
     def set_top_bottom_thick_border(self):
         for _, coord, _ in ConstDefaultWs.dict_month_titles.values():
             cell: Cell = self.ws[f"{coord}"]
-            cell.border = ConstStyle.TOP_BOTTOM_BORDER
+            cell.border = ConstStyle.TOP_BOTTOM_MEDIUM_BORDER
 
 
 def main():
@@ -309,6 +307,8 @@ def main():
     ws: Worksheet = wb.active
     ws.title = "12"
     styles = _StyleWorkItemList("styles")
+    pprint(list(styles.styles.keys()))
+    print(styles.styles["weekend"])
     ws_default = WorksheetDefault(wb, ws, styles)
     ws_default.add_to_wb()
     print("Done")
