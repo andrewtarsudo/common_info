@@ -15,7 +15,7 @@ from copy import copy
 from typing import Union
 from openpyxl.styles.numbers import FORMAT_GENERAL, FORMAT_TEXT, FORMAT_NUMBER_00, FORMAT_DATE_XLSX14
 from openpyxl.styles.alignment import Alignment
-from openpyxl.styles.borders import Border, Side, BORDER_THIN, BORDER_THICK
+from openpyxl.styles.borders import Border, Side, BORDER_THIN, BORDER_THICK, BORDER_MEDIUM
 from openpyxl.styles.colors import Color, WHITE, BLACK
 from openpyxl.styles.fills import PatternFill, FILL_SOLID
 from openpyxl.styles.fonts import Font
@@ -72,7 +72,7 @@ def _basic_month_style():
     """
     return _StyleWorkItem(
         "_basic_month", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
-        border=ConstStyle.THICK_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
+        border=ConstStyle.MEDIUM_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
         protection=ConstStyle.TMP_PROTECTION, data_type="s")
 
 
@@ -107,11 +107,11 @@ def title():
     :rtype: _StyleWorkItem
     """
     title_fill = PatternFill(
-        fill_type=FILL_SOLID, fgColor=Color(theme=4, tint=-0.249977111117893, type='theme'),
+        fill_type=FILL_SOLID, fgColor=Color(theme=3, tint=0.7999816888943144, type='theme'),
         bgColor=Color(indexed=64, type='indexed'))
     return _StyleWorkItem(
         "title", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
-        border=ConstStyle.TOP_BOTTOM_BORDER, fill=title_fill, font=ConstStyle.THEME_FONT,
+        border=ConstStyle.TOP_BOTTOM_MEDIUM_BORDER, fill=title_fill, font=ConstStyle.THEME_FONT,
         protection=ConstStyle.TMP_PROTECTION, data_type="s")
 
 
@@ -127,7 +127,7 @@ def header():
         bgColor=Color(indexed=64, type='indexed'))
     return _StyleWorkItem(
         "header", True, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
-        border=ConstStyle.TOP_BOTTOM_BORDER, fill=header_fill, font=ConstStyle.THEME_FONT,
+        border=ConstStyle.TOP_BOTTOM_MEDIUM_BORDER, fill=header_fill, font=ConstStyle.THEME_FONT,
         protection=ConstStyle.TMP_PROTECTION, data_type="s")
 
 
@@ -145,6 +145,39 @@ def month_date_style():
     )
 
 
+def deadline_issue_style():
+    # TODO
+    """
+    Specify the issue deadline style.
+
+    :return: the issue deadline style.
+    :rtype: _StyleWorkItem
+    """
+    return _StyleWorkItem(
+        "deadline_issue", False, number_format=FORMAT_DATE_XLSX14, alignment=ConstStyle.TMP_ALIGNMENT,
+        border=ConstStyle.LEFT_RIGHT_MEDIUM_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="d"
+    )
+
+
+def header_cross_style():
+    # TODO
+    """
+    Specify the header cross style.
+
+    :return: the header cross style.
+    :rtype: _StyleWorkItem
+    """
+    header_cross_fill = PatternFill(
+        fill_type=FILL_SOLID, fgColor=Color(theme=3, tint=0.5999938962981048, type='theme'),
+        bgColor=Color(indexed=64, type='indexed'))
+    return _StyleWorkItem(
+        "header_cross", False, number_format=FORMAT_GENERAL, alignment=ConstStyle.NONE_ALIGNMENT,
+        border=ConstStyle.TMP_BORDER, fill=header_cross_fill, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="s"
+    )
+
+
 class ConstStyle:
     """
     Contain the constants for Named and Cell Styles.
@@ -157,8 +190,8 @@ class ConstStyle:
     Border(outline, left, right, top, bottom, diagonal):
         TMP_BORDER --- False, Side(), Side(), Side(), Side(), Side()\n
         THIN_BORDER --- True, Side(style=BORDER_THIN)\n
-        THICK_BORDER --- True, Side(style=BORDER_THICK)\n
-        TOP_BOTTOM_BORDER --- True, Side(style=BORDER_THIN),
+        MEDIUM_BORDER --- True, Side(style=BORDER_THICK)\n
+        TOP_BOTTOM_MEDIUM_BORDER --- True, Side(style=BORDER_THIN),
             Side(BORDER_THICK)\n
 
     PatternFill(fill_type, fgColor, bgColor):
@@ -184,89 +217,137 @@ class ConstStyle:
         "july", "august", "september", "october", "november", "december"\n
     """
     # Cell.alignment
-    TMP_ALIGNMENT = Alignment(horizontal='left', vertical='center', wrap_text=True)
-    CENTER_ALIGNMENT = Alignment(horizontal='center', vertical='center', wrap_text=True)
-    ROTATE_ALIGNMENT = Alignment(horizontal='center', vertical='center', wrap_text=True, text_rotation=90)
+    TMP_ALIGNMENT = Alignment(
+        horizontal='left', vertical='center', wrap_text=True, shrinkToFit=None, indent=0, relativeIndent=0,
+        justifyLastLine=None, readingOrder=0)
+    CENTER_ALIGNMENT = Alignment(
+        horizontal='center', vertical='center', wrap_text=True, shrinkToFit=None, indent=0, relativeIndent=0,
+        justifyLastLine=None, readingOrder=0)
+    ROTATE_ALIGNMENT = Alignment(
+        horizontal='center', vertical='center', wrap_text=True, text_rotation=90, indent=0, relativeIndent=0,
+        justifyLastLine=None, readingOrder=0)
+    NONE_ALIGNMENT = Alignment()
     # Cell.border
-    TMP_BORDER = Border(outline=False, left=Side(), right=Side(), top=Side(), bottom=Side(), diagonal=Side())
-    THIN_BORDER = Border(
-        outline=True, left=Side(style=BORDER_THIN), right=Side(style=BORDER_THIN), top=Side(style=BORDER_THIN),
-        bottom=Side(style=BORDER_THIN))
-    THICK_BORDER = Border(
-        outline=True, left=Side(style=BORDER_THICK), right=Side(style=BORDER_THICK), top=Side(style=BORDER_THICK),
-        bottom=Side(style=BORDER_THICK))
-    TOP_BOTTOM_BORDER = Border(
-        outline=True, left=Side(), right=Side(), top=Side(style=BORDER_THICK),
-        bottom=Side(style=BORDER_THICK))
+    TMP_BORDER = Border(outline=False,
+                        left=Side(style=None, color=None),
+                        right=Side(style=None, color=None),
+                        top=Side(style=None, color=None),
+                        bottom=Side(style=None, color=None),
+                        diagonal=Side(style=None, color=None))
+    THIN_BORDER = Border(outline=True,
+                         left=Side(style=BORDER_THIN, color=Color(rgb=BLACK, type="rgb")),
+                         right=Side(style=BORDER_THIN, color=Color(rgb=BLACK, type="rgb")),
+                         top=Side(style=BORDER_THIN, color=Color(rgb=BLACK, type="rgb")),
+                         bottom=Side(style=BORDER_THIN, color=Color(rgb=BLACK, type="rgb")),
+                         diagonal=Side(style=None, color=None))
+    MEDIUM_BORDER = Border(outline=True,
+                           left=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
+                           right=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
+                           top=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
+                           bottom=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
+                           diagonal=Side(style=None, color=None))
+    TOP_BOTTOM_MEDIUM_BORDER = Border(outline=True,
+                                      left=Side(style=None, color=None),
+                                      right=Side(style=None, color=None),
+                                      top=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
+                                      bottom=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
+                                      diagonal=Side(style=None, color=None))
+    LEFT_RIGHT_MEDIUM_BORDER = Border(outline=True,
+                                      left=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
+                                      right=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
+                                      top=Side(style=None, color=None),
+                                      bottom=Side(style=None, color=None),
+                                      diagonal=Side(style=None, color=None))
     # Cell.fill
-    TMP_FILL = PatternFill(
-        fill_type=FILL_SOLID, fgColor=Color(rgb=WHITE, type='rgb'), bgColor=Color(rgb=WHITE, type='rgb'))
-    INDEXED_FILL = PatternFill(
-        fill_type=FILL_SOLID, fgColor=Color(rgb=WHITE, type='rgb'), bgColor=Color(indexed=64, type='indexed'))
-    TINT_FILL = PatternFill(
-        fill_type=FILL_SOLID, fgColor=Color(theme=0, tint=0.0, type='theme'), bgColor=Color(indexed=64, type='indexed'))
+    TMP_FILL = PatternFill(fill_type=None,
+                           fgColor=Color(rgb=WHITE, type='rgb'),
+                           bgColor=Color(rgb=WHITE, type='rgb'))
+    INDEXED_FILL = PatternFill(fill_type=FILL_SOLID,
+                               fgColor=Color(rgb=WHITE, type='rgb'),
+                               bgColor=Color(indexed=64, type='indexed'))
+    TINT_FILL = PatternFill(fill_type=FILL_SOLID,
+                            fgColor=Color(theme=0, tint=0.0, type='theme'),
+                            bgColor=Color(indexed=64, type='indexed'))
     # Cell.font
-    TMP_FONT = Font(name='Calibri', charset=204, family=2, color=Color(rgb=BLACK, type='rgb'), size=11)
+    TMP_FONT = Font(name='Times New Roman', charset=204, family=1, color=Color(rgb=BLACK, type='rgb'), size=11)
     THEME_FONT = Font(name='Calibri', charset=204, family=2, color=Color(theme=1, type='theme'), size=11)
+    TITLE_FONT = Font(name='Calibri', charset=204, family=2, bold=True, color=Color(theme=1, type='theme'), size=11)
     # Cell.protection
     TMP_PROTECTION = Protection(locked=False, hidden=False)
     # states and PatternFill values
     dict_states_color: dict[str, PatternFill] = {
-        "weekend": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FFFD5635", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "deadline": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FFFF0D0D", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "done": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(theme=9, tint=0.0, type='theme'),
-            bgColor=Color(indexed=64, type='indexed')),
-        "active": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(theme=9, tint=0.3999755851924192, type='theme'),
-            bgColor=Color(indexed=64, type='indexed')),
-        "test": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FF117D68", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "going_start": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FF00B0F0", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "paused": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(theme=0, tint=-0.499984740745262, type='theme'),
-            bgColor=Color(indexed=64, type='indexed')),
-        "verified_closed": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(theme=1, tint=0.249977111117893, type='theme'),
-            bgColor=Color(indexed=64, type='indexed')),
-        "going_finish": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(theme=4, tint=-0.249977111117893, type='theme'),
-            bgColor=Color(indexed=64, type='indexed')),
-        "sick": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(theme=7, tint=-0.249977111117893, type='theme'),
-            bgColor=Color(indexed=64, type='indexed')),
-        "vacation": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FFFFFF00", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb'))
+        "weekend": PatternFill(fill_type=FILL_SOLID,
+                               fgColor=Color(rgb="FFFD5635", type='rgb'),
+                               bgColor=Color(rgb=WHITE, type='rgb')),
+        "deadline": PatternFill(fill_type=FILL_SOLID,
+                                fgColor=Color(rgb="FFFF0D0D", type='rgb'),
+                                bgColor=Color(rgb=WHITE, type='rgb')),
+        "done": PatternFill(fill_type=FILL_SOLID,
+                            fgColor=Color(theme=9, tint=0.0, type='theme'),
+                            bgColor=Color(indexed=64, type='indexed')),
+        "active": PatternFill(fill_type=FILL_SOLID,
+                              fgColor=Color(theme=9, tint=0.3999755851924192, type='theme'),
+                              bgColor=Color(indexed=64, type='indexed')),
+        "test": PatternFill(fill_type=FILL_SOLID,
+                            fgColor=Color(rgb="FF117D68", type='rgb'),
+                            bgColor=Color(rgb=WHITE, type='rgb')),
+        "going_start": PatternFill(fill_type=FILL_SOLID,
+                                   fgColor=Color(rgb="FF00B0F0", type='rgb'),
+                                   bgColor=Color(rgb=WHITE, type='rgb')),
+        "paused": PatternFill(fill_type=FILL_SOLID,
+                              fgColor=Color(theme=0, tint=-0.499984740745262, type='theme'),
+                              bgColor=Color(indexed=64, type='indexed')),
+        "verified_closed": PatternFill(fill_type=FILL_SOLID,
+                                       fgColor=Color(theme=1, tint=0.249977111117893, type='theme'),
+                                       bgColor=Color(indexed=64, type='indexed')),
+        "going_finish": PatternFill(fill_type=FILL_SOLID,
+                                    fgColor=Color(theme=4, tint=-0.249977111117893, type='theme'),
+                                    bgColor=Color(indexed=64, type='indexed')),
+        "sick": PatternFill(fill_type=FILL_SOLID,
+                            fgColor=Color(theme=7, tint=-0.249977111117893, type='theme'),
+                            bgColor=Color(indexed=64, type='indexed')),
+        "vacation": PatternFill(fill_type=FILL_SOLID,
+                                fgColor=Color(rgb="FFFFFF00", type='rgb'),
+                                bgColor=Color(rgb=WHITE, type='rgb'))
     }
     # months and PatternFill values
     dict_months_color = {
-        "january": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FF0297CC", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "february": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FF0BA6B6", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "march": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FF3AAA66", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "april": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FF8BBD36", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "may": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FFD0CA04", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "june": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FFF9AD01", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "july": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FFF08002", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "august": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FFE94442", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "september": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FFCF687D", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "october": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FF98668B", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "november": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FF697FB9", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb')),
-        "december": PatternFill(
-            fill_type=FILL_SOLID, fgColor=Color(rgb="FF0078A9", type='rgb'), bgColor=Color(rgb=WHITE, type='rgb'))
+        "january": PatternFill(fill_type=FILL_SOLID,
+                               fgColor=Color(rgb="FF0297CC", type='rgb'),
+                               bgColor=Color(rgb=WHITE, type='rgb')),
+        "february": PatternFill(fill_type=FILL_SOLID,
+                                fgColor=Color(rgb="FF0BA6B6", type='rgb'),
+                                bgColor=Color(rgb=WHITE, type='rgb')),
+        "march": PatternFill(fill_type=FILL_SOLID,
+                             fgColor=Color(rgb="FF3AAA66", type='rgb'),
+                             bgColor=Color(rgb=WHITE, type='rgb')),
+        "april": PatternFill(fill_type=FILL_SOLID,
+                             fgColor=Color(rgb="FF8BBD36", type='rgb'),
+                             bgColor=Color(rgb=WHITE, type='rgb')),
+        "may": PatternFill(fill_type=FILL_SOLID,
+                           fgColor=Color(rgb="FFD0CA04", type='rgb'),
+                           bgColor=Color(rgb=WHITE, type='rgb')),
+        "june": PatternFill(fill_type=FILL_SOLID,
+                            fgColor=Color(rgb="FFF9AD01", type='rgb'),
+                            bgColor=Color(rgb=WHITE, type='rgb')),
+        "july": PatternFill(fill_type=FILL_SOLID,
+                            fgColor=Color(rgb="FFF08002", type='rgb'),
+                            bgColor=Color(rgb=WHITE, type='rgb')),
+        "august": PatternFill(fill_type=FILL_SOLID,
+                              fgColor=Color(rgb="FFE94442", type='rgb'),
+                              bgColor=Color(rgb=WHITE, type='rgb')),
+        "september": PatternFill(fill_type=FILL_SOLID,
+                                 fgColor=Color(rgb="FFCF687D", type='rgb'),
+                                 bgColor=Color(rgb=WHITE, type='rgb')),
+        "october": PatternFill(fill_type=FILL_SOLID,
+                               fgColor=Color(rgb="FF98668B", type='rgb'),
+                               bgColor=Color(rgb=WHITE, type='rgb')),
+        "november": PatternFill(fill_type=FILL_SOLID,
+                                fgColor=Color(rgb="FF697FB9", type='rgb'),
+                                bgColor=Color(rgb=WHITE, type='rgb')),
+        "december": PatternFill(fill_type=FILL_SOLID,
+                                fgColor=Color(rgb="FF0078A9", type='rgb'),
+                                bgColor=Color(rgb=WHITE, type='rgb'))
     }
 
 
