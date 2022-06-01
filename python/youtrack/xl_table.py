@@ -388,14 +388,19 @@ class ExcelProp:
             # copy all required attribute values
             # if the destination cell is empty
             if cell_proxy.value is None:
-                cell_proxy.value = cell_base.value
+                cell_proxy.value = copy(cell_base.value)
             # if the destination cell has some value
             else:
                 cell_proxy.value += cell_base.value
-            cell_proxy._style = copy(cell_base.style)
+            if cell_base.has_style:
+                self.styles.set_style(cell_base.style, cell_proxy)
+            else:
+                cell_proxy.number_format = copy(cell_base.number_format)
+                cell_proxy.style = "basic"
+            # cell_proxy._style = copy(cell_base.style)
         # set the default cell attribute values
         cell_base.value = None
-        self.styles.set_style("basic", cell_base)
+        cell_base.style = "basic"
 
     def add_work_item(self, work_item: tuple[str, datetime.date, Union[int, Decimal]]):
         """
@@ -468,7 +473,7 @@ class ExcelProp:
         :return: the cells.
         :rtype: list[Cell]
         """
-        return [self.ws[f"{coord}"] for coord in self.cell_states if self.ws[f"{coord}"].value is not None]
+        return [self.ws[f"{coord}"] for coord in self.cell_states.keys() if self.ws[f"{coord}"].value is not None]
 
     def table_cell_issue(self, table_base: Union[int, Cell, str]):
         """
@@ -490,14 +495,14 @@ class ExcelProp:
             print(f"Something went wrong. Table base: {table_base}, type: {type(table_base)}.")
             return None
 
-    def table_cell_names(self) -> list[str]:
+    def table_cell_names(self) -> set[str]:
         """
         Get the issue names.
 
         :return: the issue names.
         :rtype: list[str]
         """
-        return [cell.value for cell in self.table_cells]
+        return {cell.value for cell in self.table_cells}
 
     def pre_processing(self):
         """Pre-process the table to get rid of empty rows and repeating issues."""
@@ -507,6 +512,11 @@ class ExcelProp:
             row_eq = _RowEqual(self, issue)
             row_eq.join_cells()
         self._empty_rows()
+        for cell in self.table_cells:
+            TableCell(self, cell)
+
+    def table_cell_items(self):
+        return [TableCell(self, cell) for cell in self.table_cells]
 
 
 class TableCell:
@@ -819,13 +829,18 @@ class TableCell:
         return self.proper_cell_style(cell)
 
     def cell_hyperlink(self):
-        self.cell.hyperlink = f"https://youtrack.protei.ru/issue/{self.issue}"
-        if self.parent():
+        if self.issue is not None:
+            self.cell.hyperlink = f"https://youtrack.protei.ru/issue/{self.issue}"
+            print(self.cell.hyperlink)
+        if self.parent() is not None:
             self._shift_cell(-1).hyperlink = f"https://youtrack.protei.ru/issue/{self.parent()}"
+            print(self._shift_cell(-1).hyperlink)
 
     def cell_hyperlink_nullify(self):
         self.cell.hyperlink = None
+        print(self.cell.hyperlink)
         self._shift_cell(-1).hyperlink = None
+        print(self._shift_cell(-1).hyperlink)
 
 
 class _RowEqual:
