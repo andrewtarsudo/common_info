@@ -130,7 +130,7 @@ class UserConfig:
         else:
             UserConfig.conf_values[key] = value
             with open(file_path, "w") as json_file:
-                json.dump(UserConfig.conf_values.items(), json_file)
+                json.dump(UserConfig.conf_values, json_file)
 
     @staticmethod
     def check_json_attrs(file_path: pathlib.Path):
@@ -146,7 +146,7 @@ class UserConfig:
             else:
                 continue
         with open(file_path, "w") as json_file:
-            json.dump(UserConfig.conf_values.items(), json_file)
+            json.dump(UserConfig.conf_values, json_file)
 
     @staticmethod
     def set_config_file(file_path: pathlib.Path):
@@ -163,7 +163,6 @@ class UserConfig:
         for key, value in conf.items():
             UserConfig.conf_values[key] = value
         name = UserConfig.get_json_attr("login")
-        print(f"name={name}")
         if not name or name in UserConfig.__dict_name_conv:
             login = UserConfig.sys_login()
             UserConfig.update_json_item(file_path, "login", login)
