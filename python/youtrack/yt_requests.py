@@ -1,6 +1,6 @@
 from decimal import Decimal
 from json.decoder import JSONDecodeError
-from typing import Union, Optional
+from typing import Union, Optional, Iterable
 import numpy
 from requests.exceptions import RequestException, HTTPError, ConnectionError, InvalidURL, InvalidHeader
 import requests
@@ -184,14 +184,11 @@ class User:
 
     Properties:
         login --- the login call;\n
-        period_start --- the period_start call;\n
-        period_end --- the period_end call;\n
         __headers_yt --- the headers for requests;\n
         start_period --- the start period of the specified format;\n
         end_period --- the end period of the specified format;\n
-        period --- the period of the specified format;\n
         path_table --- the path to the report;\n
-        _get_non_unique --- the non-unique work items;\n
+        __non_unique --- the dictionary of the non-unique work items;\n
 
     Functions:
         auth_token() --- get the auth_token;\n
@@ -202,6 +199,8 @@ class User:
         get_issues() --- get the Issue instances;\n
         get_current_issues() --- get the Issue instances with no work items;\n
         _join_work_items() --- combine the non-unique work items;\n
+        get_current_states(issues) --- get the current issue states;\n
+        pre_processing() --- prepare all information from the YouTrack;\n
     """
 
     def __init__(self, user_config: UserConfig):
@@ -225,26 +224,6 @@ class User:
         """
         return self.user_config.get_json_attr("login")
 
-    @property
-    def period_start(self) -> str:
-        """
-        Shorten the period_start call.
-
-        :return: the period_start.
-        :rtype: str
-        """
-        return self.user_config.get_json_attr("period_start")
-
-    @property
-    def period_end(self) -> str:
-        """
-        Shorten the period_end call.
-
-        :return: the period_end.
-        :rtype: str
-        """
-        return self.user_config.get_json_attr("period_end")
-
     def auth_token(self) -> str:
         """
         Shorten the auth_token call.
@@ -255,7 +234,7 @@ class User:
         return self.user_config.get_json_attr("auth_token")
 
     @property
-    def path_table(self):
+    def path_table(self) -> str:
         """
         Shorten the path_table call.
 
@@ -329,7 +308,8 @@ class User:
         :return: the start date.
         :rtype: str
         """
-        return convert_date_iso(self.period_start).strftime("%Y-%m-%d")
+        period_start = self.user_config.get_json_attr("period_start")
+        return convert_date_iso(period_start).strftime("%Y-%m-%d")
 
     @property
     def end_period(self) -> str:
@@ -339,7 +319,8 @@ class User:
         :return: the end date.
         :rtype: str
         """
-        return convert_date_iso(self.period_end).strftime("%Y-%m-%d")
+        period_end = self.user_config.get_json_attr("period_end")
+        return convert_date_iso(period_end).strftime("%Y-%m-%d")
 
     @property
     def period(self) -> str:
@@ -443,6 +424,7 @@ class User:
         issue_name: str
         for issue_name, work_items in self.dict_issue_work_item.items():
             counter = Counter([work_item.date for work_item in work_items])
+            # get non-unique dates
             non_unique_date = [key for key, value in counter.items() if value > 1]
             if not len(non_unique_date):
                 non_unique[issue_name] = non_unique_date
@@ -458,15 +440,20 @@ class User:
                     [work_item.spent_time for work_item in self.dict_issue_work_item.values()
                      if work_item.issue == issue and work_item.date == date])
                 # delete
-                del_work_items = [
-                    work_item for work_item in self.dict_issue_work_item.values()
-                    if work_item.issue == issue and work_item.date == date]
-                for item in del_work_items:
-                    del item
+                for work_item in self.dict_issue_work_item.values():
+                    if work_item.issue == issue and work_item.date == date:
+                        del work_item
                 IssueWorkItem(self, issue, date, cum_spent_time)
 
-    def get_current_states(self, issues: list[str]):
-        # TODO
+    def get_current_states(self, issues: Iterable[str]) -> dict[str, str]:
+        """
+        Get the states of the issues.
+
+        :param issues: the issue names
+        :type issues: Iterable[str]
+        :return: the dictionary of the issue names and states.
+        :rtype: dict[str, str]
+        """
         string_issues = ",".join(issues)
         url = 'https://youtrack.protei.ru/api/issues/'
         parameters_fields = ','.join(('idReadable', 'customFields(value(name),projectCustomField(field(name)))'))
@@ -484,7 +471,6 @@ class User:
             issue = item["idReadable"]
             state = item["customFields"][0]["value"]["name"]
             dict_issue_states[issue] = state
-
         return dict_issue_states
 
 
@@ -506,9 +492,6 @@ class Issue:
 
     state values:\n
     Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
-
-    Functions:
-        to_tuple() --- represent the instance as a tuple;\n
     """
     attrs = ("issue", "state", "summary", "parent", "deadline")
 
@@ -569,15 +552,6 @@ class Issue:
         else:
             return NotImplemented
 
-    def to_tuple(self):
-        """
-        Represent the instance as a tuple.
-
-        :return: the tuple of the issue attributes.
-        :rtype: tuple[str, str, str, str or None, datetime.date or None]
-        """
-        return tuple(getattr(self, attr) for attr in Issue.attrs)
-
 
 class IssueWorkItem:
     """
@@ -593,9 +567,6 @@ class IssueWorkItem:
 
     state values:\n
     Active/New/Paused/Done/Test/Verified/Discuss/Closed/Review/Canceled\n
-
-    Functions:
-        to_tuple() --- represent the instance as a tuple;\n
     """
     attrs = ("issue", "date", "spent_time")
 
@@ -666,20 +637,3 @@ class IssueWorkItem:
             return self.date >= other.date
         else:
             return NotImplemented
-
-    def to_tuple(self):
-        """
-        Represent the instance as a tuple.
-
-        :return: the tuple of the issue work item attributes.
-        :rtype: tuple[str, datetime.date, Decimal]
-        """
-        return tuple(getattr(self, attr) for attr in IssueWorkItem.attrs)
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
