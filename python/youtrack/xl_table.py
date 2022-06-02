@@ -1,6 +1,8 @@
 from collections import Counter
 from typing import Optional, Union, Any
 import datetime
+import numpy
+from numpy import ndarray, busdaycalendar
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
 from openpyxl.utils.cell import coordinate_to_tuple, get_column_letter, column_index_from_string
@@ -84,6 +86,44 @@ def convert_datetime_date(value: Any) -> Optional[datetime.date]:
         return None
 
 
+def calendar_days() -> tuple[list[datetime.date], list[datetime.date]]:
+    """
+    Get the business day and weekend dates.
+
+    :return: the date separated by the type.
+    :rtype: tuple[list[datetime.date], list[datetime.date]]
+    """
+    # the current year
+    year: int = datetime.date.today().year
+    # the weekend days
+    holidays: set[datetime.date] = {
+        datetime.date(year, 1, 1), datetime.date(year, 1, 2), datetime.date(year, 1, 3), datetime.date(year, 1, 4),
+        datetime.date(year, 1, 5), datetime.date(year, 1, 6), datetime.date(year, 1, 7), datetime.date(year, 2, 23),
+        datetime.date(year, 3, 7), datetime.date(year, 3, 8), datetime.date(year, 5, 1), datetime.date(year, 5, 2),
+        datetime.date(year, 5, 3), datetime.date(year, 5, 8), datetime.date(year, 5, 9), datetime.date(year, 5, 10),
+        datetime.date(year, 6, 12), datetime.date(year, 6, 13), datetime.date(year, 11, 4), datetime.date(year, 12, 31)
+    }
+    # convert to the ISO
+    holidays_iso: list[str] = [date_holiday.isoformat() for date_holiday in holidays]
+    # the date range
+    start_day = datetime.date(year, 1, 1)
+    end_day = datetime.date(year + 1, 1, 1)
+    # specify the date range
+    year_days: ndarray = numpy.arange(numpy.datetime64(start_day.isoformat()), numpy.datetime64(end_day.isoformat()))
+    # convert to list
+    year_days_list: list[datetime.date] = year_days.tolist()
+    # specify the business day calendar
+    business_cal: busdaycalendar = numpy.busdaycalendar(holidays=holidays_iso)
+    # get the bool values if the date is a business one
+    is_bus_days: ndarray = numpy.is_busday(dates=year_days, busdaycal=business_cal)
+    # convert to list
+    is_bus_days_list: list[bool] = is_bus_days.tolist()
+
+    bus_days = [bus_day for bus_day, is_business in zip(year_days_list, is_bus_days_list) if is_business]
+    week_ends = [week_day for week_day in set(year_days_list).difference(set(bus_days))]
+    return bus_days, week_ends
+
+
 class ExcelProp:
     """
     Define the Excel Worksheet properties.
@@ -93,6 +133,7 @@ class ExcelProp:
         dict_headers_short --- the dictionary of the issue states and indexes;\n
         dict_state_style --- the dictionary of the states and cell styles;\n
         dict_state_priority --- the dictionary of the states and priorities;\n
+        month_columns --- the columns with the month titles;\n
 
     Class params:
         dict_table_cell --- the dictionary of the TableCell instances;\n
@@ -100,30 +141,38 @@ class ExcelProp:
     Params:
         ws --- the worksheet;\n
         name --- the instance name;\n
-        styles --- the _StyleWorkItemList instance;\n
+        styles --- the styles implemented into the worksheet;\n
 
     Properties:
         headers --- the header cells;\n
+        headers_short --- the header cells without the legend;\n
         headers_row --- the header cell rows;\n
+        headers_row_short --- the header cell rows without the legend;\n
         cell_states --- the dictionary of the cell coordinates and states;\n
         table_cells --- the cells for the TableCell instances;\n
         table_cell_names --- the issue names;\n
+        bus_columns -- the work day date columns;\n
+        weekend_columns --- the weekend date columns;\n
+
 
     Functions:
         get_column_by_date(date) --- get the column letter for the specified date;\n
         cell_in_range(start_coord, end_coord) --- generate the cells in the range;\n
-        _check_empty(item) --- verify if the Cell, Cell.coordinate, or Cell.row is empty;\n
+        delete_row(row) --- delete the row from the table;\n
+        insert_row(row) --- add the row to the table;\n
+        _separate_headers() --- unmerge the header cells;\n
+        _combine_headers() --- merge the header cells;\n
+        _cells_formulae() --- specify the formulae to the cells for the total spent time;\n
+        _check_empty(item) --- verify if the Cell, coordinate, or row is empty;\n
         _empty_rows() --- delete all empty rows except for the pre-headers;\n
-        get_row_by_name(issue) --- get the row by the issue name;\n
         replace_cell(*, from_, to_) --- replace the cell attribute values to another cell;\n
-        add_work_item() --- add the work item to the table;\n
+        add_work_item(work_item) --- add the work item to the table;\n
         get_date_by_cell(cell) --- get the date associated with the cell;\n
         __index(state) --- get the state index;\n
         pre_processing() --- pre-process the table to get rid of empty rows and repeating issues;\n
-        _unmerge_headers() --- unmerge the header cells;\n
-        _headers_basic_style() --- set the basic style to the header cells;\n
-        _merge_headers() --- merge the header cells;\n
-        _headers_header_style() --- set the header style to the header cells;\n
+        table_cell_issue(table_base) --- get the TableCell instance based on the row, cell, or issue name;\n
+        default_row(row) --- specify the default row;\n
+        update_header() --- specify the style to the header rows
     """
     dict_headers = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3, 'Легенда': 4}
     dict_headers_short = {'Active': 0, 'New/Paused': 1, 'Done/Test': 2, 'Verified': 3}
@@ -142,6 +191,7 @@ class ExcelProp:
         "Review": "paused",
         "Canceled": "verified_closed"
     }
+    month_columns = ("F", "AL", "BO", "CU", "DZ", "FF", "GK", "HQ", "IW", "KB", "LH", "MM")
     dict_state_priority: dict[str, int] = {"Active": 30, "New/Paused": 10, "Done/Test": 20, "Verified": 40}
     dict_table_cell = dict()
 
@@ -231,7 +281,7 @@ class ExcelProp:
         :return: the cells.
         :rtype: list[Cell]
         """
-        return self.headers[:3]
+        return self.headers[:4]
 
     @property
     def headers_row(self) -> list[int]:
@@ -254,6 +304,12 @@ class ExcelProp:
         return self.headers_row[:4]
 
     def delete_row(self, row: int):
+        """
+        Delete the row from the table.
+
+        :param int row: the table row number
+        :return: None.
+        """
         self._separate_headers()
         table_cell: TableCell
         for table_cell in self.dict_table_cell.values():
@@ -265,11 +321,17 @@ class ExcelProp:
             table_cell.cell_hyperlink()
 
     def insert_row(self, row: int):
+        """
+        Add the row to the table.
+
+        :param int row: the table row number
+        :return: None.
+        """
         self._separate_headers()
         for table_cell in self.dict_table_cell.values():
             table_cell.cell_hyperlink_nullify()
         self.ws.insert_rows(row)
-        self.copy_style(row - 1, row)
+        self.default_row(row)
         self._combine_headers()
         self._cells_formulae()
         for table_cell in self.dict_table_cell.values():
@@ -296,14 +358,11 @@ class ExcelProp:
         """Merge the header cells."""
         # the common headers
         for header_row in self.headers_row_short:
-            range_header_string = f"B{header_row}:E{header_row}"
-            self.ws.merge_cells(range_header_string)
-            for cell_header in self.cell_in_range(f"B{header_row}", f"NT{header_row}"):
-                cell_header.style = "header"
+            self.ws.merge_cells(f"B{header_row}:E{header_row}")
+            self.update_header()
         # the legend header
         header_legend_row = self.headers_row[4]
-        range_legend_string = f"B{header_legend_row}:C{header_legend_row}"
-        self.ws.merge_cells(range_legend_string)
+        self.ws.merge_cells(f"B{header_legend_row}:C{header_legend_row}")
 
     def _cells_formulae(self):
         """Set the formulae to the cells for the total spent time."""
@@ -311,18 +370,9 @@ class ExcelProp:
             row = cell.row
             if row not in self.headers_row:
                 cell.value = f"=SUM(G{row}:NR{row})"
+                self.styles.set_style("sum", cell)
             else:
                 continue
-
-    def _cell_nullify(self):
-        """Set the values to None."""
-        for cell in self.cell_in_range(f"C{self.headers_row[0] + 1}", f"NS{self.headers_row[4]}"):
-            row = cell.row
-            if row in self.headers_row or cell in self.table_cells:
-                continue
-            else:
-                self.ws[f"B{row}"].value = None
-                cell.value = None
 
     def _check_empty(self, item: Union[int, str, Cell]) -> bool:
         """
@@ -354,7 +404,7 @@ class ExcelProp:
             if self.__index(state) != 3:
                 high_limit = self.headers_row[self.__index(state) + 1] - 1
             else:
-                high_limit = self.headers_row[self.__index(state) + 1] - 5
+                high_limit = self.headers_row[self.__index(state) + 1] - 3
             for row in range(low_limit, high_limit):
                 if self._check_empty(row):
                     list_empty.append(row)
@@ -437,16 +487,6 @@ class ExcelProp:
         """
         return self.dict_headers_short[state]
 
-    def copy_style(self, row_from: int, row_to: int):
-        from_start = f"B{row_from}"
-        from_end = f"NT{row_from}"
-        to_start = f"B{row_to}"
-        to_end = f"NT{row_to}"
-        for cell_from, cell_to in zip(self.cell_in_range(from_start, from_end), self.cell_in_range(to_start, to_end)):
-            if not cell_from.has_style:
-                cell_from.style = "basic"
-            cell_to._style = copy(cell_from._style)
-
     @property
     def cell_states(self):
         """
@@ -500,23 +540,71 @@ class ExcelProp:
         Get the issue names.
 
         :return: the issue names.
-        :rtype: list[str]
+        :rtype: set[str]
         """
         return {cell.value for cell in self.table_cells}
 
     def pre_processing(self):
         """Pre-process the table to get rid of empty rows and repeating issues."""
         counter = Counter(self.table_cell_names())
+        # get non-unique issues
         non_unique = [key for key, value in counter.items() if value > 1]
         for issue in non_unique:
             row_eq = _RowEqual(self, issue)
             row_eq.join_cells()
+        # delete empty rows
         self._empty_rows()
+        # initiate the TableCell instances
         for cell in self.table_cells:
             TableCell(self, cell)
 
-    def table_cell_items(self):
-        return [TableCell(self, cell) for cell in self.table_cells]
+    @property
+    def bus_columns(self) -> list[str]:
+        """
+        Specify the business day columns.
+
+        :return: the business day columns.
+        :rtype: list[str]
+        """
+        return [self.get_column_by_date(date) for date in calendar_days()[0]]
+
+    @property
+    def weekend_columns(self) -> list[str]:
+        """
+        Specify the weekend columns.
+
+        :return: the weekend columns.
+        :rtype: list[str]
+        """
+        return [self.get_column_by_date(date) for date in calendar_days()[1]]
+
+    def default_row(self, row: int):
+        """Specify the default row when added."""
+        # the basic
+        for column in ("B", "C", "D", "NT"):
+            self.ws[f"{column}{row}"].style = "basic_issue"
+        # the cells with dates
+        for column in self.bus_columns:
+            self.ws[f"{column}{row}"].style = "basic"
+        # the weekends
+        for column in self.weekend_columns:
+            self.ws[f"{column}{row}"].style = "weekend"
+        # the business days
+        for column in self.month_columns:
+            self.styles.set_style("header_no_border", self.ws[f"{column}{row}"])
+        # the issue deadline
+        self.styles.set_style("deadline_issue", self.ws[f"E{row}"])
+        # the total spent time cell
+        self.styles.set_style("sum", self.ws[f"NT{row}"])
+
+    def update_header(self):
+        """Specify the style to the header rows."""
+        for row in self.headers_row_short:
+            self.styles.set_style("header_text", self.ws[f"B{row}"])
+            for cell in self.cell_in_range(f"F{row}", f"NR{row}"):
+                self.styles.set_style("header", cell)
+            for column in self.month_columns:
+                self.styles.set_style("header_no_border", self.ws[f"{column}{row}"])
 
 
 class TableCell:
@@ -538,20 +626,16 @@ class TableCell:
     Functions:
         _shift_col_idx(column) --- get the shift between the column and the base cell;\n
         _shift_cell(shift) --- get the shifted cell in the same row;\n
-        commentary() --- get the commentary;\n
-        summary() --- get the summary;\n
-        deadline() --- get the deadline;\n
-        parent() --- get the parent issue name;\n
-        pyxl_row() --- get the values to operate with the Issue instances;\n
         _cell_range() --- generate the cells in the range;\n
         _pyxl_cells() --- get the work item cells;\n
         work_items() --- get the work items;\n
-        set_cell_style(style_name, cell) --- set the style to the cell;\n
         mapping_cell_work_item(cell) --- convert the cell to the work item;\n
         mapping_work_item_cell(work_item) --- convert the work item to the cell;\n
-        add_work_item(work_item) --- add the work item to the row;
-        _proper_cell_style(cell) --- get the cell style based on the state;\n
-        _proper_work_item_style(work_item) --- get the work item style based on the state;\n
+        add_work_item(work_item) --- add the work item to the row;\n
+        proper_cell_style(cell) --- get the cell style based on the state;\n
+        proper_work_item_style(work_item) --- get the work item style based on the state;\n
+        cell_hyperlink() --- specify the hyperlinks;\n
+        cell_hyperlink_nullify() --- delete the hyperlinks;\n
     """
     def __init__(self, excel_prop: ExcelProp, cell: Cell):
         self.excel_prop = excel_prop
@@ -664,24 +748,7 @@ class TableCell:
         """
         return self.excel_prop.cell_states[self.cell.coordinate]
 
-    def commentary(self) -> str:
-        """
-        Get the issue commentary.
-
-        :return: the commentary.
-        :rtype: str
-        """
-        return self._shift_cell(self._shift_col_idx("NT")).value
-
-    def summary(self) -> str:
-        """
-        Get the issue summary.
-
-        :return: the summary.
-        :rtype: str
-        """
-        return self._shift_cell(1).value
-
+    @property
     def deadline(self) -> Optional[datetime.date]:
         """
         Get the issue deadline if exists.
@@ -691,6 +758,7 @@ class TableCell:
         """
         return self._shift_cell(2).value
 
+    @property
     def parent(self):
         """
         Get the parent issue name if exists.
@@ -700,16 +768,7 @@ class TableCell:
         """
         return self._shift_cell(-1).value
 
-    def pyxl_row(self) -> tuple[str, str, str, Optional[str], Optional[datetime.date]]:
-        """
-        Get the values to operate with the Issue instances.
-
-        :return: the attribute values.
-        :rtype: tuple[str, str, str, Optional[str], Optional[datetime.date]]
-        """
-        return self.issue, self.state, self.summary(), self.parent(), self.deadline()
-
-    def _cell_range(self):
+    def cell_range(self):
         """
         Specify the cell generator for the range.
 
@@ -724,7 +783,7 @@ class TableCell:
         :return: the cells.
         :rtype: list[Cell]
         """
-        return [cell for cell in self._cell_range() if cell.value is not None]
+        return [cell for cell in self.cell_range() if cell.value is not None]
 
     def work_items(self) -> list[tuple[str, datetime.date, Decimal]]:
         """
@@ -806,7 +865,7 @@ class TableCell:
         """
         if cell not in self._pyxl_cells():
             return cell.style.name
-        elif self.excel_prop.get_date_by_cell(cell) == self.deadline():
+        elif self.excel_prop.get_date_by_cell(cell) == self.deadline:
             return "deadline"
         elif cell != self.cell_last:
             return "active"
@@ -829,23 +888,20 @@ class TableCell:
         return self.proper_cell_style(cell)
 
     def cell_hyperlink(self):
-        if self.issue is not None:
-            self.cell.hyperlink = f"https://youtrack.protei.ru/issue/{self.issue}"
-            print(self.cell.hyperlink)
-        if self.parent() is not None:
-            self._shift_cell(-1).hyperlink = f"https://youtrack.protei.ru/issue/{self.parent()}"
-            print(self._shift_cell(-1).hyperlink)
+        """Specify the issue and parent issue hyperlinks."""
+        self.cell.hyperlink = f"https://youtrack.protei.ru/issue/{self.issue}" if self.issue is not None else None
+        self._shift_cell(-1).hyperlink = f"https://youtrack.protei.ru/issue/{self.parent}" \
+            if self.parent is not None else None
 
     def cell_hyperlink_nullify(self):
+        """Discard the issue and parent issue hyperlinks."""
         self.cell.hyperlink = None
-        print(self.cell.hyperlink)
         self._shift_cell(-1).hyperlink = None
-        print(self._shift_cell(-1).hyperlink)
 
 
 class _RowEqual:
     """
-    Define the instance to work with the issues having the same names.
+    Specify the instance to work with the issues having the same names.
 
     Params:
         excel_prop --- the ExcelProp instance;\n
@@ -943,11 +999,3 @@ class _RowEqual:
                 row = issue_cell.row
                 for column in ("B", "C", "D", "E"):
                     self.excel_prop.replace_cell(from_=f"{column}{row}")
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
