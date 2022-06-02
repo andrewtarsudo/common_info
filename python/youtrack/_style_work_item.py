@@ -1,21 +1,21 @@
 """
-basic() -> _StyleWorkItem --- set the basic style;\n
-basic_state_style() -> _StyleWorkItem --- set the basic state style;\n
-state_styles() -> list[_StyleWorkItem] --- set the state styles;\n
-basic_month_style() -> _StyleWorkItem --- set the basic month style;\n
-month_styles() -> list[_StyleWorkItem] --- set the basic month styles;\n
-month_merged_styles() -> list[_StyleWorkItem] --- set the merged month styles;\n
-title() -> _StyleWorkItem --- set the title style;\n
-header() -> _StyleWorkItem --- set the header style;\n
-month_date_style() -> _StyleWorkItem --- set the month date style;
+basic() --- set the basic style;\n
+_basic_state_style() --- set the basic state style;\n
+state_styles() --- set the state styles;\n
+basic_issue_style() --- set the basic cell style for issue attribute values;\n
+header() --- set the header style;\n
+header_text_style() --- set the header merged cell style;\n
+header_no_border_style() --- set the header cross style;\n
+deadline_issue_style() --- set the issue deadline style;\n
+sum_style() --- set the total spent time cell style;\n
 generate_from_style(name, base_style, cell_attrs, values) -> _StyleWorkItem --- set the style based on the other one;
 """
 
 from copy import copy
 from typing import Union
-from openpyxl.styles.numbers import FORMAT_GENERAL, FORMAT_TEXT, FORMAT_NUMBER_00, FORMAT_DATE_XLSX14
+from openpyxl.styles.numbers import FORMAT_GENERAL, FORMAT_TEXT, FORMAT_NUMBER_00, FORMAT_DATE_XLSX14, FORMAT_NUMBER
 from openpyxl.styles.alignment import Alignment
-from openpyxl.styles.borders import Border, Side, BORDER_THIN, BORDER_THICK, BORDER_MEDIUM
+from openpyxl.styles.borders import Border, Side, BORDER_THIN, BORDER_MEDIUM
 from openpyxl.styles.colors import Color, WHITE, BLACK
 from openpyxl.styles.fills import PatternFill, FILL_SOLID
 from openpyxl.styles.fonts import Font
@@ -35,7 +35,7 @@ def basic():
     return _StyleWorkItem(
         "basic", True, number_format=FORMAT_GENERAL, alignment=ConstStyle.TMP_ALIGNMENT,
         border=ConstStyle.TMP_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.TMP_FONT,
-        protection=ConstStyle.TMP_PROTECTION, data_type="s"
+        protection=ConstStyle.TMP_PROTECTION, data_type="n"
     )
 
 
@@ -63,58 +63,6 @@ def state_styles():
             for name, fill in ConstStyle.dict_states_color.items()]
 
 
-def _basic_month_style():
-    """
-    Specify the basic month style.
-
-    :return: the basic style for months.
-    :rtype: _StyleWorkItem
-    """
-    return _StyleWorkItem(
-        "_basic_month", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
-        border=ConstStyle.MEDIUM_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
-        protection=ConstStyle.TMP_PROTECTION, data_type="s")
-
-
-def month_styles():
-    """
-    Specify the month title styles.
-
-    :return: the styles for month titles.
-    :rtype: list[_StyleWorkItem]
-    """
-    return [generate_from_style(
-        f"{month}_header", _basic_month_style(), ["alignment", "fill"], [ConstStyle.ROTATE_ALIGNMENT, fill])
-        for month, fill in ConstStyle.dict_months_color.items()]
-
-
-def month_merged_styles():
-    """
-    Specify the month styles for merged cells.
-
-    :return: the styles for merged month titles.
-    :rtype: list[_StyleWorkItem]
-    """
-    return [generate_from_style(f"{month}_title", _basic_month_style(), ["fill"], [fill])
-            for month, fill in ConstStyle.dict_months_color.items()]
-
-
-def title():
-    """
-    Specify the title style.
-
-    :return: the title style.
-    :rtype: _StyleWorkItem
-    """
-    title_fill = PatternFill(
-        fill_type=FILL_SOLID, fgColor=Color(theme=3, tint=0.7999816888943144, type='theme'),
-        bgColor=Color(indexed=64, type='indexed'))
-    return _StyleWorkItem(
-        "title", False, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
-        border=ConstStyle.TOP_BOTTOM_MEDIUM_BORDER, fill=title_fill, font=ConstStyle.THEME_FONT,
-        protection=ConstStyle.TMP_PROTECTION, data_type="s")
-
-
 def header():
     """
     Specify the header style.
@@ -122,31 +70,13 @@ def header():
     :return: the header style.
     :rtype: _StyleWorkItem
     """
-    header_fill = PatternFill(
-        fill_type=FILL_SOLID, fgColor=Color(theme=3, tint=0.5999938962981048, type='theme'),
-        bgColor=Color(indexed=64, type='indexed'))
     return _StyleWorkItem(
         "header", True, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
-        border=ConstStyle.TOP_BOTTOM_MEDIUM_BORDER, fill=header_fill, font=ConstStyle.THEME_FONT,
-        protection=ConstStyle.TMP_PROTECTION, data_type="s")
-
-
-def month_date_style():
-    """
-    Specify the month date style.
-
-    :return: the month date style.
-    :rtype: _StyleWorkItem
-    """
-    return _StyleWorkItem(
-        "month_date", False, number_format=FORMAT_DATE_XLSX14, alignment=ConstStyle.CENTER_ALIGNMENT,
-        border=ConstStyle.TMP_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.TMP_FONT,
-        protection=ConstStyle.TMP_PROTECTION, data_type="d"
-    )
+        border=ConstStyle.TOP_BOTTOM_BORDER, fill=ConstStyle.HEADER_FILL, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="n")
 
 
 def deadline_issue_style():
-    # TODO
     """
     Specify the issue deadline style.
 
@@ -155,26 +85,64 @@ def deadline_issue_style():
     """
     return _StyleWorkItem(
         "deadline_issue", False, number_format=FORMAT_DATE_XLSX14, alignment=ConstStyle.TMP_ALIGNMENT,
-        border=ConstStyle.LEFT_RIGHT_MEDIUM_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
+        border=ConstStyle.LEFT_RIGHT_TOP_BOTTOM_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
         protection=ConstStyle.TMP_PROTECTION, data_type="d"
     )
 
 
-def header_cross_style():
-    # TODO
+def header_no_border_style():
     """
     Specify the header cross style.
 
     :return: the header cross style.
     :rtype: _StyleWorkItem
     """
-    header_cross_fill = PatternFill(
-        fill_type=FILL_SOLID, fgColor=Color(theme=3, tint=0.5999938962981048, type='theme'),
-        bgColor=Color(indexed=64, type='indexed'))
     return _StyleWorkItem(
-        "header_cross", False, number_format=FORMAT_GENERAL, alignment=ConstStyle.NONE_ALIGNMENT,
-        border=ConstStyle.TMP_BORDER, fill=header_cross_fill, font=ConstStyle.THEME_FONT,
-        protection=ConstStyle.TMP_PROTECTION, data_type="s"
+        "header_no_border", False, number_format=FORMAT_GENERAL, alignment=ConstStyle.NONE_ALIGNMENT,
+        border=ConstStyle.TMP_BORDER, fill=ConstStyle.HEADER_FILL, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="n"
+    )
+
+
+def basic_issue_style():
+    """
+    Specify the basic cell style for issue attribute values.
+
+    :return: the issue attribute value cell style.
+    :rtype: _StyleWorkItem
+    """
+    return _StyleWorkItem(
+        "basic_issue", True, number_format=FORMAT_TEXT, alignment=ConstStyle.CENTER_ALIGNMENT,
+        border=ConstStyle.LEFT_RIGHT_TOP_BOTTOM_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="n"
+    )
+
+
+def header_text_style():
+    """
+    Specify the header merged cell style.
+
+    :return: the header merged cell style.
+    :rtype: _StyleWorkItem
+    """
+    return _StyleWorkItem(
+        "header_text", False, number_format=FORMAT_GENERAL, alignment=ConstStyle.CENTER_ALIGNMENT,
+        border=ConstStyle.LEFT_TOP_BOTTOM_BORDER, fill=ConstStyle.HEADER_FILL, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="n"
+    )
+
+
+def sum_style():
+    """
+    Specify the total spent time cell style.
+
+    :return: the total time cell style.
+    :rtype: _StyleWorkItem
+    """
+    return _StyleWorkItem(
+        "sum", False, number_format=FORMAT_NUMBER, alignment=ConstStyle.CENTER_ALIGNMENT,
+        border=ConstStyle.LEFT_RIGHT_TOP_BOTTOM_BORDER, fill=ConstStyle.TMP_FILL, font=ConstStyle.THEME_FONT,
+        protection=ConstStyle.TMP_PROTECTION, data_type="f"
     )
 
 
@@ -182,39 +150,9 @@ class ConstStyle:
     """
     Contain the constants for Named and Cell Styles.
 
-    Alignment(horizontal, vertical, wrap_text):
-        TMP_ALIGNMENT --- left, center, True\n
-        CENTER_ALIGNMENT --- center, center, True\n
-        ROTATE_ALIGNMENT --- center, center, True, 90\n
-
-    Border(outline, left, right, top, bottom, diagonal):
-        TMP_BORDER --- False, Side(), Side(), Side(), Side(), Side()\n
-        THIN_BORDER --- True, Side(style=BORDER_THIN)\n
-        MEDIUM_BORDER --- True, Side(style=BORDER_THICK)\n
-        TOP_BOTTOM_MEDIUM_BORDER --- True, Side(style=BORDER_THIN),
-            Side(BORDER_THICK)\n
-
-    PatternFill(fill_type, fgColor, bgColor):
-        TMP_FILL --- FILL_SOLID, Color(rgb=WHITE, type='rgb'),
-            Color(rgb=WHITE, type='rgb')\n
-        INDEXED_FILL --- FILL_SOLID, Color(rgb=WHITE, type='rgb'),
-            Color(indexed=64, type='indexed')\n
-        TINT_FILL --- FILL_SOLID, Color(theme=0, tint=0.0, type='theme'),
-            Color(indexed=64, type='indexed')\n
-
-    Font(name, charset, family, color, size):
-        TMP_FONT --- 'Calibri', 204, 2, Color(rgb=BLACK, type='rgb'), 11\n
-        THEME_FONT --- 'Calibri', 204, 2, Color(theme=1, type='theme'), 11\n
-
-    Protection(locked, hidden):
-        TMP_PROTECTION --- False, False\n
-
     dict_states_color --- dict of states, PatternFill values
         "weekend", "deadline", "done", "active", "test", "going_start", "paused",
         "verified_closed", "going_finish", "sick", "vacation"\n
-    dict_months_color --- dict of months, PatternFill values
-        "january", "february", "march", "april", "may", "june",\n
-        "july", "august", "september", "october", "november", "december"\n
     """
     # Cell.alignment
     TMP_ALIGNMENT = Alignment(
@@ -222,9 +160,6 @@ class ConstStyle:
         justifyLastLine=None, readingOrder=0)
     CENTER_ALIGNMENT = Alignment(
         horizontal='center', vertical='center', wrap_text=True, shrinkToFit=None, indent=0, relativeIndent=0,
-        justifyLastLine=None, readingOrder=0)
-    ROTATE_ALIGNMENT = Alignment(
-        horizontal='center', vertical='center', wrap_text=True, text_rotation=90, indent=0, relativeIndent=0,
         justifyLastLine=None, readingOrder=0)
     NONE_ALIGNMENT = Alignment()
     # Cell.border
@@ -240,38 +175,34 @@ class ConstStyle:
                          top=Side(style=BORDER_THIN, color=Color(rgb=BLACK, type="rgb")),
                          bottom=Side(style=BORDER_THIN, color=Color(rgb=BLACK, type="rgb")),
                          diagonal=Side(style=None, color=None))
-    MEDIUM_BORDER = Border(outline=True,
-                           left=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
-                           right=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
-                           top=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
-                           bottom=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
-                           diagonal=Side(style=None, color=None))
-    TOP_BOTTOM_MEDIUM_BORDER = Border(outline=True,
-                                      left=Side(style=None, color=None),
-                                      right=Side(style=None, color=None),
-                                      top=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
-                                      bottom=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
-                                      diagonal=Side(style=None, color=None))
-    LEFT_RIGHT_MEDIUM_BORDER = Border(outline=True,
-                                      left=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
-                                      right=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
-                                      top=Side(style=None, color=None),
-                                      bottom=Side(style=None, color=None),
-                                      diagonal=Side(style=None, color=None))
+    TOP_BOTTOM_BORDER = Border(outline=True,
+                               left=Side(style=None, color=None),
+                               right=Side(style=None, color=None),
+                               top=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
+                               bottom=Side(style=BORDER_MEDIUM, color=Color(rgb=BLACK, type="rgb")),
+                               diagonal=Side(style=None, color=None))
+    LEFT_RIGHT_TOP_BOTTOM_BORDER = Border(outline=True,
+                                          left=Side(style=BORDER_MEDIUM, color=Color(indexed=64, type="indexed")),
+                                          right=Side(style=BORDER_MEDIUM, color=Color(indexed=64, type="indexed")),
+                                          top=Side(style=BORDER_THIN, color=Color(indexed=64, type="indexed")),
+                                          bottom=Side(style=BORDER_THIN, color=Color(indexed=64, type="indexed")),
+                                          diagonal=Side(style=None, color=None))
+    LEFT_TOP_BOTTOM_BORDER = Border(outline=True,
+                                    left=Side(style=BORDER_MEDIUM, color=Color(indexed=64, type="indexed")),
+                                    right=Side(style=None, color=None),
+                                    top=Side(style=BORDER_THIN, color=Color(indexed=64, type="indexed")),
+                                    bottom=Side(style=BORDER_THIN, color=Color(indexed=64, type="indexed")),
+                                    diagonal=Side(style=None, color=None))
     # Cell.fill
     TMP_FILL = PatternFill(fill_type=None,
                            fgColor=Color(rgb=WHITE, type='rgb'),
                            bgColor=Color(rgb=WHITE, type='rgb'))
-    INDEXED_FILL = PatternFill(fill_type=FILL_SOLID,
-                               fgColor=Color(rgb=WHITE, type='rgb'),
-                               bgColor=Color(indexed=64, type='indexed'))
-    TINT_FILL = PatternFill(fill_type=FILL_SOLID,
-                            fgColor=Color(theme=0, tint=0.0, type='theme'),
-                            bgColor=Color(indexed=64, type='indexed'))
+    HEADER_FILL = PatternFill(fill_type=FILL_SOLID,
+                              fgColor=Color(theme=3, tint=0.5999938962981048, type='theme'),
+                              bgColor=Color(indexed=64, type='indexed'))
     # Cell.font
     TMP_FONT = Font(name='Times New Roman', charset=204, family=1, color=Color(rgb=BLACK, type='rgb'), size=11)
-    THEME_FONT = Font(name='Calibri', charset=204, family=2, color=Color(theme=1, type='theme'), size=11)
-    TITLE_FONT = Font(name='Calibri', charset=204, family=2, bold=True, color=Color(theme=1, type='theme'), size=11)
+    THEME_FONT = Font(name='Times New Roman', charset=204, family=1, color=Color(theme=1, type='theme'), size=11)
     # Cell.protection
     TMP_PROTECTION = Protection(locked=False, hidden=False)
     # states and PatternFill values
@@ -308,45 +239,6 @@ class ConstStyle:
                             bgColor=Color(indexed=64, type='indexed')),
         "vacation": PatternFill(fill_type=FILL_SOLID,
                                 fgColor=Color(rgb="FFFFFF00", type='rgb'),
-                                bgColor=Color(rgb=WHITE, type='rgb'))
-    }
-    # months and PatternFill values
-    dict_months_color = {
-        "january": PatternFill(fill_type=FILL_SOLID,
-                               fgColor=Color(rgb="FF0297CC", type='rgb'),
-                               bgColor=Color(rgb=WHITE, type='rgb')),
-        "february": PatternFill(fill_type=FILL_SOLID,
-                                fgColor=Color(rgb="FF0BA6B6", type='rgb'),
-                                bgColor=Color(rgb=WHITE, type='rgb')),
-        "march": PatternFill(fill_type=FILL_SOLID,
-                             fgColor=Color(rgb="FF3AAA66", type='rgb'),
-                             bgColor=Color(rgb=WHITE, type='rgb')),
-        "april": PatternFill(fill_type=FILL_SOLID,
-                             fgColor=Color(rgb="FF8BBD36", type='rgb'),
-                             bgColor=Color(rgb=WHITE, type='rgb')),
-        "may": PatternFill(fill_type=FILL_SOLID,
-                           fgColor=Color(rgb="FFD0CA04", type='rgb'),
-                           bgColor=Color(rgb=WHITE, type='rgb')),
-        "june": PatternFill(fill_type=FILL_SOLID,
-                            fgColor=Color(rgb="FFF9AD01", type='rgb'),
-                            bgColor=Color(rgb=WHITE, type='rgb')),
-        "july": PatternFill(fill_type=FILL_SOLID,
-                            fgColor=Color(rgb="FFF08002", type='rgb'),
-                            bgColor=Color(rgb=WHITE, type='rgb')),
-        "august": PatternFill(fill_type=FILL_SOLID,
-                              fgColor=Color(rgb="FFE94442", type='rgb'),
-                              bgColor=Color(rgb=WHITE, type='rgb')),
-        "september": PatternFill(fill_type=FILL_SOLID,
-                                 fgColor=Color(rgb="FFCF687D", type='rgb'),
-                                 bgColor=Color(rgb=WHITE, type='rgb')),
-        "october": PatternFill(fill_type=FILL_SOLID,
-                               fgColor=Color(rgb="FF98668B", type='rgb'),
-                               bgColor=Color(rgb=WHITE, type='rgb')),
-        "november": PatternFill(fill_type=FILL_SOLID,
-                                fgColor=Color(rgb="FF697FB9", type='rgb'),
-                                bgColor=Color(rgb=WHITE, type='rgb')),
-        "december": PatternFill(fill_type=FILL_SOLID,
-                                fgColor=Color(rgb="FF0078A9", type='rgb'),
                                 bgColor=Color(rgb=WHITE, type='rgb'))
     }
 
@@ -407,7 +299,7 @@ class _StyleWorkItem:
         if protection is None:
             protection = Protection(locked=False, hidden=False)
         if data_type is None:
-            data_type = "s"
+            data_type = "n"
 
         self.name = name
         self._is_named = _is_named
@@ -516,11 +408,11 @@ class _StyleWorkItemList:
 
     Params:
         name --- the list name;\n
-        styles --- the dict of the styles,
+        styles --- the dictionary of the styles,
             dict[style_name, _StyleWorkItem];\n
 
     Functions:
-        set_style(style_name, cell/coord) --- set the style to the cell;\n
+        set_style(style_name, cell) --- set the style to the cell;\n
     """
 
     def __init__(self, name: str):
@@ -528,12 +420,14 @@ class _StyleWorkItemList:
         self.styles: dict[str, Union[_StyleWorkItem, NamedStyle]] = dict()
         self.styles["basic"] = basic().get_named
         self.styles["_basic_style"] = _basic_state_style().get_named
-        self.styles["_basic_month"] = _basic_month_style().get_named
+        self.styles["basic_issue"] = basic_issue_style().get_named
         self.styles["header"] = header().get_named
-        self.styles["title"] = title().get_named
-        self.styles["month_date"] = month_date_style().get_named
+        self.styles["header_no_border"] = header_no_border_style().get_named
+        self.styles["header_text"] = header_text_style().get_named
+        self.styles["deadline_issue"] = deadline_issue_style().get_named
+        self.styles["sum"] = sum_style().get_named
         style: Union[_StyleWorkItem, NamedStyle]
-        for style in [*state_styles(), *month_styles(), *month_merged_styles()]:
+        for style in state_styles():
             self.styles[style.name] = style.get_named
 
     def __str__(self):
@@ -577,26 +471,3 @@ class _StyleWorkItemList:
             style.set_style(cell)
         else:
             print(f"Something went wrong. Cell {cell.coordinate}. Style: {style_name}.")
-
-    def add_styles(self, wb: Workbook):
-        """
-        Add the named styles to the Workbook styles.
-
-        :param Workbook wb: the Workbook instance
-        :return: None.
-        """
-        wb._named_styles.clear()
-        for style_name, style in self.styles.items():
-            if not isinstance(style, NamedStyle):
-                continue
-            else:
-                wb._named_styles.append(style)
-                style.bind(wb)
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
