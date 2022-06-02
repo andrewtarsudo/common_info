@@ -1,5 +1,5 @@
 import datetime
-from typing import Any
+from typing import Any, Optional
 import openpyxl
 from pathlib import Path
 from openpyxl.workbook.workbook import Workbook
@@ -9,15 +9,6 @@ from yt_config import UserConfig
 from _style_work_item import _StyleWorkItemList
 from yt_requests import User, Issue, IssueWorkItem
 from xl_table import ExcelProp, TableCell
-from decimal import Decimal
-
-
-# TODO:
-# get_current_states
-# update issues
-# check new styles in _style_work_item:
-# deadline_issue
-# header_cross
 
 
 def convert_issue_state(state: str) -> str:
@@ -49,9 +40,11 @@ def convert_issue_state(state: str) -> str:
 
 class JoinUserXL:
     """
+    Join the User and ExcelProp instances.
+
     Class params:
-        attrs_column --- the attributes to get;\n
         dict_attr_column --- the dictionary of the issue attributes and columns;\n
+        attrs_column --- the attributes to get;\n
 
     Params:
         user --- the User instance;\n
@@ -61,6 +54,9 @@ class JoinUserXL:
         ws --- the worksheet;\n
         issue_names --- the issue names;\n
         work_item_names --- the issue work item names;\n
+        issues_to_add --- the issue names to add to the table;\n
+        issues_to_update_state --- the issue names to update the state;\n
+        issues_to_modify --- the issue names to modify;\n
 
     Functions:
         __index(state) --- get the state index in the headers;\n
@@ -68,9 +64,12 @@ class JoinUserXL:
         add_all_issues() --- add all issues to the table;\n
         _parse_attr_seq(attrs, values, row) --- add the attribute values to the table;\n
         modify_all_issues() --- modify all attribute values in the table;\n
+        modify_table_cell(issue_name, state) --- modify the table cell state;\n
+        table_cell_item(issue_name) --- get the TableCell instance by the issue name;\n
         __get_issue_by_name(issue_name) --- get the Issue and TableCell instances by the issue name;\n
         add_new_work_items() --- add the new work items;\n
         set_work_item_styles() --- set the styles to the work items;\n
+        update_states() --- update the issue states in the table;\n
     """
     dict_attr_column = {"parent": "B", "issue": "C", "summary": "D", "deadline": "E", "commentary": "NT"}
     attrs_column = ("parent", "summary", "deadline")
@@ -116,16 +115,6 @@ class JoinUserXL:
         return self.excel_prop.headers_row[self.__index(convert_issue_state(state)) + 1] - 1
 
     @property
-    def issue_names(self) -> set[str]:
-        """
-        Get the issue names.
-
-        :return: the issue names.
-        :rtype: set[str]
-        """
-        return set(self.user.dict_issue.keys())
-
-    @property
     def work_item_names(self) -> list[str]:
         """
         Get the IssueWorkItem instance names.
@@ -135,22 +124,49 @@ class JoinUserXL:
         """
         return list(self.user.dict_issue_work_item.keys())
 
+    @property
+    def issues_to_add(self) -> set[str]:
+        """
+        Specify the issue names to add to the table.
+
+        :return: the issue names.
+        :rtype: set[str]
+        """
+        return self.user.issue_names().difference(self.excel_prop.table_cell_names())
+
+    @property
+    def issues_to_update_state(self) -> set[str]:
+        """
+        Specify the issue names to update the state.
+
+        :return: the issue names.
+        :rtype: set[str]
+        """
+        return self.excel_prop.table_cell_names().difference(self.user.issue_names())
+
+    @property
+    def issues_to_modify(self) -> set[str]:
+        """
+        Specify the issue names to modify.
+
+        :return: the issue names.
+        :rtype: set[str]
+        """
+        return set.intersection(self.user.issue_names(), self.excel_prop.table_cell_names())
+
     def add_all_issues(self):
         """Add all new issues."""
-        names_add = self.user.issue_names().difference(self.excel_prop.table_cell_names())
-        for issue_name in names_add:
+        for issue_name in self.issues_to_add:
             # prepare the new row
             issue: Issue = self.user.dict_issue[issue_name]
-            print(f"issue_name = {issue_name}")
-            print(f"state = {issue.state}")
             add_row: int = self.new_row(issue.state)
+            # add the new row
             self.excel_prop.insert_row(add_row)
             # add the values to the associated cells
             attrs = ["parent", "issue", "summary", "deadline"]
             values = [getattr(issue, attr) for attr in attrs]
             self._parse_attr_seq(attrs, values, add_row)
-            coord = f"C{add_row}"
-            TableCell(self.excel_prop, self.ws[f"{coord}"])
+            TableCell(self.excel_prop, self.ws[f"C{add_row}"])
 
     def _parse_attr_seq(self, attrs: list[str], values: list[Any], row: int):
         """
@@ -171,28 +187,51 @@ class JoinUserXL:
                 continue
             else:
                 if value is not None:
-                    column_letter = self.dict_attr_column[attr]
+                    column_letter: str = self.dict_attr_column[attr]
                     self.ws[f"{column_letter}{row}"].value = value
 
     def modify_all_issues(self):
         """Modify all issues in the table."""
-        names_modify = set.intersection(self.user.issue_names(), self.excel_prop.table_cell_names())
-        print(names_modify)
-        for issue_name in names_modify:
+        for issue_name in self.issues_to_modify:
             issue, table_cell = self.__get_issue_by_name(issue_name)
             row = table_cell.row
-            modify_attrs = [attr for attr in self.attrs_column if getattr(table_cell, attr) != getattr(issue, attr)]
+            # get the attributes to modify
+            modify_attrs: list[str] = [attr for attr in self.attrs_column
+                                       if getattr(table_cell, attr) != getattr(issue, attr)]
+            # get the values to apply
             modify_values = [getattr(issue, attr) for attr in modify_attrs]
+            # add the values to the table
             self._parse_attr_seq(modify_attrs, modify_values, row)
-
+            # operate with the state changes separately
             if convert_issue_state(issue.state) != table_cell.state:
-                row = table_cell.row
-                add_row = self.new_row(issue.state)
-                self.excel_prop.insert_row(add_row)
-                for cell in self.excel_prop.cell_in_range(f"B{row}", f"NR{row}"):
-                    self.excel_prop.replace_cell(from_=cell, to_=self.ws[f"{cell.column_letter}{add_row}"])
-                self.excel_prop.replace_cell(from_=f"NT{row}", to_=f"NT{add_row}")
-                self.excel_prop.delete_row(row)
+                self.modify_table_cell(issue.issue, issue.state)
+
+    def modify_table_cell(self, issue_name: str, state: str):
+        """
+        Modify the table cell state.
+
+        :param str issue_name: the issue name
+        :param str state: the issue state
+        :return: None.
+        """
+        table_cell: TableCell = self.table_cell_item(issue_name)
+        row: int = table_cell.row
+        add_row: int = self.new_row(state)
+        self.excel_prop.insert_row(add_row)
+        for cell in table_cell.cell_range():
+            self.excel_prop.replace_cell(from_=cell, to_=self.ws[f"{cell.column_letter}{add_row}"])
+        self.excel_prop.replace_cell(from_=f"NT{row}", to_=f"NT{add_row}")
+        self.excel_prop.delete_row(row)
+
+    def table_cell_item(self, issue_name: str) -> Optional[TableCell]:
+        """
+        Get the TableCell instance by the issue name.
+
+        :param str issue_name: the issue name
+        :return: the TableCell instance if exists.
+        :rtype: TableCell or None
+        """
+        return self.excel_prop.table_cell_issue(issue_name)
 
     def __get_issue_by_name(self, issue_name: str) -> tuple[Issue, TableCell]:
         """
@@ -202,34 +241,43 @@ class JoinUserXL:
         :return: the Issue and TableCell instances.
         :rtype: tuple[Issue, TableCell]
         """
-        return self.user.dict_issue[issue_name], self.excel_prop.table_cell_issue(issue_name)
+        return self.user.dict_issue[issue_name], self.table_cell_item(issue_name)
 
     def add_new_work_items(self):
         """Add the new work items."""
         for issue_name in self.work_item_names:
-            table_cell = self.excel_prop.table_cell_issue(issue_name)
-            work_items_issue = self.user.dict_issue_work_item[issue_name]
-            work_item_dates = set(work_item.date for work_item in work_items_issue)
-            table_cell_dates = set(date for _, date, _ in table_cell.work_items())
-            new_work_items_dates = work_item_dates.difference(table_cell_dates)
-            new_work_items = [work_item.to_tuple() for work_item in list(self.user.dict_issue_work_item.values())
-                              if work_item.date in new_work_items_dates]
+            table_cell: TableCell = self.table_cell_item(issue_name)
+            # get the work items from the YouTrack
+            work_items_issue: list[IssueWorkItem] = self.user.dict_issue_work_item[issue_name]
+            # get the work item dates from the YouTrack
+            work_item_dates: set[datetime.date] = set(work_item.date for work_item in work_items_issue)
+            # get the work item dates from the table
+            table_cell_dates: set[datetime.date] = set(date for _, date, _ in table_cell.work_items())
+            # get the work item dates to add
+            new_work_items_dates: set[datetime.date] = work_item_dates.difference(table_cell_dates)
+            # get the new work items
+            new_work_items: list[IssueWorkItem] = [
+                work_item for work_item in self.user.dict_issue_work_item.values()
+                if work_item.date in new_work_items_dates]
             for work_item in new_work_items:
-                table_cell.add_work_item(work_item)
+                work_item_tuple = work_item.issue, work_item.date, work_item.spent_time
+                table_cell.add_work_item(work_item_tuple)
 
     def set_work_item_styles(self):
         """Set the styles to the work items."""
-        for issue_name in self.issue_names:
-            table_cell = self.excel_prop.table_cell_issue(issue_name)
+        for issue_name in self.user.issue_names():
+            table_cell: TableCell = self.table_cell_item(issue_name)
             for work_item in table_cell.work_items():
                 cell: Cell = table_cell.mapping_work_item_cell(work_item)
-                style_name = table_cell.proper_work_item_style(work_item)
+                style_name: str = table_cell.proper_work_item_style(work_item)
                 self.excel_prop.styles.set_style(style_name, cell)
 
     def update_states(self):
-        table_names = [issue_name for issue_name in
-                       self.excel_prop.table_cell_names().difference(self.user.issue_names())]
-
+        """Update the issue states in the table."""
+        dict_updated_states: dict[str, str] = self.user.get_current_states(self.issues_to_update_state)
+        for issue_name, state in dict_updated_states.items():
+            if self.table_cell_item(issue_name).state != state:
+                self.modify_table_cell(issue_name, state)
 
 
 def old_main():
@@ -250,12 +298,11 @@ def old_main():
     ws: Worksheet = wb[ws_title]
 
     style_list = _StyleWorkItemList("styles")
-    style_list.add_styles(wb)
 
     excel_prop = ExcelProp(ws, "excel_prop", style_list)
     # excel_prop.pre_processing()
     excel_prop.delete_row(12)
-    for table_cell in excel_prop.table_cell_items():
+    for table_cell in excel_prop.dict_table_cell.values():
         table_cell.cell_hyperlink_nullify()
         table_cell.cell_hyperlink()
     # for table_cell in excel_prop.table_cells:
@@ -270,7 +317,7 @@ def old_main():
     wb.save(path_new_workbook)
 
 
-def get_main():
+def new_main():
     youtrack_config = UserConfig().set_config_file(UserConfig.path)
     user = User(youtrack_config)
     Issue(issue="DOC_ST-1467", state="Active", summary="Документация на ПДРА.465672.011 АРМ ДЛ МИ-2 ТИ",
@@ -372,13 +419,12 @@ def get_main():
     ws: Worksheet = wb[ws_title]
 
     style_list = _StyleWorkItemList("styles")
-    style_list.add_styles(wb)
 
     excel_prop = ExcelProp(ws, "excel_prop", style_list)
     excel_prop._empty_rows()
     excel_prop.pre_processing()
     # excel_prop.delete_row(12)
-    for table_cell in excel_prop.table_cell_items():
+    for table_cell in excel_prop.dict_table_cell.values():
         table_cell.cell_hyperlink_nullify()
         table_cell.cell_hyperlink()
     # print(excel_prop.table_cell_names())
@@ -396,12 +442,17 @@ def get_main():
 
 
 def main():
-    youtrack_config = UserConfig().set_config_file(UserConfig.path)
-    user = User(youtrack_config)
-    response = user.get_current_states(["DOC-367"])
-    print(response[0])
-    print(response[0]["idReadable"])
-    print(response[0]["customFields"][0]["value"]["name"])
+    path = r"/Users/user/Desktop/2022_template.xlsx"
+    wb: Workbook = openpyxl.load_workbook(path)
+    ws: Worksheet = wb["12 мес."]
+    cell: Cell = ws["NS4"]
+    print(cell.number_format)
+    print(cell.data_type)
+    print(cell.alignment)
+    print(cell.border)
+    print(cell.fill)
+    print(cell.font)
+    print(cell.protection)
 
 
 if __name__ == "__main__":
