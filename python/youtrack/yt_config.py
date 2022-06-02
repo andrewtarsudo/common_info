@@ -169,11 +169,3 @@ class UserConfig:
         UserConfig.check_json_attrs(file_path)
         user_config = UserConfig()
         return user_config
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
