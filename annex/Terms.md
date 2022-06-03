@@ -987,3 +987,104 @@
 | WPS | Wireless Priority Service, служба беспроводной приоритетной связи |
 | WTP | Wireless Transport Protocol, протокол беспроводной передачи |
 | XML | eXtensible Markup Language, расширяемый язык разметки |
+
+
+RES User response
+RFU Reserved for Future Use
+RST Reset
+SDN Service dialling number
+SE Security Environment
+SEQp Sequence number for MGV-F stored in the USIM
+SFI Short EF Identifier
+SGSN Serving GPRS Support Node
+SN Serving Network
+SQN Sequence number
+SRES Signed RESponse calculated by a USIM
+SW Status Word
+TLV Tag Length Value
+USAT USIM Application Toolkit
+USIM Universal Subscriber Identity Module
+VLR Visitor Location Register
+WLAN Wireless Local Area Network
+WSID WLAN Specific Identifier
+XRES Expected user RESponse
+CK Cipher key
+CLI Calling Line Identifier
+CNL Co-operative Network List
+CPBCCH COMPACT Packet BCCH
+CS Circuit switched
+DCK Depersonalisation Control Keys
+DF Dedicated File
+DO Data Object
+EF Elementary File
+EPS Evolved Packet System
+FCP File Control Parameters
+FFS For Further Study
+GSM Global System for Mobile communications
+HE Home Environment
+HNB Home NodeB
+HeNB Home eNodeB
+IARI IMS Application Reference Identifier
+ICC Integrated Circuit Card
+ICE In Case of Emergency
+ICI Incoming Call Information
+ICT Incoming Call Timer
+ID Identifier
+Idi Identity of the initiator
+Idr Identity of the responder
+IEI Information Element Identifier
+IK Integrity key
+IMSI International Mobile Subscriber Identity
+K USIM Individual key
+KC Cryptographic key used by the cipher A5
+KSI Key Set Identifier
+LI Language Indication
+LSB Least Significant Bit
+MAC Message authentication code
+MAC-A MAC used for authentication and key agreement
+MAC-I MAC used for data integrity of signalling messages
+MBMS Multimedia Broadcast/Multicast Service
+MCC Mobile Country Code
+MexE Mobile Execution Environment
+MF Master File
+MGV-F MTK Generation and Validation Function
+MIKEY Multimedia Internet KEYing
+MM Multimedia Message
+MMI Man Machine Interface
+MMS Multimedia Messaging Service
+MMSS MultiMode System Selection
+MNC Mobile Network Code
+MODE Indication packet switched/circuit switched mode
+MSB Most Significant Bit
+MSK MBMS Service Key
+MTK MBMS Traffic Key
+MUK MBMS User Key
+NEV NEVer
+NPI Numbering Plan Identifier
+OCI Outgoing Call Information
+OCT Outgoing Call Timer
+PBID Phonebook Identifier
+PIN Personal Identification Number
+PL Preferred Languages
+PS Packet switched
+PS_DO PIN Status Data Object
+RAND Random challenge
+RAND MS Random challenge stored in the USIM
+3GPP 3 rd Generation Partnership Project
+AC Access Condition
+ACL APN Control List
+ADF Application Dedicated File
+AID Application Identifier
+AK Anonymity key
+ALW ALWays
+AMF Authentication Management Field
+AoC Advice of Charge
+APN Access Point Name
+ASME Access Security Management Entity
+ASN.1 Abstract Syntax Notation One
+AuC Authentication Centre
+AUTN Authentication token
+BDN Barred Dialling Number
+BER-TLV Basic Encoding Rule - TLV
+B-TID Bootstrapping Transaction Identifier
+CCP Capability Configuration Paramete
