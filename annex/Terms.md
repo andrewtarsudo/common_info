@@ -1,5 +1,7 @@
 | Термин | Описание |
 | :----- | :------- |
+| EFoplmnwact | EF for Operator Controlled PLMN Selector with Access Technology, элементарный файл для селектора сети, управляемого оператором, с технологией доступа |
+| EFplmnwact | EF for User Controlled PLMN Selector with Access Technology, элементарный файл для селектора сети, управляемого пользователем, с технологией доступа |
 | 3DES | Triple–DES — алгоритм шифрования на основе последовательного применения DES трижды |
 | 3GPP | 3rd Generation Partnership Project, Проект партнерства третьего поколения |
 | AAA | Authentication, Authorization, and Accounting; аутентификация, авторизация и учет |
