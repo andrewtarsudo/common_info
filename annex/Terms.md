@@ -1,5 +1,6 @@
 | Термин | Описание |
 | :----- | :------- |
+| TLS-PSK | Pre-Shared Key Ciphersuites for Transport Layer Security, наборы шифров с предварительным общим ключом безопасности транспортного уровня |
 | EFoplmnwact | EF for Operator Controlled PLMN Selector with Access Technology, элементарный файл для селектора сети, управляемого оператором, с технологией доступа |
 | EFplmnwact | EF for User Controlled PLMN Selector with Access Technology, элементарный файл для селектора сети, управляемого пользователем, с технологией доступа |
 | 3DES | Triple–DES — алгоритм шифрования на основе последовательного применения DES трижды |
